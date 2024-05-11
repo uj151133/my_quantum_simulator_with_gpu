@@ -1,2 +1,2 @@
-# my_quantum_simulator_with_gui
+# my_quantum_simulator_with_gpu
 investigation
