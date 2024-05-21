@@ -1,2 +1,5 @@
 qiskit
 qiskit-aer
+qiskit-ibm-runtime
+qiskit[visualization]
+pybind11
