@@ -1,2 +1,2 @@
-# my_quantum_simulator_with_gpu
+# my_quantum_simulator_wiθ_gpu
 investigation
