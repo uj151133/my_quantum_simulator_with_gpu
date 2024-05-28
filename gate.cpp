@@ -1,6 +1,9 @@
 #include "gate.hpp"
+#include "gate.cu"
+
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
+#include <pybind11/numpy.h>
 
 #include <vector>
 #include <iostream>
@@ -8,6 +11,7 @@
 #include <complex>
 
 using namespace std; 
+namespace py = pybind11;
 
 // const complex <int> i(0, 1);
 
@@ -75,6 +79,7 @@ vector<vector<double>> Ry(double theta){
         {sin(theta / 2), cos(theta / 2)}
         };
 }
+
 PYBIND11_MODULE(gate, m) {
 
     m.attr("I_GATE") = I_GATE;
@@ -93,6 +98,20 @@ PYBIND11_MODULE(gate, m) {
 
     m.attr("SWAP_GATE") = SWAP_GATE;
 
-    m.def("Ry", &Ry);
+    // m.def("Ry", &Ry);
+
+    m.def("Ry", [](double theta, py::array_t<double> matrix) {
+        double* ptr = static_cast<double*>(matrix.request().ptr);
+        double* d_matrix;
+
+        cudaMalloc(&d_matrix, 4 * sizeof(double));
+        cudaMemcpy(d_matrix, ptr, 4 * sizeof(double), cudaMemcpyHostToDevice);
+
+        Ry<<<1, 1>>>(theta, d_matrix);
+        cudaDeviceSynchronize();
+
+        cudaMemcpy(ptr, d_matrix, 4 * sizeof(double), cudaMemcpyDeviceToHost);
+        cudaFree(d_matrix);
+    });
 }
 
