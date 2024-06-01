@@ -35,8 +35,8 @@ set(pybind11_DIR ${CMAKE_PREFIX_PATH}/lib/python3.10/site-packages/pybind11/shar
 find_package(pybind11 REQUIRED)
 
 # pybind11 モジュールを追加
-pybind11_add_module(gate gate.cpp)
-pybind11_add_module(bit bit.cpp)
+pybind11_add_module(gate models/gate.cpp)
+pybind11_add_module(bit models/bit.cpp)
 
 # EXAMPLE_VERSION_INFO は setup.py によって定義され、
 # C++ コードに渡される (VERSION_INFO) ものです。
