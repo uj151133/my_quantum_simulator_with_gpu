@@ -1,27 +1,37 @@
 #ifndef GATE_HPP
 #define GATE_HPP
 
-#include <vector>
-#include <cmath> 
-#include <complex>
 
-
+#include <ginac/ginac.h>
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
 using namespace std;
+using namespace GiNaC;
 
-// extern const complex<int> i;
-extern const vector<vector<int>> I_GATE;
-extern const vector<vector<int>> NOT_GATE;
-// extern const vector<vector<complex<int>>> Y_GATE;
-extern const vector<vector<int>> Z_GATE;
-extern const vector<vector<double>> HADAMARD_GATE;
-extern const vector<vector<int>> CNOT_GATE;
-extern const vector<vector<int>> CZ_GATE;
-extern const vector<vector<int>> TOFFOLI_GATE;
-extern const vector<vector<int>> SWAP_GATE;
 
-vector<vector<double>> Ry(double theta);
+extern const matrix I_GATE;
+extern const matrix X_GATE;
+extern const matrix Y_GATE;
+extern const matrix Z_GATE;
+extern const matrix HADAMARD_GATE;
+extern const matrix S_GATE;
+extern const matrix S_DAGGER_GATE;
+extern const matrix T_GATE;
+extern const matrix T_DAGGER_GATE;
+extern const matrix CNOT_GATE;
+extern const matrix CZ_GATE;
+extern const matrix TOFFOLI_GATE;
+extern const matrix SWAP_GATE;
 
-#endif // GATE_HPP
+matrix RotateX(const ex &theta);
+matrix RotateY(const ex &theta);
+matrix RotateZ(const ex &theta);
+
+matrix U1(const ex &lambda);
+matrix U2(const ex &phi, const ex &lambda);
+matrix U3(const ex &theta, const ex &phi, const ex &lambda);
+
+// vector<vector<ex>> Ry(const ex &theta);
+
+#endif
