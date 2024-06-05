@@ -6,7 +6,6 @@
 #include <pybind11/stl.h>
 #include <pybind11/numpy.h>
 
-#include <vector>
 #include <iostream>
 
 using namespace std; 
