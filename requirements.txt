@@ -2,4 +2,5 @@ qiskit
 qiskit-aer
 qiskit-ibm-runtime
 qiskit[visualization]
+sympy
 pybind11
