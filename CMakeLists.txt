@@ -6,8 +6,7 @@ cmake_policy(SET CMP0057 NEW)
 project(My_Calculation VERSION 0.1.0)
 
 # Python 3 を探す
-find_package(Python3 3.10 REQUIRED COMPONENTS Interpreter Development)
-find_package(PythonLibs 3.10 REQUIRED)
+find_package(Python3 REQUIRED COMPONENTS Interpreter Development)
 
 # Python include directory
 execute_process(
@@ -31,14 +30,17 @@ set(PYTHON_LIBRARY ${PYTHON_LIBRARY} CACHE FILEPATH "Python library")
 include_directories(${PYTHON_INCLUDE_DIRS})
 link_directories(${PYTHON_LIBRARY})
 
+# pybind11 のパスを手動で設定
+set(pybind11_DIR ${CMAKE_PREFIX_PATH}/lib/python3.10/site-packages/pybind11/share/cmake/pybind11)
+find_package(pybind11 REQUIRED)
+
+
 # CLN ライブラリのパスを設定
 set(CLN_DIR /opt/local/include/cln/)
 list(APPEND CMAKE_PREFIX_PATH ${CLN_DIR})
 find_package(CLN REQUIRED)
 
-# pybind11 のパスを手動で設定
-set(pybind11_DIR ${CMAKE_PREFIX_PATH}/lib/python3.10/site-packages/pybind11/share/cmake/pybind11)
-find_package(pybind11 REQUIRED CONFIG)
+
 
 # GiNaCのパスを探す
 set(GiNaC_DIR /opt/local/include/ginac/)
@@ -46,7 +48,7 @@ list(APPEND CMAKE_PREFIX_PATH ${GiNaC_DIR})
 find_package(GiNaC REQUIRED CONFIG)
 
 include_directories(${GiNaC_INCLUDE_DIRS})
-link_directories(${GiNaC_LIBRARY_DIRSs})
+link_directories(${GiNaC_LIBRARY_DIRS})
 include_directories(${CLN_INCLUDE_DIRS})
 link_directories(${CLN_LIBRARY_DIRS})
 
