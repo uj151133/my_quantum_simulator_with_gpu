@@ -34,6 +34,7 @@ include_directories(${CLN_INCLUDE_DIRS})
 
 # 出力ディレクトリを親ディレクトリに設定
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
 
 # pybind11 モジュールを追加
 pybind11_add_module(gate models/gate.cpp)
@@ -43,8 +44,10 @@ message(STATUS "GiNaC_INCLUDE_DIRS: ${GiNaC_INCLUDE_DIRS}")
 message(STATUS "GiNaC_LIBRARIES: ${GiNaC_LIBRARIES}")
 message(STATUS "GiNaC_LIBRARY_DIRS: ${GiNaC_LIBRARY_DIRS}")
 
-
 # ターゲットにライブラリをリンク
 target_link_libraries(gate PRIVATE Python3::Python ${CLN_LIBRARIES} ${GiNaC_LIBRARIES})
 target_link_libraries(bit PRIVATE Python3::Python ${CLN_LIBRARIES} ${GiNaC_LIBRARIES})
 
+# 通常のC++実行ファイルを追加
+add_executable(my_calculation main.cpp)
+target_link_libraries(my_calculation PRIVATE ${CLN_LIBRARIES} ${GiNaC_LIBRARIES})
