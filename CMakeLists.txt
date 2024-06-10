@@ -19,18 +19,17 @@ set(CLN_DIR /usr/local/include/cln/)
 list(APPEND CMAKE_PREFIX_PATH ${CLN_DIR})
 find_package(CLN REQUIRED)
 
-# GiNaCのパスを探す
-set(GiNaC_DIR /usr/local/include/ginac/)
-set(GiNaC_INCLUDE_DIRS /usr/local/include/ginac/)
-set(GiNaC_LIBRARY_DIRS /usr/local/lib/)
+# GiNaCのインクルードディレクトリとライブラリを探す
+find_path(GINAC_INCLUDE_DIR ginac/ginac.h)
+find_library(GINAC_LIBRARY ginac)
 
-list(APPEND CMAKE_PREFIX_PATH ${GiNaC_DIR})
-message(STATUS "GiNaC_DIR: ${GiNaC_DIR}")
-find_package(GiNaC REQUIRED CONFIG)
+if(NOT GINAC_INCLUDE_DIR OR NOT GINAC_LIBRARY)
+    message(FATAL_ERROR "GiNaC library not found")
+endif()
 
-include_directories(${GiNaC_INCLUDE_DIRS})
-link_directories(${GiNaC_LIBRARY_DIRS})
-include_directories(${CLN_INCLUDE_DIRS})
+# インクルードディレクトリとリンクディレクトリを追加
+include_directories(${GINAC_INCLUDE_DIR})
+link_directories(${GINAC_LIBRARY_DIR})
 
 # 出力ディレクトリを親ディレクトリに設定
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
@@ -40,14 +39,10 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
 pybind11_add_module(gate models/gate.cpp)
 pybind11_add_module(bit models/bit.cpp)
 
-message(STATUS "GiNaC_INCLUDE_DIRS: ${GiNaC_INCLUDE_DIRS}")
-message(STATUS "GiNaC_LIBRARIES: ${GiNaC_LIBRARIES}")
-message(STATUS "GiNaC_LIBRARY_DIRS: ${GiNaC_LIBRARY_DIRS}")
-
 # ターゲットにライブラリをリンク
-target_link_libraries(gate PRIVATE Python3::Python ${CLN_LIBRARIES} ${GiNaC_LIBRARIES})
-target_link_libraries(bit PRIVATE Python3::Python ${CLN_LIBRARIES} ${GiNaC_LIBRARIES})
+target_link_libraries(gate PRIVATE Python3::Python ${CLN_LIBRARIES} ${GINAC_LIBRARY})
+target_link_libraries(bit PRIVATE Python3::Python ${CLN_LIBRARIES} ${GINAC_LIBRARY})
 
 # 通常のC++実行ファイルを追加
 add_executable(my_calculation main.cpp)
-target_link_libraries(my_calculation PRIVATE ${CLN_LIBRARIES} ${GiNaC_LIBRARIES})
+target_link_libraries(my_calculation PRIVATE ${CLN_LIBRARIES} ${GINAC_LIBRARY})
