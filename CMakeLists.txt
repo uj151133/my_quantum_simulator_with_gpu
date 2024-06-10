@@ -15,22 +15,36 @@ set(pybind11_DIR ${CMAKE_PREFIX_PATH}/lib/python${Python3_VERSION_MAJOR}.${Pytho
 find_package(pybind11 REQUIRED)
 
 # CLN ライブラリのパスを設定
-set(CLN_DIR /opt/local/include/cln/)
+set(CLN_DIR /usr/local/include/cln/)
 list(APPEND CMAKE_PREFIX_PATH ${CLN_DIR})
 find_package(CLN REQUIRED)
 
 # GiNaCのパスを探す
-set(GiNaC_DIR /opt/local/include/ginac/)
+set(GiNaC_DIR /usr/local/include/ginac/)
+set(GiNaC_INCLUDE_DIRS /usr/local/include/ginac/)
+set(GiNaC_LIBRARY_DIRS /usr/local/lib/)
+
 list(APPEND CMAKE_PREFIX_PATH ${GiNaC_DIR})
+message(STATUS "GiNaC_DIR: ${GiNaC_DIR}")
 find_package(GiNaC REQUIRED CONFIG)
 
 include_directories(${GiNaC_INCLUDE_DIRS})
+link_directories(${GiNaC_LIBRARY_DIRS})
 include_directories(${CLN_INCLUDE_DIRS})
+
+# 出力ディレクトリを親ディレクトリに設定
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
 
 # pybind11 モジュールを追加
 pybind11_add_module(gate models/gate.cpp)
 pybind11_add_module(bit models/bit.cpp)
 
+message(STATUS "GiNaC_INCLUDE_DIRS: ${GiNaC_INCLUDE_DIRS}")
+message(STATUS "GiNaC_LIBRARIES: ${GiNaC_LIBRARIES}")
+message(STATUS "GiNaC_LIBRARY_DIRS: ${GiNaC_LIBRARY_DIRS}")
+
+
 # ターゲットにライブラリをリンク
 target_link_libraries(gate PRIVATE Python3::Python ${CLN_LIBRARIES} ${GiNaC_LIBRARIES})
 target_link_libraries(bit PRIVATE Python3::Python ${CLN_LIBRARIES} ${GiNaC_LIBRARIES})
+

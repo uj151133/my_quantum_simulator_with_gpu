@@ -1,9 +1,13 @@
 # from models import node
-import math
+# import math
 
-
+import ctypes
+ctypes.CDLL('/usr/local/lib/libginac.dylib')
 # import calculation
+import pybind11
+import bit
 import gate
+
 # from sympy import symbols, sin, cos
 # from sympy2ginac import sympy_to_ginac
 
