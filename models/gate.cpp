@@ -1,61 +1,81 @@
 #include "gate.hpp"
 // #include "gate.cu"
 
+#include <ginac/ginac.h>
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 #include <pybind11/numpy.h>
 
-#include <vector>
 #include <iostream>
-#include <cmath> 
-#include <complex>
 
 using namespace std; 
+using namespace GiNaC;
 // namespace py = pybind11;
 
 // const complex <int> i(0, 1);
+// const ex sqrt2 = sqrt(ex(2));
+// const ex i = I;
 
-const vector<vector<int>> I_GATE = {
+const matrix I_GATE = matrix{
     {1, 0},
     {0, 1}
 };
 
-
-const vector<vector<int>> NOT_GATE = {
+const matrix X_GATE = matrix{
     {0, 1},
     {1, 0}
 };
 
-// const vector<vector<complex<int>>> Y_GATE = {
-//     {0, -i},
-//     {i, 0}
-// };
+const matrix Y_GATE = matrix{ 
+    {0, -I}, 
+    {I, 0}
+};
 
-const vector<vector<int>> Z_GATE = {
+const matrix Z_GATE = matrix{ 
     {1, 0},
     {0, -1}
 };
 
-const vector<vector<double>> HADAMARD_GATE = {
-    {1.0 / std::sqrt(2) * 1, 1.0 / std::sqrt(2) * 1},
-    {1.0 / std::sqrt(2) * 1, 1.0 / std::sqrt(2) * -1}
+const matrix HADAMARD_GATE = matrix{
+    {1 / sqrt(ex(2)), 1 / sqrt(ex(2))},
+    {1 / sqrt(ex(2)), -1 / sqrt(ex(2))}
 };
 
-const vector<vector<int>> CNOT_GATE = {
-    {1, 0, 0, 0},
+const matrix S_GATE = matrix{
+    {1, 0},
+    {0, I}
+};
+
+const matrix S_DAGGER_GATE = matrix{
+    {1, 0},
+    {0, -I}
+};
+
+const matrix T_GATE = matrix{
+    {1, 0},
+    {0, exp(I * ex(Pi / 4))}
+};
+
+const matrix T_DAGGER_GATE = matrix{
+    {1, 0},
+    {0, -exp(I * ex(Pi / 4))}
+};
+
+const matrix CNOT_GATE = matrix{
+    {1, 0, 0, 0}, 
     {0, 1, 0, 0},
     {0, 0, 0, 1},
     {0, 0, 1, 0}
 };
 
-const vector<vector <int>> CZ_GATE = {
+const matrix CZ_GATE = matrix{ 
     {1, 0, 0, 0},
     {0, 1, 0, 0},
     {0, 0, 1, 0},
     {0, 0, 0, -1}
 };
 
-const vector<vector<int>> TOFFOLI_GATE = {
+const matrix TOFFOLI_GATE = matrix{ 
     {1, 0, 0, 0, 0, 0, 0, 0},
     {0, 1, 0, 0, 0, 0, 0, 0},
     {0, 0, 1, 0, 0, 0, 0, 0},
@@ -63,28 +83,70 @@ const vector<vector<int>> TOFFOLI_GATE = {
     {0, 0, 0, 0, 1, 0, 0, 0},
     {0, 0, 0, 0, 0, 1, 0, 0},
     {0, 0, 0, 0, 0, 0, 0, 1},
-    {0, 0, 0, 0, 0, 0, 1, 0},
+    {0, 0, 0, 0, 0, 0, 1, 0}
 };
 
-const vector<vector<int>> SWAP_GATE = {
+const matrix SWAP_GATE = matrix{ 
     {1, 0, 0, 0},
     {0, 0, 1, 0},
-    {0, 1, 0, 0},
+    {0, 1, 0, 0}, 
     {0, 0, 0, 1}
 };
 
-vector<vector<double>> Ry(double theta){
-    return {
+matrix RotateX(const ex &theta){
+    return matrix{
+        {cos(theta / 2), -I * sin(theta / 2)},
+        {-I * sin(theta / 2), cos(theta / 2)}
+    };
+}
+
+matrix RotateY(const ex &theta){
+    return matrix{ 
         {cos(theta / 2), -sin(theta / 2)},
         {sin(theta / 2), cos(theta / 2)}
-        };
+    };
 }
+
+matrix RotateZ(const ex &theta){
+    return matrix{
+        {exp(-I * theta / 2), 0},
+        {0, exp(I * theta / 2)}
+    };
+}
+
+matrix U1(const ex &lambda){
+    return matrix{
+        {1, 0},
+        {0, exp(I * lambda)}
+    };
+}
+
+matrix U2(const ex &phi, const ex &lambda){
+    return matrix{
+        {1, -exp(I * lambda)},
+        {exp(I * phi), exp(I * (lambda + phi))}
+    };
+}
+
+matrix U3(const ex &theta, const ex &phi, const ex &lambda){
+    return matrix{
+        {cos(theta / 2), -exp(I * lambda) * sin(theta / 2)},
+        {exp(I * phi) * sin(theta / 2), exp(I * (lambda + phi)) * cos(theta / 2)}
+    };
+}
+
+// vector<vector<ex>> Ry(const ex &theta){
+//     return {
+//         {cos(theta / 2), -sin(theta / 2)},
+//         {sin(theta / 2), cos(theta / 2)}
+//         };
+// }
 
 PYBIND11_MODULE(gate, m) {
 
     m.attr("I_GATE") = I_GATE;
 
-    m.attr("NOT_GATE") = NOT_GATE;
+    m.attr("NOT_GATE") = X_GATE;
 
     m.attr("Z_GATE") = Z_GATE;
 
@@ -98,7 +160,17 @@ PYBIND11_MODULE(gate, m) {
 
     m.attr("SWAP_GATE") = SWAP_GATE;
 
-    // m.def("Ry", &Ry);
+    m.def("RotateX", &RotateX);
+    
+    m.def("RotateY", &RotateY);
+
+    m.def("RotateZ", &RotateZ);
+
+    m.def("U1", &U1);
+
+    m.def("U2", &U2);
+
+    m.def("U3", &U3);
 
     // m.def("Ry", [](double theta, py::array_t<double> matrix) {
     //     double* ptr = static_cast<double*>(matrix.request().ptr);
