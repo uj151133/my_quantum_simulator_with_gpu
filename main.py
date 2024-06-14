@@ -25,4 +25,4 @@ import gate
 # # 共通因数を計算
 # common_factor_result = common_factor.common_factor(ginac_expr1, ginac_expr2)
 # print("共通因数:", common_factor_result)
-print(gate.HADAMARD_GATE)
+print(gate.X_GATE)

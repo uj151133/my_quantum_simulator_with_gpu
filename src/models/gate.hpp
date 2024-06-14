@@ -15,9 +15,13 @@ using namespace GiNaC;
 
 extern const matrix I_GATE;
 extern const matrix X_GATE;
+extern const matrix PLUS_X_GATE;
+extern const matrix MINUS_X_GATE;
 extern const matrix Y_GATE;
+extern const matrix PLUS_Y_GATE;
+extern const matrix MINUS_Y_GATE;
 extern const matrix Z_GATE;
-extern const matrix HADAMARD_GATE;
+extern const matrix H_GATE;
 extern const matrix S_GATE;
 extern const matrix S_DAGGER_GATE;
 extern const matrix T_GATE;
@@ -30,6 +34,7 @@ extern const matrix SWAP_GATE;
 matrix RotateX(const ex &theta);
 matrix RotateY(const ex &theta);
 matrix RotateZ(const ex &theta);
+matrix Rotate(const ex &k);
 
 matrix U1(const ex &lambda);
 matrix U2(const ex &phi, const ex &lambda);
