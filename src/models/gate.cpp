@@ -26,9 +26,29 @@ const matrix X_GATE = matrix{
     {1, 0}
 };
 
+const matrix PLUS_X_GATE = matrix{
+    {1 / sqrt(ex(2)), I / sqrt(ex(2))},
+    {I / sqrt(ex(2)), 1 / sqrt(ex(2))}
+};
+
+const matrix MINUS_X_GATE = matrix{
+    {1 / sqrt(ex(2)), -I / sqrt(ex(2))},
+    {-I / sqrt(ex(2)), 1 / sqrt(ex(2))}
+};
+
 const matrix Y_GATE = matrix{ 
     {0, -I}, 
     {I, 0}
+};
+
+const matrix PLUS_Y_GATE = matrix{
+    {1 / sqrt(ex(2)), 1 / sqrt(ex(2))},
+    {-1 / sqrt(ex(2)), 1 / sqrt(ex(2))}
+};
+
+const matrix MINUS_Y_GATE = matrix{
+    {1 / sqrt(ex(2)), -1 / sqrt(ex(2))},
+    {1 / sqrt(ex(2)), 1 / sqrt(ex(2))}
 };
 
 const matrix Z_GATE = matrix{ 
@@ -36,7 +56,7 @@ const matrix Z_GATE = matrix{
     {0, -1}
 };
 
-const matrix HADAMARD_GATE = matrix{
+const matrix H_GATE = matrix{
     {1 / sqrt(ex(2)), 1 / sqrt(ex(2))},
     {1 / sqrt(ex(2)), -1 / sqrt(ex(2))}
 };
@@ -113,6 +133,12 @@ matrix RotateZ(const ex &theta){
         {0, exp(I * theta / 2)}
     };
 }
+matrix Rotate(const ex &k){
+    return matrix{
+        {1, 0},
+        {0, exp((2 * Pi * I) / pow(2, k))}
+    };
+}
 
 matrix U1(const ex &lambda){
     return matrix{
@@ -150,7 +176,7 @@ PYBIND11_MODULE(gate, m) {
 
     m.attr("Z_GATE") = Z_GATE;
 
-    m.attr("HADAMARD_GATE") = HADAMARD_GATE;
+    m.attr("H_GATE") = H_GATE;
 
     m.attr("CNOT_GATE") = CNOT_GATE;
 
