@@ -1,4 +1,5 @@
 #include "gate.hpp"
+
 // #include "gate.cu"
 
 #include <ginac/ginac.h>
@@ -16,10 +17,26 @@ using namespace GiNaC;
 // const ex sqrt2 = sqrt(ex(2));
 // const ex i = I;
 
+QMDDEdge createHGate() {
+    complex<double> hWeight = 1.0 / sqrt(2.0);
+    QMDDNode* hNode = new QMDDNode(4);
+
+    hNode->edges[0] = QMDDEdge(1, nullptr);
+    hNode->edges[1] = QMDDEdge(1, nullptr);
+    hNode->edges[2] = QMDDEdge(1, nullptr);
+    hNode->edges[3] = QMDDEdge(-1, nullptr);
+
+    QMDDEdge hEdge(hWeight, hNode);
+
+    return hEdge;
+}
+
 const matrix I_GATE = matrix{
     {1, 0},
     {0, 1}
 };
+
+
 
 const matrix X_GATE = matrix{
     {0, 1},

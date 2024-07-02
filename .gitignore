@@ -2,6 +2,9 @@
 *.o
 build/
 CMakeLists.txt
-bit.cpython-310-darwin.so
-gate.cpython-310-darwin.so
 qmdd_sim
+bit.cpython-310-darwin.so
+uniquetable.cpython-310-darwin.so
+calculation.cpython-310-darwin.so
+gate.cpython-310-darwin.so
+qmdd.cpython-310-darwin.so
