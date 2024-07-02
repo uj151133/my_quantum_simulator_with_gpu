@@ -1,7 +1,7 @@
 #ifndef GATE_HPP
 #define GATE_HPP
 
-
+#include "qmdd.hpp"
 #include <ginac/ginac.h>
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
@@ -12,8 +12,10 @@
 using namespace std;
 using namespace GiNaC;
 
+QMDDEdge createHGate();
 
 extern const matrix I_GATE;
+
 extern const matrix X_GATE;
 extern const matrix PLUS_X_GATE;
 extern const matrix MINUS_X_GATE;

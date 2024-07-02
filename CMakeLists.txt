@@ -40,16 +40,22 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
 
 # modelsディレクトリをincludeディレクトリとして設定
-include_directories(models)
+include_directories(src)
 
 # pybind11モジュールを追加
 pybind11_add_module(gate src/models/gate.cpp)
 pybind11_add_module(bit src/models/bit.cpp)
+pybind11_add_module(calculation src/common/calculation.cpp)
+pybind11_add_module(qmdd src/models/qmdd.cpp)
+pybind11_add_module(uniquetable src/models/uniquetable.cpp)
 
 # ターゲットにライブラリをリンク
 target_link_libraries(gate PRIVATE Python3::Python ${CLN_LIBRARIES} ${GINAC_LIBRARY})
 target_link_libraries(bit PRIVATE Python3::Python ${CLN_LIBRARIES} ${GINAC_LIBRARY})
+target_link_libraries(calculation PRIVATE Python3::Python ${CLN_LIBRARIES} ${GINAC_LIBRARY})
+target_link_libraries(qmdd PRIVATE Python3::Python ${CLN_LIBRARIES} ${GINAC_LIBRARY})
+target_link_libraries(uniquetable PRIVATE Python3::Python ${CLN_LIBRARIES} ${GINAC_LIBRARY})
 
 # 通常のC++実行ファイルを追加
-add_executable(qmdd_sim main.cpp src/models/gate.cpp src/models/bit.cpp)
+add_executable(qmdd_sim main.cpp src/models/gate.cpp src/models/bit.cpp src/models/qmdd.cpp src/models/uniquetable.cpp src/common/calculation.cpp )
 target_link_libraries(qmdd_sim PRIVATE ${CLN_LIBRARIES} ${GINAC_LIBRARY} pybind11::module Python3::Python)
