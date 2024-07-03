@@ -9,6 +9,14 @@
 using namespace std;
 using namespace GiNaC;
 
+QMDDEdge setKet0() {
+    QMDDNode* ket0 = new QMDDNode(2);
+    ket0->edges[0] = QMDDEdge(1, nullptr);
+    ket0->edges[1] = QMDDEdge(0, nullptr);
+    QMDDEdge ket0Edge(1, ket0);
+    return ket0Edge;
+}
+
 const matrix KET_0 = matrix{
 {1},
 {0}

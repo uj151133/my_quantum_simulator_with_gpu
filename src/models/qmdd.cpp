@@ -122,9 +122,16 @@ QMDDEdge add(const QMDDEdge& e1, const QMDDEdge& e2) {
     if (!e1.node) return e2;
     if (!e2.node) return e1;
 
+    size_t edgeCount1 = e1.node->edges.size();
+    size_t edgeCount2 = e2.node->edges.size();
+
+    if (edgeCount1 != edgeCount2) {
+        cerr << "Error: Edge count mismatch. e1 has " << edgeCount1 << " edges, e2 has " << edgeCount2 << " edges." << endl;
+        throw runtime_error("Edge count mismatch in add function");
+    }
     complex<double> weight = e1.weight + e2.weight;
-    QMDDNode* newNode = new QMDDNode(2);
-    for (size_t i = 0; i < 2; ++i) {
+    QMDDNode* newNode = new QMDDNode(edgeCount1);
+    for (size_t i = 0; i < edgeCount1; ++i) {
         newNode->edges[i] = add(e1.node->edges[i], e2.node->edges[i]);
     }
 

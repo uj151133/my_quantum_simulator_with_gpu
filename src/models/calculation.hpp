@@ -1,5 +1,5 @@
-#ifndef CALCULATION_H
-#define CLCULATION_H
+#ifndef CALCULATION_HPP
+#define CALCULATION_HPP
 
 #include <ginac/ginac.h>
 #include <pybind11/pybind11.h>

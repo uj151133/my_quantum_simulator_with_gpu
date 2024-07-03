@@ -11,11 +11,13 @@ using namespace GiNaC;
 int main() {
     // auto [hNode, hWeight] = createHGate();
     QMDDGate hGate(createHGate());
+    QMDDState ket0(setKet0());
 
     // H_gate の確認
+    cout << "ket0: " << ket0.getInitialEdge().weight << endl;
     cout << "hGate initial weight: " << hGate.getInitialEdge().weight << endl;
     // cout << "hWeight: " << hWeight << endl;
-    for (const auto& edge : hGate.getStartNode()->edges) {
+    for (const auto& edge : ket0.getStartNode()->edges) {
         cout << "hGate edge weight: " << edge.weight << endl;
     }
 
