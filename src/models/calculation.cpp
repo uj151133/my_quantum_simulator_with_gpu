@@ -1,3 +1,5 @@
+#include "calculation.hpp"
+
 #include <iostream>
 #include <ginac/ginac.h>
 #include <pybind11/pybind11.h>
