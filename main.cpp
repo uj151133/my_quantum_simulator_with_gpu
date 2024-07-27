@@ -5,25 +5,17 @@
 #include "src/models/uniquetable.hpp"
 #include "src/models/qmdd.hpp"
 #include "src/common/calculation.hpp"
+#include "src/common/mathUtils.hpp"
 
 using namespace GiNaC;
 
 int main() {
-    // auto [hNode, hWeight] = createHGate();
-    QMDDGate hGate(createHGate());
+    QMDDGate hGate = gate::H_GATE;
+    cout << "hgate:" << hGate.getInitialEdge() << endl;
+    QMDDGate xGate = gate::X_GATE;
+    cout << "xgate:" << xGate.getInitialEdge() << endl;
+    QMDDEdge result = mathUtils::add(hGate.getInitialEdge(), xGate.getInitialEdge());
     QMDDState ket0(setKet0());
-
-    // H_gate の確認
-    cout << "ket0: " << ket0.getInitialEdge().weight << endl;
-    cout << "hGate initial weight: " << hGate.getInitialEdge().weight << endl;
-    // cout << "hWeight: " << hWeight << endl;
-    for (const auto& edge : ket0.getStartNode()->edges) {
-        cout << "hGate edge weight: " << edge.weight << endl;
-    }
-
-    // for (const auto& edge : hNode->edges) {
-    //     cout << "hNode weight: " << edge.isTerminal << endl;
-    // }
-
+    cout << "result:" << result << endl;
     return 0;
 }

@@ -79,6 +79,7 @@
         "format": "cpp",
         "stop_token": "cpp",
         "cinttypes": "cpp",
-        "valarray": "cpp"
+        "valarray": "cpp",
+        "*.inc": "cpp"
     }
 }

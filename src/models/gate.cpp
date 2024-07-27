@@ -2,24 +2,19 @@
 
 // #include "gate.cu"
 
-#include <ginac/ginac.h>
-#include <pybind11/pybind11.h>
-#include <pybind11/stl.h>
-#include <pybind11/numpy.h>
 
 #include <iostream>
 
-using namespace std; 
-using namespace GiNaC;
 // namespace py = pybind11;
 
 // const complex <int> i(0, 1);
 // const ex sqrt2 = sqrt(ex(2));
 // const ex i = I;
+complex<double> i(0, 1);
 
-QMDDEdge createHGate() {
+const QMDDGate gate::H_GATE = [] {
     complex<double> hWeight = 1.0 / sqrt(2.0);
-    QMDDNode* hNode = new QMDDNode(4);
+    auto hNode = new QMDDNode(4);
 
     hNode->edges[0] = QMDDEdge(1, nullptr);
     hNode->edges[1] = QMDDEdge(1, nullptr);
@@ -27,206 +22,364 @@ QMDDEdge createHGate() {
     hNode->edges[3] = QMDDEdge(-1, nullptr);
 
     QMDDEdge hEdge(hWeight, hNode);
+    return QMDDGate(hEdge);
+}();
 
-    return hEdge;
-}
+// const QMDDGate gate::H_GATE = [] {
+//     complex<double> hWeight = 1.0 / sqrt(2.0);
+//     auto hNode = std::make_unique<QMDDNode>(4);
 
-const matrix I_GATE = matrix{
-    {1, 0},
-    {0, 1}
-};
+//     // QMDDEdgeをムーブする
+//     hNode->edges[0] = QMDDEdge(1, nullptr);
+//     hNode->edges[1] = QMDDEdge(1, nullptr);
+//     hNode->edges[2] = QMDDEdge(1, nullptr);
+//     hNode->edges[3] = QMDDEdge(-1, nullptr);
+
+//     // std::unique_ptrのリリースで生のポインタを渡す
+//     QMDDEdge hEdge(hWeight, std::move(hNode));
+//     return QMDDGate(std::move(hEdge));  // QMDDEdgeのムーブコンストラクタを使用
+// }();
+
+
+const QMDDGate gate::I_GATE = [] {
+    complex<double> iWeight = 1.0;
+    auto iNode = new QMDDNode(4);
+
+    iNode->edges[0] = QMDDEdge(1, nullptr);
+    iNode->edges[1] = QMDDEdge(0, nullptr);
+    iNode->edges[2] = QMDDEdge(0, nullptr);
+    iNode->edges[3] = QMDDEdge(1, nullptr);
+
+    QMDDEdge iEdge(iWeight, iNode);
+    return QMDDGate(iEdge);
+}();
+
+const QMDDGate gate::X_GATE = [] {
+    complex<double> xWeight = 1.0;
+    auto xNode = new QMDDNode(4);
+
+    xNode->edges[0] = QMDDEdge(1, nullptr);
+    xNode->edges[1] = QMDDEdge(0, nullptr);
+    xNode->edges[2] = QMDDEdge(1, nullptr);
+    xNode->edges[3] = QMDDEdge(0, nullptr);
+
+    QMDDEdge xEdge(xWeight, xNode);
+    return QMDDGate(xEdge);
+}();
 
 
 
-const matrix X_GATE = matrix{
-    {0, 1},
-    {1, 0}
-};
+// QMDDGate createHGate() {
+//     complex<double> hWeight = 1.0 / sqrt(2.0);
+//     QMDDNode* hNode = new QMDDNode(4);
 
-const matrix PLUS_X_GATE = matrix{
-    {1 / sqrt(ex(2)), I / sqrt(ex(2))},
-    {I / sqrt(ex(2)), 1 / sqrt(ex(2))}
-};
+//     hNode->edges[0] = QMDDEdge(1, nullptr);
+//     hNode->edges[1] = QMDDEdge(1, nullptr);
+//     hNode->edges[2] = QMDDEdge(1, nullptr);
+//     hNode->edges[3] = QMDDEdge(-1, nullptr);
 
-const matrix MINUS_X_GATE = matrix{
-    {1 / sqrt(ex(2)), -I / sqrt(ex(2))},
-    {-I / sqrt(ex(2)), 1 / sqrt(ex(2))}
-};
-
-const matrix Y_GATE = matrix{ 
-    {0, -I}, 
-    {I, 0}
-};
-
-const matrix PLUS_Y_GATE = matrix{
-    {1 / sqrt(ex(2)), 1 / sqrt(ex(2))},
-    {-1 / sqrt(ex(2)), 1 / sqrt(ex(2))}
-};
-
-const matrix MINUS_Y_GATE = matrix{
-    {1 / sqrt(ex(2)), -1 / sqrt(ex(2))},
-    {1 / sqrt(ex(2)), 1 / sqrt(ex(2))}
-};
-
-const matrix Z_GATE = matrix{ 
-    {1, 0},
-    {0, -1}
-};
-
-const matrix H_GATE = matrix{
-    {1 / sqrt(ex(2)), 1 / sqrt(ex(2))},
-    {1 / sqrt(ex(2)), -1 / sqrt(ex(2))}
-};
-
-const matrix S_GATE = matrix{
-    {1, 0},
-    {0, I}
-};
-
-const matrix S_DAGGER_GATE = matrix{
-    {1, 0},
-    {0, -I}
-};
-
-const matrix T_GATE = matrix{
-    {1, 0},
-    {0, exp(I * ex(Pi / 4))}
-};
-
-const matrix T_DAGGER_GATE = matrix{
-    {1, 0},
-    {0, -exp(I * ex(Pi / 4))}
-};
-
-const matrix CNOT_GATE = matrix{
-    {1, 0, 0, 0}, 
-    {0, 1, 0, 0},
-    {0, 0, 0, 1},
-    {0, 0, 1, 0}
-};
-
-const matrix CZ_GATE = matrix{ 
-    {1, 0, 0, 0},
-    {0, 1, 0, 0},
-    {0, 0, 1, 0},
-    {0, 0, 0, -1}
-};
-
-const matrix TOFFOLI_GATE = matrix{ 
-    {1, 0, 0, 0, 0, 0, 0, 0},
-    {0, 1, 0, 0, 0, 0, 0, 0},
-    {0, 0, 1, 0, 0, 0, 0, 0},
-    {0, 0, 0, 1, 0, 0, 0, 0},
-    {0, 0, 0, 0, 1, 0, 0, 0},
-    {0, 0, 0, 0, 0, 1, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 1},
-    {0, 0, 0, 0, 0, 0, 1, 0}
-};
-
-const matrix SWAP_GATE = matrix{ 
-    {1, 0, 0, 0},
-    {0, 0, 1, 0},
-    {0, 1, 0, 0}, 
-    {0, 0, 0, 1}
-};
-
-matrix RotateX(const ex &theta){
-    return matrix{
-        {cos(theta / 2), -I * sin(theta / 2)},
-        {-I * sin(theta / 2), cos(theta / 2)}
-    };
-}
-
-matrix RotateY(const ex &theta){
-    return matrix{ 
-        {cos(theta / 2), -sin(theta / 2)},
-        {sin(theta / 2), cos(theta / 2)}
-    };
-}
-
-matrix RotateZ(const ex &theta){
-    return matrix{
-        {exp(-I * theta / 2), 0},
-        {0, exp(I * theta / 2)}
-    };
-}
-matrix Rotate(const ex &k){
-    return matrix{
-        {1, 0},
-        {0, exp((2 * Pi * I) / pow(2, k))}
-    };
-}
-
-matrix U1(const ex &lambda){
-    return matrix{
-        {1, 0},
-        {0, exp(I * lambda)}
-    };
-}
-
-matrix U2(const ex &phi, const ex &lambda){
-    return matrix{
-        {1, -exp(I * lambda)},
-        {exp(I * phi), exp(I * (lambda + phi))}
-    };
-}
-
-matrix U3(const ex &theta, const ex &phi, const ex &lambda){
-    return matrix{
-        {cos(theta / 2), -exp(I * lambda) * sin(theta / 2)},
-        {exp(I * phi) * sin(theta / 2), exp(I * (lambda + phi)) * cos(theta / 2)}
-    };
-}
-
-// vector<vector<ex>> Ry(const ex &theta){
-//     return {
-//         {cos(theta / 2), -sin(theta / 2)},
-//         {sin(theta / 2), cos(theta / 2)}
-//         };
+//     QMDDEdge hEdge(hWeight, hNode);
+//     return QMDDGate(hEdge);
 // }
 
-PYBIND11_MODULE(gate, m) {
+// QMDDGate createIGate() {
+//     complex<double> iWeight = 1.0;
+//     QMDDNode* iNode = new QMDDNode(4);
 
-    m.attr("I_GATE") = I_GATE;
+//     iNode->edges[0] = QMDDEdge(1, nullptr);
+//     iNode->edges[1] = QMDDEdge(0, nullptr);
+//     iNode->edges[2] = QMDDEdge(0, nullptr);
+//     iNode->edges[3] = QMDDEdge(1, nullptr);
 
-    m.attr("NOT_GATE") = X_GATE;
+//     QMDDEdge iEdge(iWeight, iNode);
+//     return QMDDGate(iEdge);
+// }
 
-    m.attr("Z_GATE") = Z_GATE;
+// QMDDGate createXGate() {
+//     complex<double> xWeight = 1.0;
+//     QMDDNode* xNode = new QMDDNode(4);
 
-    m.attr("H_GATE") = H_GATE;
+//     xNode->edges[0] = QMDDEdge(1, nullptr);
+//     xNode->edges[1] = QMDDEdge(0, nullptr);
+//     xNode->edges[2] = QMDDEdge(1, nullptr);
+//     xNode->edges[3] = QMDDEdge(0, nullptr);
 
-    m.attr("CNOT_GATE") = CNOT_GATE;
+//     QMDDEdge xEdge(xWeight, xNode);
+//     return QMDDGate(xEdge);
+// }
 
-    m.attr("CZ_GATE") = CZ_GATE;
+// QMDDGate createPlusXGate() {
+//     complex<double> plusXWeight = 1 / sqrt(2.0);
+//     QMDDNode* plusXNode = new QMDDNode(4);
 
-    m.attr("TOFFOLI_GATE") = TOFFOLI_GATE;
+//     plusXNode->edges[0] = QMDDEdge(1, nullptr);
+//     plusXNode->edges[1] = QMDDEdge(i, nullptr);
+//     plusXNode->edges[2] = QMDDEdge(i, nullptr);
+//     plusXNode->edges[3] = QMDDEdge(1, nullptr);
 
-    m.attr("SWAP_GATE") = SWAP_GATE;
+//     QMDDEdge plusXEdge(plusXWeight, plusXNode);
+//     return QMDDGate(plusXEdge);
+// }
 
-    m.def("RotateX", &RotateX);
+// QMDDGate createMinusXGate() {
+//     complex<double> minusXWeight = 1 / sqrt(2.0);
+//     QMDDNode* minusXNode = new QMDDNode(4);
+
+//     minusXNode->edges[0] = QMDDEdge(1, nullptr);
+//     minusXNode->edges[1] = QMDDEdge(-i, nullptr);
+//     minusXNode->edges[2] = QMDDEdge(-i, nullptr);
+//     minusXNode->edges[3] = QMDDEdge(1, nullptr);
+
+//     QMDDEdge minusXEdge(minusXWeight, minusXNode);
+//     return QMDDGate(minusXEdge);
+// }
+
+// QMDDGate createYGate() {
+//     complex<double> yWeight = i;
+//     QMDDNode* yNode = new QMDDNode(4);
+
+//     yNode->edges[0] = QMDDEdge(0, nullptr);
+//     yNode->edges[1] = QMDDEdge(-1, nullptr);
+//     yNode->edges[2] = QMDDEdge(1, nullptr);
+//     yNode->edges[3] = QMDDEdge(0, nullptr);
+
+//     QMDDEdge yEdge(yWeight, yNode);
+//     return QMDDGate(yEdge);
+// }
+
+// QMDDGate createPlusYGate() {
+//     complex<double> plusYWeight = 1 / sqrt(2.0);
+//     QMDDNode* plusYNode = new QMDDNode(4);
+
+//     plusYNode->edges[0] = QMDDEdge(1, nullptr);
+//     plusYNode->edges[1] = QMDDEdge(1, nullptr);
+//     plusYNode->edges[2] = QMDDEdge(-1, nullptr);
+//     plusYNode->edges[3] = QMDDEdge(1, nullptr);
+
+//     QMDDEdge plusYEdge(plusYWeight, plusYNode);
+//     return QMDDGate(plusYEdge);
+// }
+
+// QMDDGate createMinusYGate() {
+//     complex<double> minusYWeight = 1 / sqrt(2.0);
+//     QMDDNode* minusYNode = new QMDDNode(4);
+
+//     minusYNode->edges[0] = QMDDEdge(1, nullptr);
+//     minusYNode->edges[1] = QMDDEdge(-1, nullptr);
+//     minusYNode->edges[2] = QMDDEdge(1, nullptr);
+//     minusYNode->edges[3] = QMDDEdge(1, nullptr);
+
+//     QMDDEdge minusYEdge(minusYWeight, minusYNode);
+//     return QMDDGate(minusYEdge);
+// }
+
+// QMDDGate createZGate() {
+//     complex<double> zWeight = 1.0;
+//     QMDDNode* zNode = new QMDDNode(4);
+
+//     zNode->edges[0] = QMDDEdge(1, nullptr);
+//     zNode->edges[1] = QMDDEdge(0, nullptr);
+//     zNode->edges[2] = QMDDEdge(0, nullptr);
+//     zNode->edges[3] = QMDDEdge(-1, nullptr);
+
+//     QMDDEdge zEdge(zWeight, zNode);
+//     return QMDDGate(zEdge);
+// }
+
+// QMDDGate createSGate() {
+//     complex<double> sWeight = 1.0;
+//     QMDDNode* sNode = new QMDDNode(4);
+
+//     sNode->edges[0] = QMDDEdge(1, nullptr);
+//     sNode->edges[1] = QMDDEdge(0, nullptr);
+//     sNode->edges[2] = QMDDEdge(0, nullptr);
+//     sNode->edges[3] = QMDDEdge(i, nullptr);
+
+//     QMDDEdge sEdge(sWeight, sNode);
+//     return QMDDGate(sEdge);
+// }
+
+// QMDDGate createSDaggerGate() {
+//     complex<double> sDaggerWeight = 1.0;
+//     QMDDNode* sDaggerNode = new QMDDNode(4);
+
+//     sDaggerNode->edges[0] = QMDDEdge(1, nullptr);
+//     sDaggerNode->edges[1] = QMDDEdge(0, nullptr);
+//     sDaggerNode->edges[2] = QMDDEdge(0, nullptr);
+//     sDaggerNode->edges[3] = QMDDEdge(-i, nullptr);
+
+//     QMDDEdge sDaggerEdge(sDaggerWeight, sDaggerNode);
+//     return QMDDGate(sDaggerEdge);
+// }
+
+// QMDDGate createTGate() {
+//     complex<double> tWeight = 1.0;
+//     QMDDNode* tNode = new QMDDNode(4);
+
+//     tNode->edges[0] = QMDDEdge(1, nullptr);
+//     tNode->edges[1] = QMDDEdge(0, nullptr);
+//     tNode->edges[2] = QMDDEdge(0, nullptr);
+//     tNode->edges[3] = QMDDEdge(exp(i * complex<double>(M_PI / 4)), nullptr);
+
+//     QMDDEdge tEdge(tWeight, tNode);
+//     return QMDDGate(tEdge);
+// }
+
+// QMDDGate createTDaggerGate() {
+//     complex<double> tDaggerWeight = 1.0;
+//     QMDDNode* tDaggerNode = new QMDDNode(4);
+
+//     tDaggerNode->edges[0] = QMDDEdge(1, nullptr);
+//     tDaggerNode->edges[1] = QMDDEdge(0, nullptr);
+//     tDaggerNode->edges[2] = QMDDEdge(0, nullptr);
+//     tDaggerNode->edges[3] = QMDDEdge(-exp(i * complex<double>(M_PI / 4)), nullptr);
+
+//     QMDDEdge tDaggerEdge(tDaggerWeight, tDaggerNode);
+//     return QMDDGate(tDaggerEdge);
+// }
+
+// const matrix CNOT_GATE = matrix{
+//     {1, 0, 0, 0}, 
+//     {0, 1, 0, 0},
+//     {0, 0, 0, 1},
+//     {0, 0, 1, 0}
+// };
+
+// const matrix CZ_GATE = matrix{ 
+//     {1, 0, 0, 0},
+//     {0, 1, 0, 0},
+//     {0, 0, 1, 0},
+//     {0, 0, 0, -1}
+// };
+
+// const matrix TOFFOLI_GATE = matrix{ 
+//     {1, 0, 0, 0, 0, 0, 0, 0},
+//     {0, 1, 0, 0, 0, 0, 0, 0},
+//     {0, 0, 1, 0, 0, 0, 0, 0},
+//     {0, 0, 0, 1, 0, 0, 0, 0},
+//     {0, 0, 0, 0, 1, 0, 0, 0},
+//     {0, 0, 0, 0, 0, 1, 0, 0},
+//     {0, 0, 0, 0, 0, 0, 0, 1},
+//     {0, 0, 0, 0, 0, 0, 1, 0}
+// };
+
+// const matrix SWAP_GATE = matrix{ 
+//     {1, 0, 0, 0},
+//     {0, 0, 1, 0},
+//     {0, 1, 0, 0}, 
+//     {0, 0, 0, 1}
+// };
+
+// QMDDGate createRotateXGate(double theta) {
+//     complex<double> rotateXWeight = 1.0;
+//     QMDDNode* rotateXNode = new QMDDNode(4);
+
+//     rotateXNode->edges[0] = QMDDEdge(cos(theta / 2), nullptr);
+//     rotateXNode->edges[1] = QMDDEdge(-i * sin(theta / 2), nullptr);
+//     rotateXNode->edges[2] = QMDDEdge(-i * sin(theta / 2), nullptr);
+//     rotateXNode->edges[3] = QMDDEdge(cos(theta / 2), nullptr);
+
+//     QMDDEdge rotateXEdge(rotateXWeight, rotateXNode);
+//     return QMDDGate(rotateXEdge);
+// }
+
+// matrix RotateX(const ex &theta){
+//     return matrix{
+//         {cos(theta / 2), -I * sin(theta / 2)},
+//         {-I * sin(theta / 2), cos(theta / 2)}
+//     };
+// }
+
+// matrix RotateY(const ex &theta){
+//     return matrix{ 
+//         {cos(theta / 2), -sin(theta / 2)},
+//         {sin(theta / 2), cos(theta / 2)}
+//     };
+// }
+
+// matrix RotateZ(const ex &theta){
+//     return matrix{
+//         {exp(-I * theta / 2), 0},
+//         {0, exp(I * theta / 2)}
+//     };
+// }
+// matrix Rotate(const ex &k){
+//     return matrix{
+//         {1, 0},
+//         {0, exp((2 * Pi * I) / pow(2, k))}
+//     };
+// }
+
+// matrix U1(const ex &lambda){
+//     return matrix{
+//         {1, 0},
+//         {0, exp(I * lambda)}
+//     };
+// }
+
+// matrix U2(const ex &phi, const ex &lambda){
+//     return matrix{
+//         {1, -exp(I * lambda)},
+//         {exp(I * phi), exp(I * (lambda + phi))}
+//     };
+// }
+
+// matrix U3(const ex &theta, const ex &phi, const ex &lambda){
+//     return matrix{
+//         {cos(theta / 2), -exp(I * lambda) * sin(theta / 2)},
+//         {exp(I * phi) * sin(theta / 2), exp(I * (lambda + phi)) * cos(theta / 2)}
+//     };
+// }
+
+// // vector<vector<ex>> Ry(const ex &theta){
+// //     return {
+// //         {cos(theta / 2), -sin(theta / 2)},
+// //         {sin(theta / 2), cos(theta / 2)}
+// //         };
+// // }
+
+// PYBIND11_MODULE(gate, m) {
+
+//     // m.attr("I_GATE") = I_GATE;
+
+//     // m.attr("NOT_GATE") = X_GATE;
+
+//     // m.attr("Z_GATE") = Z_GATE;
+
+//     // m.attr("H_GATE") = H_GATE;
+
+//     m.attr("CNOT_GATE") = CNOT_GATE;
+
+//     m.attr("CZ_GATE") = CZ_GATE;
+
+//     m.attr("TOFFOLI_GATE") = TOFFOLI_GATE;
+
+//     m.attr("SWAP_GATE") = SWAP_GATE;
+
+//     m.def("RotateX", &RotateX);
     
-    m.def("RotateY", &RotateY);
+//     m.def("RotateY", &RotateY);
 
-    m.def("RotateZ", &RotateZ);
+//     m.def("RotateZ", &RotateZ);
 
-    m.def("U1", &U1);
+//     m.def("U1", &U1);
 
-    m.def("U2", &U2);
+//     m.def("U2", &U2);
 
-    m.def("U3", &U3);
+//     m.def("U3", &U3);
 
-    // m.def("Ry", [](double theta, py::array_t<double> matrix) {
-    //     double* ptr = static_cast<double*>(matrix.request().ptr);
-    //     double* d_matrix;
+//     // m.def("Ry", [](double theta, py::array_t<double> matrix) {
+//     //     double* ptr = static_cast<double*>(matrix.request().ptr);
+//     //     double* d_matrix;
 
-    //     cudaMalloc(&d_matrix, 4 * sizeof(double));
-    //     cudaMemcpy(d_matrix, ptr, 4 * sizeof(double), cudaMemcpyHostToDevice);
+//     //     cudaMalloc(&d_matrix, 4 * sizeof(double));
+//     //     cudaMemcpy(d_matrix, ptr, 4 * sizeof(double), cudaMemcpyHostToDevice);
 
-    //     Ry<<<1, 1>>>(theta, d_matrix);
-    //     cudaDeviceSynchronize();
+//     //     Ry<<<1, 1>>>(theta, d_matrix);
+//     //     cudaDeviceSynchronize();
 
-    //     cudaMemcpy(ptr, d_matrix, 4 * sizeof(double), cudaMemcpyDeviceToHost);
-    //     cudaFree(d_matrix);
-    // });
-}
+//     //     cudaMemcpy(ptr, d_matrix, 4 * sizeof(double), cudaMemcpyDeviceToHost);
+//     //     cudaFree(d_matrix);
+//     // });
+// }
 
