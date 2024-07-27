@@ -48,6 +48,7 @@ pybind11_add_module(bit src/models/bit.cpp)
 pybind11_add_module(calculation src/common/calculation.cpp)
 pybind11_add_module(qmdd src/models/qmdd.cpp)
 pybind11_add_module(uniquetable src/models/uniquetable.cpp)
+pybind11_add_module(mathUtils src/common/mathUtils.cpp)
 
 # ターゲットにライブラリをリンク
 target_link_libraries(gate PRIVATE Python3::Python ${CLN_LIBRARIES} ${GINAC_LIBRARY})
@@ -55,7 +56,24 @@ target_link_libraries(bit PRIVATE Python3::Python ${CLN_LIBRARIES} ${GINAC_LIBRA
 target_link_libraries(calculation PRIVATE Python3::Python ${CLN_LIBRARIES} ${GINAC_LIBRARY})
 target_link_libraries(qmdd PRIVATE Python3::Python ${CLN_LIBRARIES} ${GINAC_LIBRARY})
 target_link_libraries(uniquetable PRIVATE Python3::Python ${CLN_LIBRARIES} ${GINAC_LIBRARY})
+target_link_libraries(mathUtils PRIVATE Python3::Python ${CLN_LIBRARIES} ${GINAC_LIBRARY})
 
 # 通常のC++実行ファイルを追加
-add_executable(qmdd_sim main.cpp src/models/gate.cpp src/models/bit.cpp src/models/qmdd.cpp src/models/uniquetable.cpp src/common/calculation.cpp )
+add_executable(qmdd_sim main.cpp src/models/gate.cpp src/models/bit.cpp src/models/qmdd.cpp src/models/uniquetable.cpp src/common/calculation.cpp src/common/mathUtils.cpp)
 target_link_libraries(qmdd_sim PRIVATE ${CLN_LIBRARIES} ${GINAC_LIBRARY} pybind11::module Python3::Python)
+
+# make run ターゲットの追加
+add_custom_target(run
+    COMMAND ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME}
+    DEPENDS ${PROJECT_NAME}
+    WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
+    COMMENT "Running the application..."
+)
+
+# make debug ターゲットの追加
+add_custom_target(debug
+    COMMAND lldb --file ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME}
+    DEPENDS ${PROJECT_NAME}
+    WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
+    COMMENT "Debugging the application with lldb..."
+)

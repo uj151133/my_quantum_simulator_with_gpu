@@ -6,10 +6,21 @@ using namespace std;
 QMDDEdge::QMDDEdge(complex<double> w, QMDDNode* n)
     : weight(w), node(n), isTerminal(n == nullptr) {}
 
+QMDDEdge::~QMDDEdge() {
 
+}
 // QMDDEdgeの比較演算子
 bool QMDDEdge::operator==(const QMDDEdge& other) const {
     return weight == other.weight && node == other.node;
+}
+ostream& operator<<(ostream& os, const QMDDEdge& edge) {
+    os << "Weight: " << edge.weight;
+    if (edge.node) {
+        os << ", Node: " << *edge.node;
+    } else {
+        os << ", Node: Null";
+    }
+    return os;
 }
 
 // QMDDNodeのコンストラクタ
@@ -17,34 +28,53 @@ QMDDNode::QMDDNode(size_t numEdges){
     edges.resize(numEdges);
 }
 
+QMDDNode::~QMDDNode() {
+    for (auto& edge : edges) {
+        delete edge.node;
+        edge.node = nullptr;
+    }
+}
+// ムーブコンストラクタ
+QMDDNode::QMDDNode(QMDDNode&& other) noexcept
+    : edges(move(other.edges)) {
+
+    }
+
+// ムーブ代入演算子
+QMDDNode& QMDDNode::operator=(QMDDNode&& other) noexcept {
+    if (this != &other) {
+        for (auto& edge : edges) {
+            delete edge.node;
+        }
+        edges = move(other.edges);
+    }
+    return *this;
+}
+
 // QMDDNodeの比較演算子
 bool QMDDNode::operator==(const QMDDNode& other) const {
     return edges == other.edges;
 }
 
-void QMDDNode::free() {
-    for (auto& edge : edges) {
-        if (edge.node != nullptr) {
-            edge.node->free();
-            delete edge.node;
-            edge.node = nullptr;
-        }
+ostream& operator<<(ostream& os, const QMDDNode& node) {
+    os << "QMDDNode with " << node.edges.size() << " edges:\n";
+    for (const auto& edge : node.edges) {
+        os << "  " << edge << "\n";
     }
+    return os;
 }
 // QMDDのコンストラクタ
 QMDDGate::QMDDGate(QMDDEdge edge, size_t numEdges)
-    : initialEdge(edge.weight, edge.node) {
-        initialEdge.node->edges.resize(numEdges);
+    : initialEdge(move(edge)) {
+        if (initialEdge.node){
+            initialEdge.node->edges.resize(numEdges);
+        }
     }
 
 // QMDDのデストラクタ
 QMDDGate::~QMDDGate() {
-    if (initialEdge.node != nullptr) {
-            initialEdge.node->free();
-            delete initialEdge.node;
-            initialEdge.node = nullptr;
-        }
-
+    delete initialEdge.node;
+    initialEdge.node = nullptr;
 }
 
 // QMDDNodeの取得
@@ -57,19 +87,23 @@ QMDDEdge QMDDGate::getInitialEdge() const {
     return initialEdge;
 }
 
+ostream& operator<<(ostream& os, const QMDDGate& gate) {
+    os << "QMDDGate with initial edge:\n" << gate.initialEdge;
+    return os;
+}
+
 // QMDDStateのコンストラクタ
 QMDDState::QMDDState(QMDDEdge edge, size_t numEdges)
-    : initialEdge(edge.weight, edge.node) {
-    initialEdge.node->edges.resize(numEdges);
+    : initialEdge(move(edge)) {
+    if (initialEdge.node) {
+        initialEdge.node->edges.resize(numEdges);
+    }
 }
 
 // QMDDStateのデストラクタ
 QMDDState::~QMDDState() {
-    if (initialEdge.node != nullptr) {
-            initialEdge.node->free();
-            delete initialEdge.node;
-            initialEdge.node = nullptr;
-        }
+    delete initialEdge.node;
+    initialEdge.node = nullptr;
 }
 
 // QMDDStateのgetStartNodeメソッド
@@ -101,39 +135,8 @@ QMDDNode* QMDDState::addNodes(QMDDNode* node1, QMDDNode* node2) {
         return resultNode;
     }
 
-
-// mul関数
-QMDDEdge mul(const QMDDEdge& m, const QMDDEdge& v) {
-    complex<double> weight = m.weight * v.weight;
-    if (m.isTerminal && v.isTerminal) {
-        return QMDDEdge(weight, nullptr);
-    }
-
-    QMDDNode* node = new QMDDNode(2);
-    node->edges[0] = add(mul(m.node->edges[0], v.node->edges[0]), mul(m.node->edges[1], v.node->edges[1]));
-    node->edges[1] = add(mul(m.node->edges[2], v.node->edges[0]), mul(m.node->edges[3], v.node->edges[1]));
-
-    return QMDDEdge(weight, node);
+    ostream& operator<<(ostream& os, const QMDDState& state) {
+    os << "QMDDState with initial edge:\n" << state.initialEdge;
+    return os;
 }
 
-
-// add関数
-QMDDEdge add(const QMDDEdge& e1, const QMDDEdge& e2) {
-    if (!e1.node) return e2;
-    if (!e2.node) return e1;
-
-    size_t edgeCount1 = e1.node->edges.size();
-    size_t edgeCount2 = e2.node->edges.size();
-
-    if (edgeCount1 != edgeCount2) {
-        cerr << "Error: Edge count mismatch. e1 has " << edgeCount1 << " edges, e2 has " << edgeCount2 << " edges." << endl;
-        throw runtime_error("Edge count mismatch in add function");
-    }
-    complex<double> weight = e1.weight + e2.weight;
-    QMDDNode* newNode = new QMDDNode(edgeCount1);
-    for (size_t i = 0; i < edgeCount1; ++i) {
-        newNode->edges[i] = add(e1.node->edges[i], e2.node->edges[i]);
-    }
-
-    return QMDDEdge(weight, newNode);
-}

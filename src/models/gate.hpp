@@ -7,31 +7,35 @@
 #include <pybind11/stl.h>
 #include <pybind11/numpy.h>
 
-#include <iostream>
 
 using namespace std;
 using namespace GiNaC;
 
-QMDDEdge createHGate();
 
-extern const matrix I_GATE;
+namespace gate {
+    extern const QMDDGate H_GATE;
+    extern const QMDDGate I_GATE;
+    extern const QMDDGate X_GATE;
+}
 
-extern const matrix X_GATE;
-extern const matrix PLUS_X_GATE;
-extern const matrix MINUS_X_GATE;
-extern const matrix Y_GATE;
-extern const matrix PLUS_Y_GATE;
-extern const matrix MINUS_Y_GATE;
-extern const matrix Z_GATE;
-extern const matrix H_GATE;
-extern const matrix S_GATE;
-extern const matrix S_DAGGER_GATE;
-extern const matrix T_GATE;
-extern const matrix T_DAGGER_GATE;
+QMDDGate createHGate();
+QMDDGate createIGate();
+QMDDGate createXGate();
+QMDDGate createPlusXGate();
+QMDDGate createMinusXGate();
+QMDDGate createYGate();
+QMDDGate createPlusYGate();
+QMDDGate createMinusYGate();
+QMDDGate createZGate();
+QMDDGate createSGate();
+QMDDGate createSDaggerGate();
+QMDDGate createTGate();
+QMDDGate createTDaggerGate();
 extern const matrix CNOT_GATE;
 extern const matrix CZ_GATE;
 extern const matrix TOFFOLI_GATE;
 extern const matrix SWAP_GATE;
+QMDDGate createRotateXGate(double theta);
 
 matrix RotateX(const ex &theta);
 matrix RotateY(const ex &theta);
