@@ -2,10 +2,13 @@
 # import math
 
 import ctypes
+import os, sys
 ctypes.CDLL('/usr/local/lib/libginac.dylib')
+# Set the path to the compiled modules
+sys.path.append(os.path.join(os.path.dirname(__file__), 'libs', '__pycache__'))
 # import calculation
 import pybind11
-import bit
+# import bit
 import gate
 
 # from sympy import symbols, sin, cos
@@ -25,4 +28,4 @@ import gate
 # # 共通因数を計算
 # common_factor_result = common_factor.common_factor(ginac_expr1, ginac_expr2)
 # print("共通因数:", common_factor_result)
-print(gate.X_GATE)
+print(gate.H_GATE)

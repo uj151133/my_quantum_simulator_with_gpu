@@ -1,7 +1,7 @@
 # clean
 .PHONY: clean
 clean:
-	rm -f $(OBJ) main
+	rm -f *.cpython-310-darwin.so
 
 .PHONY: install
 install:
