@@ -37,7 +37,7 @@ struct QMDDNode {
     QMDDNode& operator=(const QMDDNode& other) = default;
     // ムーブコンストラクタとムーブ代入演算子
     QMDDNode(QMDDNode&& other) noexcept = default;
-    QMDDNode& operator=(QMDDNode&& other) noexcept = default; 
+    QMDDNode& operator=(QMDDNode&& other) noexcept; 
     bool operator==(const QMDDNode& other) const;
     friend ostream& operator<<(ostream& os, const QMDDNode& node);
 };
