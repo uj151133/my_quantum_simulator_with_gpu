@@ -8,7 +8,10 @@
 
 using namespace std;
 using namespace GiNaC;
-QMDDEdge setKet0();
+namespace state {
+    extern const QMDDState KET_0;
+}
+QMDDState setKet0();
 extern const matrix KET_0;
 extern const matrix KET_1;
 extern const matrix KET_PLUS;
