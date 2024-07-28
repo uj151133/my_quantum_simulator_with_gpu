@@ -15,7 +15,9 @@ int main() {
     QMDDGate xGate = gate::X_GATE;
     cout << "xgate:" << xGate.getInitialEdge() << endl;
     QMDDState ket0 = state::KET_0;
-    auto result = mathUtils::add(hGate.getInitialEdge(), ket0.getInitialEdge());
-    cout << "result:" << result << endl;
+    auto result1 = mathUtils::addition(hGate.getInitialEdge(), ket0.getInitialEdge());
+    cout << "result:" << result1 << endl;
+
+    auto result2 = mathUtils::multiplication(hGate.getInitialEdge(), ket0.getInitialEdge());
     return 0;
 }

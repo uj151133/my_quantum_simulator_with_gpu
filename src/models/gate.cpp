@@ -1,15 +1,11 @@
 #include "gate.hpp"
 
-// #include "gate.cu"
 
 
 #include <iostream>
 
-// namespace py = pybind11;
+namespace py = pybind11;
 
-// const complex <int> i(0, 1);
-// const ex sqrt2 = sqrt(ex(2));
-// const ex i = I;
 complex<double> i(0, 1);
 
 const QMDDGate gate::H_GATE = [] {
@@ -338,48 +334,15 @@ const QMDDGate gate::X_GATE = [] {
 // //         };
 // // }
 
-// PYBIND11_MODULE(gate, m) {
+PYBIND11_MODULE(gate_py, m) {
+    py::class_<QMDDNode, std::shared_ptr<QMDDNode>>(m, "QMDDNode")
+        .def(py::init<int>());
 
-//     // m.attr("I_GATE") = I_GATE;
+    py::class_<QMDDEdge>(m, "QMDDEdge")
+        .def(py::init<std::complex<double>, std::shared_ptr<QMDDNode>>());
 
-//     // m.attr("NOT_GATE") = X_GATE;
+    py::class_<QMDDGate>(m, "QMDDGate")
+        .def_static("get_h_gate", []() { return gate::H_GATE; }, py::return_value_policy::reference);
 
-//     // m.attr("Z_GATE") = Z_GATE;
-
-//     // m.attr("H_GATE") = H_GATE;
-
-//     m.attr("CNOT_GATE") = CNOT_GATE;
-
-//     m.attr("CZ_GATE") = CZ_GATE;
-
-//     m.attr("TOFFOLI_GATE") = TOFFOLI_GATE;
-
-//     m.attr("SWAP_GATE") = SWAP_GATE;
-
-//     m.def("RotateX", &RotateX);
-    
-//     m.def("RotateY", &RotateY);
-
-//     m.def("RotateZ", &RotateZ);
-
-//     m.def("U1", &U1);
-
-//     m.def("U2", &U2);
-
-//     m.def("U3", &U3);
-
-//     // m.def("Ry", [](double theta, py::array_t<double> matrix) {
-//     //     double* ptr = static_cast<double*>(matrix.request().ptr);
-//     //     double* d_matrix;
-
-//     //     cudaMalloc(&d_matrix, 4 * sizeof(double));
-//     //     cudaMemcpy(d_matrix, ptr, 4 * sizeof(double), cudaMemcpyHostToDevice);
-
-//     //     Ry<<<1, 1>>>(theta, d_matrix);
-//     //     cudaDeviceSynchronize();
-
-//     //     cudaMemcpy(ptr, d_matrix, 4 * sizeof(double), cudaMemcpyDeviceToHost);
-//     //     cudaFree(d_matrix);
-//     // });
-// }
-
+    m.attr("H_GATE") = gate::H_GATE;
+}

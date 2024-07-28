@@ -36,7 +36,7 @@ include_directories(${GINAC_INCLUDE_DIR})
 link_directories(${GINAC_LIBRARY_DIR})
 
 # 出力ディレクトリを親ディレクトリに設定
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/libs/__pycache__)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
 
 # modelsディレクトリをincludeディレクトリとして設定
