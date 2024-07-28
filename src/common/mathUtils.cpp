@@ -14,7 +14,7 @@ QMDDEdge mathUtils::mul(const QMDDEdge& m, const QMDDEdge& v) {
     node->edges[1] = mathUtils::add(mathUtils::mul(m.node->edges[2], v.node->edges[0]),
                                     mathUtils::mul(m.node->edges[3], v.node->edges[1]));
 
-    return QMDDEdge(weight, node);
+    return QMDDEdge(weight, std::shared_ptr<QMDDNode>(node));
 }
 
 QMDDEdge mathUtils::add(const QMDDEdge& edge1, const QMDDEdge& edge2) {
@@ -46,5 +46,5 @@ QMDDEdge mathUtils::add(const QMDDEdge& edge1, const QMDDEdge& edge2) {
         newNode->edges[i] = mathUtils::add(child1, child2);
     }
 
-    return QMDDEdge({1.0, 0.0}, newNode);
+    return QMDDEdge({1.0, 0.0}, std::make_shared<QMDDNode>(*newNode));
 }

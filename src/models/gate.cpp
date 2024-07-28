@@ -14,7 +14,7 @@ complex<double> i(0, 1);
 
 const QMDDGate gate::H_GATE = [] {
     complex<double> hWeight = 1.0 / sqrt(2.0);
-    auto hNode = new QMDDNode(4);
+    auto hNode = make_shared<QMDDNode>(4);
 
     hNode->edges[0] = QMDDEdge(1, nullptr);
     hNode->edges[1] = QMDDEdge(1, nullptr);
@@ -43,7 +43,7 @@ const QMDDGate gate::H_GATE = [] {
 
 const QMDDGate gate::I_GATE = [] {
     complex<double> iWeight = 1.0;
-    auto iNode = new QMDDNode(4);
+    auto iNode = make_shared<QMDDNode>(4);
 
     iNode->edges[0] = QMDDEdge(1, nullptr);
     iNode->edges[1] = QMDDEdge(0, nullptr);
@@ -56,7 +56,7 @@ const QMDDGate gate::I_GATE = [] {
 
 const QMDDGate gate::X_GATE = [] {
     complex<double> xWeight = 1.0;
-    auto xNode = new QMDDNode(4);
+    auto xNode = make_shared<QMDDNode>(4);
 
     xNode->edges[0] = QMDDEdge(1, nullptr);
     xNode->edges[1] = QMDDEdge(0, nullptr);
