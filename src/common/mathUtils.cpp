@@ -18,33 +18,36 @@ QMDDEdge mathUtils::mul(const QMDDEdge& m, const QMDDEdge& v) {
 }
 
 QMDDEdge mathUtils::add(const QMDDEdge& edge1, const QMDDEdge& edge2) {
-    // Aが終端ノードなら、Bのウェイトを加算して返す
     if (edge1.isTerminal) {
         QMDDEdge result = edge2;
         result.weight += edge1.weight;
         return result;
     }
-    // Bが終端ノードなら、Aのウェイトを加算して返す
     if (edge2.isTerminal) {
         QMDDEdge result = edge1;
         result.weight += edge2.weight;
         return result;
     }
 
-    // 子ノードのウェイトを親ノードのウェイトで掛け合わせる
-    QMDDNode* newNode = new QMDDNode(4);
-    for (int i = 0; i < 4; ++i) {
-        // 再帰的に子ノードのエッジを加算
-        QMDDEdge child1 = edge1.node->edges[i];
-        QMDDEdge child2 = edge2.node->edges[i];
-        
-        // 子ノードのウェイトに親ノードのウェイトを掛け合わせる
-        child1.weight *= edge1.weight;
-        child2.weight *= edge2.weight;
-        
-        // 子ノードを加算
-        newNode->edges[i] = mathUtils::add(child1, child2);
+    if (!edge1.node || !edge2.node) {
+        throw std::invalid_argument("Invalid node pointer in QMDDEdge.");
     }
 
-    return QMDDEdge({1.0, 0.0}, std::make_shared<QMDDNode>(*newNode));
+    auto newNode = make_shared<QMDDNode>(4);
+    for (int i = 0; i < 4; ++i) {
+        QMDDEdge child1 = (edge1.node && i < edge1.node->edges.size()) ? edge1.node->edges[i] : QMDDEdge(0.0, nullptr);
+        QMDDEdge child2 = (edge2.node && i < edge2.node->edges.size()) ? edge2.node->edges[i] : QMDDEdge(0.0, nullptr);
+
+        if (child1.node || child2.node) {
+            cout << "uuununu"<< endl;
+            newNode->edges[i] = QMDDEdge(0.0, nullptr);
+            
+        } else {
+            child1.weight *= edge1.weight;
+            child2.weight *= edge2.weight;
+            newNode->edges[i] = mathUtils::add(child1, child2);
+        }
+    }
+
+    return QMDDEdge(1.0, newNode);
 }
