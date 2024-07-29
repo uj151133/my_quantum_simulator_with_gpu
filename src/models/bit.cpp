@@ -9,7 +9,7 @@
 using namespace std;
 using namespace GiNaC;
 
-const QMDDState state::KET_0 = [] {
+QMDDState state::KET_0() {
     auto ket0Node = make_shared<QMDDNode>(2);
 
     ket0Node->edges[0] = QMDDEdge(1, nullptr);
@@ -17,7 +17,7 @@ const QMDDState state::KET_0 = [] {
 
     QMDDEdge ket0Edge(1, ket0Node);
     return QMDDState(ket0Edge);
-}();
+};
 
 // QMDDState setKet0() {
 //     auto ket0Node = make_shared<QMDDNode>(2);
