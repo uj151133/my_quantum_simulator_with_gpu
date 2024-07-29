@@ -7,44 +7,57 @@
 #include <pybind11/stl.h>
 #include <pybind11/numpy.h>
 
+#include <functional>
+
 
 using namespace std;
 using namespace GiNaC;
 
-
 namespace gate {
-    extern const QMDDGate H_GATE;
-    extern const QMDDGate I_GATE;
-    extern const QMDDGate X_GATE;
+    /* Identity gate and global phase */
+    QMDDGate I();
+    QMDDGate Ph(double delta);
+    
+    /* Clifford qubit gates */
+    QMDDGate X();
+    QMDDGate Y();
+    QMDDGate Z();
+    QMDDGate S();
+    QMDDGate V();
+    QMDDGate H();
+
+    /* Non-Clifford qubit gates */
+    QMDDGate P(double phi);
+    QMDDGate T();  
+    
+    /* Rotation operator gates */
+    QMDDGate Rx(double theta);
+    QMDDGate Ry(double theta);
+    QMDDGate Rz(double theta);
+
+    /* Two-qubit interaction gates */
+    QMDDGate Rxx(double phi); 
+    QMDDGate Ryy(double phi);
+    QMDDGate Rzz(double phi);
+    QMDDGate Rxy(double phi);
+
+    /*Other named qubit */
+    QMDDGate U(double theta, double phi, double lambda);
+    QMDDGate BARENCO(double alpha, double phi, double theta);
+    QMDDGate B();
+    QMDDGate N(double a, double b, double c);
 }
 
-QMDDGate createHGate();
-QMDDGate createIGate();
-QMDDGate createXGate();
-QMDDGate createPlusXGate();
-QMDDGate createMinusXGate();
-QMDDGate createYGate();
-QMDDGate createPlusYGate();
-QMDDGate createMinusYGate();
-QMDDGate createZGate();
-QMDDGate createSGate();
-QMDDGate createSDaggerGate();
-QMDDGate createTGate();
-QMDDGate createTDaggerGate();
-extern const matrix CNOT_GATE;
-extern const matrix CZ_GATE;
-extern const matrix TOFFOLI_GATE;
-extern const matrix SWAP_GATE;
-QMDDGate createRotateXGate(double theta);
+// QMDDGate createPlusYGate();
+// QMDDGate createMinusYGate();
+// QMDDGate createSDaggerGate();
+// QMDDGate createTDaggerGate();
 
-matrix RotateX(const ex &theta);
-matrix RotateY(const ex &theta);
-matrix RotateZ(const ex &theta);
-matrix Rotate(const ex &k);
+
+// matrix Rotate(const ex &k);
 
 matrix U1(const ex &lambda);
 matrix U2(const ex &phi, const ex &lambda);
-matrix U3(const ex &theta, const ex &phi, const ex &lambda);
 
 // vector<vector<ex>> Ry(const ex &theta);
 
