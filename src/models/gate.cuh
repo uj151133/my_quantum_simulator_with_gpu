@@ -14,6 +14,7 @@ namespace py = pybind11;
 
 __device__ extern cuDoubleComplex i;
 
+__global__ void createZeroGate(cuDoubleComplex* weights, cuDoubleComplex** nodes);
 __global__ void createIdentityGate(cuDoubleComplex* weights, cuDoubleComplex** nodes);
 __global__ void createGlobalPhaseGate(cuDoubleComplex* weights, cuDoubleComplex** nodes, double delta);
 __global__ void createPauliXGate(cuDoubleComplex* weights, cuDoubleComplex** nodes);
@@ -37,6 +38,8 @@ __global__ void createBerkeleyBGate(cuDoubleComplex* weights, cuDoubleComplex** 
 __global__ void createCoreEntanglingGate(cuDoubleComplex* weights, cuDoubleComplex** nodes, double a, double b, double c);
 
 namespace gate {
+    QMDDGate ZERO();
+    
     /* Identity gate and global phase */
     QMDDGate I();
     QMDDGate Ph(double delta);
