@@ -1,4 +1,5 @@
 #include "qmdd.hpp"
+#include "uniqueTable.hpp"
 
 using namespace std;
 
@@ -23,6 +24,9 @@ ostream& operator<<(ostream& os, const QMDDEdge& edge) {
 // QMDDNodeのコンストラクタ
 QMDDNode::QMDDNode(size_t numEdges){
     edges.resize(numEdges);
+
+    UniqueTable& uniqueTable = UniqueTable::getInstance();
+    uniqueTableKey = uniqueTable.insert(this);
 }
 
 
@@ -36,19 +40,26 @@ QMDDNode& QMDDNode::operator=(QMDDNode&& other) noexcept {
     return *this;
 }
 
-
 // QMDDNodeの比較演算子
 bool QMDDNode::operator==(const QMDDNode& other) const {
-    return edges == other.edges;
+    if (edges.size() != other.edges.size()) return false;
+    for (size_t i = 0; i < edges.size(); ++i) {
+        if (edges[i].weight != other.edges[i].weight) return false;
+        if (edges[i].isTerminal != other.edges[i].isTerminal) return false;
+        if (!edges[i].isTerminal && edges[i].node != other.edges[i].node) return false;
+    }
+    return true;
 }
 
+
 ostream& operator<<(ostream& os, const QMDDNode& node) {
-    os << "QMDDNode with " << node.edges.size() << " edges:\n";
+    os << "QMDDNode with " << node.edges.size() << " edges and uniqueTableKey: " << node.uniqueTableKey << "\n";
     for (const auto& edge : node.edges) {
         os << "  " << edge << "\n";
     }
     return os;
 }
+
 // QMDDのコンストラクタ
 QMDDGate::QMDDGate(QMDDEdge edge, size_t numEdges)
     : initialEdge(std::move(edge)) {
@@ -56,7 +67,6 @@ QMDDGate::QMDDGate(QMDDEdge edge, size_t numEdges)
             initialEdge.node->edges.resize(numEdges);
         }
     }
-
 
 // QMDDNodeの取得
 QMDDNode* QMDDGate::getStartNode() const {
@@ -81,11 +91,6 @@ QMDDState::QMDDState(QMDDEdge edge, size_t numEdges)
     }
 }
 
-// QMDDStateのデストラクタ
-// QMDDState::~QMDDState() {
-    // delete initialEdge.node.get();
-    // initialEdge.node = nullptr;
-// }
 
 // QMDDStateのgetStartNodeメソッド
 QMDDNode* QMDDState::getStartNode() const {

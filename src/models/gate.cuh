@@ -72,4 +72,4 @@ namespace gate {
 
 }
 
-#endif // GATE_CUH
+#endif

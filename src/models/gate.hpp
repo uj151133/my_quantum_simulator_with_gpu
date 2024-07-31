@@ -14,6 +14,8 @@ using namespace std;
 using namespace GiNaC;
 
 namespace gate {
+    QMDDGate ZERO();
+    
     /* Identity gate and global phase */
     QMDDGate I();
     QMDDGate Ph(double delta);

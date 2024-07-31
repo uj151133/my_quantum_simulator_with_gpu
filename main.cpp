@@ -5,7 +5,7 @@
 #include <ginac/ginac.h>
 #include "src/models/bit.hpp"
 #include "src/models/gate.hpp"
-#include "src/models/uniquetable.hpp"
+#include "src/models/uniqueTable.hpp"
 #include "src/models/qmdd.hpp"
 #include "src/common/calculation.hpp"
 #include "src/common/mathUtils.hpp"
@@ -25,15 +25,19 @@ void printMemoryUsage() {
 
 int main() {
     printMemoryUsage();
-    QMDDGate hGate = gate::H();
-    cout << "hgate:" << hGate.getInitialEdge() << endl;
+    QMDDGate h1Gate = gate::H();
+    cout << "h1gate:" << h1Gate.getInitialEdge() << endl;
+
+    QMDDGate h2Gate = gate::H();
+    cout << "h2gate:" << h2Gate.getInitialEdge() << endl;
+
     QMDDGate xGate = gate::X();
     cout << "xgate:" << xGate.getInitialEdge() << endl;
     QMDDState ket0 = state::KET_0();
-    auto result1 = mathUtils::addition(hGate.getInitialEdge(), ket0.getInitialEdge());
+    auto result1 = mathUtils::addition(h1Gate.getInitialEdge(), ket0.getInitialEdge());
     cout << "result:" << result1 << endl;
 
-    auto result2 = mathUtils::multiplication(hGate.getInitialEdge(), ket0.getInitialEdge());
+    // auto result2 = mathUtils::multiplication(h1Gate.getInitialEdge(), ket0.getInitialEdge());
     printMemoryUsage();
     return 0;
 }
