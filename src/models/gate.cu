@@ -3,6 +3,14 @@
 
 __device__ cuDoubleComplex i = make_cuDoubleComplex(0.0, 1.0);
 
+__global__ void createZeroGate(cuDoubleComplex* weights, cuDoubleComplex** nodes) {
+    weights[0] = 0.0;
+    nodes[0]->edges[0] = QMDDEdge(0.0, nullptr);
+    nodes[0]->edges[1] = QMDDEdge(0.0, nullptr);
+    nodes[0]->edges[2] = QMDDEdge(0.0, nullptr);
+    nodes[0]->edges[3] = QMDDEdge(0.0, nullptr);
+}
+
 __global__ void createIdentityGate(cuDoubleComplex* weights, cuDoubleComplex** nodes) {
     weights[0] = 1.0;
     nodes[0]->edges[0] = QMDDEdge(1.0, nullptr);
@@ -107,6 +115,24 @@ __global__ void createRotationAboutZGate(cuDoubleComplex* weights, cuDoubleCompl
     nodes[0]->edges[3] = QMDDEdge(cuCexp(cuCmul(i, make_cuDoubleComplex(theta / 2.0, 0.0))), nullptr);
 }
 
+QMDDGate gate::ZERO() {
+    cuDoubleComplex* weights;
+    cuDoubleComplex** nodes;
+    cudaMallocManaged(&weights, sizeof(cuDoubleComplex) * 1);
+    cudaMallocManaged(&nodes, sizeof(QMDDNode*) * 1);
+    cudaMallocManaged(&nodes[0], sizeof(QMDDNode));
+    
+    createZeroGate<<<1, 1>>>(weights, nodes);
+    cudaDeviceSynchronize();
+    
+    QMDDEdge zeroEdge(weights[0], nodes[0]);
+
+    cudaFree(weights);
+    cudaFree(nodes[0]);
+    cudaFree(nodes);
+
+    return QMDDGate(zeroEdge);
+}
 
 QMDDGate gate::I() {
     cuDoubleComplex* weights;
