@@ -6,6 +6,20 @@ namespace py = pybind11;
 
 complex<double> i(0.0, 1.0);
 
+QMDDGate gate::ZERO() {
+    complex<double> zeroWeight = 0.0;
+    auto zeroNode = make_shared<QMDDNode>(4);
+
+    zeroNode->edges[0] = QMDDEdge(0.0, nullptr);
+    zeroNode->edges[1] = QMDDEdge(0.0, nullptr);
+    zeroNode->edges[2] = QMDDEdge(0.0, nullptr);
+    zeroNode->edges[3] = QMDDEdge(0.0, nullptr);
+
+    QMDDEdge zeroEdge(zeroWeight, zeroNode);
+    return QMDDGate(zeroEdge);
+};
+
+
 QMDDGate gate::I() {
     complex<double> iWeight = 1.0;
     auto iNode = make_shared<QMDDNode>(4);
@@ -262,8 +276,8 @@ QMDDGate gate::Rzz(double phi) {
     auto rzzNode = make_shared<QMDDNode>(4);
 
     rzzNode->edges[0] = QMDDEdge(1.0, shared_ptr<QMDDNode>(gate::Rz(phi).getStartNode()));
-    rzzNode->edges[1] = QMDDEdge(0.0, nullptr);
-    rzzNode->edges[2] = QMDDEdge(0.0, nullptr);
+    rzzNode->edges[1] = QMDDEdge(0.0, shared_ptr<QMDDNode>(gate::ZERO().getStartNode()));
+    rzzNode->edges[2] = QMDDEdge(0.0, shared_ptr<QMDDNode>(gate::ZERO().getStartNode()));
     rzzNode->edges[3] = QMDDEdge(exp(i * phi / 2.0), shared_ptr<QMDDNode>(gate::P(-phi).getStartNode()));
 
     QMDDEdge rzzEdge(rzzWeight, rzzNode);
@@ -331,8 +345,8 @@ QMDDGate gate::BARENCO(double alpha, double phi, double theta) {
     barenco1Node->edges[3] = QMDDEdge(exp(i * alpha) * cos(theta), nullptr);
 
     barencoNode->edges[0] = QMDDEdge(1.0, shared_ptr<QMDDNode>(gate::I().getStartNode()));
-    barencoNode->edges[1] = QMDDEdge(0.0, nullptr);
-    barencoNode->edges[2] = QMDDEdge(0.0, nullptr);
+    barencoNode->edges[1] = QMDDEdge(0.0, shared_ptr<QMDDNode>(gate::ZERO().getStartNode()));
+    barencoNode->edges[2] = QMDDEdge(0.0, shared_ptr<QMDDNode>(gate::ZERO().getStartNode()));
     barencoNode->edges[3] = QMDDEdge(1.0, barenco1Node);
 
     QMDDEdge barencoEdge(barencoWeight, barencoNode);
