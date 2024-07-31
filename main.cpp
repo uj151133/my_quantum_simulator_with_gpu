@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include <mach/mach.h>
 #include <ginac/ginac.h>
+#include <yaml-cpp/yaml.h>
 #include "src/models/bit.hpp"
 #include "src/models/gate.hpp"
 #include "src/models/uniqueTable.hpp"
@@ -23,8 +24,24 @@ void printMemoryUsage() {
     std::cout << "Memory usage: " << info.resident_size / 1024 << " KB\n";
 }
 
+bool isExecuteGui() {
+    YAML::Node config = YAML::LoadFile("config.yaml");
+    bool guiEnabled = config["gui"]["enabled"].as<bool>();
+
+    return guiEnabled;
+}
+
 int main() {
     printMemoryUsage();
+
+    bool isGuiEnabled = isExecuteGui();
+
+    if (isGuiEnabled) {
+        std::cout << "GUI is enabled." << std::endl;
+    } else {
+        std::cout << "GUI is disabled." << std::endl;
+    }
+
     QMDDGate h1Gate = gate::H();
     cout << "h1gate:" << h1Gate.getInitialEdge() << endl;
 
