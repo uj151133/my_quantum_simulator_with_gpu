@@ -27,6 +27,8 @@ namespace gate {
     QMDDGate S();
     QMDDGate V();
     QMDDGate H();
+    QMDDGate CX1();
+    QMDDGate CX2();
 
     /* Non-Clifford qubit gates */
     QMDDGate P(double phi);
