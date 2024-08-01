@@ -31,9 +31,12 @@ if(NOT GINAC_INCLUDE_DIR OR NOT GINAC_LIBRARY)
     message(FATAL_ERROR "GiNaC library not found")
 endif()
 
+# YAMLライブラリを追加
+find_package(YAML-CPP REQUIRED)
+
 # インクルードディレクトリとリンクディレクトリを追加
-include_directories(${GINAC_INCLUDE_DIR})
-link_directories(${GINAC_LIBRARY_DIR})
+include_directories(${GINAC_INCLUDE_DIR} ${YAML_CPP_INCLUDE_DIRS})
+link_directories(${GINAC_LIBRARY_DIR} ${YAML_CPP_LIBRARY_DIRS})
 
 # 出力ディレクトリを親ディレクトリに設定
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/libs/__pycache__)
@@ -51,16 +54,16 @@ pybind11_add_module(uniqueTable src/models/uniqueTable.cpp)
 pybind11_add_module(mathUtils src/common/mathUtils.cpp)
 
 # ターゲットにライブラリをリンク
-target_link_libraries(gate PRIVATE Python3::Python ${CLN_LIBRARIES} ${GINAC_LIBRARY})
-target_link_libraries(bit PRIVATE Python3::Python ${CLN_LIBRARIES} ${GINAC_LIBRARY})
-target_link_libraries(calculation PRIVATE Python3::Python ${CLN_LIBRARIES} ${GINAC_LIBRARY})
-target_link_libraries(qmdd PRIVATE Python3::Python ${CLN_LIBRARIES} ${GINAC_LIBRARY})
-target_link_libraries(uniqueTable PRIVATE Python3::Python ${CLN_LIBRARIES} ${GINAC_LIBRARY})
-target_link_libraries(mathUtils PRIVATE Python3::Python ${CLN_LIBRARIES} ${GINAC_LIBRARY})
+target_link_libraries(gate PRIVATE Python3::Python ${CLN_LIBRARIES} ${GINAC_LIBRARY} ${YAML_CPP_LIBRARIES})
+target_link_libraries(bit PRIVATE Python3::Python ${CLN_LIBRARIES} ${GINAC_LIBRARY} ${YAML_CPP_LIBRARIES})
+target_link_libraries(calculation PRIVATE Python3::Python ${CLN_LIBRARIES} ${GINAC_LIBRARY} ${YAML_CPP_LIBRARIES})
+target_link_libraries(qmdd PRIVATE Python3::Python ${CLN_LIBRARIES} ${GINAC_LIBRARY} ${YAML_CPP_LIBRARIES})
+target_link_libraries(uniqueTable PRIVATE Python3::Python ${CLN_LIBRARIES} ${GINAC_LIBRARY} ${YAML_CPP_LIBRARIES})
+target_link_libraries(mathUtils PRIVATE Python3::Python ${CLN_LIBRARIES} ${GINAC_LIBRARY} ${YAML_CPP_LIBRARIES})
 
 # 通常のC++実行ファイルを追加
 add_executable(qmdd_sim main.cpp src/models/gate.cpp src/models/bit.cpp src/models/qmdd.cpp src/models/uniqueTable.cpp src/common/calculation.cpp src/common/mathUtils.cpp)
-target_link_libraries(qmdd_sim PRIVATE ${CLN_LIBRARIES} ${GINAC_LIBRARY} pybind11::module Python3::Python)
+target_link_libraries(qmdd_sim PRIVATE ${CLN_LIBRARIES} ${GINAC_LIBRARY} ${YAML_CPP_LIBRARIES} pybind11::module Python3::Python)
 
 # make run ターゲットの追加
 add_custom_target(run
