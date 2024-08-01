@@ -1,42 +1,29 @@
 #ifndef UNIQUETABLE_HPP
 #define UNIQUETABLE_HPP
 
-#include "qmdd.hpp"
 #include <unordered_map>
-#include <functional>
-#include <fstream>
+#include <vector>
+#include <memory>
 
-using namespace std; 
+class QMDDNode;
 
-// 再帰的なハッシュ関数の定義
-struct QMDDNodeHash {
-    size_t operator()(const QMDDNode& node) const;
-    
-    private:
-    size_t customHash(const complex<double>& c) const;
-    size_t hashMatrixElement(const complex<double>& value, size_t row, size_t col) const;
-    void calculateMatrixHash(const QMDDNode& node, size_t row, size_t col, size_t rowStride, size_t colStride, size_t& hashValue) const;
-};
-
-// ユニークテーブルの定義
 class UniqueTable {
 private:
-    unordered_map<QMDDNode, QMDDNode*, QMDDNodeHash> table;
-    UniqueTable() = default;
+    std::unordered_map<size_t, std::vector<std::shared_ptr<QMDDNode>>> table;
+
+    UniqueTable() = default; // コンストラクタをprivateにしてインスタンス化を制限
 
 public:
-    static UniqueTable& getInstance() {
-        static UniqueTable instance;
-        return instance;
-    }
-
-    QMDDNode* find(size_t uniqueTableKey);
-    size_t insert(QMDDNode* node);
-    void saveToFile() const;
-
-    // コピーコンストラクタと代入演算子を削除して、シングルトンであることを保証する
+    // コピーコンストラクタと代入演算子を削除してシングルトン性を保つ
     UniqueTable(const UniqueTable&) = delete;
     UniqueTable& operator=(const UniqueTable&) = delete;
+
+    static UniqueTable& getInstance();
+
+    void insertNode(size_t hashKey, std::shared_ptr<QMDDNode> node);
+    std::shared_ptr<QMDDNode> findNode(size_t hashKey, std::shared_ptr<QMDDNode> node);
 };
 
-#endif // UNIQUETABLE_HPP
+
+#endif
+

@@ -11,6 +11,7 @@ QMDDEdge::QMDDEdge(complex<double> w, shared_ptr<QMDDNode> n)
 bool QMDDEdge::operator==(const QMDDEdge& other) const {
     return weight == other.weight && node == other.node;
 }
+
 ostream& operator<<(ostream& os, const QMDDEdge& edge) {
     os << "Weight: " << edge.weight;
     if (edge.node) {
@@ -22,11 +23,37 @@ ostream& operator<<(ostream& os, const QMDDEdge& edge) {
 }
 
 // QMDDNodeのコンストラクタ
-QMDDNode::QMDDNode(size_t numEdges){
+QMDDNode::QMDDNode(size_t numEdges) : edges(numEdges), uniqueTableKey(0) {
     edges.resize(numEdges);
+    // ハッシュ値の計算
+    uniqueTableKey = computeHash(*this);
 
-    UniqueTable& uniqueTable = UniqueTable::getInstance();
-    uniqueTableKey = uniqueTable.insert(this);
+    // ユニークテーブルのインスタンスを取得
+    UniqueTable& table = UniqueTable::getInstance();
+    auto existingNode = table.findNode(uniqueTableKey, std::make_shared<QMDDNode>(*this));
+
+    if (existingNode == nullptr) {
+        // テーブルに登録されていない場合、新しいノードを登録
+        table.insertNode(uniqueTableKey, std::make_shared<QMDDNode>(*this));
+    } else {
+        // 既に登録されているノードがある場合、対応するノードを使用
+        *this = *existingNode;
+    }
+}
+
+size_t QMDDNode::computeHash(const QMDDNode& node) const {
+    size_t hashValue = 0;
+    std::hash<double> doubleHasher;
+
+    for (const auto& edge : node.edges) {
+        size_t edgeHash = doubleHasher(edge.weight.real()) ^ (doubleHasher(edge.weight.imag()) << 1);
+        hashValue ^= edgeHash + 0x9e3779b9 + (hashValue << 6) + (hashValue >> 2); // 混ぜる処理
+        if (edge.node && !edge.isTerminal) {
+            hashValue ^= computeHash(*edge.node) + 0x9e3779b9 + (hashValue << 6) + (hashValue >> 2);
+        }
+    }
+
+    return hashValue;
 }
 
 

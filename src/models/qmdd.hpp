@@ -29,6 +29,8 @@ struct QMDDEdge {
 struct QMDDNode {
     vector<QMDDEdge> edges; // エッジの配列
     size_t uniqueTableKey; // ユニークテーブルのキー
+    size_t computeHash(const QMDDNode& node) const;
+    
 
     QMDDNode(size_t numEdges = 2);
     ~QMDDNode() = default;
