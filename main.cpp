@@ -86,7 +86,10 @@ int main() {
     auto result1 = mathUtils::addition(h1Gate.getInitialEdge(), ket0.getInitialEdge());
     cout << "result:" << result1 << endl;
 
-    // auto result2 = mathUtils::multiplication(h1Gate.getInitialEdge(), ket0.getInitialEdge());
+
+    QMDDGate cx1 = gate::CX1();
+    QMDDGate cx2 = gate::CX2();
+    auto result2 = mathUtils::addition(cx1.getInitialEdge(), cx2.getInitialEdge());
     printMemoryUsage();
     printMemoryUsageOnMac();
     return 0;

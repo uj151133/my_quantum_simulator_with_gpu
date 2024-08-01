@@ -179,6 +179,44 @@ QMDDGate gate::H() {
     return QMDDGate(hEdge);
 };
 
+QMDDGate gate::CX1() {
+    complex<double> cx1Weight = 1.0;
+    auto cx1Node = make_shared<QMDDNode>(4);
+
+    cx1Node->edges[0] = QMDDEdge(1.0, shared_ptr<QMDDNode>(gate::I().getStartNode()));
+    cx1Node->edges[1] = QMDDEdge(0.0, shared_ptr<QMDDNode>(gate::ZERO().getStartNode()));
+    cx1Node->edges[2] = QMDDEdge(0.0, shared_ptr<QMDDNode>(gate::ZERO().getStartNode()));
+    cx1Node->edges[3] = QMDDEdge(1.0, shared_ptr<QMDDNode>(gate::X().getStartNode()));
+
+    QMDDEdge cx1Edge(cx1Weight, cx1Node);
+    return QMDDGate(cx1Edge);
+};
+
+QMDDGate gate::CX2() {
+    complex<double> cx2Weight = 1.0;
+    auto cx2Node = make_shared<QMDDNode>(4);
+    auto cx2Node1 = make_shared<QMDDNode>(4);
+    auto cx2Node2 = make_shared<QMDDNode>(4);
+
+    cx2Node1->edges[0] = QMDDEdge(1.0, nullptr);
+    cx2Node1->edges[1] = QMDDEdge(0.0, nullptr);
+    cx2Node1->edges[2] = QMDDEdge(0.0, nullptr);
+    cx2Node1->edges[3] = QMDDEdge(0.0, nullptr);
+
+    cx2Node2->edges[0] = QMDDEdge(0.0, nullptr);
+    cx2Node2->edges[1] = QMDDEdge(0.0, nullptr);
+    cx2Node2->edges[2] = QMDDEdge(0.0, nullptr);
+    cx2Node2->edges[3] = QMDDEdge(1.0, nullptr);
+
+    cx2Node->edges[0] = QMDDEdge(1.0, cx2Node1);
+    cx2Node->edges[1] = QMDDEdge(1.0, cx2Node2);
+    cx2Node->edges[2] = QMDDEdge(1.0, cx2Node2);
+    cx2Node->edges[3] = QMDDEdge(1.0, cx2Node1);
+
+    QMDDEdge cx2Edge(cx2Weight, cx2Node);
+    return QMDDGate(cx2Edge);
+}
+
 QMDDGate gate::P(double phi) {
     complex<double> pWeight = 1.0;
     auto pNode = make_shared<QMDDNode>(4);
@@ -287,35 +325,35 @@ QMDDGate gate::Rzz(double phi) {
 QMDDGate gate::Rxy(double phi) {
     complex<double> rxyWeight = 1.0;
     auto rxyNode = make_shared<QMDDNode>(4);
-    auto rxy1Node = make_shared<QMDDNode>(4);
-    auto rxy2Node = make_shared<QMDDNode>(4);
-    auto rxy3Node = make_shared<QMDDNode>(4);
-    auto rxy4Node = make_shared<QMDDNode>(4);
+    auto rxyNode1 = make_shared<QMDDNode>(4);
+    auto rxyNode2 = make_shared<QMDDNode>(4);
+    auto rxyNode3 = make_shared<QMDDNode>(4);
+    auto rxyNode4 = make_shared<QMDDNode>(4);
 
-    rxy1Node->edges[0] = QMDDEdge(1.0, nullptr);
-    rxy1Node->edges[1] = QMDDEdge(0.0, nullptr);
-    rxy1Node->edges[2] = QMDDEdge(0.0, nullptr);
-    rxy1Node->edges[3] = QMDDEdge(cos(phi / 2.0), nullptr);
+    rxyNode1->edges[0] = QMDDEdge(1.0, nullptr);
+    rxyNode1->edges[1] = QMDDEdge(0.0, nullptr);
+    rxyNode1->edges[2] = QMDDEdge(0.0, nullptr);
+    rxyNode1->edges[3] = QMDDEdge(cos(phi / 2.0), nullptr);
 
-    rxy2Node->edges[0] = QMDDEdge(0.0, nullptr);
-    rxy2Node->edges[1] = QMDDEdge(0.0, nullptr);
-    rxy2Node->edges[2] = QMDDEdge(-i * sin(phi / 2.0), nullptr);
-    rxy2Node->edges[3] = QMDDEdge(0.0, nullptr);
+    rxyNode2->edges[0] = QMDDEdge(0.0, nullptr);
+    rxyNode2->edges[1] = QMDDEdge(0.0, nullptr);
+    rxyNode2->edges[2] = QMDDEdge(-i * sin(phi / 2.0), nullptr);
+    rxyNode2->edges[3] = QMDDEdge(0.0, nullptr);
 
-    rxy3Node->edges[0] = QMDDEdge(0.0, nullptr);
-    rxy3Node->edges[1] = QMDDEdge(-i * sin(phi / 2.0), nullptr);
-    rxy3Node->edges[2] = QMDDEdge(0.0, nullptr);
-    rxy3Node->edges[3] = QMDDEdge(0.0, nullptr);
+    rxyNode3->edges[0] = QMDDEdge(0.0, nullptr);
+    rxyNode3->edges[1] = QMDDEdge(-i * sin(phi / 2.0), nullptr);
+    rxyNode3->edges[2] = QMDDEdge(0.0, nullptr);
+    rxyNode3->edges[3] = QMDDEdge(0.0, nullptr);
 
-    rxy4Node->edges[0] = QMDDEdge(cos(phi / 2.0), nullptr);
-    rxy4Node->edges[1] = QMDDEdge(0.0, nullptr);
-    rxy4Node->edges[2] = QMDDEdge(0.0, nullptr);
-    rxy4Node->edges[3] = QMDDEdge(1.0, nullptr);
+    rxyNode4->edges[0] = QMDDEdge(cos(phi / 2.0), nullptr);
+    rxyNode4->edges[1] = QMDDEdge(0.0, nullptr);
+    rxyNode4->edges[2] = QMDDEdge(0.0, nullptr);
+    rxyNode4->edges[3] = QMDDEdge(1.0, nullptr);
 
-    rxyNode->edges[0] = QMDDEdge(1.0, rxy1Node);
-    rxyNode->edges[1] = QMDDEdge(1.0, rxy2Node);
-    rxyNode->edges[2] = QMDDEdge(1.0, rxy3Node);
-    rxyNode->edges[3] = QMDDEdge(1.0, rxy4Node);
+    rxyNode->edges[0] = QMDDEdge(1.0, rxyNode1);
+    rxyNode->edges[1] = QMDDEdge(1.0, rxyNode2);
+    rxyNode->edges[2] = QMDDEdge(1.0, rxyNode3);
+    rxyNode->edges[3] = QMDDEdge(1.0, rxyNode4);
 
     QMDDEdge rxyEdge(rxyWeight, rxyNode);
     return QMDDGate(rxyEdge);
@@ -337,17 +375,17 @@ QMDDGate gate::U(double theta, double phi, double lambda) {
 QMDDGate gate::BARENCO(double alpha, double phi, double theta) {
     complex<double> barencoWeight = 1.0;
     auto barencoNode = make_shared<QMDDNode>(4);
-    auto barenco1Node = make_shared<QMDDNode>(4);
+    auto barencoNode1 = make_shared<QMDDNode>(4);
 
-    barenco1Node->edges[0] = QMDDEdge(exp(i * alpha) * cos(theta), nullptr);
-    barenco1Node->edges[1] = QMDDEdge(-i * exp(i * (alpha - phi)) * sin(theta), nullptr);
-    barenco1Node->edges[2] = QMDDEdge(-i * exp(i * (alpha + phi)) * sin(theta), nullptr);
-    barenco1Node->edges[3] = QMDDEdge(exp(i * alpha) * cos(theta), nullptr);
+    barencoNode1->edges[0] = QMDDEdge(exp(i * alpha) * cos(theta), nullptr);
+    barencoNode1->edges[1] = QMDDEdge(-i * exp(i * (alpha - phi)) * sin(theta), nullptr);
+    barencoNode1->edges[2] = QMDDEdge(-i * exp(i * (alpha + phi)) * sin(theta), nullptr);
+    barencoNode1->edges[3] = QMDDEdge(exp(i * alpha) * cos(theta), nullptr);
 
     barencoNode->edges[0] = QMDDEdge(1.0, shared_ptr<QMDDNode>(gate::I().getStartNode()));
     barencoNode->edges[1] = QMDDEdge(0.0, shared_ptr<QMDDNode>(gate::ZERO().getStartNode()));
     barencoNode->edges[2] = QMDDEdge(0.0, shared_ptr<QMDDNode>(gate::ZERO().getStartNode()));
-    barencoNode->edges[3] = QMDDEdge(1.0, barenco1Node);
+    barencoNode->edges[3] = QMDDEdge(1.0, barencoNode1);
 
     QMDDEdge barencoEdge(barencoWeight, barencoNode);
     return QMDDGate(barencoEdge);
@@ -356,21 +394,21 @@ QMDDGate gate::BARENCO(double alpha, double phi, double theta) {
 QMDDGate gate::B() {
     complex<double> bWeight = 1.0;
     auto bNode = make_shared<QMDDNode>(4);
-    auto b1Node = make_shared<QMDDNode>(4);
-    auto b2Node = make_shared<QMDDNode>(4);
+    auto bNode1 = make_shared<QMDDNode>(4);
+    auto bNode2 = make_shared<QMDDNode>(4);
 
-    b1Node->edges[0] = QMDDEdge(cos(M_PI / 8.0), nullptr);
-    b1Node->edges[1] = QMDDEdge(0.0, nullptr);
-    b1Node->edges[2] = QMDDEdge(0.0, nullptr);
-    b1Node->edges[3] = QMDDEdge(cos(3.0 * M_PI / 8.0), nullptr);
+    bNode1->edges[0] = QMDDEdge(cos(M_PI / 8.0), nullptr);
+    bNode1->edges[1] = QMDDEdge(0.0, nullptr);
+    bNode1->edges[2] = QMDDEdge(0.0, nullptr);
+    bNode1->edges[3] = QMDDEdge(cos(3.0 * M_PI / 8.0), nullptr);
 
-    b2Node->edges[0] = QMDDEdge(0.0, nullptr);
-    b2Node->edges[1] = QMDDEdge(sin(M_PI / 8.0), nullptr);
-    b2Node->edges[2] = QMDDEdge(sin(3.0 * M_PI / 8.0), nullptr);
-    b2Node->edges[3] = QMDDEdge(0.0, nullptr);
+    bNode2->edges[0] = QMDDEdge(0.0, nullptr);
+    bNode2->edges[1] = QMDDEdge(sin(M_PI / 8.0), nullptr);
+    bNode2->edges[2] = QMDDEdge(sin(3.0 * M_PI / 8.0), nullptr);
+    bNode2->edges[3] = QMDDEdge(0.0, nullptr);
 
-    bNode->edges[0] = QMDDEdge(1.0, b1Node);
-    bNode->edges[1] = QMDDEdge(i, b2Node);
+    bNode->edges[0] = QMDDEdge(1.0, bNode1);
+    bNode->edges[1] = QMDDEdge(i, bNode2);
     bNode->edges[2] = QMDDEdge(i * sin(M_PI / 8.0), shared_ptr<QMDDNode>(gate::X().getStartNode()));
     bNode->edges[3] = QMDDEdge(cos(M_PI / 8.0), shared_ptr<QMDDNode>(gate::I().getStartNode()));
 
@@ -381,35 +419,35 @@ QMDDGate gate::B() {
 QMDDGate gate::N(double a, double b, double c) {
     complex<double> nWeight = 1.0;
     auto nNode = make_shared<QMDDNode>(4);
-    auto n1Node = make_shared<QMDDNode>(4);
-    auto n2Node = make_shared<QMDDNode>(4);
-    auto n3Node = make_shared<QMDDNode>(4);
-    auto n4Node = make_shared<QMDDNode>(4);
+    auto nNode1 = make_shared<QMDDNode>(4);
+    auto nNode2 = make_shared<QMDDNode>(4);
+    auto nNode3 = make_shared<QMDDNode>(4);
+    auto nNode4 = make_shared<QMDDNode>(4);
 
-    n1Node->edges[0] = QMDDEdge(exp(i * c) * cos(a - b), nullptr);
-    n1Node->edges[1] = QMDDEdge(0.0, nullptr);
-    n1Node->edges[2] = QMDDEdge(0.0, nullptr);
-    n1Node->edges[3] = QMDDEdge(exp(-i * c) * cos(a + b), nullptr);
+    nNode1->edges[0] = QMDDEdge(exp(i * c) * cos(a - b), nullptr);
+    nNode1->edges[1] = QMDDEdge(0.0, nullptr);
+    nNode1->edges[2] = QMDDEdge(0.0, nullptr);
+    nNode1->edges[3] = QMDDEdge(exp(-i * c) * cos(a + b), nullptr);
 
-    n2Node->edges[0] = QMDDEdge(0.0, nullptr);
-    n2Node->edges[1] = QMDDEdge(exp(i * c) * sin(a - b), nullptr);
-    n2Node->edges[2] = QMDDEdge(exp(-i * c) * sin(a + b), nullptr);
-    n2Node->edges[3] = QMDDEdge(0.0, nullptr);
+    nNode2->edges[0] = QMDDEdge(0.0, nullptr);
+    nNode2->edges[1] = QMDDEdge(exp(i * c) * sin(a - b), nullptr);
+    nNode2->edges[2] = QMDDEdge(exp(-i * c) * sin(a + b), nullptr);
+    nNode2->edges[3] = QMDDEdge(0.0, nullptr);
 
-    n3Node->edges[0] = QMDDEdge(0.0, nullptr);
-    n3Node->edges[1] = QMDDEdge(exp(-i * c) * sin(a + b), nullptr);
-    n3Node->edges[2] = QMDDEdge(exp(i * c) * sin(a - b), nullptr);
-    n3Node->edges[3] = QMDDEdge(0.0, nullptr);
+    nNode3->edges[0] = QMDDEdge(0.0, nullptr);
+    nNode3->edges[1] = QMDDEdge(exp(-i * c) * sin(a + b), nullptr);
+    nNode3->edges[2] = QMDDEdge(exp(i * c) * sin(a - b), nullptr);
+    nNode3->edges[3] = QMDDEdge(0.0, nullptr);
 
-    n4Node->edges[0] = QMDDEdge(exp(-i * c) * cos(a + b), nullptr);
-    n4Node->edges[1] = QMDDEdge(0.0, nullptr);
-    n4Node->edges[2] = QMDDEdge(0.0, nullptr);
-    n4Node->edges[3] = QMDDEdge(exp(i * c) * cos(a - b), nullptr);
+    nNode4->edges[0] = QMDDEdge(exp(-i * c) * cos(a + b), nullptr);
+    nNode4->edges[1] = QMDDEdge(0.0, nullptr);
+    nNode4->edges[2] = QMDDEdge(0.0, nullptr);
+    nNode4->edges[3] = QMDDEdge(exp(i * c) * cos(a - b), nullptr);
 
-    nNode->edges[0] = QMDDEdge(1.0, n1Node);
-    nNode->edges[1] = QMDDEdge(i, n2Node);
-    nNode->edges[2] = QMDDEdge(i, n3Node);
-    nNode->edges[3] = QMDDEdge(1.0, n4Node);
+    nNode->edges[0] = QMDDEdge(1.0, nNode1);
+    nNode->edges[1] = QMDDEdge(i, nNode2);
+    nNode->edges[2] = QMDDEdge(i, nNode3);
+    nNode->edges[3] = QMDDEdge(1.0, nNode4);
 
     QMDDEdge nEdge(nWeight, nNode);
     return QMDDGate(nEdge);
@@ -443,12 +481,6 @@ QMDDGate gate::N(double a, double b, double c) {
 //     return QMDDGate(tDaggerEdge);
 // }
 
-// const matrix CNOT_GATE = matrix{
-//     {1, 0, 0, 0}, 
-//     {0, 1, 0, 0},
-//     {0, 0, 0, 1},
-//     {0, 0, 1, 0}
-// };
 
 // const matrix CZ_GATE = matrix{ 
 //     {1, 0, 0, 0},
