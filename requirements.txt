@@ -4,3 +4,4 @@ qiskit-ibm-runtime
 qiskit[visualization]
 sympy
 pybind11
+python-dotenv
