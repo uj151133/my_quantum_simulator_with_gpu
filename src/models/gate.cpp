@@ -230,6 +230,142 @@ QMDDGate gate::P(double phi) {
     return QMDDGate(pEdge);
 }
 
+QMDDGate gate::varCX() {
+    complex<double> varCXWeight = 1.0;
+    auto varCXNode = make_shared<QMDDNode>(4);
+
+    varCXNode->edges[0] = QMDDEdge(1.0, shared_ptr<QMDDNode>(gate::X().getStartNode()));
+    varCXNode->edges[1] = QMDDEdge(1.0, shared_ptr<QMDDNode>(gate::ZERO().getStartNode()));
+    varCXNode->edges[2] = QMDDEdge(1.0, shared_ptr<QMDDNode>(gate::ZERO().getStartNode()));
+    varCXNode->edges[3] = QMDDEdge(1.0, shared_ptr<QMDDNode>(gate::I().getStartNode()));
+
+    QMDDEdge varCXEdge(varCXWeight, varCXNode);
+    return QMDDGate(varCXEdge);
+}
+
+QMDDGate gate::CZ() {
+    complex<double> czWeight = 1.0;
+    auto czNode = make_shared<QMDDNode>(4);
+
+    czNode->edges[0] = QMDDEdge(1.0, shared_ptr<QMDDNode>(gate::I().getStartNode()));
+    czNode->edges[1] = QMDDEdge(0.0, shared_ptr<QMDDNode>(gate::ZERO().getStartNode()));
+    czNode->edges[2] = QMDDEdge(0.0, shared_ptr<QMDDNode>(gate::ZERO().getStartNode()));
+    czNode->edges[3] = QMDDEdge(1.0, shared_ptr<QMDDNode>(gate::Z().getStartNode()));
+
+    QMDDEdge czEdge(czWeight, czNode);
+    return QMDDGate(czEdge);
+}
+
+QMDDGate gate::DCNOT() {
+    complex<double> dcnotWeight = 1.0;
+    auto dcnotNode = make_shared<QMDDNode>(4);
+    auto dcnotNode1 = make_shared<QMDDNode>(4);
+    auto dcnotNode2 = make_shared<QMDDNode>(4);
+    auto dcnotNode3 = make_shared<QMDDNode>(4);
+    auto dcnotNode4 = make_shared<QMDDNode>(4);
+
+    dcnotNode1->edges[0] = QMDDEdge(1.0, nullptr);
+    dcnotNode1->edges[1] = QMDDEdge(0.0, nullptr);
+    dcnotNode1->edges[2] = QMDDEdge(0.0, nullptr);
+    dcnotNode1->edges[3] = QMDDEdge(0.0, nullptr);
+
+    dcnotNode2->edges[0] = QMDDEdge(0.0, nullptr);
+    dcnotNode2->edges[1] = QMDDEdge(0.0, nullptr);
+    dcnotNode2->edges[2] = QMDDEdge(1.0, nullptr);
+    dcnotNode2->edges[3] = QMDDEdge(0.0, nullptr);
+
+    dcnotNode3->edges[0] = QMDDEdge(0.0, nullptr);
+    dcnotNode3->edges[1] = QMDDEdge(0.0, nullptr);
+    dcnotNode3->edges[2] = QMDDEdge(0.0, nullptr);
+    dcnotNode3->edges[3] = QMDDEdge(1.0, nullptr);
+
+    dcnotNode4->edges[0] = QMDDEdge(0.0, nullptr);
+    dcnotNode4->edges[1] = QMDDEdge(1.0, nullptr);
+    dcnotNode4->edges[2] = QMDDEdge(0.0, nullptr);
+    dcnotNode4->edges[3] = QMDDEdge(0.0, nullptr);
+
+    dcnotNode->edges[0] = QMDDEdge(1.0, dcnotNode1);
+    dcnotNode->edges[1] = QMDDEdge(1.0, dcnotNode2);
+    dcnotNode->edges[2] = QMDDEdge(1.0, dcnotNode3);
+    dcnotNode->edges[3] = QMDDEdge(1.0, dcnotNode4);
+
+    QMDDEdge dcnotEdge(dcnotWeight, dcnotNode);
+    return QMDDGate(dcnotEdge);
+}
+
+QMDDGate gate::SWAP() {
+    complex<double> swapWeight = 1.0;
+    auto swapNode = make_shared<QMDDNode>(4);
+    auto swapNode1 = make_shared<QMDDNode>(4);
+    auto swapNode2 = make_shared<QMDDNode>(4);
+    auto swapNode3 = make_shared<QMDDNode>(4);
+    auto swapNode4 = make_shared<QMDDNode>(4);
+
+    swapNode1->edges[0] = QMDDEdge(1.0, nullptr);
+    swapNode1->edges[1] = QMDDEdge(0.0, nullptr);
+    swapNode1->edges[2] = QMDDEdge(0.0, nullptr);
+    swapNode1->edges[3] = QMDDEdge(0.0, nullptr);
+
+    swapNode2->edges[0] = QMDDEdge(0.0, nullptr);
+    swapNode2->edges[1] = QMDDEdge(0.0, nullptr);
+    swapNode2->edges[2] = QMDDEdge(1.0, nullptr);
+    swapNode2->edges[3] = QMDDEdge(0.0, nullptr);
+
+    swapNode3->edges[0] = QMDDEdge(0.0, nullptr);
+    swapNode3->edges[1] = QMDDEdge(1.0, nullptr);
+    swapNode3->edges[2] = QMDDEdge(0.0, nullptr);
+    swapNode3->edges[3] = QMDDEdge(0.0, nullptr);
+
+    swapNode4->edges[0] = QMDDEdge(0.0, nullptr);
+    swapNode4->edges[1] = QMDDEdge(0.0, nullptr);
+    swapNode4->edges[2] = QMDDEdge(0.0, nullptr);
+    swapNode4->edges[3] = QMDDEdge(1.0, nullptr);
+
+    swapNode->edges[0] = QMDDEdge(1.0, swapNode1);
+    swapNode->edges[1] = QMDDEdge(1.0, swapNode2);
+    swapNode->edges[2] = QMDDEdge(1.0, swapNode3);
+    swapNode->edges[3] = QMDDEdge(1.0, swapNode4);
+
+    QMDDEdge swapEdge(swapWeight, swapNode);
+    return QMDDGate(swapEdge);
+}
+
+QMDDGate gate::iSWAP() {
+    complex<double> iswapWeight = 1.0;
+    auto iswapNode = make_shared<QMDDNode>(4);
+    auto iswapNode1 = make_shared<QMDDNode>(4);
+    auto iswapNode2 = make_shared<QMDDNode>(4);
+    auto iswapNode3 = make_shared<QMDDNode>(4);
+    auto iswapNode4 = make_shared<QMDDNode>(4);
+
+    iswapNode1->edges[0] = QMDDEdge(1.0, nullptr);
+    iswapNode1->edges[1] = QMDDEdge(0.0, nullptr);
+    iswapNode1->edges[2] = QMDDEdge(0.0, nullptr);
+    iswapNode1->edges[3] = QMDDEdge(0.0, nullptr);
+
+    iswapNode2->edges[0] = QMDDEdge(0.0, nullptr);
+    iswapNode2->edges[1] = QMDDEdge(0.0, nullptr);
+    iswapNode2->edges[2] = QMDDEdge(1.0, nullptr);
+    iswapNode2->edges[3] = QMDDEdge(0.0, nullptr);
+
+    iswapNode3->edges[0] = QMDDEdge(0.0, nullptr);
+    iswapNode3->edges[1] = QMDDEdge(1.0, nullptr);
+    iswapNode3->edges[2] = QMDDEdge(0.0, nullptr);
+    iswapNode3->edges[3] = QMDDEdge(0.0, nullptr);
+
+    iswapNode4->edges[0] = QMDDEdge(0.0, nullptr);
+    iswapNode4->edges[1] = QMDDEdge(0.0, nullptr);
+    iswapNode4->edges[2] = QMDDEdge(0.0, nullptr);
+    iswapNode4->edges[3] = QMDDEdge(1.0, nullptr);
+
+    iswapNode->edges[0] = QMDDEdge(1.0, iswapNode1);
+    iswapNode->edges[1] = QMDDEdge(i, iswapNode2);
+    iswapNode->edges[2] = QMDDEdge(i, iswapNode3);
+    iswapNode->edges[3] = QMDDEdge(1.0, iswapNode4);
+
+    QMDDEdge iswapEdge(iswapWeight, iswapNode);
+    return QMDDGate(iswapEdge);
+}
 
 QMDDGate gate::T() {
     complex<double> tWeight = 1.0;
@@ -243,6 +379,32 @@ QMDDGate gate::T() {
     QMDDEdge tEdge(tWeight, tNode);
     return QMDDGate(tEdge);
 };
+
+QMDDGate gate::CP(double phi) {
+    complex<double> cpWeight = 1.0;
+    auto cpNode = make_shared<QMDDNode>(4);
+
+    cpNode->edges[0] = QMDDEdge(1.0, shared_ptr<QMDDNode>(gate::I().getStartNode()));
+    cpNode->edges[1] = QMDDEdge(0.0, shared_ptr<QMDDNode>(gate::ZERO().getStartNode()));
+    cpNode->edges[2] = QMDDEdge(0.0, shared_ptr<QMDDNode>(gate::ZERO().getStartNode()));
+    cpNode->edges[3] = QMDDEdge(1.0, shared_ptr<QMDDNode>(gate::P(phi).getStartNode()));
+
+    QMDDEdge cpEdge(cpWeight, cpNode);
+    return QMDDGate(cpEdge);
+}
+
+QMDDGate gate::CS() {
+    complex<double> csWeight = 1.0;
+    auto csNode = make_shared<QMDDNode>(4);
+
+    csNode->edges[0] = QMDDEdge(1.0, shared_ptr<QMDDNode>(gate::I().getStartNode()));
+    csNode->edges[1] = QMDDEdge(0.0, shared_ptr<QMDDNode>(gate::ZERO().getStartNode()));
+    csNode->edges[2] = QMDDEdge(0.0, shared_ptr<QMDDNode>(gate::ZERO().getStartNode()));
+    csNode->edges[3] = QMDDEdge(1.0, shared_ptr<QMDDNode>(gate::S().getStartNode()));
+
+    QMDDEdge csEdge(csWeight, csNode);
+    return QMDDGate(csEdge);
+}
 
 QMDDGate gate::Rx(double theta) {
     complex<double> rxWeight = 1.0;
@@ -357,6 +519,142 @@ QMDDGate gate::Rxy(double phi) {
 
     QMDDEdge rxyEdge(rxyWeight, rxyNode);
     return QMDDGate(rxyEdge);
+}
+
+QMDDGate gate::SquareSWAP() {
+    complex<double> squareSWAPWeight = 1.0;
+    auto squareSWAPNode = make_shared<QMDDNode>(4);
+    auto squareSWAPNode1 = make_shared<QMDDNode>(4);
+    auto squareSWAPNode2 = make_shared<QMDDNode>(4);
+    auto squareSWAPNode3 = make_shared<QMDDNode>(4);
+    auto squareSWAPNode4 = make_shared<QMDDNode>(4);
+
+    squareSWAPNode1->edges[0] = QMDDEdge(1.0, nullptr);
+    squareSWAPNode1->edges[1] = QMDDEdge(0.0, nullptr);
+    squareSWAPNode1->edges[2] = QMDDEdge(0.0, nullptr);
+    squareSWAPNode1->edges[3] = QMDDEdge((1.0 + i) / 2.0, nullptr);
+
+    squareSWAPNode2->edges[0] = QMDDEdge(0.0, nullptr);
+    squareSWAPNode2->edges[1] = QMDDEdge(0.0, nullptr);
+    squareSWAPNode2->edges[2] = QMDDEdge(1.0, nullptr);
+    squareSWAPNode2->edges[3] = QMDDEdge(0.0, nullptr);
+
+    squareSWAPNode3->edges[0] = QMDDEdge(0.0, nullptr);
+    squareSWAPNode3->edges[1] = QMDDEdge(1.0, nullptr);
+    squareSWAPNode3->edges[2] = QMDDEdge(0.0, nullptr);
+    squareSWAPNode3->edges[3] = QMDDEdge(0.0, nullptr);
+
+    squareSWAPNode4->edges[0] = QMDDEdge((1.0 + i) / 2.0, nullptr);
+    squareSWAPNode4->edges[1] = QMDDEdge(0.0, nullptr);
+    squareSWAPNode4->edges[2] = QMDDEdge(0.0, nullptr);
+    squareSWAPNode4->edges[3] = QMDDEdge(1.0, nullptr);
+
+    squareSWAPNode->edges[0] = QMDDEdge(1.0, squareSWAPNode1);
+    squareSWAPNode->edges[1] = QMDDEdge((1.0 - i) / 2.0, squareSWAPNode2);
+    squareSWAPNode->edges[2] = QMDDEdge((1.0 - i) / 2.0, squareSWAPNode3);
+    squareSWAPNode->edges[3] = QMDDEdge(1.0, squareSWAPNode4);
+
+    QMDDEdge squareSWAPEdge(squareSWAPWeight, squareSWAPNode);
+    return QMDDGate(squareSWAPEdge);
+}
+
+QMDDGate gate::SquareiSWAP() {
+    complex<double> squareiSWAPWeight = 1.0;
+    auto squareiSWAPNode = make_shared<QMDDNode>(4);
+    auto squareiSWAPNode1 = make_shared<QMDDNode>(4);
+    auto squareiSWAPNode2 = make_shared<QMDDNode>(4);
+    auto squareiSWAPNode3 = make_shared<QMDDNode>(4);
+    auto squareiSWAPNode4 = make_shared<QMDDNode>(4);
+
+    squareiSWAPNode1->edges[0] = QMDDEdge(1.0, nullptr);
+    squareiSWAPNode1->edges[1] = QMDDEdge(0.0, nullptr);
+    squareiSWAPNode1->edges[2] = QMDDEdge(0.0, nullptr);
+    squareiSWAPNode1->edges[3] = QMDDEdge(1.0 / sqrt(2.0), nullptr);
+
+    squareiSWAPNode2->edges[0] = QMDDEdge(0.0, nullptr);
+    squareiSWAPNode2->edges[1] = QMDDEdge(0.0, nullptr);
+    squareiSWAPNode2->edges[2] = QMDDEdge(1.0, nullptr);
+    squareiSWAPNode2->edges[3] = QMDDEdge(0.0, nullptr);
+
+    squareiSWAPNode3->edges[0] = QMDDEdge(0.0, nullptr);
+    squareiSWAPNode3->edges[1] = QMDDEdge(1.0, nullptr);
+    squareiSWAPNode3->edges[2] = QMDDEdge(0.0, nullptr);
+    squareiSWAPNode3->edges[3] = QMDDEdge(0.0, nullptr);
+
+    squareiSWAPNode4->edges[0] = QMDDEdge(1.0 / sqrt(2.0), nullptr);
+    squareiSWAPNode4->edges[1] = QMDDEdge(0.0, nullptr);
+    squareiSWAPNode4->edges[2] = QMDDEdge(0.0, nullptr);
+    squareiSWAPNode4->edges[3] = QMDDEdge(1.0, nullptr);
+
+    squareiSWAPNode->edges[0] = QMDDEdge(1.0, squareiSWAPNode1);
+    squareiSWAPNode->edges[1] = QMDDEdge(i / sqrt(2.0), squareiSWAPNode2);
+    squareiSWAPNode->edges[2] = QMDDEdge(i / sqrt(2.0), squareiSWAPNode3);
+    squareiSWAPNode->edges[3] = QMDDEdge(1.0, squareiSWAPNode4);
+
+    QMDDEdge squareiSWAPEdge(squareiSWAPWeight, squareiSWAPNode);
+    return QMDDGate(squareiSWAPEdge);
+}
+
+QMDDGate gate::SWAPalpha(double alpha) {
+    complex<double> SWAPalphaWeight = 1.0;
+    auto SWAPalphaNode = make_shared<QMDDNode>(4);
+    auto SWAPalphaNode1 = make_shared<QMDDNode>(4);
+    auto SWAPalphaNode2 = make_shared<QMDDNode>(4);
+    auto SWAPalphaNode3 = make_shared<QMDDNode>(4);
+    auto SWAPalphaNode4 = make_shared<QMDDNode>(4);
+
+    SWAPalphaNode1->edges[0] = QMDDEdge(1.0, nullptr);
+    SWAPalphaNode1->edges[1] = QMDDEdge(0.0, nullptr);
+    SWAPalphaNode1->edges[2] = QMDDEdge(0.0, nullptr);
+    SWAPalphaNode1->edges[3] = QMDDEdge((1.0 + exp(i * M_PI * alpha)) / 2.0, nullptr);
+
+    SWAPalphaNode2->edges[0] = QMDDEdge(0.0, nullptr);
+    SWAPalphaNode2->edges[1] = QMDDEdge(0.0, nullptr);
+    SWAPalphaNode2->edges[2] = QMDDEdge(1.0, nullptr);
+    SWAPalphaNode2->edges[3] = QMDDEdge(0.0, nullptr);
+
+    SWAPalphaNode3->edges[0] = QMDDEdge(0.0, nullptr);
+    SWAPalphaNode3->edges[1] = QMDDEdge(1.0, nullptr);
+    SWAPalphaNode3->edges[2] = QMDDEdge(0.0, nullptr);
+    SWAPalphaNode3->edges[3] = QMDDEdge(0.0, nullptr);
+
+    SWAPalphaNode4->edges[0] = QMDDEdge((1.0 + exp(i * M_PI * alpha)) / 2.0, nullptr);
+    SWAPalphaNode4->edges[1] = QMDDEdge(0.0, nullptr);
+    SWAPalphaNode4->edges[2] = QMDDEdge(0.0, nullptr);
+    SWAPalphaNode4->edges[3] = QMDDEdge(1.0, nullptr);
+
+    SWAPalphaNode->edges[0] = QMDDEdge(1.0, SWAPalphaNode1);
+    SWAPalphaNode->edges[1] = QMDDEdge((1.0 - exp(i * M_PI * alpha)) / 2.0, SWAPalphaNode2);
+    SWAPalphaNode->edges[2] = QMDDEdge((1.0 - exp(i * M_PI * alpha)) / 2.0, SWAPalphaNode3);
+    SWAPalphaNode->edges[3] = QMDDEdge(1.0, SWAPalphaNode4);
+
+    QMDDEdge SWAPalphaEdge(SWAPalphaWeight, SWAPalphaNode);
+    return QMDDGate(SWAPalphaEdge);
+}
+
+QMDDGate gate::FREDKIN() {
+    complex<double> fredkinWeight = 1.0;
+    auto fredkinNode = make_shared<QMDDNode>(4);
+    auto fredkinNode1 = make_shared<QMDDNode>(4);
+    auto fredkinNode2 = make_shared<QMDDNode>(4);
+
+    fredkinNode1->edges[0] = QMDDEdge(1.0, shared_ptr<QMDDNode>(gate::I().getStartNode()));
+    fredkinNode1->edges[1] = QMDDEdge(0.0, shared_ptr<QMDDNode>(gate::ZERO().getStartNode()));
+    fredkinNode1->edges[2] = QMDDEdge(0.0, shared_ptr<QMDDNode>(gate::ZERO().getStartNode()));
+    fredkinNode1->edges[3] = QMDDEdge(1.0, shared_ptr<QMDDNode>(gate::I().getStartNode()));
+
+    fredkinNode2->edges[0] = QMDDEdge(0.0, shared_ptr<QMDDNode>(gate::ZERO().getStartNode()));
+    fredkinNode2->edges[1] = QMDDEdge(0.0, shared_ptr<QMDDNode>(gate::ZERO().getStartNode()));
+    fredkinNode2->edges[2] = QMDDEdge(0.0, shared_ptr<QMDDNode>(gate::ZERO().getStartNode()));
+    fredkinNode2->edges[3] = QMDDEdge(0.0, shared_ptr<QMDDNode>(gate::ZERO().getStartNode()));
+
+    fredkinNode->edges[0] = QMDDEdge(1.0, fredkinNode1);
+    fredkinNode->edges[1] = QMDDEdge(0.0, fredkinNode2);
+    fredkinNode->edges[2] = QMDDEdge(0.0, fredkinNode2);
+    fredkinNode->edges[3] = QMDDEdge(1.0, shared_ptr<QMDDNode>(gate::SWAP().getStartNode()));
+
+    QMDDEdge fredkinEdge(fredkinWeight, fredkinNode);
+    return QMDDGate(fredkinEdge);
 }
 
 QMDDGate gate::U(double theta, double phi, double lambda) {
@@ -482,13 +780,6 @@ QMDDGate gate::N(double a, double b, double c) {
 // }
 
 
-// const matrix CZ_GATE = matrix{ 
-//     {1, 0, 0, 0},
-//     {0, 1, 0, 0},
-//     {0, 0, 1, 0},
-//     {0, 0, 0, -1}
-// };
-
 // const matrix TOFFOLI_GATE = matrix{ 
 //     {1, 0, 0, 0, 0, 0, 0, 0},
 //     {0, 1, 0, 0, 0, 0, 0, 0},
@@ -500,12 +791,6 @@ QMDDGate gate::N(double a, double b, double c) {
 //     {0, 0, 0, 0, 0, 0, 1, 0}
 // };
 
-// const matrix SWAP_GATE = matrix{ 
-//     {1, 0, 0, 0},
-//     {0, 0, 1, 0},
-//     {0, 1, 0, 0}, 
-//     {0, 0, 0, 1}
-// };
 
 
 

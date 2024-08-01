@@ -29,10 +29,17 @@ namespace gate {
     QMDDGate H();
     QMDDGate CX1();
     QMDDGate CX2();
+    QMDDGate varCX();
+    QMDDGate CZ();
+    QMDDGate DCNOT();
+    QMDDGate SWAP();
+    QMDDGate iSWAP();
 
     /* Non-Clifford qubit gates */
     QMDDGate P(double phi);
-    QMDDGate T();  
+    QMDDGate T();
+    QMDDGate CP(double phi);
+    QMDDGate CS();
     
     /* Rotation operator gates */
     QMDDGate Rx(double theta);
@@ -45,7 +52,13 @@ namespace gate {
     QMDDGate Rzz(double phi);
     QMDDGate Rxy(double phi);
 
-    /*Other named qubit */
+    /* Non-Clifford swap gates */
+    QMDDGate SquareSWAP();
+    QMDDGate SquareiSWAP();
+    QMDDGate SWAPalpha(double alpha);
+    QMDDGate FREDKIN();
+
+    /* Other named qubit */
     QMDDGate U(double theta, double phi, double lambda);
     QMDDGate BARENCO(double alpha, double phi, double theta);
     QMDDGate B();
