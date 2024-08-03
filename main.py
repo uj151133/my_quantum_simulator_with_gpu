@@ -1,31 +1,36 @@
-# from models import node
-# import math
+from qiskit import QuantumCircuit, transpile
+from qiskit.visualization import plot_circuit_layout, plot_bloch_multivector, plot_histogram
+from qiskit_aer import Aer
+from qiskit.visualization import plot_state_city  # 使用する可視化ツールを選択
 
-import ctypes
-import os, sys
-ctypes.CDLL('/usr/local/lib/libginac.dylib')
-# Set the path to the compiled modules
-sys.path.append(os.path.join(os.path.dirname(__file__), 'libs', '__pycache__'))
-# import calculation
-import pybind11
-# import bit
-import gate
+# OpenQASMファイルから量子回路を読み込む
+circuit = QuantumCircuit.from_qasm_file('example.qasm')
 
-# from sympy import symbols, sin, cos
-# from sympy2ginac import sympy_to_ginac
+# 実行するバックエンドを指定
+backend = Aer.get_backend('qasm_simulator')
 
-# # シンボリック変数の定義
-# x, y = symbols('x y')
+# 回路をトランスパイルして、バックエンドに合わせたレイアウトを取得
+transpiled_circuit = transpile(circuit, backend)
 
-# # 数式の定義
-# expr1 = sin(x) * cos(y)
-# expr2 = sin(x) * sin(y)
+# 量子回路のレイアウトを表示
+plot_circuit_layout(transpiled_circuit, backend)
 
-# # sympyの式をGiNaCの式に変換
-# ginac_expr1 = sympy_to_ginac(expr1)
-# ginac_expr2 = sympy_to_ginac(expr2)
+# 実行した場合の測定結果を表示
+job = backend.run(transpiled_circuit, shots=1024)
+result = job.result()
+counts = result.get_counts(transpiled_circuit)
+plot_histogram(counts)
 
-# # 共通因数を計算
-# common_factor_result = common_factor.common_factor(ginac_expr1, ginac_expr2)
-# print("共通因数:", common_factor_result)
-print(gate.H_GATE)
+# ブロッホ球の状態を表示
+# 状態ベクトルを取得して表示するためには、理論的な状態ベクトルの計算やシミュレーションが必要
+# ここでは、別の方法で状態ベクトルを取得する例を示します。
+from qiskit import assemble
+from qiskit.visualization import plot_state_hinton
+
+# 回路を状態ベクトルシミュレータで実行
+statevector_simulator = Aer.get_backend('statevector_simulator')
+statevector_job = backend.run(transpile(circuit, statevector_simulator))
+statevector = statevector_job.result().get_statevector()
+
+# 状態ベクトルを表示
+plot_bloch_multivector(statevector)
