@@ -4,7 +4,7 @@
 #include "qmdd.hpp"
 
 using namespace std;
-using namespace GiNaC;
+
 namespace state {
     QMDDState KET_0();
     QMDDState KET_1();

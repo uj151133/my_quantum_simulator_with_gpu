@@ -62,20 +62,7 @@ bool isExecuteGui() {
     return guiEnabled;
 }
 
-void createExampleQMDDNode() {
-    auto node = make_shared<QMDDNode>(4);
 
-    std::complex<double> w1(0.707107, 0.0);
-    std::complex<double> w2(1.0, 0.0);
-    std::complex<double> w3(-1.0, 0.0);
-
-    node->edges[0] = QMDDEdge(w1);
-    node->edges[1] = QMDDEdge(w2);
-    node->edges[2] = QMDDEdge(w2);
-    node->edges[3] = QMDDEdge(1.0);
-
-    // cout << node << endl;
-}
 
 int main() {
     printMemoryUsage();
@@ -89,7 +76,6 @@ int main() {
         std::cout << "GUI is disabled." << std::endl;
     }
 
-    // createExampleQMDDNode();
 
     // QMDDGate i1Gate = gate::I();
     // cout << "i1gate:" << i1Gate.getInitialEdge() << endl;

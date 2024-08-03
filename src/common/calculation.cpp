@@ -43,6 +43,3 @@ ex ComputeGCDOfElements(const matrix& mat) {
     return gcd_result;
 }
 
-PYBIND11_MODULE(calculation, m) {
-    m.def("ComputeGCDOfElements", &ComputeGCDOfElements);
-}
