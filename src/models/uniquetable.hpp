@@ -4,17 +4,15 @@
 #include <unordered_map>
 #include <vector>
 #include <memory>
-
-class QMDDNode;
+#include "qmdd.hpp"
 
 class UniqueTable {
 private:
     std::unordered_map<size_t, std::vector<std::shared_ptr<QMDDNode>>> table;
 
-    UniqueTable() = default; // コンストラクタをprivateにしてインスタンス化を制限
+    UniqueTable() = default;
 
 public:
-    // コピーコンストラクタと代入演算子を削除してシングルトン性を保つ
     UniqueTable(const UniqueTable&) = delete;
     UniqueTable& operator=(const UniqueTable&) = delete;
 
@@ -24,6 +22,4 @@ public:
     std::shared_ptr<QMDDNode> findNode(size_t hashKey, std::shared_ptr<QMDDNode> node);
 };
 
-
-#endif
-
+#endif // UNIQUETABLE_H

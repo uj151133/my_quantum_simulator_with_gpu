@@ -14,13 +14,24 @@ using namespace std;
 
 struct QMDDNode; // 前方宣言
 
+class QMDDNodeHashHelper {
+public:
+    size_t calculateMatrixHash(const QMDDNode& node) const;
+
+private:
+    size_t customHash(const std::complex<double>& c) const;
+    size_t hashMatrixElement(const std::complex<double>& value, size_t row, size_t col) const;
+    size_t calculateMatrixHash(const QMDDNode& node, size_t row, size_t col, size_t rowStride, size_t colStride) const;
+};
+
+
 struct QMDDEdge {
     complex<double> weight; // エッジの重み
     bool isTerminal; // 終端ノードかどうか
     shared_ptr<QMDDNode> node; // エッジの指すQMDDNodeのポインタ
-    // QMDDNode* node;
     
-    QMDDEdge(complex<double> w = {0, 0}, shared_ptr<QMDDNode> n = nullptr);
+    QMDDEdge(complex<double> w = {0.0, 0.0}, shared_ptr<QMDDNode> n = nullptr);
+    QMDDEdge(double w, shared_ptr<QMDDNode> n);
     ~QMDDEdge() = default;
     bool operator==(const QMDDEdge& other) const;
     friend ostream& operator<<(ostream& os, const QMDDEdge& edge);
@@ -29,10 +40,8 @@ struct QMDDEdge {
 struct QMDDNode {
     vector<QMDDEdge> edges; // エッジの配列
     size_t uniqueTableKey; // ユニークテーブルのキー
-    size_t computeHash(const QMDDNode& node) const;
-    
 
-    QMDDNode(size_t numEdges = 2);
+    QMDDNode(const vector<QMDDEdge>& edges);
     ~QMDDNode() = default;
     // コピーコンストラクタとコピー代入演算子
     QMDDNode(const QMDDNode& other) = default;

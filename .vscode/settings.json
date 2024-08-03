@@ -81,6 +81,10 @@
         "cinttypes": "cpp",
         "valarray": "cpp",
         "*.inc": "cpp",
-        "numbers": "cpp"
+        "numbers": "cpp",
+        "charconv": "cpp",
+        "forward_list": "cpp",
+        "fstream": "cpp",
+        "list": "cpp"
     }
 }

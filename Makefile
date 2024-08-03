@@ -11,3 +11,7 @@ install:
 setup:
 	chmod +x ./bin/bash/convert_to_csv.zsh
 	export DYLD_LIBRARY_PATH=/usr/local/lib:$DYLD_LIBRARY_PATH
+
+.PHONY: run
+run:
+	python main.py

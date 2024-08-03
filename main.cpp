@@ -62,6 +62,21 @@ bool isExecuteGui() {
     return guiEnabled;
 }
 
+void createExampleQMDDNode() {
+    auto node = make_shared<QMDDNode>(4);
+
+    std::complex<double> w1(0.707107, 0.0);
+    std::complex<double> w2(1.0, 0.0);
+    std::complex<double> w3(-1.0, 0.0);
+
+    node->edges[0] = QMDDEdge(w1);
+    node->edges[1] = QMDDEdge(w2);
+    node->edges[2] = QMDDEdge(w2);
+    node->edges[3] = QMDDEdge(1.0);
+
+    // cout << node << endl;
+}
+
 int main() {
     printMemoryUsage();
     printMemoryUsageOnMac();
@@ -74,22 +89,26 @@ int main() {
         std::cout << "GUI is disabled." << std::endl;
     }
 
-    QMDDGate h1Gate = gate::H();
-    cout << "h1gate:" << h1Gate.getInitialEdge() << endl;
+    // createExampleQMDDNode();
 
-    QMDDGate h2Gate = gate::H();
-    cout << "h2gate:" << h2Gate.getInitialEdge() << endl;
+    // QMDDGate i1Gate = gate::I();
+    // cout << "i1gate:" << i1Gate.getInitialEdge() << endl;
+    // cout << "i1gate:" << gate::I().getInitialEdge() << endl;
+    cout << "h1gate:" << gate::H().getInitialEdge() << endl;
+    // cout << "x1gate:" << gate::X().getInitialEdge() << endl;
+    // QMDDGate h2Gate = gate::H();
+    // cout << "h2gate:" << h2Gate.getInitialEdge() << endl;
 
-    QMDDGate xGate = gate::X();
-    cout << "xgate:" << xGate.getInitialEdge() << endl;
-    QMDDState ket0 = state::KET_0();
-    auto result1 = mathUtils::addition(h1Gate.getInitialEdge(), ket0.getInitialEdge());
-    cout << "result:" << result1 << endl;
+    // QMDDGate xGate = gate::X();
+    // cout << "xgate:" << xGate.getInitialEdge() << endl;
+    // QMDDState ket0 = state::KET_0();
+    // auto result1 = mathUtils::addition(h1Gate.getInitialEdge(), ket0.getInitialEdge());
+    // cout << "result:" << result1 << endl;
 
 
-    QMDDGate cx1 = gate::CX1();
-    QMDDGate cx2 = gate::CX2();
-    auto result2 = mathUtils::addition(cx1.getInitialEdge(), cx2.getInitialEdge());
+    // QMDDGate cx1 = gate::CX1();
+    // QMDDGate cx2 = gate::CX2();
+    // auto result2 = mathUtils::addition(cx1.getInitialEdge(), cx2.getInitialEdge());
     printMemoryUsage();
     printMemoryUsageOnMac();
     return 0;

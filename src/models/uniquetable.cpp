@@ -1,5 +1,4 @@
 #include "uniqueTable.hpp"
-#include "qmdd.hpp"
 
 UniqueTable& UniqueTable::getInstance() {
     static UniqueTable instance;
@@ -21,4 +20,3 @@ std::shared_ptr<QMDDNode> UniqueTable::findNode(size_t hashKey, std::shared_ptr<
     }
     return nullptr;
 }
-
