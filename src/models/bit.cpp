@@ -1,9 +1,6 @@
 #include "bit.hpp"
 
 #include <ginac/ginac.h>
-#include <pybind11/pybind11.h>
-#include <pybind11/stl.h>
-
 
 
 using namespace std;

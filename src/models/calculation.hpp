@@ -1,8 +1,7 @@
 #ifndef CALCULATION_HPP
 #define CALCULATION_HPP
 
-#include <ginac/ginac.h>
-#include <pybind11/pybind11.h>
+#include <ginac/ginac.h>>
 
 namespace py = pybind11;
 using namespace GiNaC;

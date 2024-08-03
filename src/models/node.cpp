@@ -1,5 +1,4 @@
-#include "node.hpp"
-#include <pybind11/pybind11.h>
+#include "node.hpp">
 
 int add_c(int x, int y){
     return x + y;
