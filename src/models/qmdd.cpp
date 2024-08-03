@@ -170,14 +170,12 @@ shared_ptr<QMDDNode> QMDDState::addNodes(QMDDNode* node1, QMDDNode* node2) {
         if (!node1) return shared_ptr<QMDDNode>(node2);
         if (!node2) return shared_ptr<QMDDNode>(node1);
 
-        auto resultNode = make_shared<QMDDNode>(2);
-        
-        for (size_t i = 0; i < 2; ++i) {
-            resultNode->edges[i].weight = node1->edges[i].weight + node2->edges[i].weight;
-            resultNode->edges[i].node = addNodes(node1->edges[i].node.get(), node2->edges[i].node.get());
-        }
-        
+        vector<QMDDEdge> resultEdges = {
+            QMDDEdge(node1->edges[0].weight + node2->edges[0].weight, addNodes(node1->edges[0].node.get(), node2->edges[0].node.get())),
+            QMDDEdge(node1->edges[1].weight + node2->edges[1].weight, addNodes(node1->edges[1].node.get(), node2->edges[1].node.get()))
+        };
 
+        auto resultNode = make_shared<QMDDNode>(resultEdges);
 
         return resultNode;
     }
