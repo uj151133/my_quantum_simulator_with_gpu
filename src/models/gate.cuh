@@ -4,8 +4,7 @@
 #include "qmdd.cuh"
 
 #include <cuComplex.h>
-#include <math_constants.h>
-#include <pybind11/pybind11.h>
+#include <math_constants.h>>
 
 using namespase std;
 
