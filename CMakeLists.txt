@@ -47,16 +47,16 @@ target_link_libraries(qmdd_sim PRIVATE ${CLN_LIBRARIES} ${GINAC_LIBRARY} ${YAML_
 
 # make run ターゲットの追加
 add_custom_target(run
-    COMMAND ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME}
-    DEPENDS ${PROJECT_NAME}
+    COMMAND ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qmdd_sim
+    DEPENDS qmdd_sim
     WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
     COMMENT "Running the application..."
 )
 
 # make debug ターゲットの追加
 add_custom_target(debug
-    COMMAND lldb --file ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME}
-    DEPENDS ${PROJECT_NAME}
+    COMMAND lldb --file ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qmdd_sim
+    DEPENDS qmdd_sim
     WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
     COMMENT "Debugging the application with lldb..."
 )
