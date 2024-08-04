@@ -77,10 +77,16 @@ int main() {
     }
 
 
-    // QMDDGate i1Gate = gate::I();
+    QMDDGate i1Gate = gate::I();
+    QMDDGate h1Gate = gate::H();
+    QMDDGate h2Gate = gate::H();
+    QMDDGate xGate = gate::X();
     // cout << "i1gate:" << i1Gate.getInitialEdge() << endl;
     // cout << "i1gate:" << gate::I().getInitialEdge() << endl;
-    cout << "h1gate:" << gate::H().getInitialEdge() << endl;
+    // cout << "h1gate:" << gate::H().getInitialEdge() << endl;
+    // cout << "h2gate:" << gate::H().getInitialEdge() << endl;
+    // cout << "xgate:" << gate::X().getInitialEdge() << endl;
+    // cout << "igate:" << gate::I().getInitialEdge() << endl;
     // cout << "x1gate:" << gate::X().getInitialEdge() << endl;
     // QMDDGate h2Gate = gate::H();
     // cout << "h2gate:" << h2Gate.getInitialEdge() << endl;
