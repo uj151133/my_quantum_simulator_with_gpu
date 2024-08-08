@@ -7,10 +7,10 @@
 #include <vector>
 #include <unordered_map>
 #include <functional>
-#include <cmath> 
+#include <cmath>
 #include <memory>
 
-using namespace std; 
+using namespace std;
 
 struct QMDDNode; // 前方宣言
 
@@ -27,9 +27,10 @@ private:
 
 struct QMDDEdge {
     complex<double> weight; // エッジの重み
+    size_t uniqueTableKey;
     bool isTerminal; // 終端ノードかどうか
     shared_ptr<QMDDNode> node; // エッジの指すQMDDNodeのポインタ
-    
+
     QMDDEdge(complex<double> w = {0.0, 0.0}, shared_ptr<QMDDNode> n = nullptr);
     QMDDEdge(double w, shared_ptr<QMDDNode> n);
     ~QMDDEdge() = default;

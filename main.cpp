@@ -10,7 +10,6 @@
 #include "src/models/gate.hpp"
 #include "src/models/uniqueTable.hpp"
 #include "src/models/qmdd.hpp"
-#include "src/common/calculation.hpp"
 #include "src/common/mathUtils.hpp"
 
 using namespace GiNaC;
@@ -65,8 +64,8 @@ bool isExecuteGui() {
 
 
 int main() {
-    printMemoryUsage();
-    printMemoryUsageOnMac();
+    // printMemoryUsage();
+    // printMemoryUsageOnMac();
 
     bool isGuiEnabled = isExecuteGui();
 
@@ -76,18 +75,11 @@ int main() {
         std::cout << "GUI is disabled." << std::endl;
     }
 
-    // UniqueTable& uniqueTable = UniqueTable::getInstance();
     UniqueTable& uniqueTable = UniqueTable::getInstance();
-    QMDDGate h1Gate = gate::H();
-    QMDDGate h2Gate = gate::H();
     QMDDGate iGate = gate::I();
     QMDDGate xGate = gate::X();
     // cout << "i1gate:" << i1Gate.getInitialEdge() << endl;
-    cout << "h1gate:" << h2Gate << endl;
-    cout << "h2gate:" << h2Gate << endl;
-    cout << "xgate:" << xGate << endl;
-    cout << "igate:" << iGate << endl;
-    uniqueTable.printAllEntries();
+    
     // cout << "igate:" << gate::I().getInitialEdge() << endl;
     // cout << "x1gate:" << gate::X().getInitialEdge() << endl;
     // QMDDGate h2Gate = gate::H();
@@ -96,14 +88,16 @@ int main() {
     // QMDDGate xGate = gate::X();
     // cout << "xgate:" << xGate.getInitialEdge() << endl;
     // QMDDState ket0 = state::KET_0();
-    // auto result1 = mathUtils::addition(h1Gate.getInitialEdge(), ket0.getInitialEdge());
-    // cout << "result:" << result1 << endl;
+    auto result1 = mathUtils::addition(xGate.getInitialEdge(), iGate.getInitialEdge());
+    cout << "result:" << result1 << endl;
+
+    uniqueTable.printAllEntries();
 
 
     // QMDDGate cx1 = gate::CX1();
     // QMDDGate cx2 = gate::CX2();
     // auto result2 = mathUtils::addition(cx1.getInitialEdge(), cx2.getInitialEdge());
-    printMemoryUsage();
-    printMemoryUsageOnMac();
+    // printMemoryUsage();
+    // printMemoryUsageOnMac();
     return 0;
 }

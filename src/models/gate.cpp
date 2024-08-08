@@ -67,6 +67,7 @@ QMDDGate gate::X() {
     auto xNode = make_shared<QMDDNode>(xEdges);
 
     QMDDEdge xEdge(xWeight, xNode);
+    xNode.reset();
     return QMDDGate(xEdge);
 };
 

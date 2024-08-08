@@ -2,6 +2,7 @@
 #define MATHUTILS_HPP
 
 #include "../models/qmdd.hpp"
+#include "../models/uniqueTable.hpp"
 #include <complex>
 #include <vector>
 

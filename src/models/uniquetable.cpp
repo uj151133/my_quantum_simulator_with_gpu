@@ -5,11 +5,11 @@ UniqueTable& UniqueTable::getInstance() {
     return instance;
 }
 
-void UniqueTable::insertNode(size_t hashKey, std::shared_ptr<QMDDNode> node) {
+void UniqueTable::insertNode(size_t hashKey, shared_ptr<QMDDNode> node) {
     table[hashKey].push_back(node);
 }
 
-std::shared_ptr<QMDDNode> UniqueTable::findNode(size_t hashKey, std::shared_ptr<QMDDNode> node) {
+shared_ptr<QMDDNode> UniqueTable::check(size_t hashKey, shared_ptr<QMDDNode> node) {
     auto it = table.find(hashKey);
     if (it != table.end()) {
         for (auto& existingNode : it->second) {
@@ -20,26 +20,35 @@ std::shared_ptr<QMDDNode> UniqueTable::findNode(size_t hashKey, std::shared_ptr<
     }
     return nullptr;
 }
+
+shared_ptr<QMDDNode> UniqueTable::find(size_t uniqueTableKey) const {
+        auto it = table.find(uniqueTableKey);
+        if (it != table.end()) {
+            return it->second[0];
+        }
+        return nullptr;
+}
+
 void UniqueTable::printAllEntries() const {
     for (const auto& entry : table) {
         size_t key = entry.first;
         const auto& nodes = entry.second;
 
-        std::cout << "Key: " << key << std::endl;
-        std::cout << "Nodes: " << std::endl;
+        cout << "Key: " << key << endl;
+        cout << "Nodes: " << endl;
 
         for (const auto& nodePtr : nodes) {
             if (nodePtr) {
                 const QMDDNode& node = *nodePtr;
-                std::cout << "  Node with " << node.edges.size() << " edges." << std::endl;
+                cout << "  Node with " << node.edges.size() << " edges." << endl;
                 for (size_t i = 0; i < node.edges.size(); ++i) {
                     const QMDDEdge& edge = node.edges[i];
-                    std::cout << "    Edge " << i << ": weight = " << edge.weight << ", isTerminal = " << edge.isTerminal << std::endl;
+                    cout << "    Edge " << i << ": weight = " << edge.weight << ", isTerminal = " << edge.isTerminal << endl;
                 }
             } else {
-                std::cout << "  Null node" << std::endl;
+                cout << "  Null node" << endl;
             }
         }
-        std::cout << std::endl;
+        cout << endl;
     }
 }
