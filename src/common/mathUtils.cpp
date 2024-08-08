@@ -67,11 +67,11 @@ QMDDEdge mathUtils::addition(const QMDDEdge& edge1, const QMDDEdge& edge2) {
         QMDDEdge child2 = (node2 && i < node2->edges.size()) ? node2->edges[i] : QMDDEdge(0.0, nullptr);
 
         if (child1.node || child2.node) {
+            newEdges[i] = QMDDEdge(0.0, nullptr);
+        } else {
             child1.weight *= edge1.weight;
             child2.weight *= edge2.weight;
             newEdges[i] = mathUtils::addition(child1, child2);
-        } else {
-            newEdges[i] = QMDDEdge(0.0, nullptr);
         }
     }
 
