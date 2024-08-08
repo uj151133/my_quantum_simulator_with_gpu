@@ -6,9 +6,11 @@
 #include <memory>
 #include "qmdd.hpp"
 
+using namespace std;
+
 class UniqueTable {
 private:
-    std::unordered_map<size_t, std::vector<std::shared_ptr<QMDDNode>>> table;
+    unordered_map<size_t, vector<shared_ptr<QMDDNode>>> table;
 
     UniqueTable() = default;
 
@@ -18,8 +20,9 @@ public:
 
     static UniqueTable& getInstance();
 
-    void insertNode(size_t hashKey, std::shared_ptr<QMDDNode> node);
-    std::shared_ptr<QMDDNode> findNode(size_t hashKey, std::shared_ptr<QMDDNode> node);
+    void insertNode(size_t hashKey, shared_ptr<QMDDNode> node);
+    shared_ptr<QMDDNode> check(size_t hashKey, shared_ptr<QMDDNode> node);
+    shared_ptr<QMDDNode> find(size_t uniqueTableKey) const;
     void printAllEntries() const;
 };
 
