@@ -4,8 +4,8 @@
 using namespace std;
 
 size_t QMDDNodeHashHelper::customHash(const std::complex<double>& c) const {
-    size_t realHash = std::hash<double>()(c.real());
-    size_t imagHash = std::hash<double>()(c.imag());
+    size_t realHash = hash<double>()(c.real());
+    size_t imagHash = hash<double>()(c.imag());
     // cout << "customHash: real(" << c.real() << ") => " << realHash << ", imag(" << c.imag() << ") => " << imagHash << endl;
     return realHash ^ (imagHash << 1);
 }
@@ -100,10 +100,10 @@ QMDDNode::QMDDNode(const vector<QMDDEdge>& edges) : edges(edges), uniqueTableKey
     // cout << "Node created with " << edges.size() << " edges and uniqueTableKey: " << uniqueTableKey << endl;
 
     UniqueTable& table = UniqueTable::getInstance();
-    auto existingNode = table.check(uniqueTableKey, std::make_shared<QMDDNode>(*this));
+    auto existingNode = table.check(uniqueTableKey, make_shared<QMDDNode>(*this));
 
     if (existingNode == nullptr) {
-        table.insertNode(uniqueTableKey, std::make_shared<QMDDNode>(*this));
+        table.insertNode(uniqueTableKey, make_shared<QMDDNode>(*this));
     } else {
         *this = *existingNode;
     }
