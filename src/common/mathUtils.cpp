@@ -15,7 +15,7 @@ QMDDEdge mathUtils::multiplication(const QMDDEdge& edge1, const QMDDEdge& edge2)
     }
 
     if (!edge1.node || !edge2.node) {
-        throw std::invalid_argument("Invalid node pointer in QMDDEdge.");
+        throw invalid_argument("Invalid node pointer in QMDDEdge.");
     }
 
     vector<QMDDEdge> newEdges(4);
@@ -39,9 +39,8 @@ QMDDEdge mathUtils::multiplication(const QMDDEdge& edge1, const QMDDEdge& edge2)
 QMDDEdge mathUtils::addition(const QMDDEdge& edge1, const QMDDEdge& edge2) {
     UniqueTable& table = UniqueTable::getInstance();
 
-    // edge1.node と edge2.node の代わりに、uniqueTableKey からノードを取得
-    std::shared_ptr<QMDDNode> node1 = table.find(edge1.uniqueTableKey);
-    std::shared_ptr<QMDDNode> node2 = table.find(edge2.uniqueTableKey);
+    shared_ptr<QMDDNode> node1 = table.find(edge1.uniqueTableKey);
+    shared_ptr<QMDDNode> node2 = table.find(edge2.uniqueTableKey);
 
     if (edge1.isTerminal) {
         QMDDEdge result = edge2;
@@ -58,7 +57,7 @@ QMDDEdge mathUtils::addition(const QMDDEdge& edge1, const QMDDEdge& edge2) {
 
     if (!node1 || !node2) {
         cout << "Invalid node detected! node1: " << node1 << ", node2: " << node2 << endl;
-        throw std::invalid_argument("Invalid node pointer in QMDDEdge.");
+        throw invalid_argument("Invalid node pointer in QMDDEdge.");
     }
 
     vector<QMDDEdge> newEdges(4);

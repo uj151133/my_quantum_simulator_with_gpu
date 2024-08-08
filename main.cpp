@@ -13,6 +13,7 @@
 #include "src/common/mathUtils.hpp"
 
 using namespace GiNaC;
+using namespace std;
 
 
 
