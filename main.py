@@ -1,36 +1,76 @@
-from qiskit import QuantumCircuit, transpile
-from qiskit.visualization import plot_circuit_layout, plot_bloch_multivector, plot_histogram
-from qiskit_aer import Aer
-from qiskit.visualization import plot_state_city  # 使用する可視化ツールを選択
+import sys
+from PyQt5.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget
+from PyQt5.QtCore import Qt
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.figure import Figure
+from qiskit import QuantumCircuit, transpile, Aer, execute
+from qiskit.visualization import plot_bloch_multivector
+import matplotlib.pyplot as plt
+import os
 
-# OpenQASMファイルから量子回路を読み込む
-circuit = QuantumCircuit.from_qasm_file('example.qasm')
+class MplCanvas(FigureCanvas):
+    def __init__(self, parent=None, width=5, height=4, dpi=100):
+        fig = Figure(figsize=(width, height), dpi=dpi)
+        self.axes = fig.add_subplot(111)
+        super(MplCanvas, self).__init__(fig)
 
-# 実行するバックエンドを指定
-backend = Aer.get_backend('qasm_simulator')
+class MainWindow(QMainWindow):
+    def __init__(self, *args, **kwargs):
+        super(MainWindow, self).__init__(*args, **kwargs)
 
-# 回路をトランスパイルして、バックエンドに合わせたレイアウトを取得
-transpiled_circuit = transpile(circuit, backend)
+        self.setWindowTitle('Quantum Circuit and Bloch Sphere')
+        self.setGeometry(100, 100, 1200, 600)
+        
+        central_widget = QWidget()
+        self.setCentralWidget(central_widget)
 
-# 量子回路のレイアウトを表示
-plot_circuit_layout(transpiled_circuit, backend)
+        layout = QVBoxLayout()
+        central_widget.setLayout(layout)
 
-# 実行した場合の測定結果を表示
-job = backend.run(transpiled_circuit, shots=1024)
-result = job.result()
-counts = result.get_counts(transpiled_circuit)
-plot_histogram(counts)
+        self.circuit_canvas = MplCanvas(self, width=5, height=4, dpi=100)
+        layout.addWidget(self.circuit_canvas)
 
-# ブロッホ球の状態を表示
-# 状態ベクトルを取得して表示するためには、理論的な状態ベクトルの計算やシミュレーションが必要
-# ここでは、別の方法で状態ベクトルを取得する例を示します。
-from qiskit import assemble
-from qiskit.visualization import plot_state_hinton
+        self.bloch_canvas = MplCanvas(self, width=5, height=4, dpi=100)
+        layout.addWidget(self.bloch_canvas)
 
-# 回路を状態ベクトルシミュレータで実行
-statevector_simulator = Aer.get_backend('statevector_simulator')
-statevector_job = backend.run(transpile(circuit, statevector_simulator))
-statevector = statevector_job.result().get_statevector()
+        self.draw_quantum_circuit()
+        self.draw_bloch_sphere()
 
-# 状態ベクトルを表示
-plot_bloch_multivector(statevector)
+    def draw_quantum_circuit(self):
+        with open('quantum_circuit.qasm', 'r') as f:
+            qasm_code = f.read()
+        qc = QuantumCircuit.from_qasm_str(qasm_code)
+
+        qc.draw('mpl', ax=self.circuit_canvas.axes)
+        self.circuit_canvas.draw()
+
+    def draw_bloch_sphere(self):
+        with open('quantum_circuit.qasm', 'r') as f:
+            qasm_code = f.read()
+        qc = QuantumCircuit.from_qasm_str(qasm_code)
+
+        simulator = Aer.get_backend('statevector_simulator')
+        qc_transpiled = transpile(qc, simulator)
+        result = execute(qc_transpiled, backend=simulator).result()
+        statevector = result.get_statevector()
+
+        # ブロッホ球の描画を新しいFigureにプロットし、画像をキャンバスにコピー
+        fig, ax = plt.subplots()
+        plot_bloch_multivector(statevector)
+        fig.savefig('bloch_sphere.png')
+        plt.close(fig)
+
+        # 画像を読み込んでキャンバスに表示
+        self.bloch_canvas.axes.clear()
+        img = plt.imread('bloch_sphere.png')
+        self.bloch_canvas.axes.imshow(img)
+        self.bloch_canvas.axes.axis('off')
+        self.bloch_canvas.draw()
+
+        # 一時ファイルを削除
+        os.remove('bloch_sphere.png')
+
+app = QApplication(sys.argv)
+window = MainWindow()
+window.show()
+app.exec()

@@ -20,6 +20,7 @@ public:
 
     void insertNode(size_t hashKey, std::shared_ptr<QMDDNode> node);
     std::shared_ptr<QMDDNode> findNode(size_t hashKey, std::shared_ptr<QMDDNode> node);
+    void printAllEntries() const;
 };
 
 #endif // UNIQUETABLE_H
