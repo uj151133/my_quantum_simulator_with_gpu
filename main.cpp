@@ -20,7 +20,7 @@ using namespace GiNaC;
 void printMemoryUsage() {
     pid_t pid = getpid();
     std::string command = "ps -o rss= -p " + std::to_string(pid);
-    
+
     // Create a pipe to capture the output of the command
     FILE* pipe = popen(command.c_str(), "r");
     if (!pipe) {
@@ -76,16 +76,18 @@ int main() {
         std::cout << "GUI is disabled." << std::endl;
     }
 
-
-    QMDDGate i1Gate = gate::I();
+    // UniqueTable& uniqueTable = UniqueTable::getInstance();
+    UniqueTable& uniqueTable = UniqueTable::getInstance();
     QMDDGate h1Gate = gate::H();
     QMDDGate h2Gate = gate::H();
+    QMDDGate iGate = gate::I();
     QMDDGate xGate = gate::X();
     // cout << "i1gate:" << i1Gate.getInitialEdge() << endl;
-    // cout << "i1gate:" << gate::I().getInitialEdge() << endl;
-    // cout << "h1gate:" << gate::H().getInitialEdge() << endl;
-    // cout << "h2gate:" << gate::H().getInitialEdge() << endl;
-    // cout << "xgate:" << gate::X().getInitialEdge() << endl;
+    cout << "h1gate:" << h2Gate << endl;
+    cout << "h2gate:" << h2Gate << endl;
+    cout << "xgate:" << xGate << endl;
+    cout << "igate:" << iGate << endl;
+    uniqueTable.printAllEntries();
     // cout << "igate:" << gate::I().getInitialEdge() << endl;
     // cout << "x1gate:" << gate::X().getInitialEdge() << endl;
     // QMDDGate h2Gate = gate::H();

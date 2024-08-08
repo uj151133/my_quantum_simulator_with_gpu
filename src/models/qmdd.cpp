@@ -21,17 +21,29 @@ size_t QMDDNodeHashHelper::calculateMatrixHash(const QMDDNode& node, size_t row,
 
         complex<double> combinedWeight = parentWeight * node.edges[i].weight;
 
+        size_t elementHash;
         if (node.edges[i].isTerminal || !node.edges[i].node) {
-            size_t elementHash = hashMatrixElement(combinedWeight, newRow, newCol);
-            hashValue ^= elementHash;
+            elementHash = hashMatrixElement(combinedWeight, newRow, newCol);
             cout << "Element hash at [" << newRow << "][" << newCol << "]: " << elementHash << endl;
         } else {
-            hashValue ^= calculateMatrixHash(*node.edges[i].node, newRow, newCol, rowStride * 2, colStride * 2, combinedWeight);
+            elementHash = calculateMatrixHash(*node.edges[i].node, newRow, newCol, rowStride * 2, colStride * 2, combinedWeight);
         }
+
+        // Combine hashes in a way that reflects both position and value
+        hashValue ^= (elementHash + 0x9e3779b9 + (hashValue << 6) + (hashValue >> 2));
     }
 
     return hashValue;
 }
+
+size_t QMDDNodeHashHelper::calculateMatrixHash(const QMDDNode& node) const {
+    return calculateMatrixHash(node, 0, 0, 1, 1, complex<double>(1.0, 0.0));
+}
+
+
+
+
+
 
 size_t QMDDNodeHashHelper::hashMatrixElement(const complex<double>& value, size_t row, size_t col) const {
     size_t valueHash = customHash(value);
@@ -39,14 +51,6 @@ size_t QMDDNodeHashHelper::hashMatrixElement(const complex<double>& value, size_
     cout << "hashMatrixElement: value(" << value << "), row(" << row << "), col(" << col << ") => " << elementHash << endl;
     return elementHash;
 }
-
-
-
-size_t QMDDNodeHashHelper::calculateMatrixHash(const QMDDNode& node) const {
-    return calculateMatrixHash(node, 0, 0, 1, 1, 1.0);
-}
-
-
 
 // QMDDEdgeのコンストラクタ
 QMDDEdge::QMDDEdge(complex<double> w, shared_ptr<QMDDNode> n)
@@ -79,7 +83,7 @@ QMDDNode::QMDDNode(const vector<QMDDEdge>& edges) : edges(edges), uniqueTableKey
     uniqueTableKey = hasher.calculateMatrixHash(*this);
     cout << endl;
     cout << "Node created with " << edges.size() << " edges and uniqueTableKey: " << uniqueTableKey << endl;
-    
+
     UniqueTable& table = UniqueTable::getInstance();
     auto existingNode = table.findNode(uniqueTableKey, std::make_shared<QMDDNode>(*this));
 
@@ -90,10 +94,6 @@ QMDDNode::QMDDNode(const vector<QMDDEdge>& edges) : edges(edges), uniqueTableKey
     }
     cout << endl;
 }
-
-
-
-
 
 // ムーブ代入演算子: 適切な処理を確認
 QMDDNode& QMDDNode::operator=(QMDDNode&& other) noexcept {
