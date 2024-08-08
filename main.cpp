@@ -19,18 +19,18 @@ using namespace std;
 
 void printMemoryUsage() {
     pid_t pid = getpid();
-    std::string command = "ps -o rss= -p " + std::to_string(pid);
+    string command = "ps -o rss= -p " + to_string(pid);
 
     // Create a pipe to capture the output of the command
     FILE* pipe = popen(command.c_str(), "r");
     if (!pipe) {
-        std::cerr << "Failed to run command.\n";
+        cerr << "Failed to run command.\n";
         return;
     }
 
     // Read the output of the command
     char buffer[128];
-    std::string result = "";
+    string result = "";
     while (fgets(buffer, sizeof(buffer), pipe) != nullptr) {
         result += buffer;
     }
@@ -41,18 +41,18 @@ void printMemoryUsage() {
     // Remove any trailing whitespace from the result
     result.erase(result.find_last_not_of(" \n\r\t") + 1);
 
-    std::cout << "Memory usage: " << result << " KB" << std::endl;
+    cout << "Memory usage: " << result << " KB" << endl;
 }
 
 void printMemoryUsageOnMac() {
     mach_task_basic_info info;
     mach_msg_type_number_t count = MACH_TASK_BASIC_INFO_COUNT;
     if (task_info(mach_task_self(), MACH_TASK_BASIC_INFO, (task_info_t)&info, &count) != KERN_SUCCESS) {
-        std::cerr << "Error getting memory info\n";
+        cerr << "Error getting memory info\n";
         return;
     }
 
-    std::cout << "Memory usage on mac enviroment: " << info.resident_size / 1024 << " KB\n";
+    cout << "Memory usage on mac enviroment: " << info.resident_size / 1024 << " KB\n";
 }
 
 bool isExecuteGui() {
@@ -71,9 +71,9 @@ int main() {
     bool isGuiEnabled = isExecuteGui();
 
     if (isGuiEnabled) {
-        std::cout << "GUI is enabled." << std::endl;
+        cout << "GUI is enabled." << endl;
     } else {
-        std::cout << "GUI is disabled." << std::endl;
+        cout << "GUI is disabled." << endl;
     }
 
     UniqueTable& uniqueTable = UniqueTable::getInstance();
