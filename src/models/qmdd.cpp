@@ -155,7 +155,7 @@ void QMDDGate::calculateDepth() {
 
     while (currentNode && !currentNode->edges.empty()) {
         ++currentDepth;
-        currentNode = table.find(currentNode->edges[0].uniqueTableKey); // 仮に最初のエッジをたどると仮定
+        currentNode = table.find(currentNode->edges[0].uniqueTableKey);
     }
 
     cout << "Depth calculated: " << currentDepth << endl;
