@@ -43,7 +43,7 @@ void UniqueTable::printAllEntries() const {
                 cout << "  Node with " << node.edges.size() << " edges." << endl;
                 for (size_t i = 0; i < node.edges.size(); ++i) {
                     const QMDDEdge& edge = node.edges[i];
-                    cout << "    Edge " << i << ": weight = " << edge.weight << ", isTerminal = " << edge.isTerminal << endl;
+                    cout << "    Edge " << i << ": weight = " << edge.weight << ", Key = " << edge.uniqueTableKey << ", isTerminal = " << edge.isTerminal << endl;
                 }
             } else {
                 cout << "  Null node" << endl;

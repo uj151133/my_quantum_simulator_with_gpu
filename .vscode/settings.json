@@ -85,6 +85,7 @@
         "charconv": "cpp",
         "forward_list": "cpp",
         "fstream": "cpp",
-        "list": "cpp"
+        "list": "cpp",
+        "execution": "cpp"
     }
 }
