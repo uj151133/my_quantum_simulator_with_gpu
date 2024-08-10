@@ -3,4 +3,4 @@ build/
 CMakeLists.txt
 qmdd_sim
 __pycache__/
-.env
+
