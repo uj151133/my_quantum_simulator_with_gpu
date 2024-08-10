@@ -57,12 +57,14 @@ struct QMDDNode {
 class QMDDGate {
 private:
     QMDDEdge initialEdge;
-
+    size_t depth;
 public:
     QMDDGate(QMDDEdge edge, size_t numEdges = 4);
     ~QMDDGate() = default;
     QMDDNode* getStartNode() const;
     QMDDEdge getInitialEdge() const;
+    size_t getDepth() const;
+    void calculateDepth();
     friend ostream& operator<<(ostream& os, const QMDDGate& gate);
 };
 

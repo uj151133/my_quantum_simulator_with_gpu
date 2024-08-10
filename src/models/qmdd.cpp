@@ -144,18 +144,37 @@ ostream& operator<<(ostream& os, const QMDDNode& node) {
 
 // QMDDのコンストラクタ
 QMDDGate::QMDDGate(QMDDEdge edge, size_t numEdges)
-    : initialEdge(std::move(edge)) {
+    : initialEdge(std::move(edge)), depth(0) {
+    calculateDepth();
+}
+
+void QMDDGate::calculateDepth() {
+    UniqueTable& table = UniqueTable::getInstance();
+    auto currentNode = table.find(initialEdge.uniqueTableKey);
+    size_t currentDepth = 0;
+
+    while (currentNode && !currentNode->edges.empty()) {
+        ++currentDepth;
+        currentNode = table.find(currentNode->edges[0].uniqueTableKey); // 仮に最初のエッジをたどると仮定
     }
+
+    cout << "Depth calculated: " << currentDepth << endl;
+    depth = currentDepth;
+}
 
 // QMDDNodeの取得
 QMDDNode* QMDDGate::getStartNode() const {
     UniqueTable& table = UniqueTable::getInstance();
     return table.find(initialEdge.uniqueTableKey).get();
-    }
+}
 
 // QMDDEdgeの取得
 QMDDEdge QMDDGate::getInitialEdge() const {
     return initialEdge;
+}
+
+size_t QMDDGate::getDepth() const {
+    return depth;
 }
 
 ostream& operator<<(ostream& os, const QMDDGate& gate) {
