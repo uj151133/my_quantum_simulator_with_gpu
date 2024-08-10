@@ -40,11 +40,6 @@ size_t QMDDNodeHashHelper::calculateMatrixHash(const QMDDNode& node) const {
     return calculateMatrixHash(node, 0, 0, 1, 1, complex<double>(1.0, 0.0));
 }
 
-
-
-
-
-
 size_t QMDDNodeHashHelper::hashMatrixElement(const complex<double>& value, size_t row, size_t col) const {
     size_t valueHash = customHash(value);
     size_t elementHash = valueHash ^ (row + col + 0x9e3779b9 + (valueHash << 6) + (valueHash >> 2));
@@ -58,10 +53,10 @@ QMDDEdge::QMDDEdge(complex<double> w, shared_ptr<QMDDNode> n)
 
     if (n) {
         uniqueTableKey = n->uniqueTableKey;
-        // cout << "Edge created with weight: " << weight << " and uniqueTableKey: " << uniqueTableKey << endl;
+        cout << "Edge created with weight: " << weight << " and uniqueTableKey: " << uniqueTableKey << " and isTerminal: " << isTerminal<< endl;
         n.reset(); // ポインタを解放
     } else {
-        // cout << "Edge created with weight: " << weight << " (terminal node)" << endl;
+        cout << "Edge created with weight: " << weight << " (terminal node)" << endl;
     }
 }
 
