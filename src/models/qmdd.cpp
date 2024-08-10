@@ -78,7 +78,8 @@ QMDDEdge::QMDDEdge(double w, shared_ptr<QMDDNode> n)
 }
 // QMDDEdgeの比較演算子
 bool QMDDEdge::operator==(const QMDDEdge& other) const {
-    return weight == other.weight && node == other.node;
+    UniqueTable& table = UniqueTable::getInstance();
+    return weight == other.weight && table.find(uniqueTableKey) == table.find(other.uniqueTableKey);
 }
 
 ostream& operator<<(ostream& os, const QMDDEdge& edge) {
@@ -122,10 +123,12 @@ QMDDNode& QMDDNode::operator=(QMDDNode&& other) noexcept {
 // QMDDNodeの比較演算子
 bool QMDDNode::operator==(const QMDDNode& other) const {
     if (edges.size() != other.edges.size()) return false;
+    UniqueTable& table = UniqueTable::getInstance();
     for (size_t i = 0; i < edges.size(); ++i) {
         if (edges[i].weight != other.edges[i].weight) return false;
         if (edges[i].isTerminal != other.edges[i].isTerminal) return false;
-        if (!edges[i].isTerminal && edges[i].node != other.edges[i].node) return false;
+        if (!edges[i].isTerminal && edges[i].uniqueTableKey != other.edges[i].uniqueTableKey) return false;
+        if (!edges[i].isTerminal && table.find(edges[i].uniqueTableKey) != table.find(other.edges[i].uniqueTableKey)) return false;
     }
     return true;
 }
@@ -142,14 +145,12 @@ ostream& operator<<(ostream& os, const QMDDNode& node) {
 // QMDDのコンストラクタ
 QMDDGate::QMDDGate(QMDDEdge edge, size_t numEdges)
     : initialEdge(std::move(edge)) {
-        if (initialEdge.node){
-            initialEdge.node->edges.resize(numEdges);
-        }
     }
 
 // QMDDNodeの取得
 QMDDNode* QMDDGate::getStartNode() const {
-        return initialEdge.node.get();
+    UniqueTable& table = UniqueTable::getInstance();
+    return table.find(initialEdge.uniqueTableKey).get();
     }
 
 // QMDDEdgeの取得
@@ -165,15 +166,12 @@ ostream& operator<<(ostream& os, const QMDDGate& gate) {
 // QMDDStateのコンストラクタ
 QMDDState::QMDDState(QMDDEdge edge, size_t numEdges)
     : initialEdge(std::move(edge)) {
-    if (initialEdge.node) {
-        initialEdge.node->edges.resize(numEdges);
-    }
 }
-
 
 // QMDDStateのgetStartNodeメソッド
 QMDDNode* QMDDState::getStartNode() const {
-    return initialEdge.node.get();
+    UniqueTable& table = UniqueTable::getInstance();
+    return table.find(initialEdge.uniqueTableKey).get();
 }
 
 // QMDDStateのgetInitialEdgeメソッド
@@ -188,18 +186,19 @@ QMDDState QMDDState::operator+(const QMDDState& other) {
 }
 
 shared_ptr<QMDDNode> QMDDState::addNodes(QMDDNode* node1, QMDDNode* node2) {
-        if (!node1) return shared_ptr<QMDDNode>(node2);
-        if (!node2) return shared_ptr<QMDDNode>(node1);
+    UniqueTable& table = UniqueTable::getInstance();
+    if (!node1) return shared_ptr<QMDDNode>(node2);
+    if (!node2) return shared_ptr<QMDDNode>(node1);
 
-        vector<QMDDEdge> resultEdges = {
-            QMDDEdge(node1->edges[0].weight + node2->edges[0].weight, addNodes(node1->edges[0].node.get(), node2->edges[0].node.get())),
-            QMDDEdge(node1->edges[1].weight + node2->edges[1].weight, addNodes(node1->edges[1].node.get(), node2->edges[1].node.get()))
-        };
+    vector<QMDDEdge> resultEdges = {
+        QMDDEdge(node1->edges[0].weight + node2->edges[0].weight, addNodes(table.find(node1->edges[0].uniqueTableKey).get(), table.find(node2->edges[0].uniqueTableKey).get())),
+        QMDDEdge(node1->edges[1].weight + node2->edges[1].weight, addNodes(table.find(node1->edges[1].uniqueTableKey).get(), table.find(node2->edges[1].uniqueTableKey).get()))
+    };
 
-        auto resultNode = make_shared<QMDDNode>(resultEdges);
+    auto resultNode = make_shared<QMDDNode>(resultEdges);
 
-        return resultNode;
-    }
+    return resultNode;
+}
 
     ostream& operator<<(ostream& os, const QMDDState& state) {
     os << "QMDDState with initial edge:\n" << state.initialEdge;
