@@ -372,7 +372,6 @@ QMDDGate gate::iSWAP() {
 
     auto iswapNode4 = make_shared<QMDDNode>(iswapEdges4);
 
-
     vector<QMDDEdge> iswapEdges = {
         QMDDEdge(1.0, iswapNode1),
         QMDDEdge(i, iswapNode2),

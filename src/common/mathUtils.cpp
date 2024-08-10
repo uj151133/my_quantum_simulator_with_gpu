@@ -53,22 +53,22 @@ QMDDEdge mathUtils::addition(const QMDDEdge& edge1, const QMDDEdge& edge2) {
         return result;
     }
 
+    if (node1->edges.size() != node2->edges.size()) {
+        throw std::runtime_error("Node edge sizes do not match.");
+    }
     if (!node1 || !node2) {
         throw invalid_argument("Invalid node pointer in QMDDEdge.");
     }
 
-    // 子ノードの重みを掛け算する
-    vector<QMDDEdge> newEdges(4);
-    for (int i = 0; i < 4; ++i) {
+    for (int i = 0; i < node1->edges.size(); ++i) {
         node1->edges[i].weight *= edge1.weight;
         node2->edges[i].weight *= edge2.weight;
     }
 
-    // 子ノードの加算を再帰的に実行する
-    newEdges[0] = mathUtils::addition(node1->edges[0], node2->edges[0]);
-    newEdges[1] = mathUtils::addition(node1->edges[1], node2->edges[1]);
-    newEdges[2] = mathUtils::addition(node1->edges[2], node2->edges[2]);
-    newEdges[3] = mathUtils::addition(node1->edges[3], node2->edges[3]);
+    vector<QMDDEdge> newEdges(node1->edges.size());
+    for (size_t i = 0; i < newEdges.size(); ++i) {
+        newEdges[i] = mathUtils::addition(node1->edges[i], node2->edges[i]);
+    }
 
     auto newNode = make_shared<QMDDNode>(newEdges);
     return QMDDEdge(1.0, newNode);

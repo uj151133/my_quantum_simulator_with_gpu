@@ -12,8 +12,7 @@ size_t QMDDNodeHashHelper::customHash(const std::complex<double>& c) const {
 
 size_t QMDDNodeHashHelper::calculateMatrixHash(const QMDDNode& node, size_t row, size_t col, size_t rowStride, size_t colStride, const complex<double>& parentWeight) const {
     size_t hashValue = 0;
-
-    // cout << "calculateMatrixHash: row(" << row << "), col(" << col << "), rowStride(" << rowStride << "), colStride(" << colStride << ")" << endl;
+    UniqueTable& table = UniqueTable::getInstance();
 
     for (size_t i = 0; i < node.edges.size(); ++i) {
         size_t newRow = row + (i / 2) * rowStride;
@@ -22,19 +21,24 @@ size_t QMDDNodeHashHelper::calculateMatrixHash(const QMDDNode& node, size_t row,
         complex<double> combinedWeight = parentWeight * node.edges[i].weight;
 
         size_t elementHash;
-        if (node.edges[i].isTerminal || !node.edges[i].node) {
+        if (node.edges[i].isTerminal || node.edges[i].uniqueTableKey == 0) {
             elementHash = hashMatrixElement(combinedWeight, newRow, newCol);
-            // cout << "Element hash at [" << newRow << "][" << newCol << "]: " << elementHash << endl;
         } else {
-            elementHash = calculateMatrixHash(*node.edges[i].node, newRow, newCol, rowStride * 2, colStride * 2, combinedWeight);
+            // find() の結果をデリファレンスして calculateMatrixHash に渡す
+            shared_ptr<QMDDNode> foundNode = table.find(node.edges[i].uniqueTableKey);
+            if (foundNode) {
+                elementHash = calculateMatrixHash(*foundNode, newRow, newCol, rowStride * 2, colStride * 2, combinedWeight);
+            } else {
+                elementHash = 0;
+            }
         }
 
-        // Combine hashes in a way that reflects both position and value
         hashValue ^= (elementHash + 0x9e3779b9 + (hashValue << 6) + (hashValue >> 2));
     }
 
     return hashValue;
 }
+
 
 size_t QMDDNodeHashHelper::calculateMatrixHash(const QMDDNode& node) const {
     return calculateMatrixHash(node, 0, 0, 1, 1, complex<double>(1.0, 0.0));
