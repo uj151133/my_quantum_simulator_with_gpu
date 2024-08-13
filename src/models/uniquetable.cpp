@@ -40,9 +40,9 @@ void UniqueTable::printAllEntries() const {
         for (const auto& nodePtr : nodes) {
             if (nodePtr) {
                 const QMDDNode& node = *nodePtr;
-                cout << "  Node with " << node.edges.size() << " edges." << endl;
-                for (size_t i = 0; i < node.edges.size(); ++i) {
-                    const QMDDEdge& edge = node.edges[i];
+                cout << "  Node with " << node.children.size() << " children." << endl;
+                for (size_t i = 0; i < node.children.size(); ++i) {
+                    const QMDDEdge& edge = node.children[i];
                     cout << "    Edge " << i << ": weight = " << edge.weight << ", Key = " << edge.uniqueTableKey << ", isTerminal = " << edge.isTerminal << endl;
                 }
             } else {

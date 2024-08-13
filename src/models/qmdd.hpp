@@ -14,6 +14,9 @@ using namespace std;
 
 struct QMDDNode; // 前方宣言
 
+struct QMDDBase {
+};
+
 class QMDDNodeHashHelper {
 public:
     size_t calculateMatrixHash(const QMDDNode& node) const;
@@ -25,7 +28,7 @@ private:
 
 
 
-struct QMDDEdge {
+struct QMDDEdge : public QMDDBase{
     complex<double> weight; // エッジの重み
     size_t uniqueTableKey;
     bool isTerminal; // 終端ノードかどうか
@@ -39,27 +42,27 @@ struct QMDDEdge {
 };
 
 struct QMDDNode {
-    vector<QMDDEdge> edges; // エッジの配列
+    vector<QMDDEdge> children; // エッジの配列
     size_t uniqueTableKey; // ユニークテーブルのキー
 
-    QMDDNode(const vector<QMDDEdge>& edges);
+    QMDDNode(const vector<QMDDEdge>& children);
     ~QMDDNode() = default;
     // コピーコンストラクタとコピー代入演算子
     QMDDNode(const QMDDNode& other) = default;
     QMDDNode& operator=(const QMDDNode& other) = default;
     // ムーブコンストラクタとムーブ代入演算子
     QMDDNode(QMDDNode&& other) noexcept = default;
-    QMDDNode& operator=(QMDDNode&& other) noexcept; 
+    QMDDNode& operator=(QMDDNode&& other) noexcept;
     bool operator==(const QMDDNode& other) const;
     friend ostream& operator<<(ostream& os, const QMDDNode& node);
 };
 
-class QMDDGate {
+class QMDDGate : public QMDDBase {
 private:
     QMDDEdge initialEdge;
     size_t depth;
 public:
-    QMDDGate(QMDDEdge edge, size_t numEdges = 4);
+    QMDDGate(QMDDEdge edge, size_t numChildren = 4);
     ~QMDDGate() = default;
     QMDDNode* getStartNode() const;
     QMDDEdge getInitialEdge() const;
@@ -68,12 +71,12 @@ public:
     friend ostream& operator<<(ostream& os, const QMDDGate& gate);
 };
 
-class QMDDState {
+class QMDDState : public QMDDBase {
 private:
     QMDDEdge initialEdge;
 
 public:
-    QMDDState(QMDDEdge edge, size_t numEdges = 2);
+    QMDDState(QMDDEdge edge, size_t numChildren = 2);
     ~QMDDState() = default;
     QMDDNode* getStartNode() const;
     QMDDEdge getInitialEdge() const;
