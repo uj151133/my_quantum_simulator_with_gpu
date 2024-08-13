@@ -18,21 +18,21 @@ QMDDEdge mathUtils::multiplication(const QMDDEdge& edge1, const QMDDEdge& edge2)
         throw invalid_argument("Invalid node pointer in QMDDEdge.");
     }
 
-    vector<QMDDEdge> newEdges(4);
+    vector<QMDDEdge> newChildren(4);
     for (int i = 0; i < 4; ++i) {
-        QMDDEdge child1 = (edge1.node && i < edge1.node->edges.size()) ? edge1.node->edges[i] : QMDDEdge(0.0, nullptr);
-        QMDDEdge child2 = (edge2.node && i < edge2.node->edges.size()) ? edge2.node->edges[i] : QMDDEdge(0.0, nullptr);
+        QMDDEdge child1 = (edge1.node && i < edge1.node->children.size()) ? edge1.node->children[i] : QMDDEdge(0.0, nullptr);
+        QMDDEdge child2 = (edge2.node && i < edge2.node->children.size()) ? edge2.node->children[i] : QMDDEdge(0.0, nullptr);
 
         if (child1.node || child2.node) {
             child1.weight *= edge1.weight;
             child2.weight *= edge2.weight;
-            newEdges[i] = multiplication(child1, child2);
+            newChildren[i] = multiplication(child1, child2);
         } else {
-            newEdges[i] = QMDDEdge(0.0, nullptr);
+            newChildren[i] = QMDDEdge(0.0, nullptr);
         }
     }
 
-    auto newNode = make_shared<QMDDNode>(newEdges);
+    auto newNode = make_shared<QMDDNode>(newChildren);
     return QMDDEdge(1.0, newNode);
 }
 
@@ -53,23 +53,23 @@ QMDDEdge mathUtils::addition(const QMDDEdge& edge1, const QMDDEdge& edge2) {
         return result;
     }
 
-    if (node1->edges.size() != node2->edges.size()) {
+    if (node1->children.size() != node2->children.size()) {
         throw std::runtime_error("Node edge sizes do not match.");
     }
     if (!node1 || !node2) {
         throw invalid_argument("Invalid node pointer in QMDDEdge.");
     }
 
-    for (int i = 0; i < node1->edges.size(); ++i) {
-        node1->edges[i].weight *= edge1.weight;
-        node2->edges[i].weight *= edge2.weight;
+    for (int i = 0; i < node1->children.size(); ++i) {
+        node1->children[i].weight *= edge1.weight;
+        node2->children[i].weight *= edge2.weight;
     }
 
-    vector<QMDDEdge> newEdges(node1->edges.size());
-    for (size_t i = 0; i < newEdges.size(); ++i) {
-        newEdges[i] = mathUtils::addition(node1->edges[i], node2->edges[i]);
+    vector<QMDDEdge> newChildren(node1->children.size());
+    for (size_t i = 0; i < newChildren.size(); ++i) {
+        newChildren[i] = mathUtils::addition(node1->children[i], node2->children[i]);
     }
 
-    auto newNode = make_shared<QMDDNode>(newEdges);
+    auto newNode = make_shared<QMDDNode>(newChildren);
     return QMDDEdge(1.0, newNode);
 }

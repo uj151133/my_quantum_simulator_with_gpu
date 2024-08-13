@@ -8,12 +8,12 @@ using namespace GiNaC;
 
 QMDDState state::KET_0() {
 
-    vector<QMDDEdge> ket0Edges = {
+    vector<QMDDEdge> ket0Children = {
         QMDDEdge(1.0, nullptr),
         QMDDEdge(0.0, nullptr)
     };
 
-    auto ket0Node = make_shared<QMDDNode>(ket0Edges);
+    auto ket0Node = make_shared<QMDDNode>(ket0Children);
 
     QMDDEdge ket0Edge(1.0, ket0Node);
     return QMDDState(ket0Edge);
@@ -21,12 +21,12 @@ QMDDState state::KET_0() {
 
 QMDDState state::KET_1() {
 
-    vector<QMDDEdge> ket1Edges = {
+    vector<QMDDEdge> ket1Children = {
         QMDDEdge(0.0, nullptr),
         QMDDEdge(1.0, nullptr)
     };
 
-    auto ket1Node = make_shared<QMDDNode>(ket1Edges);
+    auto ket1Node = make_shared<QMDDNode>(ket1Children);
 
     QMDDEdge ket1Edge(1.0, ket1Node);
     return QMDDState(ket1Edge);
@@ -34,12 +34,12 @@ QMDDState state::KET_1() {
 
 QMDDState state::KET_PLUS() {
 
-    vector<QMDDEdge> ketPlusEdges = {
+    vector<QMDDEdge> ketPlusChildren = {
         QMDDEdge(1.0, nullptr),
         QMDDEdge(1.0, nullptr)
     };
 
-    auto ketPlusNode = make_shared<QMDDNode>(ketPlusEdges);
+    auto ketPlusNode = make_shared<QMDDNode>(ketPlusChildren);
 
     QMDDEdge ketPlusEdge(1.0 / sqrt(2.0), ketPlusNode);
     return QMDDState(ketPlusEdge);
@@ -47,12 +47,12 @@ QMDDState state::KET_PLUS() {
 
 QMDDState state::KET_MINUS() {
 
-    vector<QMDDEdge> ketMinusEdges = {
+    vector<QMDDEdge> ketMinusChildren = {
         QMDDEdge(1.0, nullptr),
         QMDDEdge(-1.0, nullptr)
     };
 
-    auto ketMinusNode = make_shared<QMDDNode>(ketMinusEdges);
+    auto ketMinusNode = make_shared<QMDDNode>(ketMinusChildren);
 
     QMDDEdge ketMinusEdge(1.0 / sqrt(2.0), ketMinusNode);
     return QMDDState(ketMinusEdge);
