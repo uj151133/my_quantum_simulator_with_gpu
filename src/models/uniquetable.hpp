@@ -20,8 +20,7 @@ public:
 
     static UniqueTable& getInstance();
 
-    void insertNode(size_t hashKey, shared_ptr<QMDDNode> node);
-    shared_ptr<QMDDNode> check(size_t hashKey, shared_ptr<QMDDNode> node);
+    void insert(size_t hashKey, shared_ptr<QMDDNode> node);
     shared_ptr<QMDDNode> find(size_t uniqueTableKey) const;
     void printAllEntries() const;
 };

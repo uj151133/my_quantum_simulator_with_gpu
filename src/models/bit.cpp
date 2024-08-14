@@ -7,55 +7,31 @@ using namespace std;
 using namespace GiNaC;
 
 QMDDState state::KET_0() {
-
-    vector<QMDDEdge> ket0Children = {
+    return QMDDState(QMDDEdge(1.0, make_shared<QMDDNode>(vector<QMDDEdge>{
         QMDDEdge(1.0, nullptr),
-        QMDDEdge(0.0, nullptr)
-    };
-
-    auto ket0Node = make_shared<QMDDNode>(ket0Children);
-
-    QMDDEdge ket0Edge(1.0, ket0Node);
-    return QMDDState(ket0Edge);
+        QMDDEdge(.0, nullptr),
+    })));
 };
 
 QMDDState state::KET_1() {
-
-    vector<QMDDEdge> ket1Children = {
-        QMDDEdge(0.0, nullptr),
-        QMDDEdge(1.0, nullptr)
-    };
-
-    auto ket1Node = make_shared<QMDDNode>(ket1Children);
-
-    QMDDEdge ket1Edge(1.0, ket1Node);
-    return QMDDState(ket1Edge);
+    return QMDDState(QMDDEdge(1.0, make_shared<QMDDNode>(vector<QMDDEdge>{
+        QMDDEdge(.0, nullptr),
+        QMDDEdge(1.0, nullptr),
+    })));
 };
 
 QMDDState state::KET_PLUS() {
-
-    vector<QMDDEdge> ketPlusChildren = {
+    return QMDDState(QMDDEdge(1.0 / sqrt(2.0), make_shared<QMDDNode>(vector<QMDDEdge>{
         QMDDEdge(1.0, nullptr),
-        QMDDEdge(1.0, nullptr)
-    };
-
-    auto ketPlusNode = make_shared<QMDDNode>(ketPlusChildren);
-
-    QMDDEdge ketPlusEdge(1.0 / sqrt(2.0), ketPlusNode);
-    return QMDDState(ketPlusEdge);
+        QMDDEdge(1.0, nullptr),
+    })));
 };
 
 QMDDState state::KET_MINUS() {
-
-    vector<QMDDEdge> ketMinusChildren = {
+    return QMDDState(QMDDEdge(1.0 / sqrt(2.0), make_shared<QMDDNode>(vector<QMDDEdge>{
         QMDDEdge(1.0, nullptr),
-        QMDDEdge(-1.0, nullptr)
-    };
-
-    auto ketMinusNode = make_shared<QMDDNode>(ketMinusChildren);
-
-    QMDDEdge ketMinusEdge(1.0 / sqrt(2.0), ketMinusNode);
-    return QMDDState(ketMinusEdge);
+        QMDDEdge(-1.0, nullptr),
+    })));
 };
 
 // const matrix BRA_0 = matrix{

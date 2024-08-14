@@ -77,17 +77,21 @@ int main() {
     }
 
     UniqueTable& uniqueTable = UniqueTable::getInstance();
-    QMDDGate iGate = gate::I();
+
+    QMDDGate zeroGate = gate::ZERO();
+    // QMDDGate iGate = gate::I();
     // QMDDGate phGate = gate::Ph(0.5);
     // QMDDGate xGate = gate::X();
-    // QMDDGate hGate = gate::H();
+    QMDDGate hGate = gate::H();
     // QMDDGate sGate = gate::S();
-    QMDDGate cx1Gate = gate::CX1();
-    QMDDGate cx2Gate = gate::CX2();
-    cout << "igate:" << iGate.getDepth() << endl;
+    // QMDDGate cx1Gate = gate::CX1();
+    // QMDDGate cx2Gate = gate::CX2();
+    // cout << "zeroGate:" << zeroGate.getInitialEdge() << endl;
+    // cout << "zeroGate:" << zeroGate << endl;
+    // cout << "igate:" << iGate.getDepth() << endl;
     // cout << "phgate:" << phGate.getInitialEdge() << endl;
-    cout << "cx1gate:" << cx1Gate.getDepth() << endl;
-    cout << "cx2gate:" << cx2Gate.getDepth() << endl;
+    // cout << "cx1gate:" << cx1Gate.getDepth() << endl;
+    // cout << "cx2gate:" << cx2Gate.getDepth() << endl;
     // cout << "igate:" << gate::I().getInitialEdge() << endl;
     // cout << "x1gate:" << gate::X().getInitialEdge() << endl;
     // QMDDGate h2Gate = gate::H();
@@ -96,8 +100,8 @@ int main() {
     // QMDDGate xGate = gate::X();
     // cout << "xgate:" << xGate.getInitialEdge() << endl;
     // QMDDState ket0 = state::KET_0();
-    auto result1 = mathUtils::addition(cx1Gate.getInitialEdge(), cx2Gate.getInitialEdge());
-    cout << "result1:" << result1 << endl;
+    // auto result1 = mathUtils::addition(cx1Gate.getInitialEdge(), cx2Gate.getInitialEdge());
+    // cout << "result1:" << result1 << endl;
     // auto result2 = mathUtils::addition(xGate.getInitialEdge(), iGate.getInitialEdge());
     // cout << "result2:" << result2 << endl;
 
