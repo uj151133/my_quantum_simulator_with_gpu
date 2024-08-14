@@ -5,20 +5,8 @@ UniqueTable& UniqueTable::getInstance() {
     return instance;
 }
 
-void UniqueTable::insertNode(size_t hashKey, shared_ptr<QMDDNode> node) {
+void UniqueTable::insert(size_t hashKey, shared_ptr<QMDDNode> node) {
     table[hashKey].push_back(node);
-}
-
-shared_ptr<QMDDNode> UniqueTable::check(size_t hashKey, shared_ptr<QMDDNode> node) {
-    auto it = table.find(hashKey);
-    if (it != table.end()) {
-        for (auto& existingNode : it->second) {
-            if (*existingNode == *node) {
-                return existingNode;
-            }
-        }
-    }
-    return nullptr;
 }
 
 shared_ptr<QMDDNode> UniqueTable::find(size_t uniqueTableKey) const {
@@ -40,9 +28,9 @@ void UniqueTable::printAllEntries() const {
         for (const auto& nodePtr : nodes) {
             if (nodePtr) {
                 const QMDDNode& node = *nodePtr;
-                cout << "  Node with " << node.children.size() << " children." << endl;
-                for (size_t i = 0; i < node.children.size(); ++i) {
-                    const QMDDEdge& edge = node.children[i];
+                cout << "  Node with " << node.edges.size() << " children." << endl;
+                for (size_t i = 0; i < node.edges.size(); ++i) {
+                    const QMDDEdge& edge = node.edges[i];
                     cout << "    Edge " << i << ": weight = " << edge.weight << ", Key = " << edge.uniqueTableKey << ", isTerminal = " << edge.isTerminal << endl;
                 }
             } else {
