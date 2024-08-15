@@ -18,8 +18,8 @@ public:
     UniqueTable& operator=(const UniqueTable&) = delete;
     static UniqueTable& getInstance();
     void insert(size_t hashKey, shared_ptr<QMDDNode> node);
-    shared_ptr<QMDDNode> find(size_t uniqueTableKey) const;
+    shared_ptr<QMDDNode> find(size_t hashKey) const;
     void printAllEntries() const;
 };
 
-#endif // UNIQUETABLE_H
+#endif
