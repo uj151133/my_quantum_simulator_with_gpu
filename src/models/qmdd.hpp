@@ -104,4 +104,4 @@ public:
     bool operator!=(const QMDDState& other) const;
     friend ostream& operator<<(ostream& os, const QMDDState& state);
 };
-#endif // QMDD_HPP
+#endif
