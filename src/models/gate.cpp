@@ -2,6 +2,7 @@
 
 #include <iostream>
 
+using namespace std;
 
 complex<double> i(0.0, 1.0);
 

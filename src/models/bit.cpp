@@ -2,8 +2,6 @@
 
 #include <ginac/ginac.h>
 
-
-using namespace std;
 using namespace GiNaC;
 
 QMDDState state::KET_0() {
