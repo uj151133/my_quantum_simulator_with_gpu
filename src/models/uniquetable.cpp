@@ -9,8 +9,8 @@ void UniqueTable::insert(size_t hashKey, shared_ptr<QMDDNode> node) {
     table[hashKey].push_back(node);
 }
 
-shared_ptr<QMDDNode> UniqueTable::find(size_t uniqueTableKey) const {
-        auto it = table.find(uniqueTableKey);
+shared_ptr<QMDDNode> UniqueTable::find(size_t hashKey) const {
+        auto it = table.find(hashKey);
         if (it != table.end()) {
             return it->second[0];
         }
