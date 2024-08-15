@@ -84,7 +84,7 @@ int main() {
     // QMDDGate xGate = gate::X();
     QMDDGate hGate = gate::H();
     // QMDDGate sGate = gate::S();
-    // QMDDGate cx1Gate = gate::CX1();
+    QMDDGate cx1Gate = gate::CX1();
     // QMDDGate cx2Gate = gate::CX2();
     // cout << "zeroGate:" << zeroGate.getInitialEdge() << endl;
     // cout << "zeroGate:" << zeroGate << endl;

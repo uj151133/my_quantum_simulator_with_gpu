@@ -2,8 +2,6 @@
 #include "uniqueTable.hpp"
 #include "../common/calculation.hpp"
 
-using namespace std;
-
 ostream& operator<<(ostream& os, const QMDDVariant& variant) {
     visit([&os](auto&& arg) {
         os << arg;
@@ -16,7 +14,7 @@ ostream& operator<<(ostream& os, const QMDDVariant& variant) {
 //////////////
 
 QMDDEdge::QMDDEdge(complex<double> w, shared_ptr<QMDDNode> n)
-    : weight(w), uniqueTableKey(n ? calculation::calculateMatrixHash(*n) : 0), isTerminal(!n), node(n) {
+    : weight(w), uniqueTableKey(n ? calculation::generateUniqueTableKey(*n) : 0), isTerminal(!n), node(n) {
     UniqueTable& table = UniqueTable::getInstance();
     auto existingNode = table.find(uniqueTableKey);
     if (existingNode == nullptr && n) table.insert(uniqueTableKey, n);
@@ -25,7 +23,7 @@ QMDDEdge::QMDDEdge(complex<double> w, shared_ptr<QMDDNode> n)
 }
 
 QMDDEdge::QMDDEdge(double w, shared_ptr<QMDDNode> n)
-    : weight(complex<double>(w, 0.0)), uniqueTableKey(n ? calculation::calculateMatrixHash(*n) : 0), isTerminal(!n), node(n) {
+    : weight(complex<double>(w, 0.0)), uniqueTableKey(n ? calculation::generateUniqueTableKey(*n) : 0), isTerminal(!n), node(n) {
     UniqueTable& table = UniqueTable::getInstance();
     auto existingNode = table.find(uniqueTableKey);
     if (existingNode == nullptr && n) table.insert(uniqueTableKey, n);

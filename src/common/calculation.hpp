@@ -8,10 +8,7 @@ using namespace std;
 
 
 namespace calculation {
-    size_t calculateMatrixHash(const QMDDNode& node);
-    size_t calculateMatrixHash(const QMDDNode& node, size_t row, size_t col, size_t rowStride, size_t colStride, const complex<double>& parentWeight);
-    size_t hashMatrixElement(const complex<double>& value, size_t row, size_t col);
-    size_t customHash(const complex<double>& value);
+    size_t generateUniqueTableKey(const QMDDNode& node, size_t row = 0, size_t col = 0, size_t rowStride = 1, size_t colStride = 1, const complex<double>& parentWeight = complex<double>(1.0, 0.0));
 }
 
 

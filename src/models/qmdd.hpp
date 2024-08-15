@@ -10,6 +10,7 @@
 #include <functional>
 #include <cmath>
 #include <memory>
+#include <tuple>
 
 using namespace std;
 
@@ -22,18 +23,13 @@ class QMDDGate;
 class QMDDState;
 
 
+using OperationKey = tuple<QMDDEdge, std::string, QMDDEdge>;
+
+using OperationResult = pair<double, size_t>;
+
 using QMDDVariant = variant<QMDDGate, QMDDState>;
 ostream& operator<<(ostream& os, const QMDDVariant& variant);
 
-
-class QMDDNodeHashHelper {
-public:
-    size_t calculateMatrixHash(const QMDDNode& node) const;
-private:
-    size_t calculateMatrixHash(const QMDDNode& node, size_t row, size_t col, size_t rowStride, size_t colStride, const complex<double>& parentWeight) const;
-    size_t hashMatrixElement(const complex<double>& value, size_t row, size_t col) const;
-    size_t customHash(const complex<double>& value) const;
-};
 
 
 
