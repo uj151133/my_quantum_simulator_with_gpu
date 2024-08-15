@@ -1,5 +1,6 @@
 #include "qmdd.hpp"
 #include "uniqueTable.hpp"
+#include "../common/calculation.hpp"
 
 using namespace std;
 
@@ -10,56 +11,12 @@ ostream& operator<<(ostream& os, const QMDDVariant& variant) {
     return os;
 }
 
-size_t QMDDNodeHashHelper::customHash(const std::complex<double>& c) const {
-    size_t realHash = hash<double>()(c.real());
-    size_t imagHash = hash<double>()(c.imag());
-    // cout << "customHash: real(" << c.real() << ") => " << realHash << ", imag(" << c.imag() << ") => " << imagHash << endl;
-    return realHash ^ (imagHash << 1);
-}
+//////////////
+/* QMDDEdge */
+//////////////
 
-size_t QMDDNodeHashHelper::calculateMatrixHash(const QMDDNode& node, size_t row, size_t col, size_t rowStride, size_t colStride, const complex<double>& parentWeight) const {
-    size_t hashValue = 0;
-    UniqueTable& table = UniqueTable::getInstance();
-
-    for (size_t i = 0; i < node.edges.size(); ++i) {
-        size_t newRow = row + (i / 2) * rowStride;
-        size_t newCol = col + (i % 2) * colStride;
-
-        complex<double> combinedWeight = parentWeight * node.edges[i].weight;
-
-        size_t elementHash;
-        if (node.edges[i].isTerminal || node.edges[i].uniqueTableKey == 0) {
-            elementHash = hashMatrixElement(combinedWeight, newRow, newCol);
-        } else {
-            // find() の結果をデリファレンスして calculateMatrixHash に渡す
-            shared_ptr<QMDDNode> foundNode = table.find(node.edges[i].uniqueTableKey);
-            if (foundNode) {
-                elementHash = calculateMatrixHash(*foundNode, newRow, newCol, rowStride * 2, colStride * 2, combinedWeight);
-            } else {
-                elementHash = 0;
-            }
-        }
-
-        hashValue ^= (elementHash + 0x9e3779b9 + (hashValue << 6) + (hashValue >> 2));
-    }
-
-    return hashValue;
-}
-
-size_t QMDDNodeHashHelper::calculateMatrixHash(const QMDDNode& node) const {
-    return calculateMatrixHash(node, 0, 0, 1, 1, complex<double>(1.0, 0.0));
-}
-
-size_t QMDDNodeHashHelper::hashMatrixElement(const complex<double>& value, size_t row, size_t col) const {
-    size_t valueHash = customHash(value);
-    size_t elementHash = valueHash ^ (row + col + 0x9e3779b9 + (valueHash << 6) + (valueHash >> 2));
-    // cout << "hashMatrixElement: value(" << value << "), row(" << row << "), col(" << col << ") => " << elementHash << endl;
-    return elementHash;
-}
-
-// QMDDEdgeのコンストラクタ
 QMDDEdge::QMDDEdge(complex<double> w, shared_ptr<QMDDNode> n)
-    : weight(w), uniqueTableKey(n ? QMDDNodeHashHelper().calculateMatrixHash(*n) : 0), isTerminal(!n), node(n) {
+    : weight(w), uniqueTableKey(n ? calculation::calculateMatrixHash(*n) : 0), isTerminal(!n), node(n) {
     UniqueTable& table = UniqueTable::getInstance();
     auto existingNode = table.find(uniqueTableKey);
     if (existingNode == nullptr && n) table.insert(uniqueTableKey, n);
@@ -68,7 +25,7 @@ QMDDEdge::QMDDEdge(complex<double> w, shared_ptr<QMDDNode> n)
 }
 
 QMDDEdge::QMDDEdge(double w, shared_ptr<QMDDNode> n)
-    : weight(complex<double>(w, 0.0)), uniqueTableKey(n ? QMDDNodeHashHelper().calculateMatrixHash(*n) : 0), isTerminal(!n), node(n) {
+    : weight(complex<double>(w, 0.0)), uniqueTableKey(n ? calculation::calculateMatrixHash(*n) : 0), isTerminal(!n), node(n) {
     UniqueTable& table = UniqueTable::getInstance();
     auto existingNode = table.find(uniqueTableKey);
     if (existingNode == nullptr && n) table.insert(uniqueTableKey, n);
@@ -108,7 +65,10 @@ ostream& operator<<(ostream& os, const QMDDEdge& edge) {
     return os;
 }
 
-// QMDDNodeのコンストラクタ
+//////////////
+/* QMDDNode */
+//////////////
+
 QMDDNode::QMDDNode(const vector<QMDDEdge>& edges) : edges(edges) {
     // cout << endl;
     cout << "Node created with " << edges.size() << " edges" << endl;
@@ -197,11 +157,14 @@ ostream& operator<<(ostream& os, const QMDDGate& gate) {
     return os;
 }
 
+//////////////
+/* QMDDState */
+//////////////
+
 QMDDState::QMDDState(QMDDEdge edge, size_t numEdge)
     : initialEdge(std::move(edge)) {
 }
 
-// QMDDStateのgetStartNodeメソッド
 QMDDNode* QMDDState::getStartNode() const {
     UniqueTable& table = UniqueTable::getInstance();
     return table.find(initialEdge.uniqueTableKey).get();
