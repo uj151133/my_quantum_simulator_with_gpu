@@ -82,7 +82,7 @@ int main() {
     // QMDDGate iGate = gate::I();
     // QMDDGate phGate = gate::Ph(0.5);
     // QMDDGate xGate = gate::X();
-    QMDDGate hGate = gate::H();
+    // QMDDGate hGate = gate::H();
     // QMDDGate sGate = gate::S();
     QMDDGate cx1Gate = gate::CX1();
     // QMDDGate cx2Gate = gate::CX2();
@@ -90,7 +90,7 @@ int main() {
     // cout << "zeroGate:" << zeroGate << endl;
     // cout << "igate:" << iGate.getDepth() << endl;
     // cout << "phgate:" << phGate.getInitialEdge() << endl;
-    // cout << "cx1gate:" << cx1Gate.getDepth() << endl;
+    cout << "cx1gate:" << cx1Gate.getInitialEdge() << endl;
     // cout << "cx2gate:" << cx2Gate.getDepth() << endl;
     // cout << "igate:" << gate::I().getInitialEdge() << endl;
     // cout << "x1gate:" << gate::X().getInitialEdge() << endl;
