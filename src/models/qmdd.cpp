@@ -14,7 +14,7 @@ ostream& operator<<(ostream& os, const QMDDVariant& variant) {
 //////////////
 
 QMDDEdge::QMDDEdge(complex<double> w, shared_ptr<QMDDNode> n)
-    : weight(w), uniqueTableKey(n ? calculation::generateUniqueTableKey(*n) : 0), isTerminal(!n), node(n) {
+    : weight(w), uniqueTableKey(n ? calculation::generateUniqueTableKey(*n) : 0), isTerminal(!n) {
     UniqueTable& table = UniqueTable::getInstance();
     auto existingNode = table.find(uniqueTableKey);
     if (existingNode == nullptr && n) table.insert(uniqueTableKey, n);
@@ -23,7 +23,7 @@ QMDDEdge::QMDDEdge(complex<double> w, shared_ptr<QMDDNode> n)
 }
 
 QMDDEdge::QMDDEdge(double w, shared_ptr<QMDDNode> n)
-    : weight(complex<double>(w, 0.0)), uniqueTableKey(n ? calculation::generateUniqueTableKey(*n) : 0), isTerminal(!n), node(n) {
+    : weight(complex<double>(w, 0.0)), uniqueTableKey(n ? calculation::generateUniqueTableKey(*n) : 0), isTerminal(!n) {
     UniqueTable& table = UniqueTable::getInstance();
     auto existingNode = table.find(uniqueTableKey);
     if (existingNode == nullptr && n) table.insert(uniqueTableKey, n);
@@ -48,12 +48,6 @@ bool QMDDEdge::operator!=(const QMDDEdge& other) const {
 
 ostream& operator<<(ostream& os, const QMDDEdge& edge) {
     os << "Weight: " << edge.weight << ", Node ";
-
-    if (edge.node) {  // ポインタが有効かどうか確認
-        os << *edge.node;  // shared_ptr<QMDDNode> を解参照して内容を出力
-    } else {
-        os << edge.node;
-    }
 
     if (edge.uniqueTableKey != 0) {
         os << ", Key: " << edge.uniqueTableKey;
