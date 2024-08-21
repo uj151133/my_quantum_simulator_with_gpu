@@ -1,10 +1,11 @@
-#ifndef UNIQUETABLE_HPP
-#define UNIQUETABLE_HPP
+#ifndef OPERATIONCACHE_HPP
+#define OPERATIONCACHE_HPP
 
 #include <unordered_map>
 #include <vector>
 #include <memory>
 #include "qmdd.hpp"
+#include "../common/calculation.hpp"
 
 using namespace std;
 

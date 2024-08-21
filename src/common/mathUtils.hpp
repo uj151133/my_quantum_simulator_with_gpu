@@ -3,6 +3,9 @@
 
 #include "../models/qmdd.hpp"
 #include "../models/uniqueTable.hpp"
+#include "../models/operationCache.hpp"
+#include "calculation.hpp"
+
 #include <complex>
 #include <vector>
 

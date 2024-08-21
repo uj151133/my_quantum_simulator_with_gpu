@@ -41,7 +41,7 @@ size_t calculation::generateUniqueTableKey(const QMDDNode& node, size_t row, siz
     return hashValue;
 }
 
-size_t genarateOperarionCacheKey(const OperationKey& key) {
+size_t calculation::generateOperationCacheKey(const OperationKey& key) {
     auto customHash = [](const complex<double>& c) {
         size_t realHash = hash<double>()(c.real());
         size_t imagHash = hash<double>()(c.imag());
