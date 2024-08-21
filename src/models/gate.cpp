@@ -144,39 +144,11 @@ QMDDGate gate::H() {
 };
 
 QMDDGate gate::CX1() {
-    // auto iNode = make_shared<QMDDNode>(vector<QMDDEdge>{
-    //     QMDDEdge(1.0, nullptr),
-    //     QMDDEdge(.0, nullptr),
-    //     QMDDEdge(.0, nullptr),
-    //     QMDDEdge(1.0, nullptr)
-    // });
-
-    // auto zeroNode = make_shared<QMDDNode>(vector<QMDDEdge>{
-    //     QMDDEdge(.0, nullptr),
-    //     QMDDEdge(.0, nullptr),
-    //     QMDDEdge(.0, nullptr),
-    //     QMDDEdge(.0, nullptr)
-    // });
-
-    // auto xNode = make_shared<QMDDNode>(vector<QMDDEdge>{
-    //     QMDDEdge(.0, nullptr),
-    //     QMDDEdge(1.0, nullptr),
-    //     QMDDEdge(1.0, nullptr),
-    //     QMDDEdge(.0, nullptr)
-    // });
-
-    // return QMDDGate(QMDDEdge(1.0, make_shared<QMDDNode>(vector<QMDDEdge>{
-    //     QMDDEdge(1.0, iNode),
-    //     QMDDEdge(.0, zeroNode),
-    //     QMDDEdge(.0, zeroNode),
-    //     QMDDEdge(1.0, xNode)
-    // })));
-
     return QMDDGate(QMDDEdge(1.0, make_shared<QMDDNode>(vector<QMDDEdge>{
-        QMDDEdge(1.0, shared_ptr<QMDDNode>(gate::I().getStartNode())),
-        QMDDEdge(.0, shared_ptr<QMDDNode>(gate::ZERO().getStartNode())),
-        QMDDEdge(.0, shared_ptr<QMDDNode>(gate::ZERO().getStartNode())),
-        QMDDEdge(1.0, shared_ptr<QMDDNode>(gate::X().getStartNode()))
+        QMDDEdge(1.0, make_shared<QMDDNode>(*gate::I().getStartNode())),
+        QMDDEdge(.0, make_shared<QMDDNode>(*gate::ZERO().getStartNode())),
+        QMDDEdge(.0, make_shared<QMDDNode>(*gate::ZERO().getStartNode())),
+        QMDDEdge(1.0, make_shared<QMDDNode>(*gate::X().getStartNode()))
     })));
 };
 
@@ -206,19 +178,19 @@ QMDDGate gate::CX2() {
 
 QMDDGate gate::varCX() {
     return QMDDGate(QMDDEdge(1.0, make_shared<QMDDNode>(vector<QMDDEdge>{
-        QMDDEdge(1.0, shared_ptr<QMDDNode>(gate::X().getStartNode())),
-        QMDDEdge(.0, shared_ptr<QMDDNode>(gate::ZERO().getStartNode())),
-        QMDDEdge(.0, shared_ptr<QMDDNode>(gate::ZERO().getStartNode())),
-        QMDDEdge(1.0, shared_ptr<QMDDNode>(gate::I().getStartNode()))
+        QMDDEdge(1.0, make_shared<QMDDNode>(*gate::X().getStartNode())),
+        QMDDEdge(.0, make_shared<QMDDNode>(*gate::ZERO().getStartNode())),
+        QMDDEdge(.0, make_shared<QMDDNode>(*gate::ZERO().getStartNode())),
+        QMDDEdge(1.0, make_shared<QMDDNode>(*gate::I().getStartNode()))
     })));
 }
 
 QMDDGate gate::CZ() {
     return QMDDGate(QMDDEdge(1.0, make_shared<QMDDNode>(vector<QMDDEdge>{
-        QMDDEdge(1.0, shared_ptr<QMDDNode>(gate::I().getStartNode())),
-        QMDDEdge(.0, shared_ptr<QMDDNode>(gate::ZERO().getStartNode())),
-        QMDDEdge(.0, shared_ptr<QMDDNode>(gate::ZERO().getStartNode())),
-        QMDDEdge(1.0, shared_ptr<QMDDNode>(gate::Z().getStartNode()))
+        QMDDEdge(1.0, make_shared<QMDDNode>(*gate::I().getStartNode())),
+        QMDDEdge(.0, make_shared<QMDDNode>(*gate::ZERO().getStartNode())),
+        QMDDEdge(.0, make_shared<QMDDNode>(*gate::ZERO().getStartNode())),
+        QMDDEdge(1.0, make_shared<QMDDNode>(*gate::Z().getStartNode()))
     })));
 }
 
@@ -355,19 +327,19 @@ QMDDGate gate::T() {
 
 QMDDGate gate::CP(double phi) {
     return QMDDGate(QMDDEdge(1.0, make_shared<QMDDNode>(vector<QMDDEdge>{
-        QMDDEdge(1.0,shared_ptr<QMDDNode>(gate::I().getStartNode())),
-        QMDDEdge(.0, shared_ptr<QMDDNode>(gate::ZERO().getStartNode())),
-        QMDDEdge(.0, shared_ptr<QMDDNode>(gate::ZERO().getStartNode())),
-        QMDDEdge(1.0, shared_ptr<QMDDNode>(gate::P(phi).getStartNode()))
+        QMDDEdge(1.0,make_shared<QMDDNode>(*gate::I().getStartNode())),
+        QMDDEdge(.0, make_shared<QMDDNode>(*gate::ZERO().getStartNode())),
+        QMDDEdge(.0, make_shared<QMDDNode>(*gate::ZERO().getStartNode())),
+        QMDDEdge(1.0, make_shared<QMDDNode>(*gate::P(phi).getStartNode()))
     })));
 }
 
 QMDDGate gate::CS() {
     return QMDDGate(QMDDEdge(1.0, make_shared<QMDDNode>(vector<QMDDEdge>{
-        QMDDEdge(1.0,shared_ptr<QMDDNode>(gate::I().getStartNode())),
-        QMDDEdge(.0, shared_ptr<QMDDNode>(gate::ZERO().getStartNode())),
-        QMDDEdge(.0, shared_ptr<QMDDNode>(gate::ZERO().getStartNode())),
-        QMDDEdge(1.0, shared_ptr<QMDDNode>(gate::S().getStartNode()))
+        QMDDEdge(1.0,make_shared<QMDDNode>(*gate::I().getStartNode())),
+        QMDDEdge(.0, make_shared<QMDDNode>(*gate::ZERO().getStartNode())),
+        QMDDEdge(.0, make_shared<QMDDNode>(*gate::ZERO().getStartNode())),
+        QMDDEdge(1.0, make_shared<QMDDNode>(*gate::S().getStartNode()))
     })));
 }
 
@@ -400,133 +372,104 @@ QMDDGate gate::Rz(double theta) {
 
 QMDDGate gate::Rxx(double phi) {
     return QMDDGate(QMDDEdge(1.0, make_shared<QMDDNode>(vector<QMDDEdge>{
-        QMDDEdge(cos(phi / 2.0),shared_ptr<QMDDNode>(gate::I().getStartNode())),
-        QMDDEdge(-i * sin(phi / 2.0), shared_ptr<QMDDNode>(gate::X().getStartNode())),
-        QMDDEdge(-i * sin(phi / 2.0), shared_ptr<QMDDNode>(gate::X().getStartNode())),
-        QMDDEdge(cos(phi / 2.0), shared_ptr<QMDDNode>(gate::I().getStartNode()))
+        QMDDEdge(cos(phi / 2.0), make_shared<QMDDNode>(*gate::I().getStartNode())),
+        QMDDEdge(-i * sin(phi / 2.0), make_shared<QMDDNode>(*gate::X().getStartNode())),
+        QMDDEdge(-i * sin(phi / 2.0), make_shared<QMDDNode>(*gate::X().getStartNode())),
+        QMDDEdge(cos(phi / 2.0), make_shared<QMDDNode>(*gate::I().getStartNode()))
     })));
 }
 
 QMDDGate gate::Ryy(double phi) {
     return QMDDGate(QMDDEdge(1.0, make_shared<QMDDNode>(vector<QMDDEdge>{
-        QMDDEdge(cos(phi / 2.0),shared_ptr<QMDDNode>(gate::I().getStartNode())),
-        QMDDEdge(-sin(phi / 2.0), shared_ptr<QMDDNode>(gate::Y().getStartNode())),
-        QMDDEdge(sin(phi / 2.0), shared_ptr<QMDDNode>(gate::Y().getStartNode())),
-        QMDDEdge(cos(phi / 2.0), shared_ptr<QMDDNode>(gate::I().getStartNode()))
+        QMDDEdge(cos(phi / 2.0), make_shared<QMDDNode>(*gate::I().getStartNode())),
+        QMDDEdge(-sin(phi / 2.0), make_shared<QMDDNode>(*gate::Y().getStartNode())),
+        QMDDEdge(sin(phi / 2.0), make_shared<QMDDNode>(*gate::Y().getStartNode())),
+        QMDDEdge(cos(phi / 2.0), make_shared<QMDDNode>(*gate::I().getStartNode()))
     })));
 }
 
 QMDDGate gate::Rzz(double phi) {
     return QMDDGate(QMDDEdge(1.0, make_shared<QMDDNode>(vector<QMDDEdge>{
-        QMDDEdge(1.0,shared_ptr<QMDDNode>(gate::Rz(phi).getStartNode())),
-        QMDDEdge(.0, shared_ptr<QMDDNode>(gate::ZERO().getStartNode())),
-        QMDDEdge(.0, shared_ptr<QMDDNode>(gate::ZERO().getStartNode())),
-        QMDDEdge(exp(i * phi / 2.0), shared_ptr<QMDDNode>(gate::P(-phi).getStartNode()))
+        QMDDEdge(1.0, make_shared<QMDDNode>(*gate::Rz(phi).getStartNode())),
+        QMDDEdge(.0, make_shared<QMDDNode>(*gate::ZERO().getStartNode())),
+        QMDDEdge(.0, make_shared<QMDDNode>(*gate::ZERO().getStartNode())),
+        QMDDEdge(exp(i * phi / 2.0), make_shared<QMDDNode>(*gate::P(-phi).getStartNode()))
     })));
 }
 
 QMDDGate gate::Rxy(double phi) {
-    complex<double> rxyWeight = 1.0;
-
-    vector<QMDDEdge> rxyChildren1 = {
+    auto rxyNode1 = make_shared<QMDDNode>(vector<QMDDEdge>{
         QMDDEdge(1.0, nullptr),
-        QMDDEdge(0.0, nullptr),
-        QMDDEdge(0.0, nullptr),
+        QMDDEdge(.0, nullptr),
+        QMDDEdge(.0, nullptr),
         QMDDEdge(cos(phi / 2.0), nullptr)
-    };
+    });
 
-    auto rxyNode1 = make_shared<QMDDNode>(rxyChildren1);
-
-    vector<QMDDEdge> rxyChildren2 = {
-        QMDDEdge(0.0, nullptr),
-        QMDDEdge(0.0, nullptr),
+    auto rxyNode2 = make_shared<QMDDNode>(vector<QMDDEdge>{
+        QMDDEdge(.0, nullptr),
+        QMDDEdge(.0, nullptr),
         QMDDEdge(1.0, nullptr),
-        QMDDEdge(0.0, nullptr)
-    };
+        QMDDEdge(.0, nullptr)
+    });
 
-    auto rxyNode2 = make_shared<QMDDNode>(rxyChildren2);
-
-    vector<QMDDEdge> rxyChildren3 = {
-        QMDDEdge(0.0, nullptr),
+    auto rxyNode3 = make_shared<QMDDNode>(vector<QMDDEdge>{
+        QMDDEdge(.0, nullptr),
         QMDDEdge(1.0, nullptr),
-        QMDDEdge(0.0, nullptr),
-        QMDDEdge(0.0, nullptr)
-    };
+        QMDDEdge(.0, nullptr),
+        QMDDEdge(.0, nullptr)
+    });
 
-    auto rxyNode3 = make_shared<QMDDNode>(rxyChildren3);
-
-    vector<QMDDEdge> rxyChildren4 = {
+    auto rxyNode4 = make_shared<QMDDNode>(vector<QMDDEdge>{
         QMDDEdge(cos(phi / 2.0), nullptr),
-        QMDDEdge(0.0, nullptr),
-        QMDDEdge(0.0, nullptr),
+        QMDDEdge(.0, nullptr),
+        QMDDEdge(.0, nullptr),
         QMDDEdge(1.0, nullptr)
-    };
+    });
 
-    auto rxyNode4 = make_shared<QMDDNode>(rxyChildren4);
-
-    vector<QMDDEdge> rxyChildren = {
+    return QMDDGate(QMDDEdge(1.0, make_shared<QMDDNode>(vector<QMDDEdge>{
         QMDDEdge(1.0, rxyNode1),
         QMDDEdge(-i * sin(phi / 2.0), rxyNode2),
         QMDDEdge(-i * sin(phi / 2.0), rxyNode3),
         QMDDEdge(1.0, rxyNode4)
-    };
-
-    auto rxyNode = make_shared<QMDDNode>(rxyChildren);
-
-    QMDDEdge rxyEdge(rxyWeight, rxyNode);
-    return QMDDGate(rxyEdge);
+    })));
 }
 
 QMDDGate gate::SquareSWAP() {
-    complex<double> squareSWAPWeight = 1.0;
 
-    vector<QMDDEdge> squareSWAPChildren1 = {
+    auto squareSWAPNode1 = make_shared<QMDDNode>(vector<QMDDEdge>{
         QMDDEdge(1.0, nullptr),
-        QMDDEdge(0.0, nullptr),
-        QMDDEdge(0.0, nullptr),
+        QMDDEdge(.0, nullptr),
+        QMDDEdge(.0, nullptr),
         QMDDEdge((1.0 + i) / 2.0, nullptr)
-    };
+    });
 
-    auto squareSWAPNode1 = make_shared<QMDDNode>(squareSWAPChildren1);
-
-    vector<QMDDEdge> squareSWAPChildren2 = {
-        QMDDEdge(0.0, nullptr),
-        QMDDEdge(0.0, nullptr),
+    auto squareSWAPNode2 = make_shared<QMDDNode>(vector<QMDDEdge>{
+        QMDDEdge(.0, nullptr),
+        QMDDEdge(.0, nullptr),
         QMDDEdge(1.0, nullptr),
-        QMDDEdge(0.0, nullptr)
-    };
+        QMDDEdge(.0, nullptr)
+    });
 
-    auto squareSWAPNode2 = make_shared<QMDDNode>(squareSWAPChildren2);
-
-    vector<QMDDEdge> squareSWAPChildren3 = {
-        QMDDEdge(0.0, nullptr),
+    auto squareSWAPNode3 = make_shared<QMDDNode>(vector<QMDDEdge>{
+        QMDDEdge(.0, nullptr),
         QMDDEdge(1.0, nullptr),
-        QMDDEdge(0.0, nullptr),
-        QMDDEdge(0.0, nullptr)
-    };
+        QMDDEdge(.0, nullptr),
+        QMDDEdge(.0, nullptr)
+    });
 
-    auto squareSWAPNode3 = make_shared<QMDDNode>(squareSWAPChildren3);
-
-    vector<QMDDEdge> squareSWAPChildren4 = {
+    auto squareSWAPNode4 = make_shared<QMDDNode>(vector<QMDDEdge>{
         QMDDEdge((1.0 + i) / 2.0, nullptr),
-        QMDDEdge(0.0, nullptr),
-        QMDDEdge(0.0, nullptr),
+        QMDDEdge(.0, nullptr),
+        QMDDEdge(.0, nullptr),
         QMDDEdge(1.0, nullptr)
-    };
+    });
 
-    auto squareSWAPNode4 = make_shared<QMDDNode>(squareSWAPChildren4);
-
-    vector<QMDDEdge> squareSWAPChildren = {
+    return QMDDGate(QMDDEdge(1.0, make_shared<QMDDNode>(vector<QMDDEdge>{
         QMDDEdge(1.0, squareSWAPNode1),
         QMDDEdge((1.0 - i) / 2.0, squareSWAPNode2),
         QMDDEdge((1.0 - i) / 2.0, squareSWAPNode3),
         QMDDEdge(1.0, squareSWAPNode4)
-    };
-
-    auto squareSWAPNode = make_shared<QMDDNode>(squareSWAPChildren);
-
-    QMDDEdge squareSWAPEdge(squareSWAPWeight, squareSWAPNode);
-    return QMDDGate(squareSWAPEdge);
+    })));
 }
 
 QMDDGate gate::SquareiSWAP() {
@@ -848,19 +791,4 @@ QMDDGate gate::N(double a, double b, double c) {
 //         {1, -exp(I * lambda)},
 //         {exp(I * phi), exp(I * (lambda + phi))}
 //     };
-// }
-
-
-
-// PYBIND11_MODULE(gate_py, m) {
-//     py::class_<QMDDNode, std::shared_ptr<QMDDNode>>(m, "QMDDNode")
-//         .def(py::init<int>());
-
-//     py::class_<QMDDEdge>(m, "QMDDEdge")
-//         .def(py::init<std::complex<double>, std::shared_ptr<QMDDNode>>());
-
-//     py::class_<QMDDGate>(m, "QMDDGate")
-//         .def_static("get_h_gate", []() { return gate::H_GATE; }, py::return_value_policy::reference);
-
-//     m.attr("H_GATE") = gate::H_GATE;
 // }
