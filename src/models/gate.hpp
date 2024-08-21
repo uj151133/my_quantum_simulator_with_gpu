@@ -9,11 +9,11 @@
 using namespace GiNaC;
 namespace gate {
     QMDDGate ZERO();
-    
+
     /* Identity gate and global phase */
     QMDDGate I();
     QMDDGate Ph(double delta);
-    
+
     /* Clifford qubit gates */
     QMDDGate X();
     QMDDGate Y();
@@ -34,14 +34,14 @@ namespace gate {
     QMDDGate T();
     QMDDGate CP(double phi);
     QMDDGate CS();
-    
+
     /* Rotation operator gates */
     QMDDGate Rx(double theta);
     QMDDGate Ry(double theta);
     QMDDGate Rz(double theta);
 
     /* Two-qubit interaction gates */
-    QMDDGate Rxx(double phi); 
+    QMDDGate Rxx(double phi);
     QMDDGate Ryy(double phi);
     QMDDGate Rzz(double phi);
     QMDDGate Rxy(double phi);
