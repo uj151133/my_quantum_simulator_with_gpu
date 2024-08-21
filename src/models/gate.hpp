@@ -7,7 +7,6 @@
 #include <functional>
 
 using namespace GiNaC;
-
 namespace gate {
     QMDDGate ZERO();
     

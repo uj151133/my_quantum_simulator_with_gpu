@@ -11,6 +11,7 @@
 #include "src/models/uniqueTable.hpp"
 #include "src/models/qmdd.hpp"
 #include "src/common/mathUtils.hpp"
+#include "src/common/calculation.hpp"
 
 using namespace GiNaC;
 using namespace std;
@@ -84,13 +85,13 @@ int main() {
     // QMDDGate xGate = gate::X();
     // QMDDGate hGate = gate::H();
     // QMDDGate sGate = gate::S();
-    QMDDGate cx1Gate = gate::CX1();
+    // QMDDGate cx1Gate = gate::CX1();
     // QMDDGate cx2Gate = gate::CX2();
     // cout << "zeroGate:" << zeroGate.getInitialEdge() << endl;
     // cout << "zeroGate:" << zeroGate << endl;
     // cout << "igate:" << iGate.getDepth() << endl;
     // cout << "phgate:" << phGate.getInitialEdge() << endl;
-    cout << "cx1gate:" << cx1Gate.getInitialEdge() << endl;
+    // cout << "cx1gate:" << cx1Gate.getInitialEdge() << endl;
     // cout << "cx2gate:" << cx2Gate.getDepth() << endl;
     // cout << "igate:" << gate::I().getInitialEdge() << endl;
     // cout << "x1gate:" << gate::X().getInitialEdge() << endl;

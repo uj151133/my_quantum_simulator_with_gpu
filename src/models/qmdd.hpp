@@ -22,15 +22,16 @@ class QMDDGate;
 
 class QMDDState;
 
-// 列挙型の定義
+
 enum class OperationType {
     ADD,
-    MULTIPLY
+    MUL
 };
 
 using OperationKey = tuple<QMDDEdge, OperationType, QMDDEdge>;
 
 using OperationResult = pair<double, size_t>;
+
 
 using QMDDVariant = variant<QMDDGate, QMDDState>;
 ostream& operator<<(ostream& os, const QMDDVariant& variant);

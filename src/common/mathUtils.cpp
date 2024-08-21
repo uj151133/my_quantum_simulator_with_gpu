@@ -37,8 +37,10 @@ using namespace std;
 // }
 
 QMDDEdge mathUtils::addition(const QMDDEdge& edge1, const QMDDEdge& edge2) {
+    OperationCache& cache = OperationCache::getInstance();
     UniqueTable& table = UniqueTable::getInstance();
-
+    size_t operationCacheKey = calculation::generateOperationCacheKey(make_tuple(edge1, OperationType::ADD, edge2));
+    cout << "Operation cache key: " << operationCacheKey << endl;
     shared_ptr<QMDDNode> node1 = table.find(edge1.uniqueTableKey);
     shared_ptr<QMDDNode> node2 = table.find(edge2.uniqueTableKey);
 
