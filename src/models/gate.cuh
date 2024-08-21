@@ -13,7 +13,7 @@ namespace py = pybind11;
 
 __device__ extern cuDoubleComplex i;
 
-__global__ void createZeroGate(cuDoubleComplex* weights, cuDoubleComplex** nodes);
+__global__ void createZeroNode(QMDDNode* node);
 __global__ void createIdentityGate(cuDoubleComplex* weights, cuDoubleComplex** nodes);
 __global__ void createGlobalPhaseGate(cuDoubleComplex* weights, cuDoubleComplex** nodes, double delta);
 __global__ void createPauliXGate(cuDoubleComplex* weights, cuDoubleComplex** nodes);
