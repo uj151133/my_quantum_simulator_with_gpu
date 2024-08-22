@@ -10,7 +10,7 @@ __global__ void createZeroNode(QMDDNode* node) {
     node->edges.push_back(QMDDEdge(0.0, nullptr));
 }
 
-__global__ void createIdentityGate(cuDoubleComplex* weights, cuDoubleComplex** nodes) {
+__global__ void createIdentityNode(cuDoubleComplex* weights, cuDoubleComplex** nodes) {
     weights[0] = 1.0;
     nodes[0]->edges[0] = QMDDEdge(1.0, nullptr);
     nodes[0]->edges[1] = QMDDEdge(0.0, nullptr);
@@ -18,7 +18,7 @@ __global__ void createIdentityGate(cuDoubleComplex* weights, cuDoubleComplex** n
     nodes[0]->edges[3] = QMDDEdge(1.0, nullptr);
 }
 
-__global__ void createGlobalPhaseGate(cuDoubleComplex* weights, cuDoubleComplex** nodes, double delta) {
+__global__ void createGlobalPhaseNode(cuDoubleComplex* weights, cuDoubleComplex** nodes, double delta) {
     weights[0] = cuCexp(cuCmul(i, make_cuDoubleComplex(delta, 0.0)));
     nodes[0]->edges[0] = QMDDEdge(1.0, nullptr);
     nodes[0]->edges[1] = QMDDEdge(0.0, nullptr);
@@ -26,7 +26,7 @@ __global__ void createGlobalPhaseGate(cuDoubleComplex* weights, cuDoubleComplex*
     nodes[0]->edges[3] = QMDDEdge(1.0, nullptr);
 }
 
-__global__ void createPauliXGate(cuDoubleComplex* weights, cuDoubleComplex** nodes) {
+__global__ void createPauliXNode(cuDoubleComplex* weights, cuDoubleComplex** nodes) {
     weighs[0] = 1.0
     nodes[0]->edges[0] = QMDDEdge(0.0, nullptr);
     nodes[0]->edges[1] = QMDDEdge(1.0, nullptr);
@@ -34,7 +34,7 @@ __global__ void createPauliXGate(cuDoubleComplex* weights, cuDoubleComplex** nod
     nodes[0]->edges[3] = QMDDEdge(0.0, nullptr);
 }
 
-__global__ void createPauliYGate(cuDoubleComplex* weights, cuDoubleComplex** nodes) {
+__global__ void createPauliYNode(cuDoubleComplex* weights, cuDoubleComplex** nodes) {
     weighs[0] = i;
     nodes[0]->edges[0] = QMDDEdge(0.0, nullptr);
     nodes[0]->edges[1] = QMDDEdge(1.0, nullptr);
@@ -42,7 +42,7 @@ __global__ void createPauliYGate(cuDoubleComplex* weights, cuDoubleComplex** nod
     nodes[0]->edges[3] = QMDDEdge(0.0, nullptr);
 }
 
-__global__ void createPauliZGate(cuDoubleComplex* weights, cuDoubleComplex** nodes) {
+__global__ void createPauliZNode(cuDoubleComplex* weights, cuDoubleComplex** nodes) {
     weighs[0] = 1.0;
     nodes[0]->edges[0] = QMDDEdge(1.0, nullptr);
     nodes[0]->edges[1] = QMDDEdge(0.0, nullptr);
@@ -50,7 +50,7 @@ __global__ void createPauliZGate(cuDoubleComplex* weights, cuDoubleComplex** nod
     nodes[0]->edges[3] = QMDDEdge(-1.0, nullptr);
 }
 
-__global__ void createPhaseSGate(cuDoubleComplex* weights, cuDoubleComplex** nodes) {
+__global__ void createPhaseSNode(cuDoubleComplex* weights, cuDoubleComplex** nodes) {
     weighs[0] = 1.0;
     nodes[0]->edges[0] = QMDDEdge(1.0, nullptr);
     nodes[0]->edges[1] = QMDDEdge(0.0, nullptr);
@@ -58,7 +58,7 @@ __global__ void createPhaseSGate(cuDoubleComplex* weights, cuDoubleComplex** nod
     nodes[0]->edges[3] = QMDDEdge(i, nullptr);
 }
 
-__global__ void createSquareRootOfXGate(cuDoubleComplex* weights, cuDoubleComplex** nodes) {
+__global__ void createSquareRootOfXNode(cuDoubleComplex* weights, cuDoubleComplex** nodes) {
     weighs[0] = 1.0 / 2.0 + i / 2.0;
     nodes[0]->edges[0] = QMDDEdge(1.0, nullptr);
     nodes[0]->edges[1] = QMDDEdge(i, nullptr);
@@ -66,7 +66,7 @@ __global__ void createSquareRootOfXGate(cuDoubleComplex* weights, cuDoubleComple
     nodes[0]->edges[3] = QMDDEdge(1.0, nullptr);
 }
 
-__global__ void createHadamardGate(cuDoubleComplex* weights, cuDoubleComplex** nodes) {
+__global__ void createHadamardNode(cuDoubleComplex* weights, cuDoubleComplex** nodes) {
     weighs[0] = 1.0 / sqrt(2.0);
     nodes[0]->edges[0] = QMDDEdge(1.0, nullptr);
     nodes[0]->edges[1] = QMDDEdge(1.0, nullptr);
@@ -74,7 +74,7 @@ __global__ void createHadamardGate(cuDoubleComplex* weights, cuDoubleComplex** n
     nodes[0]->edges[3] = QMDDEdge(-1.0, nullptr);
 }
 
-__global__ void createPhaseShiftGate(cuDoubleComplex* weights, cuDoubleComplex** nodes, double phi) {
+__global__ void createPhaseShiftNode(cuDoubleComplex* weights, cuDoubleComplex** nodes, double phi) {
     weighs[0] = 1.0;
     nodes[0]->edges[0] = QMDDEdge(1.0, nullptr);
     nodes[0]->edges[1] = QMDDEdge(0.0, nullptr);
@@ -82,7 +82,7 @@ __global__ void createPhaseShiftGate(cuDoubleComplex* weights, cuDoubleComplex**
     nodes[0]->edges[3] = QMDDEdge(cuCexp(cuCmul(i, make_cuDoubleComplex(phi, 0.0))), nullptr);
 }
 
-__global__ void createPhaseTGate(cuDoubleComplex* weights, cuDoubleComplex** nodes) {
+__global__ void createPhaseTNode(cuDoubleComplex* weights, cuDoubleComplex** nodes) {
     weighs[0] = 1.0;
     nodes[0]->edges[0] = QMDDEdge(1.0, nullptr);
     nodes[0]->edges[1] = QMDDEdge(0.0, nullptr);
@@ -90,7 +90,7 @@ __global__ void createPhaseTGate(cuDoubleComplex* weights, cuDoubleComplex** nod
     nodes[0]->edges[3] = QMDDEdge(cuCexp(cuCmul(i, make_cuDoubleComplex(M_PI / 4.0, 0.0))), nullptr);
 }
 
-__global__ void createRotationAboutXGate(cuDoubleComplex* weights, cuDoubleComplex** nodes, double theta) {
+__global__ void createRotationAboutXNode(cuDoubleComplex* weights, cuDoubleComplex** nodes, double theta) {
     weighs[0] = 1.0;
     nodes[0]->edges[0] = QMDDEdge(cos(theta / 2.0), nullptr);
     nodes[0]->edges[1] = QMDDEdge(-i * sin(theta / 2.0), nullptr);
@@ -98,7 +98,7 @@ __global__ void createRotationAboutXGate(cuDoubleComplex* weights, cuDoubleCompl
     nodes[0]->edges[3] = QMDDEdge(cos(theta / 2.0), nullptr);
 }
 
-__global__ void create RotationAboutYGate(cuDoubleComplex* weights, cuDoubleComplex** nodes, double theta) {
+__global__ void create RotationAboutYNode(cuDoubleComplex* weights, cuDoubleComplex** nodes, double theta) {
     weighs[0] = 1.0;
     nodes[0]->edges[0] = QMDDEdge(cos(theta / 2.0), nullptr);
     nodes[0]->edges[1] = QMDDEdge(-sin(theta / 2.0), nullptr);
@@ -106,7 +106,7 @@ __global__ void create RotationAboutYGate(cuDoubleComplex* weights, cuDoubleComp
     nodes[0]->edges[3] = QMDDEdge(cos(theta / 2.0), nullptr);
 }
 
-__global__ void createRotationAboutZGate(cuDoubleComplex* weights, cuDoubleComplex** nodes, double theta) {
+__global__ void createRotationAboutZNode(cuDoubleComplex* weights, cuDoubleComplex** nodes, double theta) {
     weighs[0] = 1.0;
     nodes[0]->edges[0] = QMDDEdge(cuCexp(cuCmul(-i, make_cuDoubleComplex(theta / 2.0, 0.0))), nullptr);
     nodes[0]->edges[1] = QMDDEdge(0.0, nullptr);
@@ -132,7 +132,7 @@ QMDDGate gate::I() {
     cudaMallocManaged(&nodes, sizeof(QMDDNode*) * 1);
     cudaMallocManaged(&nodes[0], sizeof(QMDDNode));
     
-    createIdentityGate<<<1, 1>>>(weights, nodes);
+    createIdentityNode<<<1, 1>>>(weights, nodes);
     cudaDeviceSynchronize();
     
     QMDDEdge iEdge(weights[0], nodes[0]);
@@ -152,7 +152,7 @@ QMDDGate gate::Ph(double delta) {
     cudaMallocManaged(&nodes, sizeof(QMDDNode*) * 1);
     cudaMallocManaged(&nodes[0], sizeof(QMDDNode));
     
-    createGlobalPhaseGate<<<1, 1>>>(weights, nodes, delta);
+    createGlobalPhaseNode<<<1, 1>>>(weights, nodes, delta);
     cudaDeviceSynchronize();
     
     QMDDEdge phEdge(weights[0], nodes[0]);
@@ -171,7 +171,7 @@ QMDDGate gate::X() {
     cudaMallocManaged(&nodes, sizeof(QMDDNode*) * 1);
     cudaMallocManaged(&nodes[0], sizeof(QMDDNode));
     
-    createPauliXGate<<<1, 1>>>(weights, nodes);
+    createPauliXNode<<<1, 1>>>(weights, nodes);
     cudaDeviceSynchronize();
     
     QMDDEdge xEdge(weights[0], nodes[0]);
@@ -190,7 +190,7 @@ QMDDGate gate::Y() {
     cudaMallocManaged(&nodes, sizeof(QMDDNode*) * 1);
     cudaMallocManaged(&nodes[0], sizeof(QMDDNode));
     
-    createPauliYGate<<<1, 1>>>(weights, nodes);
+    createPauliYNode<<<1, 1>>>(weights, nodes);
     cudaDeviceSynchronize();
     
     QMDDEdge yEdge(weights[0], nodes[0]);
@@ -209,7 +209,7 @@ QMDDGate gate::Z() {
     cudaMallocManaged(&nodes, sizeof(QMDDNode*) * 1);
     cudaMallocManaged(&nodes[0], sizeof(QMDDNode));
     
-    createPauliZGate<<<1, 1>>>(weights, nodes);
+    createPauliZNode<<<1, 1>>>(weights, nodes);
     cudaDeviceSynchronize();
     
     QMDDEdge zEdge(weights[0], nodes[0]);
@@ -228,7 +228,7 @@ QMDDGate gate::S() {
     cudaMallocManaged(&nodes, sizeof(QMDDNode*) * 1);
     cudaMallocManaged(&nodes[0], sizeof(QMDDNode));
     
-    createPhaseSGate<<<1, 1>>>(weights, nodes);
+    createPhaseSNode<<<1, 1>>>(weights, nodes);
     cudaDeviceSynchronize();
     
     QMDDEdge sEdge(weights[0], nodes[0]);
@@ -247,7 +247,7 @@ QMDDGate gate::V() {
     cudaMallocManaged(&nodes, sizeof(QMDDNode*) * 1);
     cudaMallocManaged(&nodes[0], sizeof(QMDDNode));
     
-    createSquareRootOfXGate<<<1, 1>>>(weights, nodes);
+    createSquareRootOfXNode<<<1, 1>>>(weights, nodes);
     cudaDeviceSynchronize();
     
     QMDDEdge vEdge(weights[0], nodes[0]);
@@ -266,7 +266,7 @@ QMDDGate gate::H() {
     cudaMallocManaged(&nodes, sizeof(QMDDNode*) * 1);
     cudaMallocManaged(&nodes[0], sizeof(QMDDNode));
     
-    createHadamardGate<<<1, 1>>>(weights, nodes);
+    createHadamardNode<<<1, 1>>>(weights, nodes);
     cudaDeviceSynchronize();
     
     QMDDEdge hEdge(weights[0], nodes[0]);
@@ -285,7 +285,7 @@ QMDDGate gate::P(double phi) {
     cudaMallocManaged(&nodes, sizeof(QMDDNode*) * 1);
     cudaMallocManaged(&nodes[0], sizeof(QMDDNode));
     
-    createPhaseShiftGate<<<1, 1>>>(weights, nodes, phi);
+    createPhaseShiftNode<<<1, 1>>>(weights, nodes, phi);
     cudaDeviceSynchronize();
     
     QMDDEdge pEdge(weights[0], nodes[0]);
@@ -304,7 +304,7 @@ QMDDGate gate::T() {
     cudaMallocManaged(&nodes, sizeof(QMDDNode*) * 1);
     cudaMallocManaged(&nodes[0], sizeof(QMDDNode));
     
-    createPhaseTGate<<<1, 1>>>(weights, nodes);
+    createPhaseTNode<<<1, 1>>>(weights, nodes);
     cudaDeviceSynchronize();
     
     QMDDEdge tEdge(weights[0], nodes[0]);
@@ -323,7 +323,7 @@ QMDDGate gate::Rx(double theta) {
     cudaMallocManaged(&nodes, sizeof(QMDDNode*) * 1);
     cudaMallocManaged(&nodes[0], sizeof(QMDDNode));
     
-    createRotationAboutXGate<<<1, 1>>>(weights, nodes, theta);
+    createRotationAboutXNode<<<1, 1>>>(weights, nodes, theta);
     cudaDeviceSynchronize();
     
     QMDDEdge rxEdge(weights[0], nodes[0]);
@@ -342,7 +342,7 @@ QMDDGate gate::Ry(double theta) {
     cudaMallocManaged(&nodes, sizeof(QMDDNode*) * 1);
     cudaMallocManaged(&nodes[0], sizeof(QMDDNode));
     
-    createRotationAboutYGate<<<1, 1>>>(weights, nodes, theta);
+    createRotationAboutYNode<<<1, 1>>>(weights, nodes, theta);
     cudaDeviceSynchronize();
     
     QMDDEdge rxEdge(weights[0], nodes[0]);
@@ -361,7 +361,7 @@ QMDDGate gate::Rz(double theta) {
     cudaMallocManaged(&nodes, sizeof(QMDDNode*) * 1);
     cudaMallocManaged(&nodes[0], sizeof(QMDDNode));
     
-    createRotationAboutZGate<<<1, 1>>>(weights, nodes, theta);
+    createRotationAboutZNode<<<1, 1>>>(weights, nodes, theta);
     cudaDeviceSynchronize();
     
     QMDDEdge rzEdge(weights[0], nodes[0]);
@@ -383,7 +383,7 @@ QMDDGate Ph(double delta) {
     cudaMallocManaged(&nodes[0], sizeof(QMDDNode));
 
     // カーネルの呼び出し
-    createPhaseGate<<<1, 1>>>(weights, nodes, delta);
+    createPhaseNode<<<1, 1>>>(weights, nodes, delta);
     cudaDeviceSynchronize();
 
     // QMDDEdge の作成
