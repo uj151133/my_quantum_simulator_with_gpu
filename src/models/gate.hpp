@@ -56,8 +56,23 @@ namespace gate {
     QMDDGate U(double theta, double phi, double lambda);
     QMDDGate BARENCO(double alpha, double phi, double theta);
     QMDDGate B();
+    QMDDGate CSX();
     QMDDGate N(double a, double b, double c);
+    QMDDGate DB();
+    QMDDGate ECR();
+    QMDDGate fSim(double theta, double phi);
+    QMDDGate G(double theta);
+    QMDDGate M();
+    QMDDGate syc();
+    QMDDGate CZS(double theta, double phi, double gamma);
+    QMDDGate D(double theta);
+    QMDDGate RCCX();
+    QMDDGate PG();
+    QMDDGate Toff();
+    QMDDGate fFredkin();
 }
+
+
 
 // QMDDGate createPlusYGate();
 // QMDDGate createMinusYGate();
