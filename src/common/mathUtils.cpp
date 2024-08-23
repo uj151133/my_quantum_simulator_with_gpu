@@ -41,37 +41,45 @@ QMDDEdge mathUtils::addition(const QMDDEdge& edge1, const QMDDEdge& edge2) {
     UniqueTable& table = UniqueTable::getInstance();
     size_t operationCacheKey = calculation::generateOperationCacheKey(make_tuple(edge1, OperationType::ADD, edge2));
     cout << "Operation cache key: " << operationCacheKey << endl;
-    shared_ptr<QMDDNode> node1 = table.find(edge1.uniqueTableKey);
-    shared_ptr<QMDDNode> node2 = table.find(edge2.uniqueTableKey);
+    auto existingAnswer = cache.find(operationCacheKey);
+    if (existingAnswer != OperationResult{.0, 0}) {
+        cout << "Cache hit!" << endl;
+        return QMDDEdge(existingAnswer.first, existingAnswer.second);
+    }
+    else {
+        cout << "Cache miss!" << endl;
+        shared_ptr<QMDDNode> node1 = table.find(edge1.uniqueTableKey);
+        shared_ptr<QMDDNode> node2 = table.find(edge2.uniqueTableKey);
 
-    if (edge1.isTerminal) {
-        QMDDEdge result = edge2;
-        result.weight += edge1.weight;
-        return result;
-    }
-    if (edge2.isTerminal) {
-        QMDDEdge result = edge1;
-        result.weight += edge2.weight;
-        return result;
-    }
+        if (edge1.isTerminal) {
+            QMDDEdge result = edge2;
+            result.weight += edge1.weight;
+            return result;
+        }
+        if (edge2.isTerminal) {
+            QMDDEdge result = edge1;
+            result.weight += edge2.weight;
+            return result;
+        }
 
-    if (node1->edges.size() != node2->edges.size()) {
-        throw std::runtime_error("Node edge sizes do not match.");
-    }
-    if (!node1 || !node2) {
-        throw invalid_argument("Invalid node pointer in QMDDEdge.");
-    }
+        if (node1->edges.size() != node2->edges.size()) {
+            throw std::runtime_error("Node edge sizes do not match.");
+        }
+        if (!node1 || !node2) {
+            throw invalid_argument("Invalid node pointer in QMDDEdge.");
+        }
 
-    for (int i = 0; i < node1->edges.size(); ++i) {
-        node1->edges[i].weight *= edge1.weight;
-        node2->edges[i].weight *= edge2.weight;
-    }
+        for (int i = 0; i < node1->edges.size(); ++i) {
+            node1->edges[i].weight *= edge1.weight;
+            node2->edges[i].weight *= edge2.weight;
+        }
 
-    vector<QMDDEdge> newEdge(node1->edges.size());
-    for (size_t i = 0; i < newEdge.size(); ++i) {
-        newEdge[i] = mathUtils::addition(node1->edges[i], node2->edges[i]);
-    }
+        vector<QMDDEdge> newEdge(node1->edges.size());
+        for (size_t i = 0; i < newEdge.size(); ++i) {
+            newEdge[i] = mathUtils::addition(node1->edges[i], node2->edges[i]);
+        }
 
-    auto newNode = make_shared<QMDDNode>(newEdge);
-    return QMDDEdge(1.0, newNode);
+        auto newNode = make_shared<QMDDNode>(newEdge);
+        return QMDDEdge(1.0, newNode);
+    }
 }

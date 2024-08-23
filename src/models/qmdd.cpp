@@ -31,7 +31,16 @@ QMDDEdge::QMDDEdge(double w, shared_ptr<QMDDNode> n)
     cout << "Edge created with weight: " << weight << " and uniqueTableKey: " << uniqueTableKey << " and isTerminal: " << isTerminal << endl;
 }
 
-// QMDDEdgeの比較演算子
+QMDDEdge::QMDDEdge(complex<double> w, size_t key)
+    : weight(w), uniqueTableKey(key), isTerminal(false) {
+    cout << "Edge created with weight: " << weight << " and uniqueTableKey: " << uniqueTableKey << " and isTerminal: " << isTerminal << endl;
+}
+
+QMDDEdge::QMDDEdge(double w, size_t key)
+    : weight(complex<double>(w, 0.0)), uniqueTableKey(key), isTerminal(false) {
+    cout << "Edge created with weight: " << weight << " and uniqueTableKey: " << uniqueTableKey << " and isTerminal: " << isTerminal << endl;
+}
+
 bool QMDDEdge::operator==(const QMDDEdge& other) const {
     UniqueTable& table = UniqueTable::getInstance();
     if (weight != other.weight) return false;

@@ -45,6 +45,8 @@ struct QMDDEdge{
 
     QMDDEdge(complex<double> w = {0.0, 0.0}, shared_ptr<QMDDNode> n = nullptr);
     QMDDEdge(double w, shared_ptr<QMDDNode> n = nullptr);
+    QMDDEdge(complex<double> w, size_t key);
+    QMDDEdge(double w, size_t key);
     QMDDEdge(const QMDDEdge& other) = default;
     ~QMDDEdge() = default;
     QMDDEdge& operator=(const QMDDEdge& other) = default;
