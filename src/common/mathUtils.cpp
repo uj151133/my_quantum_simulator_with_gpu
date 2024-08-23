@@ -80,6 +80,7 @@ QMDDEdge mathUtils::addition(const QMDDEdge& edge1, const QMDDEdge& edge2) {
         }
 
         auto newNode = make_shared<QMDDNode>(newEdge);
+        cache.insert(operationCacheKey, make_pair(1.0, calculation::generateUniqueTableKey(*newNode)));
         return QMDDEdge(1.0, newNode);
     }
 }
