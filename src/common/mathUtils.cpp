@@ -125,3 +125,46 @@ QMDDEdge mathUtils::addition(const QMDDEdge& edge1, const QMDDEdge& edge2) {
         return QMDDEdge(1.0, newNode);
     }
 }
+
+QMDDEdge mathUtils::kroneckerProduct(const QMDDEdge& e0, const QMDDEdge& e1) {
+    UniqueTable& table = UniqueTable::getInstance();
+
+    // 端点かどうかを確認
+    if (e0.isTerminal) {
+        if (e0.weight == 0.0) {
+            return e0;
+        }
+        if (e0.weight == 1.0) {
+            return e1;
+        }
+        // それ以外のケース
+        return QMDDEdge(e0.weight * e1.weight, e1.uniqueTableKey);
+    }
+
+    // ノードへのポインタを取得
+    shared_ptr<QMDDNode> node0 = table.find(e0.uniqueTableKey);
+    shared_ptr<QMDDNode> node1 = table.find(e1.uniqueTableKey);
+
+    // ノードのエッジ数に基づいて新しいエッジを作成
+    size_t n0 = node0->edges.size();
+    size_t m0 = node0->edges[0].size();
+    size_t n1 = node1->edges.size();
+    size_t m1 = node1->edges[0].size();
+
+    vector<vector<QMDDEdge>> resultEdges(n0 * n1, vector<QMDDEdge>(m0 * m1));
+
+    // クロネッカー積を再帰的に計算
+    for (size_t i = 0; i < n0; ++i) {
+        for (size_t j = 0; j < m0; ++j) {
+            for (size_t k = 0; k < n1; ++k) {
+                for (size_t l = 0; l < m1; ++l) {
+                    resultEdges[i * n1 + k][j * m1 + l] = mathUtils::kroneckerProduct(node0->edges[i][j], node1->edges[k][l]);
+                }
+            }
+        }
+    }
+
+    // 新しいノードを作成して返す
+    auto newNode = make_shared<QMDDNode>(resultEdges);
+    return QMDDEdge(1.0, newNode);
+}

@@ -2,10 +2,7 @@
 #define CALCULATION_HPP
 
 #include "../models/qmdd.hpp"
-#include <complex>
 #include <utility>
-#include <memory>
-#include <tuple>
 
 using namespace std;
 

@@ -1,13 +1,11 @@
 #ifndef CIRCUIT_HPP
 #define CIRCUIT_HPP
 
-#include <iostream>
-#include <complex>
-#include <array>
-#include <unordered_map>
-#include <functional>
+#include <numeric>
 #include <queue>
 #include "qmdd.hpp"
+#include "gate.hpp"
+#include "../common/mathUtils.hpp"
 
 using namespace std;
 
