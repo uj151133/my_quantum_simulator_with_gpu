@@ -10,5 +10,10 @@ namespace state {
     QMDDState KET_1();
     QMDDState KET_PLUS();
     QMDDState KET_MINUS();
+
+    QMDDState BRA_0();
+    QMDDState BRA_1();
+    QMDDState BRA_PLUS();
+    QMDDState BRA_MINUS();
 }
 #endif

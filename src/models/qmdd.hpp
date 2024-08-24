@@ -25,7 +25,8 @@ class QMDDState;
 
 enum class OperationType {
     ADD,
-    MUL
+    MUL,
+    KRONECKER,
 };
 
 using OperationKey = tuple<QMDDEdge, OperationType, QMDDEdge>;
@@ -38,10 +39,9 @@ ostream& operator<<(ostream& os, const QMDDVariant& variant);
 
 
 struct QMDDEdge{
-    complex<double> weight; // エッジの重み
+    complex<double> weight;
     size_t uniqueTableKey;
-    bool isTerminal; // 終端ノードかどうか
-    // shared_ptr<QMDDNode> node; // エッジの指すQMDDNodeのポインタ
+    bool isTerminal;
 
     QMDDEdge(complex<double> w = {0.0, 0.0}, shared_ptr<QMDDNode> n = nullptr);
     QMDDEdge(double w, shared_ptr<QMDDNode> n = nullptr);
@@ -56,9 +56,9 @@ struct QMDDEdge{
 };
 
 struct QMDDNode {
-    vector<QMDDEdge> edges; // エッジの配列
+    vector<vector<QMDDEdge>> edges;
 
-    QMDDNode(const vector<QMDDEdge>& edges);
+    QMDDNode(const vector<vector<QMDDEdge>>& edges);
     ~QMDDNode() = default;
     // コピーコンストラクタとコピー代入演算子
     QMDDNode(const QMDDNode& other) = default;
@@ -94,7 +94,7 @@ private:
     QMDDEdge initialEdge;
 
 public:
-    QMDDState(QMDDEdge edge, size_t numEdge = 2);
+    QMDDState(QMDDEdge edge);
     QMDDState(const QMDDState& other) = default;
     ~QMDDState() = default;
     QMDDNode* getStartNode() const;

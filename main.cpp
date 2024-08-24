@@ -79,7 +79,7 @@ int main() {
 
     UniqueTable& uniqueTable = UniqueTable::getInstance();
 
-    QMDDGate zeroGate = gate::ZERO();
+    QMDDGate zeroGate = gate::O();
     // QMDDGate iGate = gate::I();
     // QMDDGate phGate = gate::Ph(0.5);
     // QMDDGate xGate = gate::X();

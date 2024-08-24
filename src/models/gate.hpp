@@ -8,7 +8,7 @@
 
 using namespace GiNaC;
 namespace gate {
-    QMDDGate ZERO();
+    QMDDGate O();
 
     /* Identity gate and global phase */
     QMDDGate I();
@@ -82,8 +82,8 @@ namespace gate {
 
 // matrix Rotate(const ex &k);
 
-matrix U1(const ex &lambda);
-matrix U2(const ex &phi, const ex &lambda);
+// matrix U1(const ex &lambda);
+// matrix U2(const ex &phi, const ex &lambda);
 
 // vector<vector<ex>> Ry(const ex &theta);
 
