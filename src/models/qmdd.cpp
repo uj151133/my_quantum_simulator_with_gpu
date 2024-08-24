@@ -9,9 +9,11 @@ ostream& operator<<(ostream& os, const QMDDVariant& variant) {
     return os;
 }
 
-//////////////
-/* QMDDEdge */
-//////////////
+/////////////////////////////////////
+//
+//	QMDDEdge
+//
+/////////////////////////////////////
 
 QMDDEdge::QMDDEdge(complex<double> w, shared_ptr<QMDDNode> n)
     : weight(w), uniqueTableKey(n ? calculation::generateUniqueTableKey(*n) : 0), isTerminal(!n) {
@@ -66,11 +68,13 @@ ostream& operator<<(ostream& os, const QMDDEdge& edge) {
     return os;
 }
 
-//////////////
-/* QMDDNode */
-//////////////
+/////////////////////////////////////
+//
+//	QMDDNode
+//
+/////////////////////////////////////
 
-QMDDNode::QMDDNode(const vector<QMDDEdge>& edges) : edges(edges) {
+QMDDNode::QMDDNode(const vector<vector<QMDDEdge>>& edges) : edges(edges) {
     // cout << endl;
     cout << "Node created with " << edges.size() << " edges" << endl;
     // cout << endl;
@@ -89,7 +93,10 @@ bool QMDDNode::operator==(const QMDDNode& other) const {
     if (edges.size() != other.edges.size()) return false;
     UniqueTable& table = UniqueTable::getInstance();
     for (size_t i = 0; i < edges.size(); ++i) {
-        if (edges[i] != other.edges[i]) return false;
+        if (edges[i].size() != other.edges[i].size()) return false;
+        for (size_t j = 0; j < edges[i].size(); ++j) {
+            if (edges[i][j] != other.edges[i][j]) return false;
+        }
     }
     return true;
 }
@@ -99,19 +106,22 @@ bool QMDDNode::operator!=(const QMDDNode& other) const {
 }
 
 ostream& operator<<(ostream& os, const QMDDNode& node) {
-    os << "QMDDNode with " << node.edges.size() << " edges \n";
-    for (const auto& edge : node.edges) {
-        os << "Edge" << edge << "\n";
+    os << "QMDDNode with " << node.edges.size() << " rows of edges \n";
+    for (const auto& row : node.edges) {
+        os << "Row with " << row.size() << " edges: ";
+        for (const auto& edge : row) {
+            os << edge << " ";
+        }
+        os << "\n";
     }
     return os;
 }
 
-
-
-//////////////
-/* QMDDGate */
-//////////////
-
+/////////////////////////////////////
+//
+//	QMDDGate
+//
+/////////////////////////////////////
 
 QMDDGate::QMDDGate(QMDDEdge edge, size_t numEdge)
     : initialEdge(std::move(edge)), depth(0) {
@@ -125,7 +135,7 @@ void QMDDGate::calculateDepth() {
 
     while (currentNode && !currentNode->edges.empty()) {
         ++currentDepth;
-        currentNode = table.find(currentNode->edges[0].uniqueTableKey);
+        currentNode = table.find(currentNode->edges[0][0].uniqueTableKey);
     }
 
     cout << "Depth calculated: " << currentDepth << endl;
@@ -158,11 +168,13 @@ ostream& operator<<(ostream& os, const QMDDGate& gate) {
     return os;
 }
 
-//////////////
-/* QMDDState */
-//////////////
+/////////////////////////////////////
+//
+//	QMDDState
+//
+/////////////////////////////////////
 
-QMDDState::QMDDState(QMDDEdge edge, size_t numEdge)
+QMDDState::QMDDState(QMDDEdge edge)
     : initialEdge(std::move(edge)) {
 }
 
@@ -185,10 +197,19 @@ shared_ptr<QMDDNode> QMDDState::addNodes(QMDDNode* node1, QMDDNode* node2) {
     if (!node1) return shared_ptr<QMDDNode>(node2);
     if (!node2) return shared_ptr<QMDDNode>(node1);
 
-    vector<QMDDEdge> resultEdges = {
-        QMDDEdge(node1->edges[0].weight + node2->edges[0].weight, addNodes(table.find(node1->edges[0].uniqueTableKey).get(), table.find(node2->edges[0].uniqueTableKey).get())),
-        QMDDEdge(node1->edges[1].weight + node2->edges[1].weight, addNodes(table.find(node1->edges[1].uniqueTableKey).get(), table.find(node2->edges[1].uniqueTableKey).get()))
-    };
+    vector<vector<QMDDEdge>> resultEdges(node1->edges.size(), vector<QMDDEdge>(node1->edges[0].size()));
+
+    for (size_t i = 0; i < node1->edges.size(); ++i) {
+        for (size_t j = 0; j < node1->edges[i].size(); ++j) {
+            resultEdges[i][j] = QMDDEdge(
+                node1->edges[i][j].weight + node2->edges[i][j].weight,
+                addNodes(
+                    table.find(node1->edges[i][j].uniqueTableKey).get(),
+                    table.find(node2->edges[i][j].uniqueTableKey).get()
+                )
+            );
+        }
+    }
 
     auto resultNode = make_shared<QMDDNode>(resultEdges);
 

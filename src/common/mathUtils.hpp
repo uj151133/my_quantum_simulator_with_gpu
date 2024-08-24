@@ -14,6 +14,7 @@ using namespace std;
 namespace mathUtils {
     QMDDEdge multiplication(const QMDDEdge& m, const QMDDEdge& v);
     QMDDEdge addition(const QMDDEdge& e1, const QMDDEdge& e2);
+    QMDDEdge kroneckerProduct(const QMDDEdge& e1, const QMDDEdge& e2);
 }
 
 #endif // MATH_UTILS_HPP
