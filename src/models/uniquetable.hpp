@@ -1,9 +1,6 @@
 #ifndef UNIQUETABLE_HPP
 #define UNIQUETABLE_HPP
 
-#include <unordered_map>
-#include <vector>
-#include <memory>
 #include "qmdd.hpp"
 
 using namespace std;

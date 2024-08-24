@@ -2,11 +2,6 @@
 #define GATE_HPP
 
 #include "qmdd.hpp"
-#include <ginac/ginac.h>
-#include <cmath>
-#include <functional>
-
-using namespace GiNaC;
 namespace gate {
     QMDDGate O();
 

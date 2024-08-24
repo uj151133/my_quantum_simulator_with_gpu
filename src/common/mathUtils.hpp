@@ -6,9 +6,6 @@
 #include "../models/operationCache.hpp"
 #include "calculation.hpp"
 
-#include <complex>
-#include <vector>
-
 using namespace std;
 
 namespace mathUtils {
