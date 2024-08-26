@@ -44,11 +44,22 @@ size_t calculation::generateUniqueTableKey(const QMDDNode& node, size_t row, siz
 }
 
 size_t calculation::generateOperationCacheKey(const OperationKey& key) {
-    auto customHash = [](const complex<double>& c) {
-        size_t realHash = hash<double>()(c.real());
-        size_t imagHash = hash<double>()(c.imag());
-        return realHash ^ (imagHash << 1);
-    };
-    auto [edge1, op_type, edge2] = key;
-    return customHash(edge1.weight) ^ hash<size_t>()(edge1.uniqueTableKey)^ hash<OperationType>()(op_type) ^ customHash(edge2.weight) ^ hash<size_t>()(edge2.uniqueTableKey);
-}
+        auto customHash = [](const complex<double>& c) {
+            size_t realHash = hash<double>()(c.real());
+            size_t imagHash = hash<double>()(c.imag());
+            return realHash ^ (imagHash << 1);
+        };
+
+        auto hash_combine = [](size_t& seed, size_t hash) {
+            seed ^= hash + 0x9e3779b9 + (seed << 6) + (seed >> 2);
+        };
+
+        size_t seed = 0;
+        hash_combine(seed, customHash(get<0>(key).weight));
+        hash_combine(seed, hash<size_t>()(get<0>(key).uniqueTableKey));
+        hash_combine(seed, hash<OperationType>()(get<1>(key)));
+        hash_combine(seed, customHash(get<2>(key).weight));
+        hash_combine(seed, hash<size_t>()(get<2>(key).uniqueTableKey));
+
+        return seed;
+    }

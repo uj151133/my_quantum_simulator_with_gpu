@@ -119,10 +119,20 @@ QMDDEdge mathUtils::addition(const QMDDEdge& edge1, const QMDDEdge& edge2) {
                 newEdges[i][j] = mathUtils::addition(node1->edges[i][j], node2->edges[i][j]);
             }
         }
+        // newEdges[0][0] = QMDDEdge(0, nullptr);
+        // newEdges[0][1] = QMDDEdge(1, nullptr);
+        // newEdges[1][0] = QMDDEdge(2, nullptr);
+        // newEdges[1][1] = QMDDEdge(3, nullptr);
 
         auto newNode = make_shared<QMDDNode>(newEdges);
-        cache.insert(operationCacheKey, make_pair(1.0, calculation::generateUniqueTableKey(*newNode)));
-        return QMDDEdge(1.0, newNode);
+        complex<double> weight = 1.0;
+        if (edge1.weight == .0 && edge2.weight == .0) {
+            weight = .0;
+        }
+        cache.insert(operationCacheKey, make_pair(weight, calculation::generateUniqueTableKey(*newNode)));
+        cout << "new cache key: " << operationCacheKey << endl;
+        cout << edge1.uniqueTableKey << " + " << edge2.uniqueTableKey << " = " << calculation::generateUniqueTableKey(*newNode) << endl;
+        return QMDDEdge(weight, newNode);
     }
 }
 

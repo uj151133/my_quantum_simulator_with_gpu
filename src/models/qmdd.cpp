@@ -21,7 +21,7 @@ QMDDEdge::QMDDEdge(complex<double> w, shared_ptr<QMDDNode> n)
     auto existingNode = table.find(uniqueTableKey);
     if (existingNode == nullptr && n) table.insert(uniqueTableKey, n);
     n.reset();
-    cout << "Edge created with weight: " << weight << " and uniqueTableKey: " << uniqueTableKey << " and isTerminal: " << isTerminal << endl;
+    // cout << "Edge created with weight: " << weight << " and uniqueTableKey: " << uniqueTableKey << " and isTerminal: " << isTerminal << endl;
 }
 
 QMDDEdge::QMDDEdge(double w, shared_ptr<QMDDNode> n)
@@ -30,17 +30,17 @@ QMDDEdge::QMDDEdge(double w, shared_ptr<QMDDNode> n)
     auto existingNode = table.find(uniqueTableKey);
     if (existingNode == nullptr && n) table.insert(uniqueTableKey, n);
     n.reset();
-    cout << "Edge created with weight: " << weight << " and uniqueTableKey: " << uniqueTableKey << " and isTerminal: " << isTerminal << endl;
+    // cout << "Edge created with weight: " << weight << " and uniqueTableKey: " << uniqueTableKey << " and isTerminal: " << isTerminal << endl;
 }
 
 QMDDEdge::QMDDEdge(complex<double> w, size_t key)
     : weight(w), uniqueTableKey(key), isTerminal(false) {
-    cout << "Edge created with weight: " << weight << " and uniqueTableKey: " << uniqueTableKey << " and isTerminal: " << isTerminal << endl;
+    // cout << "Edge created with weight: " << weight << " and uniqueTableKey: " << uniqueTableKey << " and isTerminal: " << isTerminal << endl;
 }
 
 QMDDEdge::QMDDEdge(double w, size_t key)
     : weight(complex<double>(w, 0.0)), uniqueTableKey(key), isTerminal(false) {
-    cout << "Edge created with weight: " << weight << " and uniqueTableKey: " << uniqueTableKey << " and isTerminal: " << isTerminal << endl;
+    // cout << "Edge created with weight: " << weight << " and uniqueTableKey: " << uniqueTableKey << " and isTerminal: " << isTerminal << endl;
 }
 
 bool QMDDEdge::operator==(const QMDDEdge& other) const {
@@ -76,7 +76,7 @@ ostream& operator<<(ostream& os, const QMDDEdge& edge) {
 
 QMDDNode::QMDDNode(const vector<vector<QMDDEdge>>& edges) : edges(edges) {
     // cout << endl;
-    cout << "Node created with " << edges.size() << " edges" << endl;
+    // cout << "Node created with " << edges.size() << " edges" << endl;
     // cout << endl;
 }
 
@@ -137,8 +137,7 @@ void QMDDGate::calculateDepth() {
         ++currentDepth;
         currentNode = table.find(currentNode->edges[0][0].uniqueTableKey);
     }
-
-    cout << "Depth calculated: " << currentDepth << endl;
+    // cout << "Depth calculated: " << currentDepth << endl;
     depth = currentDepth;
 }
 
