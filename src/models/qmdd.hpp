@@ -31,7 +31,7 @@ enum class OperationType {
 
 using OperationKey = tuple<QMDDEdge, OperationType, QMDDEdge>;
 
-using OperationResult = pair<double, size_t>;
+using OperationResult = pair<complex<double>, size_t>;
 
 
 using QMDDVariant = variant<QMDDGate, QMDDState>;
