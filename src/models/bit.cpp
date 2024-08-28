@@ -45,6 +45,7 @@ QMDDState state::BRA_0() {
     })));
 };
 
+
 QMDDState state::BRA_1() {
     return QMDDState(QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
         {QMDDEdge(.0, nullptr), QMDDEdge(1.0, nullptr)}
