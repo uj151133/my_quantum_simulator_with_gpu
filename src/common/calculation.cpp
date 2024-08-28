@@ -10,7 +10,7 @@ size_t calculation::generateUniqueTableKey(const QMDDNode& node, size_t row, siz
 
     auto hashMatrixElement = [&](const complex<double>& value, size_t row, size_t col) {
         size_t valueHash = customHash(value);
-        size_t elementHash = valueHash ^ (row + col + 0x9e3779b9 + (valueHash << 6) + (valueHash >> 2));
+        size_t elementHash = valueHash ^ ((row << 16) | (col & 0xFFFF)) ^ 0x9e3779b9 + (valueHash << 6) + (valueHash >> 2);
         return elementHash;
     };
 
