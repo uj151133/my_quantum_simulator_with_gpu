@@ -137,35 +137,47 @@ QMDDEdge mathUtils::addition(const QMDDEdge& edge1, const QMDDEdge& edge2) {
             weight = .0;
         }
         cache.insert(operationCacheKey, make_pair(weight, calculation::generateUniqueTableKey(*newNode)));
-        cout << "new cache key: " << operationCacheKey << endl;
-        cout << edge1.uniqueTableKey << " + " << edge2.uniqueTableKey << " = " << calculation::generateUniqueTableKey(*newNode) << endl;
+        // cout << "new cache key: " << operationCacheKey << endl;
+        // cout << edge1.uniqueTableKey << " + " << edge2.uniqueTableKey << " = " << calculation::generateUniqueTableKey(*newNode) << endl;
         return QMDDEdge(weight, newNode);
     }
 }
 
 QMDDEdge mathUtils::kroneckerProduct(const QMDDEdge& edge1, const QMDDEdge& edge2) {
+    OperationCache& cache = OperationCache::getInstance();
     UniqueTable& table = UniqueTable::getInstance();
-
-    // 端点かどうかを確認
+    size_t operationCacheKey = calculation::generateOperationCacheKey(make_tuple(edge1, OperationType::KRONECKER, edge2));
+    cout << "Operation cache key: " << operationCacheKey << endl;
+    auto existingAnswer = cache.find(operationCacheKey);
+    if (existingAnswer != OperationResult{.0, 0}) {
+        cout << "Cache hit!" << endl;
+        return QMDDEdge(existingAnswer.first, existingAnswer.second);
+    }
+    else {
+        cout << "Cache miss!" << endl;
+        // 端点かどうかを確認
     if (edge1.isTerminal) {
         if (edge1.weight == .0) {
-            return edge1;
+            // return edge1;
+            // edge2のノードの深さを取得
+            auto currentNode = table.find(edge2.uniqueTableKey);
+
+            cout << "currentNode: " << edge2.uniqueTableKey << endl;
+            QMDDEdge zeroEdge(.0, nullptr);
+
+            while (currentNode && !currentNode->edges.empty()) {
+                auto zeroNode = make_shared<QMDDNode>(vector<vector<QMDDEdge>>(currentNode->edges.size(), vector<QMDDEdge>(currentNode->edges[0].size(), zeroEdge)));
+                zeroEdge = QMDDEdge(.0, zeroNode);
+                currentNode = table.find(currentNode->edges[0][0].uniqueTableKey);
+            }
+            cout << "zeroEdge: " << zeroEdge.uniqueTableKey << endl;
+            return zeroEdge;
         }
         if (edge1.weight == 1.0) {
             return edge2;
         }
         // それ以外のケース
         return QMDDEdge(edge1.weight * edge2.weight, edge2.uniqueTableKey);
-    }
-    if (edge2.isTerminal) {
-        if (edge2.weight == .0) {
-            return edge2;
-        }
-        if (edge2.weight == 1.0) {
-            return edge1;
-        }
-        // それ以外のケース
-        return QMDDEdge(edge1.weight * edge2.weight, edge1.uniqueTableKey);
     }
 
     // ノードへのポインタを取得
@@ -174,27 +186,17 @@ QMDDEdge mathUtils::kroneckerProduct(const QMDDEdge& edge1, const QMDDEdge& edge
 
     auto node1Copy = make_shared<QMDDNode>(*node1);
     auto node2Copy = make_shared<QMDDNode>(*node2);
-
-    // ノードのエッジ数に基づいて新しいエッジを作成
-    size_t l = node1Copy->edges.size();
-    size_t m = node1Copy->edges[0].size();
-    size_t n = node2Copy->edges.size();
-    size_t o = node2Copy->edges[0].size();
-
-    vector<vector<QMDDEdge>> resultEdges(l * n, vector<QMDDEdge>(m * o));
-
-    // クロネッカー積を再帰的に計算
-    for (size_t i = 0; i < l; ++i) {
-        for (size_t j = 0; j < m; ++j) {
-            for (size_t k = 0; k < n; ++k) {
-                for (size_t l = 0; l < o; ++l) {
-                    resultEdges[i * n + k][j * o + l] = mathUtils::kroneckerProduct(node1Copy->edges[i][j], node2Copy->edges[k][l]);
-                }
-            }
+    vector<vector<QMDDEdge>> newEdges(node1Copy->edges.size(), vector<QMDDEdge>(node1Copy->edges[0].size()));
+    for (size_t i = 0; i < newEdges.size(); ++i) {
+        for (size_t j = 0; j < newEdges[i].size(); ++j) {
+            newEdges[i][j] = mathUtils::kroneckerProduct(node1Copy->edges[i][j], edge2);
         }
     }
+    auto newNode = make_shared<QMDDNode>(newEdges);
 
-    // 新しいノードを作成して返す
-    auto newNode = make_shared<QMDDNode>(resultEdges);
+    cache.insert(operationCacheKey, make_pair(1.0, calculation::generateUniqueTableKey(*newNode)));
+    // cout << "new cache key: " << operationCacheKey << endl;
+    // cout << edge1.uniqueTableKey << " + " << edge2.uniqueTableKey << " = " << calculation::generateUniqueTableKey(*newNode) << endl;
     return QMDDEdge(1.0, newNode);
+    }
 }
