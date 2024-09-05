@@ -86,6 +86,7 @@
         "forward_list": "cpp",
         "fstream": "cpp",
         "list": "cpp",
-        "execution": "cpp"
+        "execution": "cpp",
+        "queue": "cpp"
     }
 }

@@ -5,6 +5,7 @@
 #include <queue>
 #include "qmdd.hpp"
 #include "gate.hpp"
+#include "bit.hpp"
 #include "../common/mathUtils.hpp"
 
 using namespace std;
@@ -31,8 +32,7 @@ public:
     void addS(int qubitIndex);
     void addV(int qubitIndex);
     void addH(int qubitIndex);
-    void addCX1(int controlIndex, int targetIndex);
-    void addCX2(int controlIndex, int targetIndex);
+    void addCX(int controlIndex, int targetIndex);
     void addVarCX(int controlIndex, int targetIndex);
     void addCZ(int controlIndex, int targetIndex);
     void addDCNOT(int controlIndex, int targetIndex);
