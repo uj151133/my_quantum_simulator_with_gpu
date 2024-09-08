@@ -33,9 +33,11 @@ QMDDEdge mathUtils::multiplication(const QMDDEdge& edge1, const QMDDEdge& edge2)
         if (!node1 || !node2) {
             throw invalid_argument("Invalid node pointer in QMDDEdge.");
         }
-
-        if  (node1->edges.size() != node2->edges[0].size()) {
-            throw runtime_error("Node edge sizes do not match.");
+        // cout << edge1.uniqueTableKey << " * " << edge2.uniqueTableKey << endl;
+        if  (node1->edges[0].size() != node2->edges.size()) {
+            // cout<< "node1->edges.size(): " << node1->edges.size() << endl;
+            // cout<< "node2->edges[0].size(): " << node2->edges[0].size() << endl;
+            throw runtime_error("Node edge sizes do not match for multiplication.");
         }
         auto node1Copy = make_shared<QMDDNode>(*node1);
         auto node2Copy = make_shared<QMDDNode>(*node2);
@@ -107,7 +109,7 @@ QMDDEdge mathUtils::addition(const QMDDEdge& edge1, const QMDDEdge& edge2) {
         }
 
         if (node1->edges.size() != node2->edges.size() || node1->edges[0].size() != node2->edges[0].size()) {
-            throw runtime_error("Node edge sizes do not match.");
+            throw runtime_error("Node edge sizes do not match for addition.");
         }
         if (!node1 || !node2) {
             throw invalid_argument("Invalid node pointer in QMDDEdge.");

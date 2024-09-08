@@ -8,6 +8,7 @@
 #include <yaml-cpp/yaml.h>
 #include "src/models/bit.hpp"
 #include "src/models/gate.hpp"
+#include "src/models/circuit.hpp"
 #include "src/models/uniqueTable.hpp"
 #include "src/models/qmdd.hpp"
 #include "src/common/mathUtils.hpp"
@@ -78,19 +79,25 @@ int main() {
     }
 
     UniqueTable& uniqueTable = UniqueTable::getInstance();
+    QMDDEdge firstEdge = mathUtils::kroneckerProduct(state::KET_0().getInitialEdge(), state::KET_0().getInitialEdge());
+    QuantumCircuit circuit(2, QMDDState(firstEdge));
+    circuit.addI(0);
+    // circuit.addI(1);
+    circuit.execute();
 
     // QMDDGate zeroGate = gate::O();
-    QMDDGate i1Gate = gate::I();
-    QMDDGate i2Gate = gate::I();
+
+    // QMDDGate i1Gate = gate::I();
+    // QMDDGate i2Gate = gate::I();
     // QMDDGate phGate = gate::Ph(0.5);
     // QMDDGate xGate = gate::X();
-    QMDDGate hGate = gate::H();
+    // QMDDGate hGate = gate::H();
     // QMDDGate sGate = gate::S();
     // QMDDGate toffGate = gate::Toff();
     // QMDDGate ffredkinGate = gate::fFredkin();
-    QMDDState ket0State = state::KET_0();
+    // QMDDState ket0State = state::KET_0();
     // QMDDState ket1State = state::KET_1();
-    QMDDState bra0State = state::BRA_0();
+    // QMDDState bra0State = state::BRA_0();
     // cout << "zeroGate:" << zeroGate.getInitialEdge() << endl;
     // cout << "zeroGate:" << zeroGate << endl;
     // cout << "igate:" << iGate.getInitialEdge() << endl;
@@ -108,8 +115,8 @@ int main() {
     // QMDDGate xGate = gate::X();
     // cout << "xgate:" << xGate.getInitialEdge() << endl;
     // QMDDState ket0 = state::KET_0();
-    auto result1 = mathUtils::kroneckerProduct(i1Gate.getInitialEdge(), i2Gate.getInitialEdge());
-    cout << "result1:" << result1 << endl;
+    // auto result1 = mathUtils::kroneckerProduct(i1Gate.getInitialEdge(), i2Gate.getInitialEdge());
+    // cout << "result1:" << result1 << endl;
     // auto result2 = mathUtils::addition(xGate.getInitialEdge(), iGate.getInitialEdge());
     // cout << "result2:" << result2 << endl;
 
