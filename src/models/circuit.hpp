@@ -14,10 +14,11 @@ class QuantumCircuit {
 private:
     queue<QMDDGate> gateQueue;
     QMDDState initialState;
+    QMDDState finalState;
     int numQubits;
 
 public:
-    QuantumCircuit(int numQubits, QMDDState initialState);
+    QuantumCircuit(int numQubitits, QMDDState initialState);
     ~QuantumCircuit() = default;
     QuantumCircuit(const QuantumCircuit& other) = default;
     QuantumCircuit& operator=(const QuantumCircuit& other) = default;
@@ -67,9 +68,10 @@ public:
     void addD(int qubitIndex);
     void addRCCX(int controlIndex1, int controlIndex2, int targetIndex);
     void addPG(int controlIndex1, int controlIndex2, int targetIndex);
-    void addToff(int controlIndex1, int controlIndex2, int targetIndex);
+    void addToff(const vector<int>& controlIndexes, int targetIndex);
     void addfFredkin(int controlIndex1, int controlIndex2, int targetIndex);
 
+    void execute();
     // コンストラクタやその他のメンバ関数はここに追加できます
 };
 
