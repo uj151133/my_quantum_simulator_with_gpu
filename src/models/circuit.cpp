@@ -421,7 +421,6 @@ void QuantumCircuit::addToff(const vector<int>& controlIndexes, int targetIndex)
     }else if (controlIndexes.size() == 1) {
         addCX(controlIndexes[0], targetIndex);
     }else {
-        
         int minIndex = min(*min_element(controlIndexes.begin(), controlIndexes.end()), targetIndex);
         int maxIndex = max(*max_element(controlIndexes.begin(), controlIndexes.end()), targetIndex);
         vector<QMDDEdge> edges(minIndex, gate::I().getInitialEdge());
@@ -443,8 +442,14 @@ void QuantumCircuit::execute() {
     QMDDState currentState = initialState;
     while (!gateQueue.empty()) {
         QMDDGate currentGate = gateQueue.front();
+        cout << "Current gate: " << currentGate << endl;
+        cout << "Current state: " << currentState << endl;
+        UniqueTable& uniqueTable = UniqueTable::getInstance();
+        uniqueTable.printAllEntries();
         gateQueue.pop();
-        finalState = mathUtils::multiplication(currentGate.getInitialEdge(), currentState.getInitialEdge());
+        currentState = mathUtils::multiplication(currentGate.getInitialEdge(), currentState.getInitialEdge());
     }
+    finalState = currentState;
+    cout << "Final state: " << finalState << endl;
     return;
 }
