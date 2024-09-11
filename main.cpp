@@ -3,11 +3,7 @@
 #include <cstdlib>
 #include <string>
 #include <unistd.h>
-#include <mach/mach.h>
 // #include <ginac/ginac.h>
-#include <yaml-cpp/yaml.h>
-#include <omp.h>
-#include <boost/fiber/all.hpp>
 
 #include "src/models/bit.hpp"
 #include "src/models/gate.hpp"
@@ -16,66 +12,25 @@
 #include "src/models/qmdd.hpp"
 #include "src/common/mathUtils.hpp"
 #include "src/common/calculation.hpp"
+#include "src/common/monitor.hpp"
 
 // using namespace GiNaC;
 using namespace std;
 
-// config.yamlを読み込む関数
-string getProcessType() {
-    YAML::Node config = YAML::LoadFile("config.yaml");
-    return config["process"]["type"].as<string>();
-}
-
-void printMemoryUsage() {
-    pid_t pid = getpid();
-    string command = "ps -o rss= -p " + to_string(pid);
-
-    // Create a pipe to capture the output of the command
-    FILE* pipe = popen(command.c_str(), "r");
-    if (!pipe) {
-        cerr << "Failed to run command.\n";
-        return;
-    }
-
-    // Read the output of the command
-    char buffer[128];
-    string result = "";
-    while (fgets(buffer, sizeof(buffer), pipe) != nullptr) {
-        result += buffer;
-    }
-
-    // Close the pipe and check for errors
-    pclose(pipe);
-
-    // Remove any trailing whitespace from the result
-    result.erase(result.find_last_not_of(" \n\r\t") + 1);
-
-    cout << "Memory usage: " << result << " KB" << endl;
-}
-
-void printMemoryUsageOnMac() {
-    mach_task_basic_info info;
-    mach_msg_type_number_t count = MACH_TASK_BASIC_INFO_COUNT;
-    if (task_info(mach_task_self(), MACH_TASK_BASIC_INFO, (task_info_t)&info, &count) != KERN_SUCCESS) {
-        cerr << "Error getting memory info\n";
-        return;
-    }
-
-    cout << "Memory usage on mac enviroment: " << info.resident_size / 1024 << " KB\n";
-}
-
-bool isExecuteGui() {
-    YAML::Node config = YAML::LoadFile("config.yaml");
-    bool guiEnabled = config["gui"]["enabled"].as<bool>();
-
-    return guiEnabled;
-}
-
-
-
 int main() {
     string processType = getProcessType();
-    cout << "Process type: " << processType << endl;
+    if (processType == "sequential") {
+        cout << "逐次処理を実行します。" << endl;
+        sequentialProcessing();
+    } else if (processType == "multi-thread") {
+        cout << "マルチスレッド処理を実行します。" << endl;
+        parallelProcessing();
+    } else if (processType == "multi-fiber") {
+        cout << "マルチファイバー処理を実行します。" << endl;
+        fiberProcessing();
+    } else {
+        cerr << "不明な処理タイプ: " << processType << endl;
+    }
     // printMemoryUsage();
     // printMemoryUsageOnMac();
 
@@ -88,11 +43,11 @@ int main() {
     }
 
     UniqueTable& uniqueTable = UniqueTable::getInstance();
-    QMDDEdge firstEdge = mathUtils::kroneckerProduct(state::KET_0().getInitialEdge(), state::KET_0().getInitialEdge());
-    QuantumCircuit circuit(2, QMDDState(firstEdge));
-    circuit.addI(0);
+    // QMDDEdge firstEdge = mathUtils::kroneckerProduct(state::KET_0().getInitialEdge(), state::KET_0().getInitialEdge());
+    // QuantumCircuit circuit(2, QMDDState(firstEdge));
+    // circuit.addI(0);
     // circuit.addI(1);
-    circuit.execute();
+    // circuit.execute();/
 
     // QMDDGate zeroGate = gate::O();
 
