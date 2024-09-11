@@ -1,3 +1,6 @@
 # config.yaml
 gui:
   enabled: false
+
+process:
+  type: "multi-thread"  # "sequential", "multi-thread", "multi-fiber"のいずれか

@@ -6,6 +6,8 @@ clean:
 .PHONY: install
 install:
 	pip install -r requirements.txt
+	brew install libomp
+	brew install yaml-cpp
 
 .PHONY: setup
 setup:
