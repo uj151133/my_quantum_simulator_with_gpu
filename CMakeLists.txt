@@ -29,6 +29,9 @@ endif()
 
 
 # 環境変数の設定をCMakeの変数に変換
+set(YAML_CPP_INCLUDE_DIR /opt/homebrew/Cellar/yaml-cpp/0.8.0/include)
+set(YAML_CPP_LIB_DIR /opt/homebrew/Cellar/yaml-cpp/0.8.0/lib)
+
 set(LIBOMP_LIB_DIR /opt/homebrew/opt/libomp/lib)
 set(LIBOMP_INCLUDE_DIR /opt/homebrew/opt/libomp/include)
 
@@ -38,7 +41,7 @@ set(OpenMP_C_LIB_NAMES "omp")
 set(OpenMP_CXX_LIB_NAMES "omp")
 set(OpenMP_omp_LIBRARY "/opt/homebrew/opt/libomp/lib/libomp.dylib")
 
-find_package(YAML-CPP REQUIRED)
+find_package(yaml-cpp REQUIRED)
 find_package(OpenMP REQUIRED)
 find_package(Boost REQUIRED COMPONENTS fiber context)
 
@@ -47,8 +50,8 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
 
 # インクルードディレクトリとリンクディレクトリを追加
-include_directories(${GINAC_INCLUDE_DIR} ${YAML_CPP_INCLUDE_DIRS} ${LIBOMP_INCLUDE_DIR})
-link_directories(${GINAC_LIBRARY_DIR} ${YAML_CPP_LIBRARY_DIRS} ${LIBOMP_LIB_DIR})
+include_directories(${GINAC_INCLUDE_DIR} ${YAML_CPP_INCLUDE_DIR} ${LIBOMP_INCLUDE_DIR})
+link_directories(${GINAC_LIBRARY_DIR} ${YAML_CPP_LIB_DIR} ${LIBOMP_LIB_DIR} )
 
 # 出力ディレクトリを親ディレクトリに設定
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/libs/__pycache__)
@@ -59,7 +62,7 @@ include_directories(src)
 
 # 通常のC++実行ファイルを追加
 add_executable(qmdd_sim main.cpp src/models/gate.cpp src/models/bit.cpp src/models/qmdd.cpp src/models/circuit.cpp src/models/uniqueTable.cpp src/models/operationCache.cpp src/common/mathUtils.cpp src/common/calculation.cpp)
-target_link_libraries(qmdd_sim PRIVATE ${CLN_LIBRARIES} ${GINAC_LIBRARY} ${YAML_CPP_LIBRARIES} Python3::Python OpenMP::OpenMP_CXX Boost::fiber Boost::context)
+target_link_libraries(qmdd_sim PRIVATE ${CLN_LIBRARIES} ${GINAC_LIBRARY} yaml-cpp Python3::Python OpenMP::OpenMP_CXX Boost::fiber Boost::context)
 
 # make run ターゲットの追加
 add_custom_target(run
