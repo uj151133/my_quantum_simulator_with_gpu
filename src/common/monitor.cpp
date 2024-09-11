@@ -1,0 +1,81 @@
+// config.yamlを読み込む関数
+
+#include "monitor.hpp"
+
+string getProcessType() {
+    YAML::Node config = YAML::LoadFile("config.yaml");
+    return config["process"]["type"].as<string>();
+}
+
+// 並行処理する関数
+void parallelProcessing() {
+    #pragma omp parallel for
+    for (int i = 0; i < 10; ++i) {
+        cout << "マルチスレッド処理: " << i << " スレッド: " << omp_get_thread_num() << endl;
+    }
+}
+
+// 逐次処理する関数
+void sequentialProcessing() {
+    for (int i = 0; i < 10; ++i) {
+        cout << "逐次処理: " << i << endl;
+    }
+}
+
+// マルチファイバー処理する関数
+void fiberProcessing() {
+    boost::fibers::fiber fibers[10];
+    for (int i = 0; i < 10; ++i) {
+        fibers[i] = boost::fibers::fiber([i]() {
+            cout << "マルチファイバー処理: " << i << endl;
+        });
+    }
+    for (int i = 0; i < 10; ++i) {
+        fibers[i].join();
+    }
+}
+
+void printMemoryUsage() {
+    pid_t pid = getpid();
+    string command = "ps -o rss= -p " + to_string(pid);
+
+    // Create a pipe to capture the output of the command
+    FILE* pipe = popen(command.c_str(), "r");
+    if (!pipe) {
+        cerr << "Failed to run command.\n";
+        return;
+    }
+
+    // Read the output of the command
+    char buffer[128];
+    string result = "";
+    while (fgets(buffer, sizeof(buffer), pipe) != nullptr) {
+        result += buffer;
+    }
+
+    // Close the pipe and check for errors
+    pclose(pipe);
+
+    // Remove any trailing whitespace from the result
+    result.erase(result.find_last_not_of(" \n\r\t") + 1);
+
+    cout << "Memory usage: " << result << " KB" << endl;
+}
+
+void printMemoryUsageOnMac() {
+    mach_task_basic_info info;
+    mach_msg_type_number_t count = MACH_TASK_BASIC_INFO_COUNT;
+    if (task_info(mach_task_self(), MACH_TASK_BASIC_INFO, (task_info_t)&info, &count) != KERN_SUCCESS) {
+        cerr << "Error getting memory info\n";
+        return;
+    }
+
+    cout << "Memory usage on mac enviroment: " << info.resident_size / 1024 << " KB\n";
+}
+
+bool isExecuteGui() {
+    YAML::Node config = YAML::LoadFile("config.yaml");
+    bool guiEnabled = config["gui"]["enabled"].as<bool>();
+
+    return guiEnabled;
+}
