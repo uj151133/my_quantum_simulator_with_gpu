@@ -4,8 +4,11 @@
 #include <string>
 #include <unistd.h>
 #include <mach/mach.h>
-#include <ginac/ginac.h>
+// #include <ginac/ginac.h>
 #include <yaml-cpp/yaml.h>
+#include <omp.h>
+#include <boost/fiber/all.hpp>
+
 #include "src/models/bit.hpp"
 #include "src/models/gate.hpp"
 #include "src/models/circuit.hpp"
@@ -14,10 +17,14 @@
 #include "src/common/mathUtils.hpp"
 #include "src/common/calculation.hpp"
 
-using namespace GiNaC;
+// using namespace GiNaC;
 using namespace std;
 
-
+// config.yamlを読み込む関数
+string getProcessType() {
+    YAML::Node config = YAML::LoadFile("config.yaml");
+    return config["process"]["type"].as<string>();
+}
 
 void printMemoryUsage() {
     pid_t pid = getpid();
@@ -67,6 +74,8 @@ bool isExecuteGui() {
 
 
 int main() {
+    string processType = getProcessType();
+    cout << "Process type: " << processType << endl;
     // printMemoryUsage();
     // printMemoryUsageOnMac();
 
