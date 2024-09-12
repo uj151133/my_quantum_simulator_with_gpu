@@ -17,31 +17,7 @@
 // using namespace GiNaC;
 using namespace std;
 
-int main() {
-    string processType = getProcessType();
-    if (processType == "sequential") {
-        cout << "逐次処理を実行します。" << endl;
-        sequentialProcessing();
-    } else if (processType == "multi-thread") {
-        cout << "マルチスレッド処理を実行します。" << endl;
-        parallelProcessing();
-    } else if (processType == "multi-fiber") {
-        cout << "マルチファイバー処理を実行します。" << endl;
-        fiberProcessing();
-    } else {
-        cerr << "不明な処理タイプ: " << processType << endl;
-    }
-    // printMemoryUsage();
-    // printMemoryUsageOnMac();
-
-    bool isGuiEnabled = isExecuteGui();
-
-    if (isGuiEnabled) {
-        cout << "GUI is enabled." << endl;
-    } else {
-        cout << "GUI is disabled." << endl;
-    }
-
+void execute() {
     UniqueTable& uniqueTable = UniqueTable::getInstance();
     // QMDDEdge firstEdge = mathUtils::kroneckerProduct(state::KET_0().getInitialEdge(), state::KET_0().getInitialEdge());
     // QuantumCircuit circuit(2, QMDDState(firstEdge));
@@ -81,8 +57,8 @@ int main() {
     // QMDDState ket0 = state::KET_0();
     auto result1 = mathUtils::kroneckerProduct(i1Gate.getInitialEdge(), i2Gate.getInitialEdge());
     cout << "result1:" << result1 << endl;
-    // auto result2 = mathUtils::addition(xGate.getInitialEdge(), iGate.getInitialEdge());
-    // cout << "result2:" << result2 << endl;
+    auto result2 = mathUtils::addition(xGate.getInitialEdge(), iGate.getInitialEdge());
+    cout << "result2:" << result2 << endl;
 
     uniqueTable.printAllEntries();
 
@@ -90,7 +66,37 @@ int main() {
     // QMDDGate cx1 = gate::CX1();
     // QMDDGate cx2 = gate::CX2();
     // auto result2 = mathUtils::addition(cx1.getInitialEdge(), cx2.getInitialEdge());
-    // printMemoryUsage();
-    // printMemoryUsageOnMac();
+}
+
+int main() {
+    string processType = getProcessType();
+    if (processType == "sequential") {
+        cout << "逐次処理を実行します。" << endl;
+        sequentialProcessing();
+    } else if (processType == "multi-thread") {
+        cout << "マルチスレッド処理を実行します。" << endl;
+        parallelProcessing();
+    } else if (processType == "multi-fiber") {
+        cout << "マルチファイバー処理を実行します。" << endl;
+        fiberProcessing();
+    } else {
+        cerr << "不明な処理タイプ: " << processType << endl;
+    }
+    printMemoryUsage();
+    printMemoryUsageOnMac();
+
+    bool isGuiEnabled = isExecuteGui();
+
+    if (isGuiEnabled) {
+        cout << "GUI is enabled." << endl;
+    } else {
+        cout << "GUI is disabled." << endl;
+    }
+
+    measureExecutionTime(execute);
+
+    printMemoryUsage();
+    printMemoryUsageOnMac();
     return 0;
 }
+
