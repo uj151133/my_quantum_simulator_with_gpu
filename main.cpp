@@ -51,8 +51,8 @@ int main() {
 
     // QMDDGate zeroGate = gate::O();
 
-    // QMDDGate i1Gate = gate::I();
-    // QMDDGate i2Gate = gate::I();
+    QMDDGate i1Gate = gate::I();
+    QMDDGate i2Gate = gate::I();
     // QMDDGate phGate = gate::Ph(0.5);
     // QMDDGate xGate = gate::X();
     // QMDDGate hGate = gate::H();
@@ -79,8 +79,8 @@ int main() {
     // QMDDGate xGate = gate::X();
     // cout << "xgate:" << xGate.getInitialEdge() << endl;
     // QMDDState ket0 = state::KET_0();
-    // auto result1 = mathUtils::kroneckerProduct(i1Gate.getInitialEdge(), i2Gate.getInitialEdge());
-    // cout << "result1:" << result1 << endl;
+    auto result1 = mathUtils::kroneckerProduct(i1Gate.getInitialEdge(), i2Gate.getInitialEdge());
+    cout << "result1:" << result1 << endl;
     // auto result2 = mathUtils::addition(xGate.getInitialEdge(), iGate.getInitialEdge());
     // cout << "result2:" << result2 << endl;
 
