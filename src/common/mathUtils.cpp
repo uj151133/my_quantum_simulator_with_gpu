@@ -33,10 +33,7 @@ QMDDEdge mathUtils::multiplication(const QMDDEdge& edge1, const QMDDEdge& edge2)
         if (!node1 || !node2) {
             throw invalid_argument("\033[1;31mInvalid node pointer in QMDDEdge.\033[0m");
         }
-        // cout << edge1.uniqueTableKey << " * " << edge2.uniqueTableKey << endl;
         if  (node1->edges[0].size() != node2->edges.size()) {
-            // cout<< "node1->edges.size(): " << node1->edges.size() << endl;
-            // cout<< "node2->edges[0].size(): " << node2->edges[0].size() << endl;
             throw runtime_error("\033[1;31mNode edge sizes do not match for multiplication.\033[0m");
         }
         auto node1Copy = make_shared<QMDDNode>(*node1);
@@ -60,22 +57,17 @@ QMDDEdge mathUtils::multiplication(const QMDDEdge& edge1, const QMDDEdge& edge2)
         size_t m = node1Copy->edges[0].size();
         size_t n = node2Copy->edges[0].size();
         
-        // cout << "n: " << n << ", m: " << m << endl;
         vector<vector<QMDDEdge>> newEdges(l, vector<QMDDEdge>(n, QMDDEdge(.0, nullptr)));
 
         for (size_t i = 0; i < l; ++i) {
-            // cout << "i: " << i << endl;
             for (size_t j = 0; j < n; ++j) {
-                // cout << "j: " << j << endl;
                 for (size_t k = 0; k < m; ++k) {
-                    // cout << "k: " << k << endl;
                     cout << node1->edges[i][k].weight << " * " << node2->edges[k][j].weight << endl;
                     newEdges[i][j] = mathUtils::addition(newEdges[i][j], mathUtils::multiplication(node1Copy->edges[i][k], node2Copy->edges[k][j]));
                     cout << "(" << i << ", " << j << "): " <<newEdges[i][j].weight << endl;
                 }
             }
         }
-        // 新しいノードを作成し、キャッシュに結果を保存
         auto newNode = make_shared<QMDDNode>(newEdges);
         cache.insert(operationCacheKey, make_pair(1.0, calculation::generateUniqueTableKey(*newNode)));
         return QMDDEdge(1.0, newNode);
@@ -139,8 +131,6 @@ QMDDEdge mathUtils::addition(const QMDDEdge& edge1, const QMDDEdge& edge2) {
             weight = .0;
         }
         cache.insert(operationCacheKey, make_pair(weight, calculation::generateUniqueTableKey(*newNode)));
-        // cout << "new cache key: " << operationCacheKey << endl;
-        // cout << edge1.uniqueTableKey << " + " << edge2.uniqueTableKey << " = " << calculation::generateUniqueTableKey(*newNode) << endl;
         return QMDDEdge(weight, newNode);
     }
 }
