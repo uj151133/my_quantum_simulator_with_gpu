@@ -30,7 +30,7 @@ void execute() {
     QMDDGate i1Gate = gate::I();
     QMDDGate i2Gate = gate::I();
     // QMDDGate phGate = gate::Ph(0.5);
-    // QMDDGate xGate = gate::X();
+    QMDDGate xGate = gate::X();
     // QMDDGate hGate = gate::H();
     // QMDDGate sGate = gate::S();
     // QMDDGate toffGate = gate::Toff();
@@ -57,7 +57,7 @@ void execute() {
     // QMDDState ket0 = state::KET_0();
     auto result1 = mathUtils::kroneckerProduct(i1Gate.getInitialEdge(), i2Gate.getInitialEdge());
     cout << "result1:" << result1 << endl;
-    auto result2 = mathUtils::addition(xGate.getInitialEdge(), iGate.getInitialEdge());
+    auto result2 = mathUtils::addition(xGate.getInitialEdge(), i1Gate.getInitialEdge());
     cout << "result2:" << result2 << endl;
 
     uniqueTable.printAllEntries();
