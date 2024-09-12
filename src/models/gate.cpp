@@ -29,7 +29,7 @@ QMDDGate gate::Ph(double delta) {
 }
 
 QMDDGate gate::X() {
-    return QMDDGate(QMDDEdge(.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+    return QMDDGate(QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
         {QMDDEdge(.0, nullptr), QMDDEdge(1.0, nullptr)},
         {QMDDEdge(1.0, nullptr), QMDDEdge(.0, nullptr)}
     })));
