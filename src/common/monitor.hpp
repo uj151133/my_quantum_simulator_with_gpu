@@ -5,6 +5,9 @@
 #include <omp.h>
 #include <boost/fiber/all.hpp>
 #include <mach/mach.h>
+#include <chrono>
+#include <iostream>
+#include <functional>
 
 using namespace std;
 
@@ -14,6 +17,7 @@ void sequentialProcessing();
 void fiberProcessing();
 void printMemoryUsage();
 void printMemoryUsageOnMac();
+void measureExecutionTime(function<void()> func);
 bool isExecuteGui();
 
 #endif

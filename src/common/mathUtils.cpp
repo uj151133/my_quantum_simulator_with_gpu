@@ -9,11 +9,11 @@ QMDDEdge mathUtils::multiplication(const QMDDEdge& edge1, const QMDDEdge& edge2)
     cout << "Operation cache key: " << operationCacheKey << endl;
     auto existingAnswer = cache.find(operationCacheKey);
     if (existingAnswer != OperationResult{.0, 0}) {
-        cout << "Cache hit!" << endl;
+        cout << "\033[1;36mCache hit!\033[0m" << endl;
         return QMDDEdge(existingAnswer.first, existingAnswer.second);
     }
     else {
-        cout << "Cache miss!" << endl;
+        cout << "\033[1;35mCache miss!\033[0m" << endl;
         shared_ptr<QMDDNode> node1 = table.find(edge1.uniqueTableKey);
         shared_ptr<QMDDNode> node2 = table.find(edge2.uniqueTableKey);
 
@@ -31,13 +31,13 @@ QMDDEdge mathUtils::multiplication(const QMDDEdge& edge1, const QMDDEdge& edge2)
         }
 
         if (!node1 || !node2) {
-            throw invalid_argument("Invalid node pointer in QMDDEdge.");
+            throw invalid_argument("\033[1;31mInvalid node pointer in QMDDEdge.\033[0m");
         }
         // cout << edge1.uniqueTableKey << " * " << edge2.uniqueTableKey << endl;
         if  (node1->edges[0].size() != node2->edges.size()) {
             // cout<< "node1->edges.size(): " << node1->edges.size() << endl;
             // cout<< "node2->edges[0].size(): " << node2->edges[0].size() << endl;
-            throw runtime_error("Node edge sizes do not match for multiplication.");
+            throw runtime_error("\033[1;31mNode edge sizes do not match for multiplication.\033[0m");
         }
         auto node1Copy = make_shared<QMDDNode>(*node1);
         auto node2Copy = make_shared<QMDDNode>(*node2);
@@ -89,11 +89,11 @@ QMDDEdge mathUtils::addition(const QMDDEdge& edge1, const QMDDEdge& edge2) {
     cout << "Operation cache key: " << operationCacheKey << endl;
     auto existingAnswer = cache.find(operationCacheKey);
     if (existingAnswer != OperationResult{.0, 0}) {
-        cout << "Cache hit!" << endl;
+        cout << "\033[1;36mCache hit!\033[0m" << endl;
         return QMDDEdge(existingAnswer.first, existingAnswer.second);
     }
     else {
-        cout << "Cache miss!" << endl;
+        cout << "\033[1;35mCache miss!\033[0m" << endl;
         shared_ptr<QMDDNode> node1 = table.find(edge1.uniqueTableKey);
         shared_ptr<QMDDNode> node2 = table.find(edge2.uniqueTableKey);
 
@@ -109,10 +109,10 @@ QMDDEdge mathUtils::addition(const QMDDEdge& edge1, const QMDDEdge& edge2) {
         }
 
         if (node1->edges.size() != node2->edges.size() || node1->edges[0].size() != node2->edges[0].size()) {
-            throw runtime_error("Node edge sizes do not match for addition.");
+            throw runtime_error("\033[1;31mNode edge sizes do not match for addition.\033[0m");
         }
         if (!node1 || !node2) {
-            throw invalid_argument("Invalid node pointer in QMDDEdge.");
+            throw invalid_argument("\033[1;31mInvalid node pointer in QMDDEdge.\033[0m");
         }
 
         // node1とnode2のコピーを作成
@@ -152,11 +152,11 @@ QMDDEdge mathUtils::kroneckerProduct(const QMDDEdge& edge1, const QMDDEdge& edge
     cout << "Operation cache key: " << operationCacheKey << endl;
     auto existingAnswer = cache.find(operationCacheKey);
     if (existingAnswer != OperationResult{.0, 0}) {
-        cout << "Cache hit!" << endl;
+        cout << "\033[1;36mCache hit!\033[0m" << endl;
         return QMDDEdge(existingAnswer.first, existingAnswer.second);
     }
     else {
-        cout << "Cache miss!" << endl;
+        cout << "\033[1;35mCache miss!\033[0m" << endl;
         // 端点かどうかを確認
     if (edge1.isTerminal) {
         if (edge1.weight == .0) {
@@ -197,8 +197,6 @@ QMDDEdge mathUtils::kroneckerProduct(const QMDDEdge& edge1, const QMDDEdge& edge
     auto newNode = make_shared<QMDDNode>(newEdges);
 
     cache.insert(operationCacheKey, make_pair(1.0, calculation::generateUniqueTableKey(*newNode)));
-    // cout << "new cache key: " << operationCacheKey << endl;
-    // cout << edge1.uniqueTableKey << " + " << edge2.uniqueTableKey << " = " << calculation::generateUniqueTableKey(*newNode) << endl;
     return QMDDEdge(1.0, newNode);
     }
 }
