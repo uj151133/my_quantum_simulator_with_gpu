@@ -42,7 +42,7 @@ void printMemoryUsage() {
     // Create a pipe to capture the output of the command
     FILE* pipe = popen(command.c_str(), "r");
     if (!pipe) {
-        cerr << "Failed to run command.\n";
+        cerr << "\033[1;31mFailed to run command.\033[0m\n";
         return;
     }
 
@@ -59,18 +59,26 @@ void printMemoryUsage() {
     // Remove any trailing whitespace from the result
     result.erase(result.find_last_not_of(" \n\r\t") + 1);
 
-    cout << "Memory usage: " << result << " KB" << endl;
+    cout << "\033[1;34mMemory usage: " << result << " KB\033[0m" << endl;
 }
 
 void printMemoryUsageOnMac() {
     mach_task_basic_info info;
     mach_msg_type_number_t count = MACH_TASK_BASIC_INFO_COUNT;
     if (task_info(mach_task_self(), MACH_TASK_BASIC_INFO, (task_info_t)&info, &count) != KERN_SUCCESS) {
-        cerr << "Error getting memory info\n";
+        cerr << "\033[1;31mError getting memory info\033[0m\n";
         return;
     }
 
-    cout << "Memory usage on mac enviroment: " << info.resident_size / 1024 << " KB\n";
+    cout << "\033[1;34mMemory usage on mac enviroment: " << info.resident_size / 1024 << " KB\033[0m\n";
+}
+
+void measureExecutionTime(function<void()> func) {
+    auto start = chrono::high_resolution_clock::now();
+    func();
+    auto end = chrono::high_resolution_clock::now();
+    chrono::duration<double, milli> duration = end - start;
+    cout << "\033[1;32mExecution time: " << duration.count() << " ms\033[0m" << endl;
 }
 
 bool isExecuteGui() {
