@@ -9,10 +9,15 @@ string getProcessType() {
 
 // 並行処理する関数
 void parallelProcessing() {
-    #pragma omp parallel for
-    for (int i = 0; i < 10; ++i) {
-        cout << "マルチスレッド処理: " << i << " スレッド: " << omp_get_thread_num() << endl;
+    int i;
+    #pragma omp parallel
+    {
+        i++;
+        cout << "マルチスレッド処理: スレッド" << i << ": " << omp_get_thread_num() << endl;
     }
+    // for (int i = 0; i < 10; ++i) {
+    //     cout << "マルチスレッド処理: " << i << " スレッド: " << omp_get_thread_num() << endl;
+    // }
 }
 
 // 逐次処理する関数
