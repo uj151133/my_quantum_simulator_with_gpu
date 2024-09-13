@@ -61,7 +61,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
 include_directories(src)
 
 # 通常のC++実行ファイルを追加
-add_executable(qmdd_sim main.cpp src/models/gate.cpp src/models/bit.cpp src/models/qmdd.cpp src/models/circuit.cpp src/models/uniqueTable.cpp src/models/operationCache.cpp src/common/mathUtils.cpp src/common/calculation.cpp src/common/monitor.cpp)
+add_executable(qmdd_sim main.cpp src/models/gate.cpp src/models/state.cpp src/models/qmdd.cpp src/models/circuit.cpp src/models/uniqueTable.cpp src/models/operationCache.cpp src/common/mathUtils.cpp src/common/calculation.cpp src/common/monitor.cpp)
 target_link_libraries(qmdd_sim PRIVATE ${CLN_LIBRARIES} ${GINAC_LIBRARY} yaml-cpp Python3::Python OpenMP::OpenMP_CXX Boost::fiber Boost::context)
 
 # make run ターゲットの追加

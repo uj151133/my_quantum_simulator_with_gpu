@@ -5,7 +5,7 @@
 #include <queue>
 #include "qmdd.hpp"
 #include "gate.hpp"
-#include "bit.hpp"
+#include "state.hpp"
 #include "../common/mathUtils.hpp"
 
 using namespace std;
