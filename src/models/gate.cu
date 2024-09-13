@@ -115,7 +115,7 @@ __global__ void createRotationAboutZNode(cuDoubleComplex* weights, cuDoubleCompl
     nodes[0]->edges[3] = QMDDEdge(cuCexp(cuCmul(i, make_cuDoubleComplex(theta / 2.0, 0.0))), nullptr);
 }
 
-QMDDGate gate::ZERO() {
+QMDDGate gate::O() {
     cuDoubleComplex* weights;
     cuDoubleComplex** nodes;
     cudaMallocManaged(&weights, sizeof(cuDoubleComplex) * 1);
@@ -382,27 +382,4 @@ QMDDGate gate::Rz(double theta) {
     return QMDDGate(rzEdge);
 }
 
-QMDDGate Ph(double delta) {
-    cuDoubleComplex* weights;
-    QMDDNode** nodes;
-    
-    // メモリの確保
-    cudaMallocManaged(&weights, sizeof(cuDoubleComplex) * 1);
-    cudaMallocManaged(&nodes, sizeof(QMDDNode*) * 1);
-    cudaMallocManaged(&nodes[0], sizeof(QMDDNode));
 
-    // カーネルの呼び出し
-    createPhaseNode<<<1, 1>>>(weights, nodes, delta);
-    cudaDeviceSynchronize();
-
-    // QMDDEdge の作成
-    QMDDEdge phEdge(weights[0], nodes[0]);
-    
-    // メモリの解放
-    cudaFree(nodes[0]);  // ノードのメモリ解放
-    cudaFree(nodes);     // ノード配列のメモリ解放
-    cudaFree(weights);   // ウェイトのメモリ解放
-
-    // QMDDGate の作成
-    return QMDDGate(phEdge);
-}

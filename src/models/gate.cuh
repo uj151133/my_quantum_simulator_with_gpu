@@ -37,7 +37,7 @@ __global__ void createBerkeleyBNode(cuDoubleComplex* weights, cuDoubleComplex** 
 __global__ void createCoreEntanglingNode(cuDoubleComplex* weights, cuDoubleComplex** nodes, double a, double b, double c);
 
 namespace gate {
-    QMDDGate ZERO();
+    QMDDGate O();
     
     /* Identity gate and global phase */
     QMDDGate I();

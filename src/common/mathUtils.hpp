@@ -1,6 +1,8 @@
 #ifndef MATHUTILS_HPP
 #define MATHUTILS_HPP
 
+#include <boost/fiber/all.hpp>
+
 #include "../models/qmdd.hpp"
 #include "../models/uniqueTable.hpp"
 #include "../models/operationCache.hpp"
