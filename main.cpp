@@ -5,7 +5,7 @@
 #include <unistd.h>
 // #include <ginac/ginac.h>
 
-#include "src/models/bit.hpp"
+#include "src/models/state.hpp"
 #include "src/models/gate.hpp"
 #include "src/models/circuit.hpp"
 #include "src/models/uniqueTable.hpp"
@@ -19,7 +19,7 @@ using namespace std;
 
 void execute() {
     UniqueTable& uniqueTable = UniqueTable::getInstance();
-    // QMDDEdge firstEdge = mathUtils::kroneckerProduct(state::KET_0().getInitialEdge(), state::KET_0().getInitialEdge());
+    // QMDDEdge firstEdge = mathUtils::kroneckerProduct(state::Ket0().getInitialEdge(), state::Ket0().getInitialEdge());
     // QuantumCircuit circuit(2, QMDDState(firstEdge));
     // circuit.addI(0);
     // circuit.addI(1);
@@ -35,9 +35,9 @@ void execute() {
     // QMDDGate sGate = gate::S();
     // QMDDGate toffGate = gate::Toff();
     // QMDDGate ffredkinGate = gate::fFredkin();
-    // QMDDState ket0State = state::KET_0();
-    // QMDDState ket1State = state::KET_1();
-    // QMDDState bra0State = state::BRA_0();
+    // QMDDState ket0State = state::Ket0();
+    // QMDDState ket1State = state::Ket1();
+    // QMDDState bra0State = state::Bra0();
     // cout << "zeroGate:" << zeroGate.getInitialEdge() << endl;
     // cout << "zeroGate:" << zeroGate << endl;
     // cout << "igate:" << iGate.getInitialEdge() << endl;
@@ -54,7 +54,7 @@ void execute() {
     // cout << "bra0:" << bra0State.getStartNode()->edges.size() << ", " << bra0State.getStartNode()->edges[0].size() << endl;
     // QMDDGate xGate = gate::X();
     // cout << "xgate:" << xGate.getInitialEdge() << endl;
-    // QMDDState ket0 = state::KET_0();
+    // QMDDState ket0 = state::Ket0();
     auto result1 = mathUtils::kroneckerProduct(i1Gate.getInitialEdge(), i2Gate.getInitialEdge());
     cout << "result1:" << result1 << endl;
     auto result2 = mathUtils::addition(xGate.getInitialEdge(), i1Gate.getInitialEdge());
