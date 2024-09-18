@@ -71,6 +71,7 @@ public:
     void addToff(const vector<int>& controlIndexes, int targetIndex);
     void addfFredkin(int controlIndex1, int controlIndex2, int targetIndex);
 
+    void addGate(int qubitIndex, const QMDDGate& gate);
     void execute();
     // コンストラクタやその他のメンバ関数はここに追加できます
 };
