@@ -92,13 +92,15 @@ public:
 class QMDDState{
 private:
     QMDDEdge initialEdge;
-
+    size_t depth;
 public:
     QMDDState(QMDDEdge edge);
     QMDDState(const QMDDState& other) = default;
     ~QMDDState() = default;
     QMDDNode* getStartNode() const;
     QMDDEdge getInitialEdge() const;
+    size_t getDepth() const;
+    void calculateDepth();
     QMDDState operator+(const QMDDState& other);
     shared_ptr<QMDDNode> addNodes(QMDDNode* node1, QMDDNode* node2);
     QMDDState& operator=(const QMDDState& other) = default;
