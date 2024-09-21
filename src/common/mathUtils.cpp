@@ -56,7 +56,7 @@ QMDDEdge mathUtils::multiplication(const QMDDEdge& edge1, const QMDDEdge& edge2)
         size_t l = node1Copy->edges.size();
         size_t m = node1Copy->edges[0].size();
         size_t n = node2Copy->edges[0].size();
-        
+
         vector<vector<QMDDEdge>> newEdges(l, vector<QMDDEdge>(n, QMDDEdge(.0, nullptr)));
 
         for (size_t i = 0; i < l; ++i) {

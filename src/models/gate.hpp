@@ -2,6 +2,10 @@
 #define GATE_HPP
 
 #include "qmdd.hpp"
+#include "../common/mathUtils.hpp"
+#include <iostream>
+
+using namespace std;
 namespace gate {
     QMDDGate O();
 
@@ -21,7 +25,7 @@ namespace gate {
     QMDDGate varCX();
     QMDDGate CZ();
     QMDDGate DCNOT();
-    QMDDGate SWAP();
+    QMDDGate SWAP(bool primitive = false);
     QMDDGate iSWAP();
 
     /* Non-Clifford qubit gates */

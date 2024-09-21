@@ -1,6 +1,6 @@
 #include "state.hpp"
 
-complex<double> i(0.0, 1.0);
+static complex<double> i(0.0, 1.0);
 
 /////////////////////////////////////
 //

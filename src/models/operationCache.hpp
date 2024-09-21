@@ -3,9 +3,9 @@
 
 #include <unordered_map>
 #include <mutex>
+#include <cstring>
 #include "qmdd.hpp"
 #include "../common/calculation.hpp"
-
 using namespace std;
 
 class OperationCache {
