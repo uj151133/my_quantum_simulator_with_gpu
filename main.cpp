@@ -19,11 +19,17 @@ using namespace std;
 
 void execute() {
     UniqueTable& uniqueTable = UniqueTable::getInstance();
-    // QMDDEdge firstEdge = mathUtils::kroneckerProduct(state::Ket0().getInitialEdge(), state::Ket0().getInitialEdge());
-    // QuantumCircuit circuit(2, QMDDState(firstEdge));
+    QMDDEdge firstEdge = mathUtils::kroneckerProduct(state::Ket0().getInitialEdge(), state::Ket0().getInitialEdge());
+    QuantumCircuit circuit(2, QMDDState(firstEdge));
     // circuit.addI(0);
     // circuit.addI(1);
-    // circuit.execute();/
+    circuit.addSWAP(1, 0);
+    queue<QMDDGate> gateQueue = circuit.getGateQueue();
+    cout << "gateQueue:" << endl;
+    printQueue(gateQueue);
+    circuit.execute();
+    // cout << "finalState:" << circuit.getFinalState().getInitialEdge() << endl;
+
 
     // QMDDGate zeroGate = gate::O();
 
@@ -60,10 +66,10 @@ void execute() {
     // auto result2 = mathUtils::addition(i1Gate.getInitialEdge(), i1Gate.getInitialEdge());
     // cout << "result2:" << result2 << endl;
     
-    QMDDGate swap2 = gate::SWAP(true);
-    cout << "swap2:" << swap2.getInitialEdge() << endl;
-    QMDDGate swap = gate::SWAP();
-    cout << "swap:" << swap.getInitialEdge() << endl;
+    // QMDDGate swap2 = gate::SWAP(true);
+    // cout << "swap2:" << swap2.getInitialEdge() << endl;
+    // QMDDGate swap = gate::SWAP();
+    // cout << "swap:" << swap.getInitialEdge() << endl;
     uniqueTable.printAllEntries();
 
 

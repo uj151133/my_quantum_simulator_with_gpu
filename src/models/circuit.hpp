@@ -3,6 +3,7 @@
 
 #include <numeric>
 #include <queue>
+#include <array>
 #include "qmdd.hpp"
 #include "gate.hpp"
 #include "state.hpp"
@@ -20,6 +21,8 @@ private:
 public:
     QuantumCircuit(int numQubitits, QMDDState initialState);
     ~QuantumCircuit() = default;
+    queue<QMDDGate> getGateQueue() const;
+    QMDDState getFinalState() const;
     QuantumCircuit(const QuantumCircuit& other) = default;
     QuantumCircuit& operator=(const QuantumCircuit& other) = default;
     QuantumCircuit(QuantumCircuit&& other) = default;
@@ -75,5 +78,14 @@ public:
     void execute();
     // コンストラクタやその他のメンバ関数はここに追加できます
 };
+
+template <typename T>
+void printQueue(queue<T> q) {
+    while (!q.empty()) {
+        cout << q.front() << " ";
+        q.pop();
+    }
+    cout << endl;
+}
 
 #endif
