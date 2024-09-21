@@ -1,10 +1,6 @@
 #include "gate.hpp"
 
-#include <iostream>
-
-using namespace std;
-
-complex<double> i(0.0, 1.0);
+static complex<double> i(0.0, 1.0);
 
 QMDDGate gate::O() {
     return QMDDGate(QMDDEdge(.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
@@ -12,7 +8,6 @@ QMDDGate gate::O() {
         {QMDDEdge(.0, nullptr), QMDDEdge(.0, nullptr)}
     })));
 }
-
 
 QMDDGate gate::I() {
     return QMDDGate(QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
@@ -186,31 +181,35 @@ QMDDGate gate::DCNOT() {
     })));
 }
 
-QMDDGate gate::SWAP() {
-    auto swapNode1 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
-        {QMDDEdge(1.0, nullptr), QMDDEdge(.0, nullptr)},
-        {QMDDEdge(.0, nullptr), QMDDEdge(.0, nullptr)}
-    });
+QMDDGate gate::SWAP(bool primitive) {
+    if (primitive) {
+        return QMDDGate(mathUtils::multiplication(mathUtils::multiplication(gate::CX1().getInitialEdge(), gate::CX2().getInitialEdge()), gate::CX1().getInitialEdge()));
+    } else {
+        auto swapNode1 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+            {QMDDEdge(1.0, nullptr), QMDDEdge(.0, nullptr)},
+            {QMDDEdge(.0, nullptr), QMDDEdge(.0, nullptr)}
+        });
 
-    auto swapNode2 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
-        {QMDDEdge(.0, nullptr), QMDDEdge(.0, nullptr)},
-        {QMDDEdge(1.0, nullptr), QMDDEdge(.0, nullptr)}
-    });
+        auto swapNode2 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+            {QMDDEdge(.0, nullptr), QMDDEdge(.0, nullptr)},
+            {QMDDEdge(1.0, nullptr), QMDDEdge(.0, nullptr)}
+        });
 
-    auto swapNode3 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
-        {QMDDEdge(.0, nullptr), QMDDEdge(1.0, nullptr)},
-        {QMDDEdge(.0, nullptr), QMDDEdge(.0, nullptr)}
-    });
+        auto swapNode3 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+            {QMDDEdge(.0, nullptr), QMDDEdge(1.0, nullptr)},
+            {QMDDEdge(.0, nullptr), QMDDEdge(.0, nullptr)}
+        });
 
-    auto swapNode4 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
-        {QMDDEdge(.0, nullptr), QMDDEdge(.0, nullptr)},
-        {QMDDEdge(.0, nullptr), QMDDEdge(1.0, nullptr)}
-    });
+        auto swapNode4 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+            {QMDDEdge(.0, nullptr), QMDDEdge(.0, nullptr)},
+            {QMDDEdge(.0, nullptr), QMDDEdge(1.0, nullptr)}
+        });
 
-    return QMDDGate(QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
-        {QMDDEdge(1.0, swapNode1), QMDDEdge(1.0, swapNode2)},
-        {QMDDEdge(1.0, swapNode3), QMDDEdge(1.0, swapNode4)}
-    })));
+        return QMDDGate(QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+            {QMDDEdge(1.0, swapNode1), QMDDEdge(1.0, swapNode2)},
+            {QMDDEdge(1.0, swapNode3), QMDDEdge(1.0, swapNode4)}
+        })));
+    }
 }
 
 QMDDGate gate::iSWAP() {

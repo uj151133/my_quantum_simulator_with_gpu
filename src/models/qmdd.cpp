@@ -200,7 +200,7 @@ QMDDEdge QMDDState::getInitialEdge() const {
     return initialEdge;
 }
 
-size_t QMDDGate::getDepth() const {
+size_t QMDDState::getDepth() const {
     return depth;
 }
 
