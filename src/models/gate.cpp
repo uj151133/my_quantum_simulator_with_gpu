@@ -102,6 +102,13 @@ QMDDGate gate::S() {
     })));
 }
 
+QMDDGate gate::Sdagger() {
+    return QMDDGate(QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+        {QMDDEdge(1.0, nullptr), QMDDEdge(.0, nullptr)},
+        {QMDDEdge(.0, nullptr), QMDDEdge(-i, nullptr)}
+    })));
+}
+
 QMDDGate gate::V() {
     return QMDDGate(QMDDEdge(1.0 / 2.0 + i / 2.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
         {QMDDEdge(1.0, nullptr), QMDDEdge(i, nullptr)},

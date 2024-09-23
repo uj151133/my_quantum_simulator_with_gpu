@@ -18,6 +18,7 @@ namespace gate {
     QMDDGate Y();
     QMDDGate Z();
     QMDDGate S();
+    QMDDGate Sdagger();
     QMDDGate V();
     QMDDGate H();
     QMDDGate CX1();
