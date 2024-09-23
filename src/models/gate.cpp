@@ -253,6 +253,13 @@ QMDDGate gate::T() {
     })));
 }
 
+QMDDGate gate::Tdagger() {
+    return QMDDGate(QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+        {QMDDEdge(1.0, nullptr), QMDDEdge(.0, nullptr)},
+        {QMDDEdge(.0, nullptr), QMDDEdge(exp(-i * M_PI / 4.0), nullptr)}
+    })));
+}
+
 QMDDGate gate::CP(double phi) {
     return QMDDGate(QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
         {QMDDEdge(1.0, make_shared<QMDDNode>(*gate::I().getStartNode())), QMDDEdge(.0, make_shared<QMDDNode>(*gate::O().getStartNode()))},
@@ -830,23 +837,6 @@ QMDDGate gate::fFredkin() {
 //     QMDDEdge sDaggerEdge(sDaggerWeight, sDaggerNode);
 //     return QMDDGate(sDaggerEdge);
 // }
-
-// QMDDGate createTDaggerGate() {
-//     complex<double> tDaggerWeight = 1.0;
-//     QMDDNode* tDaggerNode = new QMDDNode(4);
-
-//     tDaggerNode->children[0] = QMDDEdge(1, nullptr);
-//     tDaggerNode->children[1] = QMDDEdge(0, nullptr);
-//     tDaggerNode->children[2] = QMDDEdge(0, nullptr);
-//     tDaggerNode->children[3] = QMDDEdge(-exp(i * complex<double>(M_PI / 4)), nullptr);
-
-//     QMDDEdge tDaggerEdge(tDaggerWeight, tDaggerNode);
-//     return QMDDGate(tDaggerEdge);
-// }
-
-
-
-
 
 // matrix Rotate(const ex &k){
 //     return matrix{
