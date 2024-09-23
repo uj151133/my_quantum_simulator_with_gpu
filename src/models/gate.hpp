@@ -31,6 +31,7 @@ namespace gate {
     /* Non-Clifford qubit gates */
     QMDDGate P(double phi);
     QMDDGate T();
+    QMDDGate Tdagger();
     QMDDGate CP(double phi);
     QMDDGate CS();
 

@@ -71,7 +71,8 @@ public:
     void addD(int qubitIndex);
     void addRCCX(int controlIndex1, int controlIndex2, int targetIndex);
     void addPG(int controlIndex1, int controlIndex2, int targetIndex);
-    void addToff(const vector<int>& controlIndexes, int targetIndex);
+    void addToff(vector<int>& controlIndexes, int targetIndex);
+    void addToff2(array<int, 2>& controlIndexes, int targetIndex);
     void addfFredkin(int controlIndex1, int controlIndex2, int targetIndex);
 
     void addGate(int qubitIndex, const QMDDGate& gate);
