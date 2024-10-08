@@ -832,18 +832,6 @@ QMDDGate gate::fFredkin() {
     })));
 }
 
-// QMDDGate createSDaggerGate() {
-//     complex<double> sDaggerWeight = 1.0;
-//     auto sDaggerNode = make_shared<QMDDNode>(4);
-
-//     sDaggerNode->children[0] = QMDDEdge(1, nullptr);
-//     sDaggerNode->children[1] = QMDDEdge(0, nullptr);
-//     sDaggerNode->children[2] = QMDDEdge(0, nullptr);
-//     sDaggerNode->children[3] = QMDDEdge(-i, nullptr);
-
-//     QMDDEdge sDaggerEdge(sDaggerWeight, sDaggerNode);
-//     return QMDDGate(sDaggerEdge);
-// }
 
 // matrix Rotate(const ex &k){
 //     return matrix{

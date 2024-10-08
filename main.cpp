@@ -14,20 +14,20 @@
 #include "src/common/calculation.hpp"
 #include "src/common/monitor.hpp"
 
-// using namespace GiNaC;
 using namespace std;
 
 void execute() {
     UniqueTable& uniqueTable = UniqueTable::getInstance();
-    QMDDEdge firstEdge = mathUtils::kroneckerProduct(state::Ket0().getInitialEdge(), state::Ket0().getInitialEdge());
-    QuantumCircuit circuit(2, QMDDState(firstEdge));
-    // circuit.addI(0);
-    // circuit.addI(1);
-    circuit.addSWAP(1, 0);
-    queue<QMDDGate> gateQueue = circuit.getGateQueue();
-    cout << "gateQueue:" << endl;
-    printQueue(gateQueue);
-    circuit.execute();
+    // QMDDEdge firstEdge = mathUtils::kroneckerProduct(state::Ket0().getInitialEdge(), state::Ket0().getInitialEdge());
+    // QuantumCircuit circuit(2, QMDDState(firstEdge));
+    // // circuit.addI(0);
+    // // circuit.addI(1);
+    // circuit.addSWAP(1, 0);
+    // queue<QMDDGate> gateQueue = circuit.getGateQueue();
+    // cout << "gateQueue:" << endl;
+    // printQueue(gateQueue);
+    // circuit.execute();
+
     // cout << "finalState:" << circuit.getFinalState().getInitialEdge() << endl;
 
 
@@ -36,8 +36,8 @@ void execute() {
     // QMDDGate i1Gate = gate::I();
     // QMDDGate i2Gate = gate::I();
     // QMDDGate phGate = gate::Ph(0.5);
-    // QMDDGate xGate = gate::X();
-    // QMDDGate hGate = gate::H();
+    QMDDGate cx1Gate = gate::CX1();
+    QMDDGate cx2Gate = gate::CX2();
     // QMDDGate sGate = gate::S();
     // QMDDGate toffGate = gate::Toff();
     // QMDDGate ffredkinGate = gate::fFredkin();
@@ -60,12 +60,17 @@ void execute() {
     // cout << "bra0:" << bra0State.getStartNode()->edges.size() << ", " << bra0State.getStartNode()->edges[0].size() << endl;
     // QMDDGate xGate = gate::X();
     // cout << "xgate:" << xGate.getInitialEdge() << endl;
-    // QMDDState ket0 = state::Ket0();
-    // auto result1 = mathUtils::addition(i1Gate.getInitialEdge(), i2Gate.getInitialEdge());
+    QMDDState ket0 = state::Ket0();
+    QMDDState bra0 = state::Bra0();
+    // auto rebk1 = mathUtils::kroneckerProduct(ket0.getInitialEdge(), bra0.getInitialEdge());
+    // auto rebk2 = mathUtils::mul(ket0.getInitialEdge(), bra0.getInitialEdge());
+    // auto result1 = mathUtils::multiplication(cx1Gate.getInitialEdge(), cx2Gate.getInitialEdge());
+    auto result2 = mathUtils::add(cx1Gate.getInitialEdge(), cx2Gate.getInitialEdge());
+    auto result3 = mathUtils::add(cx1Gate.getInitialEdge(), cx2Gate.getInitialEdge());
     // cout << "result1:" << result1 << endl;
-    // auto result2 = mathUtils::addition(i1Gate.getInitialEdge(), i1Gate.getInitialEdge());
-    // cout << "result2:" << result2 << endl;
-    
+    cout << "result2:" << result2 << endl;
+    // cout << "rebk1:" << rebk1 << endl;
+    // cout << "rebk2:" << rebk2 << endl;
     // QMDDGate swap2 = gate::SWAP(true);
     // cout << "swap2:" << swap2.getInitialEdge() << endl;
     // QMDDGate swap = gate::SWAP();
