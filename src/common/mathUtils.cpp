@@ -1,7 +1,5 @@
 #include "mathUtils.hpp"
 
-using namespace std;
-
 QMDDEdge mathUtils::multiplication(const QMDDEdge& edge1, const QMDDEdge& edge2) {
     OperationCache& cache = OperationCache::getInstance();
     UniqueTable& table = UniqueTable::getInstance();
@@ -74,6 +72,58 @@ QMDDEdge mathUtils::multiplication(const QMDDEdge& edge1, const QMDDEdge& edge2)
     }
 }
 
+QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1) {
+    OperationCache& cache = OperationCache::getInstance();
+    UniqueTable& table = UniqueTable::getInstance();
+    size_t operationCacheKey = calculation::generateOperationCacheKey(make_tuple(e0, OperationType::MUL, e1));
+    cout << "Operation cache key: " << operationCacheKey << endl;
+    auto existingAnswer = cache.find(operationCacheKey);
+    if (existingAnswer != OperationResult{.0, 0}) {
+        cout << "\033[1;36mCache hit!\033[0m" << endl;
+        return QMDDEdge(existingAnswer.first, existingAnswer.second);
+    }
+    else {
+        cout << "\033[1;35mCache miss!\033[0m" << endl;
+        shared_ptr<QMDDNode> n0 = table.find(e0.uniqueTableKey);
+        shared_ptr<QMDDNode> n1 = table.find(e1.uniqueTableKey);
+        auto n0Copy = make_shared<QMDDNode>(*n0);
+        auto n1Copy = make_shared<QMDDNode>(*n1);
+        QMDDEdge* e0Copy = const_cast<QMDDEdge*>(&e0);
+        QMDDEdge* e1Copy = const_cast<QMDDEdge*>(&e1);
+        if (e1Copy->isTerminal) {
+            QMDDEdge* tmpEdge = e0Copy;
+            e0Copy = e1Copy;
+            e1Copy = tmpEdge;
+        }
+        if (e0Copy->isTerminal) {
+            if (e0Copy->weight == .0) {
+                return *e0Copy;
+            } else if (e0Copy->weight == 1.0){
+                return * e1Copy;
+            } else {
+                return QMDDEdge(e0Copy->weight * e1Copy->weight, n1);
+            }
+        }
+
+        vector<vector<QMDDEdge>> z(n0Copy->edges.size(), vector<QMDDEdge>(n1Copy->edges[0].size(), QMDDEdge(.0, nullptr)));
+        for (size_t i = 0; i < n0Copy->edges.size(); i++) {
+            for (size_t j = 0; j < n1Copy->edges[0].size(); j++){
+                QMDDEdge tmp;
+                for (size_t k = 0; k < n0->edges[0].size(); k++) {
+                    QMDDEdge p(e0Copy->weight * n0Copy->edges[i][k].weight, table.find(n0Copy->edges[i][k].uniqueTableKey));
+                    QMDDEdge q(e1Copy->weight * n0Copy->edges[k][j].weight, table.find(n1Copy->edges[k][j].uniqueTableKey));
+                    tmp = mul(p, q);
+                }
+                z[i][j] = add(z[i][j], tmp);
+            }
+        }
+        auto newNode = make_shared<QMDDNode>(z);
+        cache.insert(operationCacheKey, make_pair(1.0, calculation::generateUniqueTableKey(*newNode)));
+        return QMDDEdge(1.0, newNode);
+    }
+
+}
+
 QMDDEdge mathUtils::addition(const QMDDEdge& edge1, const QMDDEdge& edge2) {
     OperationCache& cache = OperationCache::getInstance();
     UniqueTable& table = UniqueTable::getInstance();
@@ -135,6 +185,50 @@ QMDDEdge mathUtils::addition(const QMDDEdge& edge1, const QMDDEdge& edge2) {
     }
 }
 
+QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1) {
+    OperationCache& cache = OperationCache::getInstance();
+    UniqueTable& table = UniqueTable::getInstance();
+    size_t operationCacheKey = calculation::generateOperationCacheKey(make_tuple(e0, OperationType::ADD, e1));
+    cout << "Operation cache key: " << operationCacheKey << endl;
+    auto existingAnswer = cache.find(operationCacheKey);
+    if (existingAnswer != OperationResult{.0, 0}) {
+        cout << "\033[1;36mCache hit!\033[0m" << endl;
+        return QMDDEdge(existingAnswer.first, existingAnswer.second);
+    }
+    else {
+        cout << "\033[1;35mCache miss!\033[0m" << endl;
+        shared_ptr<QMDDNode> n0 = table.find(e0.uniqueTableKey);
+        shared_ptr<QMDDNode> n1 = table.find(e1.uniqueTableKey);
+        auto n0Copy = make_shared<QMDDNode>(*n0);
+        auto n1Copy = make_shared<QMDDNode>(*n1);
+        QMDDEdge* e0Copy = const_cast<QMDDEdge*>(&e0);
+        QMDDEdge* e1Copy = const_cast<QMDDEdge*>(&e1);
+        if (e1Copy->isTerminal) {
+            QMDDEdge* tmpEdge = e0Copy;
+            e0Copy = e1Copy;
+            e1Copy = tmpEdge;
+        }
+        if (e0Copy->isTerminal) {
+            if (e0Copy->weight == .0) {
+                return *e1Copy;
+            }else if (e1Copy->isTerminal) {
+                return QMDDEdge(e0Copy->weight + e1Copy->weight, nullptr);
+            }
+        }
+        vector<vector<QMDDEdge>> z(n0Copy->edges.size(), vector<QMDDEdge>(n0Copy->edges[0].size()));
+        for (size_t i = 0; i < n0Copy->edges.size(); i++) {
+            for (size_t j = 0; j < n0Copy->edges[i].size(); j++) {
+                QMDDEdge p(e0Copy->weight * n0Copy->edges[i][j].weight, table.find(n0Copy->edges[i][j].uniqueTableKey));
+                QMDDEdge q(e1Copy->weight * n1Copy->edges[i][j].weight, table.find(n1Copy->edges[i][j].uniqueTableKey));
+                z[i][j] = add(p, q);
+            }
+        }
+        auto newNode = make_shared<QMDDNode>(z);
+        cache.insert(operationCacheKey, make_pair(1.0, calculation::generateUniqueTableKey(*newNode)));
+        return QMDDEdge(1.0, newNode);
+    }
+}
+
 QMDDEdge mathUtils::kroneckerProduct(const QMDDEdge& edge1, const QMDDEdge& edge2) {
     OperationCache& cache = OperationCache::getInstance();
     UniqueTable& table = UniqueTable::getInstance();
@@ -189,4 +283,57 @@ QMDDEdge mathUtils::kroneckerProduct(const QMDDEdge& edge1, const QMDDEdge& edge
     cache.insert(operationCacheKey, make_pair(1.0, calculation::generateUniqueTableKey(*newNode)));
     return QMDDEdge(1.0, newNode);
     }
+}
+
+QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1) {
+    OperationCache& cache = OperationCache::getInstance();
+    UniqueTable& table = UniqueTable::getInstance();
+    size_t operationCacheKey = calculation::generateOperationCacheKey(make_tuple(e0, OperationType::KRONECKER, e1));
+    cout << "Operation cache key: " << operationCacheKey << endl;
+    auto existingAnswer = cache.find(operationCacheKey);
+    if (existingAnswer != OperationResult{.0, 0}) {
+        cout << "\033[1;36mCache hit!\033[0m" << endl;
+        return QMDDEdge(existingAnswer.first, existingAnswer.second);
+    }
+    else {
+        cout << "\033[1;35mCache miss!\033[0m" << endl;
+        shared_ptr<QMDDNode> n0 = table.find(e0.uniqueTableKey);
+        shared_ptr<QMDDNode> n1 = table.find(e1.uniqueTableKey);
+        auto n0Copy = make_shared<QMDDNode>(*n0);
+        auto n1Copy = make_shared<QMDDNode>(*n1);
+        QMDDEdge* e0Copy = const_cast<QMDDEdge*>(&e0);
+        QMDDEdge* e1Copy = const_cast<QMDDEdge*>(&e1);
+        if (e0Copy->isTerminal) {
+            if (e0Copy->weight == .0) {
+                return *e0Copy;
+            }else if (e0Copy->weight == 1.0) {
+                return *e1Copy;
+            } else {
+                return QMDDEdge(e0Copy->weight * e1Copy->weight, n1);
+            }
+        }
+        vector<vector<QMDDEdge>> z(n0Copy->edges.size(), vector<QMDDEdge>(n1Copy->edges[0].size()));
+        for (size_t i = 0; i < n0Copy->edges.size(); i++) {
+            for (size_t j = 0; j < n1Copy->edges[i].size(); j++) {
+                z[i][j] = kron(n0->edges[i][j], e1);
+            }
+        }
+        auto newNode = make_shared<QMDDNode>(z);
+        cache.insert(operationCacheKey, make_pair(1.0, calculation::generateUniqueTableKey(*newNode)));
+        return QMDDEdge(1.0, newNode);
+    }
+}
+
+QMDDEdge mathUtils::mulAny(QMDDEdge& e, int times) {
+    if (times == 0) {
+        return QMDDEdge(0.0, nullptr);
+    }
+    if (times == 1) {
+        return e;
+    }
+    QMDDEdge result = e;
+    for (int i = 1; i < times; ++i) {
+        result = mathUtils::multiplication(result, e);
+    }
+    return result;
 }

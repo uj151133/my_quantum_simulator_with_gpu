@@ -252,47 +252,114 @@ void QuantumCircuit::addSWAP(int qubitIndex1, int qubitIndex2) {
     }else {
         int minIndex = min(qubitIndex1, qubitIndex2);
         int maxIndex = max(qubitIndex1, qubitIndex2);
-        array<array<QMDDEdge, 2>, 2> partialCX = {gate::I().getInitialEdge(), gate::I().getInitialEdge()};
         vector<QMDDEdge> edges(minIndex, gate::I().getInitialEdge());
-        for (int index = minIndex; index <= maxIndex; index++){
-            if (index == qubitIndex1) {
-                if (index == minIndex) {
-                    partialCX[0][0] = mathUtils::multiplication(state::Ket0().getInitialEdge(), state::Bra0().getInitialEdge());
-                    partialCX[0][1] = mathUtils::multiplication(state::Ket1().getInitialEdge(), state::Bra1().getInitialEdge());
-                    partialCX[1][1] = gate::X().getInitialEdge();
-                } else {
-                    partialCX[0][0] = mathUtils::kroneckerProduct(partialCX[0][0], mathUtils::multiplication(state::Ket0().getInitialEdge(), state::Bra0().getInitialEdge()));
-                    partialCX[0][1] = mathUtils::kroneckerProduct(partialCX[0][1], mathUtils::multiplication(state::Ket1().getInitialEdge(), state::Bra1().getInitialEdge()));
-                    partialCX[1][0] = mathUtils::kroneckerProduct(partialCX[1][0], gate::I().getInitialEdge());
-                    partialCX[1][1] = mathUtils::kroneckerProduct(partialCX[1][1], gate::X().getInitialEdge());
-                }
-            } else if (index == qubitIndex2) {
-                if (index == minIndex) {
-                    partialCX[0][1] = gate::X().getInitialEdge();
-                    partialCX[1][0] = mathUtils::multiplication(state::Ket0().getInitialEdge(), state::Bra0().getInitialEdge());
-                    partialCX[1][1] = mathUtils::multiplication(state::Ket1().getInitialEdge(), state::Bra1().getInitialEdge());
-                } else {
-                    partialCX[0][0] = mathUtils::kroneckerProduct(partialCX[0][0], gate::I().getInitialEdge());
-                    partialCX[0][1] = mathUtils::kroneckerProduct(partialCX[0][1], gate::X().getInitialEdge());
-                    partialCX[1][0] = mathUtils::kroneckerProduct(partialCX[1][0], mathUtils::multiplication(state::Ket0().getInitialEdge(), state::Bra0().getInitialEdge()));
-                    partialCX[1][1] = mathUtils::kroneckerProduct(partialCX[1][1], mathUtils::multiplication(state::Ket1().getInitialEdge(), state::Bra1().getInitialEdge()));
-                }
-            } else {
-                for (int i = 0; i < 2; ++i) {
-                    for (int j = 0; j < 2; ++j) {
-                        partialCX[i][j] = mathUtils::kroneckerProduct(partialCX[i][j], gate::I().getInitialEdge());
+        QMDDEdge customSWAP;
+        size_t numIndex =  maxIndex - minIndex + 1;
+        if (numIndex == 2){
+            customSWAP = gate::SWAP().getInitialEdge();
+        } else {
+            vector<vector<QMDDEdge>> partialPreSWAP(pow(2, numIndex), vector<QMDDEdge>(2, gate::I().getInitialEdge()));
+            vector<QMDDEdge> partialSWAP(pow(2, numIndex));
+            for (size_t i = 0; i < partialPreSWAP.size(); i++){
+                unsigned long long highest_bit = (i >> (numIndex - 1)) & 1;
+                unsigned long long lowest_bit = i & 1;
+                int j = (i & ~(1ULL << (numIndex - 1))) | (lowest_bit << (numIndex - 1));
+                j = (j & ~1ULL) | highest_bit;
+                for (int index = 0; index < numIndex; index++){
+                    if (i & 1){
+                        if (index == 0){
+                            partialPreSWAP[i][0] = state::Ket1().getInitialEdge();
+                        }else {
+                            partialPreSWAP[i][0] = mathUtils::kroneckerProduct(partialPreSWAP[i][0], state::Ket1().getInitialEdge());
+                        }
+                    }else {
+                        if (index == 0){
+                            partialPreSWAP[i][0] = state::Ket0().getInitialEdge();
+                        }else {
+                            partialPreSWAP[i][0] = mathUtils::kroneckerProduct(partialPreSWAP[i][0], state::Ket0().getInitialEdge());
+                        }
                     }
+                    if (j & 1){
+                        if (index == 0){
+                            partialPreSWAP[i][1] = state::Bra1().getInitialEdge();
+                        }else {
+                            partialPreSWAP[i][1] = mathUtils::kroneckerProduct(partialPreSWAP[i][1], state::Bra1().getInitialEdge());
+                        }
+                    } else {
+                        if (index == 0){
+                            partialPreSWAP[i][1] = state::Bra0().getInitialEdge();
+                        }else {
+                            partialPreSWAP[i][1] = mathUtils::kroneckerProduct(partialPreSWAP[i][1], state::Bra0().getInitialEdge());
+                        }
+                    }
+                    i >>= 1;
+                    j >>= 1;
                 }
             }
+            for (size_t i = 0; i < partialPreSWAP.size(); i++){
+                partialSWAP[i] = mathUtils::multiplication(partialPreSWAP[i][0], partialPreSWAP[i][1]);
+            }
+            customSWAP = accumulate(partialSWAP.begin() + 1, partialSWAP.end(), partialSWAP[0], mathUtils::addition);
         }
-        array<QMDDEdge,2> customCX = {mathUtils::addition(partialCX[0][0], partialCX[0][1]), mathUtils::addition(partialCX[1][0], partialCX[1][1])};
-        QMDDEdge customSWAP = mathUtils::multiplication(mathUtils::multiplication(customCX[0], customCX[1]), customCX[0]);
         edges.push_back(customSWAP);
         edges.insert(edges.end(), numQubits - maxIndex - 1, gate::I().getInitialEdge());
         QMDDGate result = accumulate(edges.begin() + 1, edges.end(), edges[0], mathUtils::kroneckerProduct);
         gateQueue.push(result);
     }
+    return;
 }
+
+// void QuantumCircuit::addSWAP(int qubitIndex1, int qubitIndex2) {
+//     if (numQubits == 1) {
+//         throw invalid_argument("Cannot add SWAP gate to single qubit circuit.");
+//     }else if (qubitIndex1 == qubitIndex2) {
+//         throw invalid_argument("qubitIndexes indices must be different.");
+//     }else if(numQubits == 2 && ((qubitIndex1 == 0 && qubitIndex2 == 1) || (qubitIndex1 == 1 && qubitIndex2 == 0))) {
+//         gateQueue.push(gate::SWAP());
+//     }else {
+//         int minIndex = min(qubitIndex1, qubitIndex2);
+//         int maxIndex = max(qubitIndex1, qubitIndex2);
+//         array<array<QMDDEdge, 2>, 2> partialCX = {gate::I().getInitialEdge(), gate::I().getInitialEdge()};
+//         vector<QMDDEdge> edges(minIndex, gate::I().getInitialEdge());
+//         for (int index = minIndex; index <= maxIndex; index++){
+//             if (index == qubitIndex1) {
+//                 if (index == minIndex) {
+//                     partialCX[0][0] = mathUtils::multiplication(state::Ket0().getInitialEdge(), state::Bra0().getInitialEdge());
+//                     partialCX[0][1] = mathUtils::multiplication(state::Ket1().getInitialEdge(), state::Bra1().getInitialEdge());
+//                     partialCX[1][1] = gate::X().getInitialEdge();
+//                 } else {
+//                     partialCX[0][0] = mathUtils::kroneckerProduct(partialCX[0][0], mathUtils::multiplication(state::Ket0().getInitialEdge(), state::Bra0().getInitialEdge()));
+//                     partialCX[0][1] = mathUtils::kroneckerProduct(partialCX[0][1], mathUtils::multiplication(state::Ket1().getInitialEdge(), state::Bra1().getInitialEdge()));
+//                     partialCX[1][0] = mathUtils::kroneckerProduct(partialCX[1][0], gate::I().getInitialEdge());
+//                     partialCX[1][1] = mathUtils::kroneckerProduct(partialCX[1][1], gate::X().getInitialEdge());
+//                 }
+//             } else if (index == qubitIndex2) {
+//                 if (index == minIndex) {
+//                     partialCX[0][1] = gate::X().getInitialEdge();
+//                     partialCX[1][0] = mathUtils::multiplication(state::Ket0().getInitialEdge(), state::Bra0().getInitialEdge());
+//                     partialCX[1][1] = mathUtils::multiplication(state::Ket1().getInitialEdge(), state::Bra1().getInitialEdge());
+//                 } else {
+//                     partialCX[0][0] = mathUtils::kroneckerProduct(partialCX[0][0], gate::I().getInitialEdge());
+//                     partialCX[0][1] = mathUtils::kroneckerProduct(partialCX[0][1], gate::X().getInitialEdge());
+//                     partialCX[1][0] = mathUtils::kroneckerProduct(partialCX[1][0], mathUtils::multiplication(state::Ket0().getInitialEdge(), state::Bra0().getInitialEdge()));
+//                     partialCX[1][1] = mathUtils::kroneckerProduct(partialCX[1][1], mathUtils::multiplication(state::Ket1().getInitialEdge(), state::Bra1().getInitialEdge()));
+//                 }
+//             } else {
+//                 for (int i = 0; i < 2; ++i) {
+//                     for (int j = 0; j < 2; ++j) {
+//                         partialCX[i][j] = mathUtils::kroneckerProduct(partialCX[i][j], gate::I().getInitialEdge());
+//                     }
+//                 }
+//             }
+//         }
+//         array<QMDDEdge,2> customCX = {mathUtils::addition(partialCX[0][0], partialCX[0][1]), mathUtils::addition(partialCX[1][0], partialCX[1][1])};
+//         QMDDEdge customSWAP = mathUtils::multiplication(mathUtils::multiplication(customCX[0], customCX[1]), customCX[0]);
+//         edges.push_back(customSWAP);
+//         edges.insert(edges.end(), numQubits - maxIndex - 1, gate::I().getInitialEdge());
+//         QMDDGate result = accumulate(edges.begin() + 1, edges.end(), edges[0], mathUtils::kroneckerProduct);
+//         gateQueue.push(result);
+//     }
+// }
 
 void QuantumCircuit::addP(int qubitIndex, double phi) {
     if (numQubits == 1) {
