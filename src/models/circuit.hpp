@@ -77,6 +77,7 @@ public:
 
     void addGate(int qubitIndex, const QMDDGate& gate);
     void execute();
+    QMDDState read(int qubitIndex);
     // コンストラクタやその他のメンバ関数はここに追加できます
 };
 
