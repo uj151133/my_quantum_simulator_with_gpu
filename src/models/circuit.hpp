@@ -3,9 +3,10 @@
 
 #include <numeric>
 #include <queue>
+#include <array>
 #include "qmdd.hpp"
 #include "gate.hpp"
-#include "bit.hpp"
+#include "state.hpp"
 #include "../common/mathUtils.hpp"
 
 using namespace std;
@@ -20,6 +21,8 @@ private:
 public:
     QuantumCircuit(int numQubitits, QMDDState initialState);
     ~QuantumCircuit() = default;
+    queue<QMDDGate> getGateQueue() const;
+    QMDDState getFinalState() const;
     QuantumCircuit(const QuantumCircuit& other) = default;
     QuantumCircuit& operator=(const QuantumCircuit& other) = default;
     QuantumCircuit(QuantumCircuit&& other) = default;
@@ -68,11 +71,23 @@ public:
     void addD(int qubitIndex);
     void addRCCX(int controlIndex1, int controlIndex2, int targetIndex);
     void addPG(int controlIndex1, int controlIndex2, int targetIndex);
-    void addToff(const vector<int>& controlIndexes, int targetIndex);
+    void addToff(vector<int>& controlIndexes, int targetIndex);
+    void addToff2(array<int, 2>& controlIndexes, int targetIndex);
     void addfFredkin(int controlIndex1, int controlIndex2, int targetIndex);
 
+    void addGate(int qubitIndex, const QMDDGate& gate);
     void execute();
+    QMDDState read(int qubitIndex);
     // コンストラクタやその他のメンバ関数はここに追加できます
 };
+
+template <typename T>
+void printQueue(queue<T> q) {
+    while (!q.empty()) {
+        cout << q.front() << " ";
+        q.pop();
+    }
+    cout << endl;
+}
 
 #endif

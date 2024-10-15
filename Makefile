@@ -6,8 +6,16 @@ clean:
 .PHONY: install
 install:
 	pip install -r requirements.txt
-	brew install libomp
-	brew install yaml-cpp
+	ifeq ($(shell uname), Darwin)
+		brew update
+		brew install libomp yaml-cpp gmp gsl
+	else ifeq ($(shell uname), Linux)
+		if [ -f /etc/fedora-release ]; then \
+            sudo dnf install -y libomp yaml-cpp gmp-devel gsl-devel; \
+        else \
+            sudo apt-get update; \
+            sudo apt-get install -y libomp-dev libyaml-cpp-dev libgmp-dev libgsl-dev; \
+        fi
 
 .PHONY: setup
 setup:
