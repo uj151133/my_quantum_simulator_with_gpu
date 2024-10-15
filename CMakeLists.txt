@@ -31,6 +31,11 @@ find_package(yaml-cpp REQUIRED)
 find_package(OpenMP REQUIRED)
 find_package(Boost REQUIRED COMPONENTS fiber context)
 
+
+# GNUライブラリのインクルードとリンク
+find_package(GSL REQUIRED)  # GSLライブラリの例
+find_library(GMP_LIB gmp)   # GMPライブラリの例
+
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
@@ -50,7 +55,7 @@ file(GLOB SOURCES "src/models/*.cpp" "src/common/*.cpp")
 
 # 通常のC++実行ファイルを追加
 add_executable(qmdd_sim main.cpp ${SOURCES})
-target_link_libraries(qmdd_sim PRIVATE yaml-cpp Python3::Python OpenMP::OpenMP_CXX Boost::fiber Boost::context)
+target_link_libraries(qmdd_sim PRIVATE yaml-cpp Python3::Python OpenMP::OpenMP_CXX Boost::fiber Boost::context GSL::gsl ${GMP_LIB})
 
 # make run ターゲットの追加
 add_custom_target(run

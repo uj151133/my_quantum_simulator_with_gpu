@@ -1,6 +1,7 @@
 #ifndef MATHUTILS_HPP
 #define MATHUTILS_HPP
 
+#include <cmath>
 #include "../models/qmdd.hpp"
 #include "../models/uniqueTable.hpp"
 #include "../models/operationCache.hpp"
@@ -17,6 +18,10 @@ namespace mathUtils {
     QMDDEdge kron(const QMDDEdge& e0, const QMDDEdge& e1);
 
     QMDDEdge mulAny(QMDDEdge& e, int times);
+
+    complex<double> csc(complex<double> theta);
+    complex<double> sec(complex<double> theta);
+    complex<double> cot(complex<double> theta);
 }
 
 #endif // MATH_UTILS_HPP
