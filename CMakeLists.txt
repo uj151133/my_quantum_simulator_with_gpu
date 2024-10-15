@@ -14,20 +14,6 @@ find_package(Python3 3.10 EXACT REQUIRED COMPONENTS Interpreter Development)
 include_directories(${Python3_INCLUDE_DIRS})
 link_directories(${Python3_LIBRARY_DIRS})
 
-# CLNライブラリのパスを設定
-set(CLN_DIR /usr/local/include/cln/)
-list(APPEND CMAKE_PREFIX_PATH ${CLN_DIR})
-find_package(CLN REQUIRED)
-
-# GiNaCのインクルードディレクトリとライブラリを探す
-find_path(GINAC_INCLUDE_DIR ginac/ginac.h)
-find_library(GINAC_LIBRARY ginac)
-
-if(NOT GINAC_INCLUDE_DIR OR NOT GINAC_LIBRARY)
-    message(FATAL_ERROR "GiNaC library not found")
-endif()
-
-
 # 環境変数の設定をCMakeの変数に変換
 set(YAML_CPP_INCLUDE_DIR /opt/homebrew/Cellar/yaml-cpp/0.8.0/include)
 set(YAML_CPP_LIB_DIR /opt/homebrew/Cellar/yaml-cpp/0.8.0/lib)
@@ -50,8 +36,8 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
 
 # インクルードディレクトリとリンクディレクトリを追加
-include_directories(${GINAC_INCLUDE_DIR} ${YAML_CPP_INCLUDE_DIR} ${LIBOMP_INCLUDE_DIR})
-link_directories(${GINAC_LIBRARY_DIR} ${YAML_CPP_LIB_DIR} ${LIBOMP_LIB_DIR} )
+include_directories(${YAML_CPP_INCLUDE_DIR} ${LIBOMP_INCLUDE_DIR})
+link_directories(${YAML_CPP_LIB_DIR} ${LIBOMP_LIB_DIR} )
 
 # 出力ディレクトリを親ディレクトリに設定
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/libs/__pycache__)
@@ -60,9 +46,11 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
 # modelsディレクトリをincludeディレクトリとして設定
 include_directories(src)
 
+file(GLOB SOURCES "src/models/*.cpp" "src/common/*.cpp")
+
 # 通常のC++実行ファイルを追加
-add_executable(qmdd_sim main.cpp src/models/gate.cpp src/models/state.cpp src/models/qmdd.cpp src/models/circuit.cpp src/models/uniqueTable.cpp src/models/operationCache.cpp src/common/mathUtils.cpp src/common/calculation.cpp src/common/monitor.cpp)
-target_link_libraries(qmdd_sim PRIVATE ${CLN_LIBRARIES} ${GINAC_LIBRARY} yaml-cpp Python3::Python OpenMP::OpenMP_CXX Boost::fiber Boost::context)
+add_executable(qmdd_sim main.cpp ${SOURCES})
+target_link_libraries(qmdd_sim PRIVATE yaml-cpp Python3::Python OpenMP::OpenMP_CXX Boost::fiber Boost::context)
 
 # make run ターゲットの追加
 add_custom_target(run

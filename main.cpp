@@ -3,7 +3,6 @@
 #include <cstdlib>
 #include <string>
 #include <unistd.h>
-// #include <ginac/ginac.h>
 
 #include "src/models/state.hpp"
 #include "src/models/gate.hpp"
