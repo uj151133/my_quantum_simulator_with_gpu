@@ -92,13 +92,15 @@ public:
 class QMDDState{
 private:
     QMDDEdge initialEdge;
-
+    size_t depth;
 public:
     QMDDState(QMDDEdge edge);
     QMDDState(const QMDDState& other) = default;
     ~QMDDState() = default;
     QMDDNode* getStartNode() const;
     QMDDEdge getInitialEdge() const;
+    size_t getDepth() const;
+    void calculateDepth();
     QMDDState operator+(const QMDDState& other);
     shared_ptr<QMDDNode> addNodes(QMDDNode* node1, QMDDNode* node2);
     QMDDState& operator=(const QMDDState& other) = default;
@@ -106,4 +108,14 @@ public:
     bool operator!=(const QMDDState& other) const;
     friend ostream& operator<<(ostream& os, const QMDDState& state);
 };
+
+template<typename T>
+bool compare_and_swap(T& variable, const T& expected, const T& new_value) {
+    if (variable == expected) {
+        variable = new_value;
+        return true;  // 成功
+    }
+    return false;  // 失敗
+}
+
 #endif

@@ -175,6 +175,20 @@ ostream& operator<<(ostream& os, const QMDDGate& gate) {
 
 QMDDState::QMDDState(QMDDEdge edge)
     : initialEdge(std::move(edge)) {
+    calculateDepth();
+}
+
+void QMDDState::calculateDepth() {
+    UniqueTable& table = UniqueTable::getInstance();
+    auto currentNode = table.find(initialEdge.uniqueTableKey);
+    size_t currentDepth = 0;
+
+    while (currentNode && !currentNode->edges.empty()) {
+        ++currentDepth;
+        currentNode = table.find(currentNode->edges[0][0].uniqueTableKey);
+    }
+    // cout << "Depth calculated: " << currentDepth << endl;
+    depth = currentDepth;
 }
 
 QMDDNode* QMDDState::getStartNode() const {
@@ -184,6 +198,10 @@ QMDDNode* QMDDState::getStartNode() const {
 
 QMDDEdge QMDDState::getInitialEdge() const {
     return initialEdge;
+}
+
+size_t QMDDState::getDepth() const {
+    return depth;
 }
 
 QMDDState QMDDState::operator+(const QMDDState& other) {
