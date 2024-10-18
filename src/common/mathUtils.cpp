@@ -41,16 +41,16 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1) {
                     QMDDEdge q(e1Copy->weight * n1->edges[k][j].weight, table.find(n1->edges[k][j].uniqueTableKey));
                     z[i][j] = add(z[i][j], mul(p, q));
                 }
-                    if (z[i][j].weight != .0 && tmpWeight == .0) {
-                        tmpWeight = z[i][j].weight;
-                        z[i][j].weight = 1.0;
-                    }else if (z[i][j].weight != .0 && tmpWeight != .0) {
-                        z[i][j].weight /= tmpWeight;
-                    } else {
-                        if (z[i][j].weight != .0) {
-                            cout << "⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️" << endl;
-                        }
+                if (z[i][j].weight != .0 && tmpWeight == .0) {
+                    tmpWeight = z[i][j].weight;
+                    z[i][j].weight = 1.0;
+                }else if (z[i][j].weight != .0 && tmpWeight != .0) {
+                    z[i][j].weight /= tmpWeight;
+                } else {
+                    if (z[i][j].weight != .0) {
+                        cout << "⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️" << endl;
                     }
+                }
 
             }
         }
