@@ -191,7 +191,7 @@ QMDDGate gate::DCNOT() {
 
 QMDDGate gate::SWAP(bool primitive) {
     if (primitive) {
-        return QMDDGate(mathUtils::multiplication(mathUtils::multiplication(gate::CX1().getInitialEdge(), gate::CX2().getInitialEdge()), gate::CX1().getInitialEdge()));
+        return QMDDGate(mathUtils::mul(mathUtils::mul(gate::CX1().getInitialEdge(), gate::CX2().getInitialEdge()), gate::CX1().getInitialEdge()));
     } else {
         auto swapNode1 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
             {QMDDEdge(1.0, nullptr), QMDDEdge(.0, nullptr)},
