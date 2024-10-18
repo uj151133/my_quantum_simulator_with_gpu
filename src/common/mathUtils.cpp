@@ -40,7 +40,7 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1) {
                     QMDDEdge p(e0Copy->weight * n0->edges[i][k].weight, table.find(n0->edges[i][k].uniqueTableKey));
                     QMDDEdge q(e1Copy->weight * n1->edges[k][j].weight, table.find(n1->edges[k][j].uniqueTableKey));
                     z[i][j] = add(z[i][j], mul(p, q));
-
+                }
                     if (z[i][j].weight != .0 && tmpWeight == .0) {
                         tmpWeight = z[i][j].weight;
                         z[i][j].weight = 1.0;
@@ -52,7 +52,6 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1) {
                         }
                     }
 
-                }
             }
         }
         auto newNode = make_shared<QMDDNode>(z);
@@ -170,18 +169,18 @@ QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1) {
 
 complex<double> mathUtils::csc(const complex<double> theta) {
     complex<double> sin_theta = sin(theta);
-    if (sin_theta == 0.0) throw overflow_error("csc(θ) is undefined (sin(θ) = 0)");
+    if (sin_theta == .0) throw overflow_error("csc(θ) is undefined (sin(θ) = 0)");
     return 1.0 / sin_theta;
 }
 
 complex<double> mathUtils::sec(const complex<double> theta) {
     complex<double> cos_theta = cos(theta);
-    if (cos_theta == 0.0) throw overflow_error("sec(θ) is undefined (cos(θ) = 0)");
+    if (cos_theta == .0) throw overflow_error("sec(θ) is undefined (cos(θ) = 0)");
     return 1.0 / cos_theta;
 }
 
 complex<double> mathUtils::cot(const complex<double> theta) {
     complex<double> tan_theta = tan(theta);
-    if (tan_theta == 0.0) throw overflow_error("cot(θ) is undefined (tan(θ) = 0)");
+    if (tan_theta == .0) throw overflow_error("cot(θ) is undefined (tan(θ) = 0)");
     return 1.0 / tan_theta;
 }
