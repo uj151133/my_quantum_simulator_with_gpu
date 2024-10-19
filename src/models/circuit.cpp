@@ -15,7 +15,11 @@ QMDDState QuantumCircuit::getFinalState() const {
 }
 
 void QuantumCircuit::addI(int qubitIndex) {
-    vector<QMDDEdge> edges(numQubits, gate::I().getInitialEdge());
+    vector<QMDDEdge> edges(numQubits);
+    #pragma omp parallel for
+    for (int i = 0; i < numQubits; i++) {
+        edges[i] = gate::I().getInitialEdge();
+    }
     QMDDGate result = accumulate(edges.begin() + 1, edges.end(), edges[0], mathUtils::kron);
     gateQueue.push(result);
     return;
@@ -25,9 +29,17 @@ void QuantumCircuit::addPh(int qubitIndex, double delta) {
     if (numQubits == 1) {
         gateQueue.push(gate::Ph(delta));
     } else {
-        vector<QMDDEdge> edges(qubitIndex, gate::I().getInitialEdge());
-        edges.push_back(gate::Ph(delta).getInitialEdge());
-        edges.insert(edges.end(), numQubits - qubitIndex - 1, gate::I().getInitialEdge());
+        vector<QMDDEdge> edges(numQubits);
+
+        #pragma omp parallel for
+        for (int i = 0; i < numQubits; i++) {
+            if (i == qubitIndex) {
+                edges[i] = gate::Ph(delta).getInitialEdge();
+            } else {
+                edges[i] = gate::I().getInitialEdge();
+            }
+        }
+
         QMDDGate result = accumulate(edges.begin() + 1, edges.end(), edges[0], mathUtils::kron);
         gateQueue.push(result);
     }
@@ -38,9 +50,17 @@ void QuantumCircuit::addX(int qubitIndex) {
     if (numQubits == 1) {
         gateQueue.push(gate::X());
     } else {
-        vector<QMDDEdge> edges(qubitIndex, gate::I().getInitialEdge());
-        edges.push_back(gate::X().getInitialEdge());
-        edges.insert(edges.end(), numQubits - qubitIndex - 1, gate::I().getInitialEdge());
+        vector<QMDDEdge> edges(numQubits);
+
+        #pragma omp parallel for
+        for (int i = 0; i < numQubits; i++) {
+            if (i == qubitIndex) {
+                edges[i] = gate::X().getInitialEdge();
+            } else {
+                edges[i] = gate::I().getInitialEdge();
+            }
+        }
+
         QMDDGate result = accumulate(edges.begin() + 1, edges.end(), edges[0], mathUtils::kron);
         gateQueue.push(result);
     }
@@ -51,9 +71,17 @@ void QuantumCircuit::addY(int qubitIndex) {
     if (numQubits == 1) {
         gateQueue.push(gate::Y());
     } else {
-        vector<QMDDEdge> edges(qubitIndex, gate::I().getInitialEdge());
-        edges.push_back(gate::Y().getInitialEdge());
-        edges.insert(edges.end(), numQubits - qubitIndex - 1, gate::I().getInitialEdge());
+        vector<QMDDEdge> edges(numQubits);
+
+        #pragma omp parallel for
+        for (int i = 0; i < numQubits; i++) {
+            if (i == qubitIndex) {
+                edges[i] = gate::Y().getInitialEdge();
+            } else {
+                edges[i] = gate::I().getInitialEdge();
+            }
+        }
+
         QMDDGate result = accumulate(edges.begin() + 1, edges.end(), edges[0], mathUtils::kron);
         gateQueue.push(result);
     }
@@ -64,9 +92,17 @@ void QuantumCircuit::addZ(int qubitIndex) {
     if (numQubits == 1) {
         gateQueue.push(gate::Z());
     } else {
-        vector<QMDDEdge> edges(qubitIndex, gate::I().getInitialEdge());
-        edges.push_back(gate::Z().getInitialEdge());
-        edges.insert(edges.end(), numQubits - qubitIndex - 1, gate::I().getInitialEdge());
+        vector<QMDDEdge> edges(numQubits);
+
+        #pragma omp parallel for
+        for (int i = 0; i < numQubits; i++) {
+            if (i == qubitIndex) {
+                edges[i] = gate::Z().getInitialEdge();
+            } else {
+                edges[i] = gate::I().getInitialEdge();
+            }
+        }
+
         QMDDGate result = accumulate(edges.begin() + 1, edges.end(), edges[0], mathUtils::kron);
         gateQueue.push(result);
     }
@@ -77,9 +113,17 @@ void QuantumCircuit::addS(int qubitIndex) {
     if (numQubits == 1) {
         gateQueue.push(gate::S());
     } else {
-        vector<QMDDEdge> edges(qubitIndex, gate::I().getInitialEdge());
-        edges.push_back(gate::S().getInitialEdge());
-        edges.insert(edges.end(), numQubits - qubitIndex - 1, gate::I().getInitialEdge());
+        vector<QMDDEdge> edges(numQubits);
+
+        #pragma omp parallel for
+        for (int i = 0; i < numQubits; i++) {
+            if (i == qubitIndex) {
+                edges[i] = gate::S().getInitialEdge();
+            } else {
+                edges[i] = gate::I().getInitialEdge();
+            }
+        }
+
         QMDDGate result = accumulate(edges.begin() + 1, edges.end(), edges[0], mathUtils::kron);
         gateQueue.push(result);
     }
@@ -90,9 +134,17 @@ void QuantumCircuit::addV(int qubitIndex) {
     if (numQubits == 1) {
         gateQueue.push(gate::V());
     } else {
-        vector<QMDDEdge> edges(qubitIndex, gate::I().getInitialEdge());
-        edges.push_back(gate::V().getInitialEdge());
-        edges.insert(edges.end(), numQubits - qubitIndex - 1, gate::I().getInitialEdge());
+        vector<QMDDEdge> edges(numQubits);
+
+        #pragma omp parallel for
+        for (int i = 0; i < numQubits; i++) {
+            if (i == qubitIndex) {
+                edges[i] = gate::V().getInitialEdge();
+            } else {
+                edges[i] = gate::I().getInitialEdge();
+            }
+        }
+
         QMDDGate result = accumulate(edges.begin() + 1, edges.end(), edges[0], mathUtils::kron);
         gateQueue.push(result);
     }
@@ -103,9 +155,17 @@ void QuantumCircuit::addH(int qubitIndex) {
     if (numQubits == 1) {
         gateQueue.push(gate::H());
     } else {
-        vector<QMDDEdge> edges(qubitIndex, gate::I().getInitialEdge());
-        edges.push_back(gate::H().getInitialEdge());
-        edges.insert(edges.end(), numQubits - qubitIndex - 1, gate::I().getInitialEdge());
+        vector<QMDDEdge> edges(numQubits);
+
+        #pragma omp parallel for
+        for (int i = 0; i < numQubits; i++) {
+            if (i == qubitIndex) {
+                edges[i] = gate::H().getInitialEdge();
+            } else {
+                edges[i] = gate::I().getInitialEdge();
+            }
+        }
+
         QMDDGate result = accumulate(edges.begin() + 1, edges.end(), edges[0], mathUtils::kron);
         gateQueue.push(result);
     }
@@ -365,9 +425,17 @@ void QuantumCircuit::addP(int qubitIndex, double phi) {
     if (numQubits == 1) {
         gateQueue.push(gate::P(phi));
     } else {
-        vector<QMDDEdge> edges(qubitIndex, gate::I().getInitialEdge());
-        edges.push_back(gate::P(phi).getInitialEdge());
-        edges.insert(edges.end(), numQubits - qubitIndex - 1, gate::I().getInitialEdge());
+        vector<QMDDEdge> edges(numQubits);
+
+        #pragma omp parallel for
+        for (int i = 0; i < numQubits; i++) {
+            if (i == qubitIndex) {
+                edges[i] = gate::P(phi).getInitialEdge();
+            } else {
+                edges[i] = gate::I().getInitialEdge();
+            }
+        }
+
         QMDDGate result = accumulate(edges.begin() + 1, edges.end(), edges[0], mathUtils::kron);
         gateQueue.push(result);
     }
@@ -378,9 +446,17 @@ void QuantumCircuit::addT(int qubitIndex) {
     if (numQubits == 1) {
         gateQueue.push(gate::T());
     } else {
-        vector<QMDDEdge> edges(qubitIndex, gate::I().getInitialEdge());
-        edges.push_back(gate::T().getInitialEdge());
-        edges.insert(edges.end(), numQubits - qubitIndex - 1, gate::I().getInitialEdge());
+        vector<QMDDEdge> edges(numQubits);
+
+        #pragma omp parallel for
+        for (int i = 0; i < numQubits; i++) {
+            if (i == qubitIndex) {
+                edges[i] = gate::T().getInitialEdge();
+            } else {
+                edges[i] = gate::I().getInitialEdge();
+            }
+        }
+
         QMDDGate result = accumulate(edges.begin() + 1, edges.end(), edges[0], mathUtils::kron);
         gateQueue.push(result);
     }
@@ -476,9 +552,17 @@ void QuantumCircuit::addRx(int qubitIndex, double theta) {
     if (numQubits == 1) {
         gateQueue.push(gate::Rx(theta));
     } else {
-        vector<QMDDEdge> edges(qubitIndex, gate::I().getInitialEdge());
-        edges.push_back(gate::Rx(theta).getInitialEdge());
-        edges.insert(edges.end(), numQubits - qubitIndex - 1, gate::I().getInitialEdge());
+        vector<QMDDEdge> edges(numQubits);
+
+        #pragma omp parallel for
+        for (int i = 0; i < numQubits; i++) {
+            if (i == qubitIndex) {
+                edges[i] = gate::Rx(theta).getInitialEdge();
+            } else {
+                edges[i] = gate::I().getInitialEdge();
+            }
+        }
+
         QMDDGate result = accumulate(edges.begin() + 1, edges.end(), edges[0], mathUtils::kron);
         gateQueue.push(result);
     }
@@ -489,9 +573,17 @@ void QuantumCircuit::addRy(int qubitIndex, double theta) {
     if (numQubits == 1) {
         gateQueue.push(gate::Ry(theta));
     } else {
-        vector<QMDDEdge> edges(qubitIndex, gate::I().getInitialEdge());
-        edges.push_back(gate::Ry(theta).getInitialEdge());
-        edges.insert(edges.end(), numQubits - qubitIndex - 1, gate::I().getInitialEdge());
+        vector<QMDDEdge> edges(numQubits);
+
+        #pragma omp parallel for
+        for (int i = 0; i < numQubits; i++) {
+            if (i == qubitIndex) {
+                edges[i] = gate::Ry(theta).getInitialEdge();
+            } else {
+                edges[i] = gate::I().getInitialEdge();
+            }
+        }
+
         QMDDGate result = accumulate(edges.begin() + 1, edges.end(), edges[0], mathUtils::kron);
         gateQueue.push(result);
     }
@@ -502,9 +594,17 @@ void QuantumCircuit::addRz(int qubitIndex, double theta) {
     if (numQubits == 1) {
         gateQueue.push(gate::Rz(theta));
     } else {
-        vector<QMDDEdge> edges(qubitIndex, gate::I().getInitialEdge());
-        edges.push_back(gate::Rz(theta).getInitialEdge());
-        edges.insert(edges.end(), numQubits - qubitIndex - 1, gate::I().getInitialEdge());
+        vector<QMDDEdge> edges(numQubits);
+
+        #pragma omp parallel for
+        for (int i = 0; i < numQubits; i++) {
+            if (i == qubitIndex) {
+                edges[i] = gate::Rz(theta).getInitialEdge();
+            } else {
+                edges[i] = gate::I().getInitialEdge();
+            }
+        }
+
         QMDDGate result = accumulate(edges.begin() + 1, edges.end(), edges[0], mathUtils::kron);
         gateQueue.push(result);
     }
@@ -515,9 +615,17 @@ void QuantumCircuit::addU(int qubitIndex, double theta, double phi, double lambd
     if (numQubits == 1) {
         gateQueue.push(gate::U(theta, phi, lambda));
     } else {
-        vector<QMDDEdge> edges(qubitIndex, gate::I().getInitialEdge());
-        edges.push_back(gate::U(theta, phi, lambda).getInitialEdge());
-        edges.insert(edges.end(), numQubits - qubitIndex - 1, gate::I().getInitialEdge());
+        vector<QMDDEdge> edges(numQubits);
+
+        #pragma omp parallel for
+        for (int i = 0; i < numQubits; i++) {
+            if (i == qubitIndex) {
+                edges[i] = gate::U(theta, phi, lambda).getInitialEdge();
+            } else {
+                edges[i] = gate::I().getInitialEdge();
+            }
+        }
+
         QMDDGate result = accumulate(edges.begin() + 1, edges.end(), edges[0], mathUtils::kron);
         gateQueue.push(result);
     }
@@ -694,9 +802,17 @@ void QuantumCircuit::addGate(int qubitIndex, const QMDDGate& gate) {
     if (numQubits == 1) {
         gateQueue.push(gate);
     } else {
-        vector<QMDDEdge> edges(qubitIndex, gate::I().getInitialEdge());
-        edges.push_back(gate.getInitialEdge());
-        edges.insert(edges.end(), numQubits - qubitIndex - 1, gate::I().getInitialEdge());
+        vector<QMDDEdge> edges(numQubits);
+
+        #pragma omp parallel for
+        for (int i = 0; i < numQubits; i++) {
+            if (i == qubitIndex) {
+                edges[i] = gate.getInitialEdge();
+            } else {
+                edges[i] = gate::I().getInitialEdge();
+            }
+        }
+
         QMDDGate result = accumulate(edges.begin() + 1, edges.end(), edges[0], mathUtils::kron);
         gateQueue.push(result);
     }
