@@ -20,7 +20,7 @@ void execute() {
     double theta = M_PI / 2.0;
     complex<double> i(0.0, 1.0);
     cout <<exp(i * theta / 2.0) / exp(-i * theta / 2.0) << "," << exp(i * theta) << endl;
-    // QMDDEdge firstEdge = mathUtils::kroneckerProduct(state::Ket0().getInitialEdge(), state::Ket0().getInitialEdge());
+    // QMDDEdge firstEdge = mathUtils::kron(state::Ket0().getInitialEdge(), state::Ket0().getInitialEdge());
     // QuantumCircuit circuit(2, QMDDState(firstEdge));
     // // circuit.addI(0);
     // // circuit.addI(1);
@@ -64,9 +64,9 @@ void execute() {
     // cout << "xgate:" << xGate.getInitialEdge() << endl;
     // QMDDState ket0 = state::Ket0();
     // QMDDState bra0 = state::Bra0();
-    // auto rebk1 = mathUtils::kroneckerProduct(ket0.getInitialEdge(), bra0.getInitialEdge());
+    // auto rebk1 = mathUtils::kron(ket0.getInitialEdge(), bra0.getInitialEdge());
     // auto rebk2 = mathUtils::kron(ket0.getInitialEdge(), bra0.getInitialEdge());
-    // auto result1 = mathUtils::multiplication(cx1Gate.getInitialEdge(), cx2Gate.getInitialEdge());
+    // auto result1 = mathUtils::mul(cx1Gate.getInitialEdge(), cx2Gate.getInitialEdge());
     // auto result2 = mathUtils::add(cx1Gate.getInitialEdge(), cx2Gate.getInitialEdge());
     // auto result3 = mathUtils::add(xGate.getInitialEdge(), hGate.getInitialEdge());
     // cout << "result1:" << result1 << endl;
@@ -82,7 +82,7 @@ void execute() {
 
     // QMDDGate cx1 = gate::CX1();
     // QMDDGate cx2 = gate::CX2();
-    // auto result2 = mathUtils::addition(cx1.getInitialEdge(), cx2.getInitialEdge());
+    // auto result2 = mathUtils::add(cx1.getInitialEdge(), cx2.getInitialEdge());
 }
 
 int main() {
