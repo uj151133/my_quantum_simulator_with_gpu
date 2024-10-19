@@ -11,6 +11,7 @@
 #include <cmath>
 #include <memory>
 #include <tuple>
+#include <omp.h>
 
 using namespace std;
 
