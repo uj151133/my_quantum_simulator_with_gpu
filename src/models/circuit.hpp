@@ -4,6 +4,7 @@
 #include <numeric>
 #include <queue>
 #include <array>
+#include <random>
 #include "qmdd.hpp"
 #include "gate.hpp"
 #include "state.hpp"
