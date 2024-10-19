@@ -34,15 +34,16 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1) {
 
         vector<vector<QMDDEdge>> z(n0->edges.size(), vector<QMDDEdge>(n1->edges[0].size(), QMDDEdge(.0, nullptr)));
         complex<double> tmpWeight = .0;
-        #pragma omp parallel for collapse(3)
+        QMDDEdge p, q;
+        #pragma omp parallel for collapse(3) private(p, q) ordered
         for (size_t i = 0; i < n0->edges.size(); i++) {
             for (size_t j = 0; j < n1->edges[0].size(); j++){
                 for (size_t k = 0; k < n0->edges[0].size(); k++) {
-                    QMDDEdge p(e0Copy->weight * n0->edges[i][k].weight, table.find(n0->edges[i][k].uniqueTableKey));
-                    QMDDEdge q(e1Copy->weight * n1->edges[k][j].weight, table.find(n1->edges[k][j].uniqueTableKey));
+                    p = QMDDEdge(e0Copy->weight * n0->edges[i][k].weight, table.find(n0->edges[i][k].uniqueTableKey));
+                    q = QMDDEdge(e1Copy->weight * n1->edges[k][j].weight, table.find(n1->edges[k][j].uniqueTableKey));
                     z[i][j] = add(z[i][j], mul(p, q));
                 }
-                #pragma omp critical
+                #pragma omp ordered
                 {
                     if (z[i][j].weight != .0 && tmpWeight == .0) {
                         tmpWeight = z[i][j].weight;
@@ -95,13 +96,14 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1) {
 
         vector<vector<QMDDEdge>> z(n0->edges.size(), vector<QMDDEdge>(n0->edges[0].size()));
         complex<double> tmpWeight = .0;
-        #pragma omp parallel for collapse(2)
+        QMDDEdge p, q;
+        #pragma omp parallel for collapse(2) private(p, q) ordered
         for (size_t i = 0; i < n0->edges.size(); i++) {
             for (size_t j = 0; j < n0->edges[i].size(); j++) {
-                QMDDEdge p(e0Copy->weight * n0->edges[i][j].weight, table.find(n0->edges[i][j].uniqueTableKey));
-                QMDDEdge q(e1Copy->weight * n1->edges[i][j].weight, table.find(n1->edges[i][j].uniqueTableKey));
+                p = QMDDEdge(e0Copy->weight * n0->edges[i][j].weight, table.find(n0->edges[i][j].uniqueTableKey));
+                q = QMDDEdge(e1Copy->weight * n1->edges[i][j].weight, table.find(n1->edges[i][j].uniqueTableKey));
                 z[i][j] = add(p, q);
-                #pragma omp critical
+                #pragma omp ordered
                 {
                     if (z[i][j].weight != .0 && tmpWeight == .0) {
                         tmpWeight = z[i][j].weight;
@@ -149,11 +151,11 @@ QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1) {
         }
         vector<vector<QMDDEdge>> z(n0->edges.size(), vector<QMDDEdge>(n0->edges[0].size()));
         complex<double> tmpWeight = .0;
-        #pragma omp parallel for collapse(2)
+        #pragma omp parallel for collapse(2) ordered
         for (size_t i = 0; i < n0->edges.size(); i++) {
             for (size_t j = 0; j < n0->edges[i].size(); j++) {
                 z[i][j] = kron(n0->edges[i][j], e1);
-                #pragma omp critical
+                #pragma omp ordered
                 {
                     if (z[i][j].weight != .0 && tmpWeight == .0) {
                         tmpWeight = z[i][j].weight;

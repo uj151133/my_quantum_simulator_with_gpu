@@ -219,7 +219,7 @@ QMDDGate gate::DCNOT() {
     })));
 }
 
-QMDDGate gate::SWAP(bool primitive = false) {
+QMDDGate gate::SWAP(bool primitive) {
     if (primitive) {
         return QMDDGate(mathUtils::mul(mathUtils::mul(gate::CX1().getInitialEdge(), gate::CX2().getInitialEdge()), gate::CX1().getInitialEdge()));
     } else {

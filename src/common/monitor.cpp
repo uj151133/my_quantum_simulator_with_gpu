@@ -10,6 +10,7 @@ string getProcessType() {
 // 並行処理する関数
 void parallelProcessing() {
     int i;
+    printf("使用可能な最大スレッド数：%d\n", omp_get_max_threads());
     #pragma omp parallel
     {
         i++;
