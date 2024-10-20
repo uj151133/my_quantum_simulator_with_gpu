@@ -2,6 +2,7 @@
 #define MATHUTILS_HPP
 
 #include <cmath>
+#include <numeric>
 #include "../models/qmdd.hpp"
 #include "../models/uniqueTable.hpp"
 #include "../models/operationCache.hpp"
@@ -17,6 +18,8 @@ namespace mathUtils {
     complex<double> csc(complex<double> theta);
     complex<double> sec(complex<double> theta);
     complex<double> cot(complex<double> theta);
+
+    double sumOfSquares(const vector<complex<double>>& vec);
 }
 
 #endif // MATH_UTILS_HPP

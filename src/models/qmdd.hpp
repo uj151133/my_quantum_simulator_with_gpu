@@ -49,6 +49,8 @@ struct QMDDEdge{
     QMDDEdge(complex<double> w, size_t key);
     QMDDEdge(double w, size_t key);
     QMDDEdge(const QMDDEdge& other) = default;
+    QMDDNode* getStartNode() const;
+    vector<complex<double>> getAllElementsForKet();
     ~QMDDEdge() = default;
     QMDDEdge& operator=(const QMDDEdge& other) = default;
     bool operator==(const QMDDEdge& other) const;
@@ -102,6 +104,7 @@ public:
     QMDDEdge getInitialEdge() const;
     size_t getDepth() const;
     void calculateDepth();
+    vector<complex<double>> getAllElements();
     QMDDState operator+(const QMDDState& other);
     shared_ptr<QMDDNode> addNodes(QMDDNode* node1, QMDDNode* node2);
     QMDDState& operator=(const QMDDState& other) = default;
