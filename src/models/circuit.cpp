@@ -709,12 +709,43 @@ void QuantumCircuit::execute() {
         QMDDGate currentGate = gateQueue.front();
         cout << "Current gate: " << currentGate << endl;
         cout << "Current state: " << currentState << endl;
-        UniqueTable& uniqueTable = UniqueTable::getInstance();
-        uniqueTable.printAllEntries();
         gateQueue.pop();
         currentState = mathUtils::mul(currentGate.getInitialEdge(), currentState.getInitialEdge());
     }
     finalState = currentState;
     cout << "Final state: " << finalState << endl;
     return;
+}
+
+QMDDState QuantumCircuit::read(int qubitIndex) {
+    QuantumCircuit::execute();
+    vector<QMDDEdge> edges0(qubitIndex, gate::I().getInitialEdge());
+    vector<QMDDEdge> edges1(qubitIndex, gate::I().getInitialEdge());
+    edges0.push_back(mathUtils::mul(state::Ket0().getInitialEdge(), state::Bra0().getInitialEdge()));
+    edges1.push_back(mathUtils::mul(state::Ket1().getInitialEdge(), state::Bra1().getInitialEdge()));
+    edges0.insert(edges0.end(), numQubits - qubitIndex - 1, gate::I().getInitialEdge());
+    edges1.insert(edges1.end(), numQubits - qubitIndex - 1, gate::I().getInitialEdge());
+    QMDDGate m0 = accumulate(edges0.begin() + 1, edges0.end(), edges0[0], mathUtils::kron);
+    QMDDGate m1 = accumulate(edges1.begin() + 1, edges1.end(), edges1[0], mathUtils::kron);
+    QMDDEdge result0 = mathUtils::mul(m0.getInitialEdge(), finalState.getInitialEdge());
+    QMDDEdge result1 = mathUtils::mul(m1.getInitialEdge(), finalState.getInitialEdge());
+
+    vector<complex<double>> v0 = result0.getAllElementsForKet();
+    vector<complex<double>> v1 = result1.getAllElementsForKet();
+
+    double p0 = mathUtils::sumOfSquares(v0);
+    double p1 = mathUtils::sumOfSquares(v1);
+
+    random_device rd;
+    mt19937 gen(rd());
+    uniform_real_distribution<> dist(0.0, 1.0);
+    double random_value = dist(gen);
+
+    if (random_value < p0) {
+        finalState = QMDDState(QMDDEdge(result0.weight * (1.0 / sqrt(p0)), make_shared<QMDDNode>(result0.getStartNode())));
+        return state::Ket0();
+    } else {
+        finalState = QMDDState(QMDDEdge(result0.weight * (1.0 / sqrt(p1)), make_shared<QMDDNode>(result1.getStartNode())));
+        return state::Ket1();
+    }
 }
