@@ -2,7 +2,12 @@
 #import <Foundation/Foundation.h>
 
 typedef struct {
-    matrix_double2x2 matrix;
+    double real;
+    double imag;
+} Complex;
+
+typedef struct {
+    Complex matrix[2][2];
 } QMDDGate;
 
 id<MTLDevice> device;
