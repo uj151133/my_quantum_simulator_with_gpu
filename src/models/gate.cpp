@@ -152,8 +152,6 @@ QMDDGate gate::CX2() {
         }
     }
 
-    #pragma omp barrier
-
     return QMDDGate(QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
         {QMDDEdge(1.0, cx2Node1), QMDDEdge(1.0, cx2Node2)},
         {QMDDEdge(1.0, cx2Node2), QMDDEdge(1.0, cx2Node1)}
@@ -210,8 +208,6 @@ QMDDGate gate::DCNOT() {
             });
         }
     }
-
-    #pragma omp barrier
 
     return QMDDGate(QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
         {QMDDEdge(1.0, dcnotNode1), QMDDEdge(1.0, dcnotNode2)},
@@ -304,8 +300,6 @@ QMDDGate gate::iSWAP() {
             });
         }
     }
-
-    #pragma omp barrier
 
     return QMDDGate(QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
         {QMDDEdge(1.0, iswapNode1), QMDDEdge(i, iswapNode2)},
@@ -427,8 +421,6 @@ QMDDGate gate::Rxy(double phi) {
         }
     }
 
-    #pragma omp barrier
-
     return QMDDGate(QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
         {QMDDEdge(1.0, rxyNode1), QMDDEdge(-i * sin(phi / 2.0), rxyNode2)},
         {QMDDEdge(-i * sin(phi / 2.0), rxyNode3), QMDDEdge(cos(phi / 2.0), rxyNode4)}
@@ -471,8 +463,6 @@ QMDDGate gate::SquareSWAP() {
             });
         }
     }
-
-    #pragma omp barrier
 
     return QMDDGate(QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
         {QMDDEdge(1.0, squareSWAPNode1), QMDDEdge((1.0 - i) / 2.0, squareSWAPNode2)},
@@ -517,8 +507,6 @@ QMDDGate gate::SquareiSWAP() {
         }
     }
 
-    #pragma omp barrier
-
     return QMDDGate(QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
         {QMDDEdge(1.0, squareiSWAPNode1), QMDDEdge(i / sqrt(2.0), squareiSWAPNode2)},
         {QMDDEdge(i / sqrt(2.0), squareiSWAPNode3), QMDDEdge(1.0 / sqrt(2.0), squareiSWAPNode4)}
@@ -561,8 +549,6 @@ QMDDGate gate::SWAPalpha(double alpha) {
             });
         }
     }
-
-    #pragma omp barrier
 
     return QMDDGate(QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
         {QMDDEdge(1.0, SWAPalphaNode1), QMDDEdge((1.0 - exp(i * M_PI * alpha)) / 2.0, SWAPalphaNode2)},
@@ -638,8 +624,6 @@ QMDDGate gate::B() {
         }
     }
 
-    #pragma omp barrier
-
     return QMDDGate(QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
         {QMDDEdge(cos(M_PI / 8.0), bNode1), QMDDEdge(i * sin(M_PI / 8.0), bNode2)},
         {QMDDEdge(i * sin(3.0 * M_PI / 8.0), bNode3), QMDDEdge(cos(3.0 * M_PI / 8.0), bNode4)}
@@ -695,8 +679,6 @@ QMDDGate gate::N(double a, double b, double c) {
         }
     }
 
-    #pragma omp barrier
-
     return QMDDGate(QMDDEdge(exp(i * c) * cos(a - b), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
         {QMDDEdge(1.0, nNode1), QMDDEdge(i * tan(a - b), nNode2)},
         {QMDDEdge(i * exp(-2.0 * i * c) * sin(a + b) * mathUtils::sec(a - b), nNode3), QMDDEdge(exp(-2.0 * i * c) * cos(a + b) * mathUtils::sec(a - b), nNode4)}
@@ -740,8 +722,6 @@ QMDDGate gate::DB() {
         }
     }
 
-    #pragma omp barrier
-
     return QMDDGate(QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
         {QMDDEdge(1.0, dbNode1), QMDDEdge(-i * sin(3.0 * M_PI / 8.0), dbNode2)},
         {QMDDEdge(-i * sin(3.0 * M_PI / 8.0), dbNode3), QMDDEdge(cos(3.0 * M_PI / 8.0), dbNode4)}
@@ -768,8 +748,6 @@ QMDDGate gate::ECR() {
             });
         }
     }
-
-    #pragma omp barrier
 
     return QMDDGate(QMDDEdge(1.0 / sqrt(2.0), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
         {QMDDEdge(.0, nullptr), QMDDEdge(1.0, ecrNode1)},
@@ -814,8 +792,6 @@ QMDDGate gate::fSim(double theta, double phi) {
         }
     }
 
-    #pragma omp barrier
-
     return QMDDGate(QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
         {QMDDEdge(1.0, fSimNode1), QMDDEdge(-i * sin(theta), fSimNode2)},
         {QMDDEdge(-i * sin(theta), fSimNode3), QMDDEdge(cos(theta), fSimNode4)}
@@ -858,8 +834,6 @@ QMDDGate gate::G(double theta) {
             });
         }
     }
-
-    #pragma omp barrier
 
     return QMDDGate(QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
         {QMDDEdge(1.0, gNode1), QMDDEdge(-sin(theta), gNode2)},
@@ -904,8 +878,6 @@ QMDDGate gate::M() {
         }
     }
 
-    #pragma omp barrier
-
     return QMDDGate(QMDDEdge(1.0 / sqrt(2.0), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
         {QMDDEdge(1.0, mNode1), QMDDEdge(i, mNode2)},
         {QMDDEdge(1.0, mNode3), QMDDEdge(i, mNode4)}
@@ -948,8 +920,6 @@ QMDDGate gate::syc() {
             });
         }
     }
-
-    #pragma omp barrier
 
     return QMDDGate(QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
         {QMDDEdge(1.0, sycNode1), QMDDEdge(-i, sycNode2)},
@@ -994,8 +964,6 @@ QMDDGate gate::CZS(double theta, double phi, double gamma) {
         }
     }
 
-    #pragma omp barrier
-
     return QMDDGate(QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
         {QMDDEdge(1.0, czsNode1), QMDDEdge((1.0 + exp(i * gamma)) / 2.0 * exp(-i * phi) * sin(theta), czsNode2)},
         {QMDDEdge((1.0 + exp(i * gamma)) / 2.0 * exp(i * phi) * sin(theta), czsNode3), QMDDEdge(-exp(i * gamma) * std::pow(cos(theta / 2.0), 2) + std::pow(sin(theta / 2.0), 2), czsNode4)}
@@ -1028,8 +996,6 @@ QMDDGate gate::D(double theta) {
         }
     }
 
-    #pragma omp barrier
-
     return QMDDGate(QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
         {QMDDEdge(1.0, dNode1), QMDDEdge(.0, nullptr)},
         {QMDDEdge(.0, nullptr), QMDDEdge(1.0, dNode3)}
@@ -1057,8 +1023,6 @@ QMDDGate gate::RCCX() {
         }
     }
 
-    #pragma omp barrier
-
     return QMDDGate(QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
         {QMDDEdge(1.0, rccxNode1), QMDDEdge(.0, nullptr)},
         {QMDDEdge(.0, nullptr), QMDDEdge(1.0, rccxNode2)}
@@ -1085,8 +1049,6 @@ QMDDGate gate::PG() {
             });
         }
     }
-
-    #pragma omp barrier
 
     return QMDDGate(QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
         {QMDDEdge(1.0, pgNode1), QMDDEdge(.0, nullptr)},
@@ -1150,8 +1112,6 @@ QMDDGate gate::fFredkin() {
             });
         }
     }
-
-    #pragma omp barrier
 
     fFredkinNode6 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
         {QMDDEdge(1.0, fFredkinNode2), QMDDEdge(1.0, fFredkinNode3)},
