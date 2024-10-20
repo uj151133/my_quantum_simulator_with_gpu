@@ -185,7 +185,7 @@ complex<double> mathUtils::cot(const complex<double> theta) {
     return 1.0 / tan_theta;
 }
 
-double sumOfSquares(const vector<complex<double>>& vec) {
+double mathUtils::sumOfSquares(const vector<complex<double>>& vec) {
     return accumulate(vec.begin(), vec.end(), 0.0, [](double sum, const complex<double>& val) {
         return sum + std::pow(abs(val), 2);
     });
