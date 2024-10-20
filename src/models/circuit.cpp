@@ -742,10 +742,10 @@ QMDDState QuantumCircuit::read(int qubitIndex) {
     double random_value = dist(gen);
 
     if (random_value < p0) {
-        finalState = QMDDState(QMDDEdge(result0.weight * (1.0 / sqrt(p0)), make_shared<QMDDNode>(result0.getStartNode())));
+        finalState = QMDDState(QMDDEdge(result0.weight * (1.0 / sqrt(p0)), make_shared<QMDDNode>(*result0.getStartNode())));
         return state::Ket0();
     } else {
-        finalState = QMDDState(QMDDEdge(result0.weight * (1.0 / sqrt(p1)), make_shared<QMDDNode>(result1.getStartNode())));
+        finalState = QMDDState(QMDDEdge(result0.weight * (1.0 / sqrt(p1)), make_shared<QMDDNode>(*result1.getStartNode())));
         return state::Ket1();
     }
 }
