@@ -132,15 +132,24 @@ QMDDGate gate::CX1() {
 }
 
 QMDDGate gate::CX2() {
-    shared_ptr<QMDDNode> cx2Node1 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
-        {QMDDEdge(1.0, nullptr), QMDDEdge(.0, nullptr)},
-        {QMDDEdge(.0, nullptr), QMDDEdge(.0, nullptr)}
+    shared_ptr<QMDDNode> cx2Node1, cx2Node2;
+
+    boost::fibers::fiber f1([&cx2Node1]() {
+        cx2Node1 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+            {QMDDEdge(1.0, nullptr), QMDDEdge(.0, nullptr)},
+            {QMDDEdge(.0, nullptr), QMDDEdge(.0, nullptr)}
+        });
     });
 
-    shared_ptr<QMDDNode> cx2Node2 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
-        {QMDDEdge(.0, nullptr), QMDDEdge(.0, nullptr)},
-        {QMDDEdge(.0, nullptr), QMDDEdge(1.0, nullptr)}
+    boost::fibers::fiber f2([&cx2Node2]() {
+        cx2Node2 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+            {QMDDEdge(.0, nullptr), QMDDEdge(.0, nullptr)},
+            {QMDDEdge(.0, nullptr), QMDDEdge(1.0, nullptr)}
+        });
     });
+
+    f1.join();
+    f2.join();
 
     return QMDDGate(QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
         {QMDDEdge(1.0, cx2Node1), QMDDEdge(1.0, cx2Node2)},
