@@ -51,7 +51,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
 # modelsディレクトリをincludeディレクトリとして設定
 include_directories(src)
 
-file(GLOB SOURCES "src/models/*.cpp" "src/common/*.cpp")
+file(GLOB SOURCES "src/models/*.cpp" "src/common/*.cpp" "src/modules/*.cpp")
 
 # 通常のC++実行ファイルを追加
 add_executable(qmdd_sim main.cpp ${SOURCES})

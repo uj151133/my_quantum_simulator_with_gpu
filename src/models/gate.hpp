@@ -3,6 +3,7 @@
 
 #include "qmdd.hpp"
 #include "../common/mathUtils.hpp"
+#include "../modules/fiber.hpp"
 #include <iostream>
 
 using namespace std;
