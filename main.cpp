@@ -50,7 +50,7 @@ void execute() {
     cout << "cx1gate:" << cx1Gate.getInitialEdge() << endl;
     // cout << "cx2gate:" << cx2Gate.getDepth() << endl;
     // cout << "igate:" << gate::I().getInitialEdge() << endl;
-    cout << "cx2gate:" << cx2Gate.getInitialEdge() << endl;
+    cout << "cx2gate:" << cx1Gate.getInitialEdge() << endl;
     // QMDDGate hGate = gate::H();
     // cout << "hgate:" << hGate.getInitialEdge() << endl;
     // cout << "ket0" << ket0State.getInitialEdge().uniqueTableKey << endl;
