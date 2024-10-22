@@ -17,9 +17,6 @@ using namespace std;
 
 void execute() {
     UniqueTable& uniqueTable = UniqueTable::getInstance();
-    double theta = M_PI / 2.0;
-    complex<double> i(0.0, 1.0);
-    cout <<exp(i * theta / 2.0) / exp(-i * theta / 2.0) << "," << exp(i * theta) << endl;
     // QMDDEdge firstEdge = mathUtils::kron(state::Ket0().getInitialEdge(), state::Ket0().getInitialEdge());
     // QuantumCircuit circuit(2, QMDDState(firstEdge));
     // // circuit.addI(0);
@@ -38,7 +35,7 @@ void execute() {
     // QMDDGate i1Gate = gate::I();
     // QMDDGate i2Gate = gate::I();
     // QMDDGate phGate = gate::Ph(0.5);
-    QMDDGate cx2Gate = gate::CX2();
+    QMDDGate cx1Gate = gate::CX1();
     // QMDDGate cx2Gate = gate::CX2();
     // QMDDGate sGate = gate::S();
     // QMDDGate toffGate = gate::Toff();
@@ -50,7 +47,7 @@ void execute() {
     // cout << "zeroGate:" << zeroGate << endl;
     // cout << "igate:" << iGate.getInitialEdge() << endl;
     // cout << "phgate:" << phGate.getInitialEdge() << endl;
-    // cout << "cx1gate:" << cx2Gate.getInitialEdge() << endl;
+    cout << "cx1gate:" << cx1Gate.getInitialEdge() << endl;
     // cout << "cx2gate:" << cx2Gate.getDepth() << endl;
     // cout << "igate:" << gate::I().getInitialEdge() << endl;
     cout << "cx2gate:" << cx2Gate.getInitialEdge() << endl;
