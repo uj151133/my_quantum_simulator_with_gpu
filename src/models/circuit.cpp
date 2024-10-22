@@ -2,7 +2,7 @@
 
 static const QMDDEdge braketZero = mathUtils::mul(state::Ket0().getInitialEdge(), state::Bra0().getInitialEdge());
 static const QMDDEdge braketOne = mathUtils::mul(state::Ket1().getInitialEdge(), state::Bra1().getInitialEdge());
-static const QMDDEdge identityEdge = identityEdge;
+static const QMDDEdge identityEdge = gate::I().getInitialEdge();
 
 QuantumCircuit::QuantumCircuit(int numQubits, QMDDState initialState) : numQubits(numQubits), initialState(initialState), finalState(initialState) {
     if (numQubits < 1) {
