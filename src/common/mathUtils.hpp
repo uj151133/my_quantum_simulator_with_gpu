@@ -4,6 +4,7 @@
 #include <boost/fiber/all.hpp>
 #include <cmath>
 #include <numeric>
+#include <queue>
 #include "../models/qmdd.hpp"
 #include "../models/uniqueTable.hpp"
 #include "../models/operationCache.hpp"

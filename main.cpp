@@ -32,7 +32,7 @@ void execute() {
 
     // QMDDGate zeroGate = gate::O();
 
-    // QMDDGate i1Gate = gate::I();
+    QMDDGate iGate = gate::I();
     // QMDDGate i2Gate = gate::I();
     // QMDDGate phGate = gate::Ph(0.5);
     QMDDGate cx1Gate = gate::CX1();
@@ -51,7 +51,7 @@ void execute() {
     // cout << "cx2gate:" << cx2Gate.getDepth() << endl;
     // cout << "igate:" << gate::I().getInitialEdge() << endl;
     // cout << "x1gate:" << gate::X().getInitialEdge() << endl;
-    // QMDDGate hGate = gate::H();
+    QMDDGate hGate = gate::H();
     // cout << "hgate:" << hGate.getInitialEdge() << endl;
     // cout << "ket0" << ket0State.getInitialEdge().uniqueTableKey << endl;
     // cout << "bra0" << bra0State.getInitialEdge().uniqueTableKey << endl;
@@ -65,8 +65,8 @@ void execute() {
     // auto rebk2 = mathUtils::kron(ket0.getInitialEdge(), bra0.getInitialEdge());
     // auto result1 = mathUtils::mul(cx1Gate.getInitialEdge(), cx2Gate.getInitialEdge());
     // auto result2 = mathUtils::add(cx1Gate.getInitialEdge(), cx2Gate.getInitialEdge());
-    // auto result3 = mathUtils::add(xGate.getInitialEdge(), hGate.getInitialEdge());
-    // cout << "result1:" << result1 << endl;
+    auto result = mathUtils::kron(iGate.getInitialEdge(), hGate.getInitialEdge());
+    cout << "result1:" << result << endl;
     // cout << "result2:" << result2 << endl;
     // cout << "rebk1:" << rebk1 << endl;
     // cout << "rebk2:" << rebk2 << endl;
