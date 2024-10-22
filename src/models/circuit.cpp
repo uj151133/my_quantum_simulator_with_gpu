@@ -239,7 +239,7 @@ void QuantumCircuit::addVarCX(int controlIndex, int targetIndex) {
             partialVarCX[1] = gate::X().getInitialEdge();
         }
         vector<QMDDEdge> edges(minIndex + 1, identityEdge);
-        for (int index = minIndex; index <= maxIndex; index++){
+        for (int index = minIndex + 1; index <= maxIndex; index++){
             if (index == controlIndex) {
                 partialVarCX[0] = mathUtils::kron(partialVarCX[0], braketOne);
                 partialVarCX[1] = mathUtils::kron(partialVarCX[1], braketZero);
@@ -279,7 +279,7 @@ void QuantumCircuit::addCZ(int controlIndex, int targetIndex) {
             partialCZ[1] = gate::Z().getInitialEdge();
         }
         vector<QMDDEdge> edges(minIndex + 1, identityEdge);
-        for (int index = minIndex; index <= maxIndex; index++){
+        for (int index = minIndex + 1; index <= maxIndex; index++){
             if (index == controlIndex) {
                 partialCZ[0] = mathUtils::kron(partialCZ[0], braketZero);
                 partialCZ[1] = mathUtils::kron(partialCZ[1], braketOne);
@@ -520,7 +520,7 @@ void QuantumCircuit::addCS(int controlIndex, int targetIndex) {
             partialCS[1] = gate::S().getInitialEdge();
         }
         vector<QMDDEdge> edges(minIndex, identityEdge);
-        for (int index = minIndex; index <= maxIndex; index++){
+        for (int index = minIndex + 1; index <= maxIndex; index++){
             if (index == controlIndex) {
                 partialCS[0] = mathUtils::kron(partialCS[0], braketZero);
                 partialCS[1] = mathUtils::kron(partialCS[1], braketOne);
