@@ -2,14 +2,6 @@
 
 static complex<double> i(0.0, 1.0);
 
-QMDDGate gate::O() {
-    // return QMDDGate(QMDDEdge(.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
-    //     {QMDDEdge(.0, nullptr), QMDDEdge(.0, nullptr)},
-    //     {QMDDEdge(.0, nullptr), QMDDEdge(.0, nullptr)}
-    // })));
-    return QMDDGate(QMDDEdge(.0, nullptr));
-}
-
 QMDDGate gate::I() {
     return QMDDGate(QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
         {QMDDEdge(1.0, nullptr), QMDDEdge(.0, nullptr)},
