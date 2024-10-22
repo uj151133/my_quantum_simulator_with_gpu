@@ -7,8 +7,6 @@
 
 using namespace std;
 namespace gate {
-    QMDDGate O();
-
     /* Identity gate and global phase */
     QMDDGate I();
     QMDDGate Ph(double delta);
