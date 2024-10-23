@@ -104,8 +104,6 @@ public:
     size_t getDepth() const;
     void calculateDepth();
     vector<complex<double>> getAllElements();
-    // QMDDState operator+(const QMDDState& other);
-    // shared_ptr<QMDDNode> addNodes(QMDDNode* node1, QMDDNode* node2);
     QMDDState& operator=(const QMDDState& other) = default;
     bool operator==(const QMDDState& other) const;
     bool operator!=(const QMDDState& other) const;
