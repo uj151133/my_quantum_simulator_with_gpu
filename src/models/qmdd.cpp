@@ -206,13 +206,12 @@ QMDDState::QMDDState(QMDDEdge edge)
 }
 
 void QMDDState::calculateDepth() {
-    UniqueTable& table = UniqueTable::getInstance();
-    auto currentNode = table.find(initialEdge.uniqueTableKey);
+    shared_ptr<QMDDNode> currentNode = getStartNode();
     size_t currentDepth = 0;
 
     while (currentNode && !currentNode->edges.empty()) {
         ++currentDepth;
-        currentNode = table.find(currentNode->edges[0][0].uniqueTableKey);
+        currentNode = currentNode->edges[0][0].getStartNode();
     }
     // cout << "Depth calculated: " << currentDepth << endl;
     depth = currentDepth;
@@ -230,35 +229,6 @@ QMDDEdge QMDDState::getInitialEdge() const {
 size_t QMDDState::getDepth() const {
     return depth;
 }
-
-// QMDDState QMDDState::operator+(const QMDDState& other) {
-//     shared_ptr<QMDDNode> newNode = addNodes(this->getStartNode(), other.getStartNode());
-//     return QMDDState(QMDDEdge(this->initialEdge.weight + other.initialEdge.weight, newNode));
-// }
-
-// shared_ptr<QMDDNode> QMDDState::addNodes(QMDDNode* node1, QMDDNode* node2) {
-//     UniqueTable& table = UniqueTable::getInstance();
-//     if (!node1) return shared_ptr<QMDDNode>(node2);
-//     if (!node2) return shared_ptr<QMDDNode>(node1);
-
-//     vector<vector<QMDDEdge>> resultEdges(node1->edges.size(), vector<QMDDEdge>(node1->edges[0].size()));
-
-//     for (size_t i = 0; i < node1->edges.size(); ++i) {
-//         for (size_t j = 0; j < node1->edges[i].size(); ++j) {
-//             resultEdges[i][j] = QMDDEdge(
-//                 node1->edges[i][j].weight + node2->edges[i][j].weight,
-//                 addNodes(
-//                     table.find(node1->edges[i][j].uniqueTableKey).get(),
-//                     table.find(node2->edges[i][j].uniqueTableKey).get()
-//                 )
-//             );
-//         }
-//     }
-
-//     auto resultNode = make_shared<QMDDNode>(resultEdges);
-
-//     return resultNode;
-// }
 
 bool QMDDState::operator==(const QMDDState& other) const {
     return initialEdge == other.initialEdge;
