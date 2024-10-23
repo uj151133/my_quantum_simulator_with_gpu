@@ -90,37 +90,36 @@ struct QMDDEdge: CustomStringConvertible {
     }
 
     func getAllElementsForKet() -> [Complex<Double>] {
-        var result: [Complex<Double>] = []
-        var nodeStack: [(QMDDNode, Int)] = []
+        // Metalを使用して計算を行う
+        let edgeCount = 1 // 実際のエッジの数を設定
+        var edges = [QMDDEdge(weight: Complex<Double>(1.0, 0.0), key: 1)] // 実際のエッジデータを設定
+        var nodes = [QMDDNode(edges: [edges])] // 実際のノードデータを設定
+        var results = [Complex<Double>](repeating: Complex<Double>(0.0, 0.0), count: edgeCount)
 
-        if isTerminal {
-            result.append(weight)
-        } else {
-            if let startNode = getStartNode() {
-                nodeStack.append((startNode, 0))
-            }
+        let edgeBuffer = device.makeBuffer(bytes: &edges, length: MemoryLayout<QMDDEdge>.stride * edgeCount, options: [])
+        let nodeBuffer = device.makeBuffer(bytes: &nodes, length: MemoryLayout<QMDDNode>.stride * nodes.count, options: [])
+        let resultBuffer = device.makeBuffer(bytes: &results, length: MemoryLayout<Complex<Double>>.stride * edgeCount, options: [])
+        let nodeCountBuffer = device.makeBuffer(bytes: &nodes.count, length: MemoryLayout<UInt32>.stride, options: [])
 
-            while !nodeStack.isEmpty {
-                let (node, edgeIndex) = nodeStack.removeLast()
+        let commandBuffer = commandQueue.makeCommandBuffer()!
+        let computeEncoder = commandBuffer.makeComputeCommandEncoder()!
+        computeEncoder.setComputePipelineState(pipelineState)
+        computeEncoder.setBuffer(edgeBuffer, offset: 0, index: 0)
+        computeEncoder.setBuffer(nodeBuffer, offset: 0, index: 1)
+        computeEncoder.setBuffer(resultBuffer, offset: 0, index: 2)
+        computeEncoder.setBuffer(nodeCountBuffer, offset: 0, index: 3)
 
-                if node.edges.count == 1 {
-                    fatalError("The start node has only one edge, which is not allowed.")
-                }
+        let gridSize = MTLSize(width: edgeCount, height: 1, depth: 1)
+        let threadGroupSize = MTLSize(width: min(pipelineState.maxTotalThreadsPerThreadgroup, edgeCount), height: 1, depth: 1)
+        computeEncoder.dispatchThreads(gridSize, threadsPerThreadgroup: threadGroupSize)
 
-                for i in edgeIndex..<node.edges.count {
-                    if node.edges[i][0].isTerminal {
-                        result.append(node.edges[i][0].weight)
-                    } else {
-                        nodeStack.append((node, i + 1))
-                        if let nextNode = node.edges[i][0].getStartNode() {
-                            nodeStack.append((nextNode, 0))
-                        }
-                        break
-                    }
-                }
-            }
-        }
-        return result
+        computeEncoder.endEncoding()
+        commandBuffer.commit()
+        commandBuffer.waitUntilCompleted()
+
+        let resultPointer = resultBuffer?.contents().bindMemory(to: Complex<Double>.self, capacity: edgeCount)
+        let resultArray = Array(UnsafeBufferPointer(start: resultPointer, count: edgeCount))
+        return resultArray
     }
 
     static func ==(lhs: QMDDEdge, rhs: QMDDEdge) -> Bool {
