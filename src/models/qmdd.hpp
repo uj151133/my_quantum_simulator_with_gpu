@@ -81,7 +81,7 @@ public:
     QMDDGate(QMDDEdge edge, size_t numEdge = 4);
     QMDDGate(const QMDDGate& other) = default;
     ~QMDDGate() = default;
-    QMDDNode* getStartNode() const;
+    shared_ptr<QMDDNode> getStartNode() const;
     QMDDEdge getInitialEdge() const;
     size_t getDepth() const;
     void calculateDepth();
@@ -99,13 +99,13 @@ public:
     QMDDState(QMDDEdge edge);
     QMDDState(const QMDDState& other) = default;
     ~QMDDState() = default;
-    QMDDNode* getStartNode() const;
+    shared_ptr<QMDDNode> getStartNode() const;
     QMDDEdge getInitialEdge() const;
     size_t getDepth() const;
     void calculateDepth();
     vector<complex<double>> getAllElements();
-    QMDDState operator+(const QMDDState& other);
-    shared_ptr<QMDDNode> addNodes(QMDDNode* node1, QMDDNode* node2);
+    // QMDDState operator+(const QMDDState& other);
+    // shared_ptr<QMDDNode> addNodes(QMDDNode* node1, QMDDNode* node2);
     QMDDState& operator=(const QMDDState& other) = default;
     bool operator==(const QMDDState& other) const;
     bool operator!=(const QMDDState& other) const;
