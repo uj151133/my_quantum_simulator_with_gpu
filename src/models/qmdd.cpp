@@ -238,7 +238,7 @@ bool QMDDState::operator!=(const QMDDState& other) const {
     return !(*this == other);
 }
 
-    ostream& operator<<(ostream& os, const QMDDState& state) {
+ostream& operator<<(ostream& os, const QMDDState& state) {
     os << "QMDDState with initial edge:\n" << state.initialEdge;
     return os;
 }
