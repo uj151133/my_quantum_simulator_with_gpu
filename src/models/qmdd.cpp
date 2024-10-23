@@ -50,20 +50,28 @@ shared_ptr<QMDDNode> QMDDEdge::getStartNode() const {
 
 vector<complex<double>> QMDDEdge::getAllElementsForKet() {
     vector<complex<double>> result;
+    stack<pair<shared_ptr<QMDDNode>, size_t>> nodeStack;
+
     if (isTerminal) {
         result.push_back(weight);
     } else {
-        shared_ptr<QMDDNode> node = getStartNode();
-        if (node->edges.size() == 1) {
-            throw runtime_error("The start node has only one edge, which is not allowed.");
-        }
-        else {
-            for (size_t i = 0; i < node->edges.size(); i++){
+        nodeStack.push(make_pair(getStartNode(), 0));
+
+        while (!nodeStack.empty()) {
+            auto [node, edgeIndex] = nodeStack.top();
+            nodeStack.pop();
+
+            if (node->edges.size() == 1) {
+                throw runtime_error("The start node has only one edge, which is not allowed.");
+            }
+
+            for (size_t i = edgeIndex; i < node->edges.size(); i++) {
                 if (node->edges[i][0].isTerminal) {
                     result.push_back(node->edges[i][0].weight);
                 } else {
-                    vector<complex<double>> child = node->edges[i][0].getAllElementsForKet();
-                    result.insert(result.end(), child.begin(), child.end());
+                    nodeStack.push(make_pair(node, i + 1));
+                    nodeStack.push(make_pair(node->edges[i][0].getStartNode(), 0));
+                    break;
                 }
             }
         }
