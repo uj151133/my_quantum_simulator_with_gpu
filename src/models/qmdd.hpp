@@ -48,7 +48,7 @@ struct QMDDEdge{
     QMDDEdge(complex<double> w, size_t key);
     QMDDEdge(double w, size_t key);
     QMDDEdge(const QMDDEdge& other) = default;
-    QMDDNode* getStartNode() const;
+    shared_ptr<QMDDNode> getStartNode() const;
     vector<complex<double>> getAllElementsForKet();
     ~QMDDEdge() = default;
     QMDDEdge& operator=(const QMDDEdge& other) = default;

@@ -43,34 +43,32 @@ QMDDEdge::QMDDEdge(double w, size_t key)
     // cout << "Edge created with weight: " << weight << " and uniqueTableKey: " << uniqueTableKey << " and isTerminal: " << isTerminal << endl;
 }
 
-QMDDNode* QMDDEdge::getStartNode() const {
+shared_ptr<QMDDNode> QMDDEdge::getStartNode() const {
     UniqueTable& table = UniqueTable::getInstance();
-    return table.find(uniqueTableKey).get();
+    return table.find(uniqueTableKey);
 }
 
 vector<complex<double>> QMDDEdge::getAllElementsForKet() {
-    UniqueTable& table = UniqueTable::getInstance();
-    auto node = table.find(uniqueTableKey);
-    if (node->edges.size() == 1) {
-        throw runtime_error("The start node has only one edge, which is not allowed.");
-    }
-    else {
-        vector<complex<double>> result;
-        if (isTerminal) {
+    vector<complex<double>> result;
+    if (isTerminal) {
+        result.push_back(weight);
+    } else {
+        shared_ptr<QMDDNode> node = getStartNode();
+        if (node->edges.size() == 1) {
+            throw runtime_error("The start node has only one edge, which is not allowed.");
+        }
+        else {
             for (size_t i = 0; i < node->edges.size(); i++){
-                result[i] = weight * node->edges[i][0].weight;
+                if (node->edges[i][0].isTerminal) {
+                    result.push_back(node->edges[i][0].weight);
+                } else {
+                    vector<complex<double>> child = node->edges[i][0].getAllElementsForKet();
+                    result.insert(result.end(), child.begin(), child.end());
+                }
             }
-            return result;
-        }else {
-            vector<complex<double>> child0 = node->edges[0][0].getAllElementsForKet();
-            vector<complex<double>> child1 = node->edges[1][0].getAllElementsForKet();
-            child0.insert(child0.end(), child1.begin(), child1.end());
-            for (size_t i = 0; i < child0.size(); i++){
-                child0[i] = weight * child0[i];
-            }
-            return child0;
         }
     }
+    return result;
 }
 
 bool QMDDEdge::operator==(const QMDDEdge& other) const {
