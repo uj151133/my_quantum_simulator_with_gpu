@@ -31,10 +31,13 @@ find_package(yaml-cpp REQUIRED)
 find_package(OpenMP REQUIRED)
 find_package(Boost REQUIRED COMPONENTS fiber context)
 
-
 # GNUライブラリのインクルードとリンク
 find_package(GSL REQUIRED)  # GSLライブラリの例
 find_library(GMP_LIB gmp)   # GMPライブラリの例
+
+if(CMAKE_SYSTEM_PROCESSOR MATCHES "(x86_64|AMD64)")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mavx")
+endif()
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
