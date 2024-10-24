@@ -69,4 +69,4 @@ typedef NS_ENUM(NSUInteger, OperationType) {
 
 @end
 
-#endif /* QMDD_h */
+#endif

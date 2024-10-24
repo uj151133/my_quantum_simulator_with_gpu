@@ -35,19 +35,19 @@ void execute() {
     // QMDDGate i1Gate = gate::I();
     // QMDDGate i2Gate = gate::I();
     // QMDDGate phGate = gate::Ph(0.5);
-    QMDDGate cx1Gate = gate::CX1();
+    // QMDDGate cx1Gate = gate::CX1();
     // QMDDGate cx2Gate = gate::CX2();
     // QMDDGate sGate = gate::S();
     // QMDDGate toffGate = gate::Toff();
     // QMDDGate ffredkinGate = gate::fFredkin();
-    // QMDDState ket0State = state::Ket0();
-    // QMDDState ket1State = state::Ket1();
+    QMDDState ket0State1 = state::Ket0();
+    QMDDState ket0State2 = state::Ket0();
     // QMDDState bra0State = state::Bra0();
     // cout << "zeroGate:" << zeroGate.getInitialEdge() << endl;
     // cout << "zeroGate:" << zeroGate << endl;
     // cout << "igate:" << iGate.getInitialEdge() << endl;
     // cout << "phgate:" << phGate.getInitialEdge() << endl;
-    cout << "cx1gate:" << cx1Gate.getInitialEdge() << endl;
+    // cout << "cx1gate:" << *cx1Gate.getStartNode() << endl;
     // cout << "cx2gate:" << cx2Gate.getDepth() << endl;
     // cout << "igate:" << gate::I().getInitialEdge() << endl;
     cout << "cx2gate:" << cx1Gate.getInitialEdge() << endl;
@@ -55,7 +55,11 @@ void execute() {
     // cout << "hgate:" << hGate.getInitialEdge() << endl;
     // cout << "ket0" << ket0State.getInitialEdge().uniqueTableKey << endl;
     // cout << "bra0" << bra0State.getInitialEdge().uniqueTableKey << endl;
-    // cout << "ket0:" << ket0State.getStartNode()->edges.size() << ", " << ket0State.getStartNode()->edges[0].size() << endl;
+    QMDDState ket0State = mathUtils::kron(ket0State1.getInitialEdge(), ket0State2.getInitialEdge());
+    vector<complex<double>> ket0Elements = ket0State.getInitialEdge().getAllElementsForKet();
+    for (size_t i = 0; i < ket0Elements.size(); i++) {
+        cout << "ket0: "<< ket0Elements[i] << endl;
+    }
     // cout << "bra0:" << bra0State.getStartNode()->edges.size() << ", " << bra0State.getStartNode()->edges[0].size() << endl;
     // QMDDGate xGate = gate::X();
     // cout << "xgate:" << xGate.getInitialEdge() << endl;
