@@ -37,6 +37,13 @@ find_library(GMP_LIB gmp)   # GMPライブラリの例
 
 if(CMAKE_SYSTEM_PROCESSOR MATCHES "(x86_64|AMD64)")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mavx")
+elseif(CMAKE_SYSTEM_PROCESSOR MATCHES "arm.*")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=armv8-a+simd")
+elseif(CMAKE_SYSTEM_PROCESSOR MATCHES "riscv")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=rv64gcv")
+elseif(CMAKE_SYSTEM_PROCESSOR MATCHES "powerpc")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -maltivec")
+else()
 endif()
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")

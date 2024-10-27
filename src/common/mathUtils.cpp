@@ -185,8 +185,64 @@ complex<double> mathUtils::cot(const complex<double> theta) {
     return 1.0 / tan_theta;
 }
 
+// double mathUtils::sumOfSquares(const vector<complex<double>>& vec) {
+//     return accumulate(vec.begin(), vec.end(), 0.0, [](double sum, const complex<double>& val) {
+//         return sum + std::pow(abs(val), 2);
+//     });
+// }
+
 double mathUtils::sumOfSquares(const vector<complex<double>>& vec) {
-    return accumulate(vec.begin(), vec.end(), 0.0, [](double sum, const complex<double>& val) {
-        return sum + std::pow(abs(val), 2);
-    });
+#if defined(__x86_64__) || defined(_M_X64)
+    __m256d sum = _mm256_setzero_pd();
+    
+    // SIMDで処理できる部分（2つの複素数ごと = 4つのdouble）
+    size_t i = 0;
+    for (; i + 1 < vec.size(); i += 2) {
+        __m256d v = _mm256_loadu_pd(reinterpret_cast<const double*>(&vec[i]));
+        __m256d squared = _mm256_mul_pd(v, v);  // 要素ごとの平方
+        sum = _mm256_add_pd(sum, squared);      // 累積加算
+    }
+
+    // SIMDレジスタから部分和を取り出す
+    double result[4];
+    _mm256_storeu_pd(result, sum);
+
+    // スカラー演算で残りの1つの複素数を処理（奇数サイズの場合のみ）
+    double scalarSum = result[0] + result[1] + result[2] + result[3];
+    if (i < vec.size()) {
+        scalarSum += pow(abs(vec[i]), 2);  // 最後の要素の絶対値の二乗を加算
+    }
+
+    return scalarSum;
+#elif defined(__ARM_NEON) || defined(__ARM_NEON__)
+    float64x2_t sum = vdupq_n_f64(0.0);  // 64ビット浮動小数2つのレジスタ（0で初期化）
+
+    size_t i = 0;
+    for (; i + 1 < vec.size(); i += 2) {
+        __builtin_prefetch(&vec[i + 2], 0, 1);
+        float64x2x2_t data = vld2q_f64(reinterpret_cast<const double*>(&vec[i]));
+
+        float64x2_t realSquared = vmulq_f64(data.val[0], data.val[0]);
+        float64x2_t imagSquared = vmulq_f64(data.val[1], data.val[1]);
+
+        sum = vaddq_f64(sum, vaddq_f64(realSquared, imagSquared));
+    }
+
+    // NEONレジスタから部分和を取り出す
+    double result[2];
+    vst1q_f64(result, sum);
+
+    // スカラー演算で奇数個目の要素を処理
+    double scalarSum = result[0] + result[1];
+    if (i < vec.size()) {
+        scalarSum += std::pow(std::abs(vec[i]), 2);  // 最後の要素の絶対値の二乗を加算
+    }
+
+    return scalarSum;
+#elif defined(__riscv) || defined(__riscv__)
+
+#elif defined(__powerpc__) || defined(__PPC__)
+
+#else
+#endif
 }
