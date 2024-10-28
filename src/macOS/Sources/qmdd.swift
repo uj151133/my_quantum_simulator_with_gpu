@@ -54,8 +54,8 @@ struct QMDDEdge: CustomStringConvertible {
         self.isTerminal = node == nil
         if let node = node {
             let table = UniqueTable.getInstance()
-            if table.find(uniqueTableKey) == nil {
-                table.insert(uniqueTableKey, node)
+            if table.find(hashKey: uniqueTableKey) == nil {
+                table.insert(hashKey: uniqueTableKey, node: node)
             }
         }
     }
@@ -66,8 +66,8 @@ struct QMDDEdge: CustomStringConvertible {
         self.isTerminal = node == nil
         if let node = node {
             let table = UniqueTable.getInstance()
-            if table.find(uniqueTableKey) == nil {
-                table.insert(uniqueTableKey, node)
+            if table.find(hashKey: uniqueTableKey) == nil {
+                table.insert(hashKey: uniqueTableKey, node: node)
             }
         }
     }
@@ -86,20 +86,22 @@ struct QMDDEdge: CustomStringConvertible {
 
     func getStartNode() -> QMDDNode? {
         let table = UniqueTable.getInstance()
-        return table.find(uniqueTableKey)
+        return table.find(hashKey: uniqueTableKey)
     }
 
     func getAllElementsForKet() -> [Complex<Double>] {
         // Metalを使用して計算を行う
         let edgeCount = 1 // 実際のエッジの数を設定
-        var edges = [QMDDEdge(weight: Complex<Double>(1.0, 0.0), key: 1)] // 実際のエッジデータを設定
+        var edges = [QMDDEdge(weight: Complex<Double>(1.0, 0.0), uniqueTableKey: 1)] // 実際のエッジデータを設定
         var nodes = [QMDDNode(edges: [edges])] // 実際のノードデータを設定
         var results = [Complex<Double>](repeating: Complex<Double>(0.0, 0.0), count: edgeCount)
 
         let edgeBuffer = device.makeBuffer(bytes: &edges, length: MemoryLayout<QMDDEdge>.stride * edgeCount, options: [])
         let nodeBuffer = device.makeBuffer(bytes: &nodes, length: MemoryLayout<QMDDNode>.stride * nodes.count, options: [])
         let resultBuffer = device.makeBuffer(bytes: &results, length: MemoryLayout<Complex<Double>>.stride * edgeCount, options: [])
-        let nodeCountBuffer = device.makeBuffer(bytes: &nodes.count, length: MemoryLayout<UInt32>.stride, options: [])
+
+        var nodeCount = UInt32(nodes.count)
+        let nodeCountBuffer = device.makeBuffer(bytes: &nodeCount, length: MemoryLayout<UInt32>.stride, options: [])
 
         let commandBuffer = commandQueue.makeCommandBuffer()!
         let computeEncoder = commandBuffer.makeComputeCommandEncoder()!
@@ -127,7 +129,7 @@ struct QMDDEdge: CustomStringConvertible {
         if lhs.weight != rhs.weight { return false }
         if lhs.isTerminal != rhs.isTerminal { return false }
         if !lhs.isTerminal && lhs.uniqueTableKey != rhs.uniqueTableKey { return false }
-        if !lhs.isTerminal && table.find(lhs.uniqueTableKey) != table.find(rhs.uniqueTableKey) { return false }
+        if !lhs.isTerminal && table.find(hashKey: lhs.uniqueTableKey) != table.find(hashKey: rhs.uniqueTableKey) { return false }
         return true
     }
 
@@ -136,11 +138,11 @@ struct QMDDEdge: CustomStringConvertible {
     }
 
     var description: String {
-        var desc = "Weight: \(weight), Node"
+        var desc = "Weight = \(weight)"
         if uniqueTableKey != 0 {
-            desc += ", Key: \(uniqueTableKey)"
+            desc += ", Key = \(uniqueTableKey),  isTerminal = \(isTerminal)"
         } else {
-            desc += ", Key: Null"
+            desc += ", Key = Null, isTerminal = \(isTerminal)"
         }
         return desc
     }
@@ -152,14 +154,14 @@ struct QMDDEdge: CustomStringConvertible {
 //
 /////////////////////////////////////
 
-struct QMDDNode: CustomStringConvertible {
+struct QMDDNode: CustomStringConvertible, Equatable {
     var edges: [[QMDDEdge]]
 
     init(edges: [[QMDDEdge]]) {
         self.edges = edges
     }
 
-    mutating func moveEdges(from other: QMDDNode) {
+    mutating func moveEdges(from other: inout QMDDNode) {
         self.edges = other.edges
         other.edges.removeAll()
     }
@@ -186,13 +188,12 @@ struct QMDDNode: CustomStringConvertible {
     }
 
     var description: String {
-        var desc = "QMDDNode with \(edges.count) rows of edges \n"
-        for row in edges {
-            desc += "Row with \(row.count) edges: "
-            for edge in row {
-                desc += "\(edge) "
+        var desc = "Node with \(edges.count) rows of edges \n"
+        for i in 0..<edges.count {
+            for j in 0..<edges[i].count {
+                let edge = edges[i][j]
+                desc += "    Edge (\(i), \(j)): \(edge)\n"
             }
-            desc += "\n"
         }
         return desc
     }
@@ -233,7 +234,7 @@ class QMDDGate: CustomStringConvertible {
 
     func getStartNode() -> QMDDNode? {
         let table = UniqueTable.getInstance()
-        return table.find(initialEdge.uniqueTableKey)
+        return table.find(hashKey: initialEdge.uniqueTableKey)
     }
 
     func getInitialEdge() -> QMDDEdge {
@@ -292,7 +293,7 @@ class QMDDState: CustomStringConvertible {
 
     func getStartNode() -> QMDDNode? {
         let table = UniqueTable.getInstance()
-        return table.find(initialEdge.uniqueTableKey)
+        return table.find(hashKey: initialEdge.uniqueTableKey)
     }
 
     func getInitialEdge() -> QMDDEdge {

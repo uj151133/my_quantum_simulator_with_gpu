@@ -4,8 +4,8 @@ import Numerics
 enum calculation {
     static func generateUniqueTableKey(node: QMDDNode, row: Int = 0, col: Int = 0, rowStride: Int = 1, colStride: Int = 1, parentWeight: Complex<Double> = Complex<Double>(1.0, 0.0)) ->UInt {
         func customHash(_ c: Complex<Double>) -> UInt {
-            let realHash = c.real.hashValue
-            let imagHash = c.imaginary.hashValue
+            let realHash = UInt(bitPattern: c.real.hashValue)
+            let imagHash = UInt(bitPattern: c.imaginary.hashValue)
             return realHash ^ (imagHash << 1)
         }
 
@@ -15,7 +15,7 @@ enum calculation {
             return elementHash
         }
 
-        var hashValu: UInt = 0
+        var hashValue: UInt = 0
         let table = UniqueTable.getInstance()
 
         for i in 0..<node.edges.count {
@@ -29,7 +29,7 @@ enum calculation {
                 if node.edges[i][j].isTerminal || node.edges[i][j].uniqueTableKey == 0 {
                     elementHash = hashMatrixElement(value: combinedWeight, row: newRow, col: newCol)
                 } else {
-                    if let foundNode = table.find(node.edges[i][j].uniqueTableKey) {
+                    if let foundNode = table.find(hashKey: node.edges[i][j].uniqueTableKey) {
                         elementHash = calculation.generateUniqueTableKey(node: foundNode, row: newRow, col: newCol, rowStride: rowStride * 2, colStride: colStride * 2, parentWeight: combinedWeight)
                     } else {
                         elementHash = 0
@@ -49,18 +49,18 @@ enum calculation {
             let imagHash = c.imaginary.hashValue
             return realHash ^ (imagHash << 1)
         }
-        
+
         func hashCombine(seed: inout Int, hash: Int) {
             seed ^= hash + 0x9e3779b9 + (seed << 6) + (seed >> 2)
         }
-        
+
         var seed = 0
         hashCombine(seed: &seed, hash: customHash(key.0.weight))
         hashCombine(seed: &seed, hash: key.0.uniqueTableKey.hashValue)
         hashCombine(seed: &seed, hash: key.1.hashValue)
         hashCombine(seed: &seed, hash: customHash(key.2.weight))
         hashCombine(seed: &seed, hash: key.2.uniqueTableKey.hashValue)
-        
+
         return seed
     }
 }
