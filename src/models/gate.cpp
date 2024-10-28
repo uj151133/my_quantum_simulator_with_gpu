@@ -105,9 +105,11 @@ QMDDGate gate::Sdagger() {
 }
 
 QMDDGate gate::V() {
+    QMDDEdge vEdge = QMDDEdge(i, nullptr)
+
     return QMDDGate(QMDDEdge(1.0 / 2.0 + i / 2.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
-        {edgeOne, QMDDEdge(i, nullptr)},
-        {QMDDEdge(i, nullptr), edgeOne}
+        {edgeOne, vEdge},
+        {vEdge, edgeOne}
     })));
 }
 
@@ -126,19 +128,19 @@ QMDDGate gate::CX1() {
 }
 
 QMDDGate gate::CX2() {
-    shared_ptr<QMDDNode> cx2Node1 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+    QMDDEdge cx2Edge1 = QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
         {edgeOne, edgeZero},
         {edgeZero, edgeZero}
-    });
+    }));
 
-    shared_ptr<QMDDNode> cx2Node2 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+    QMDDEdge cx2Edge2 = QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
         {edgeZero, edgeZero},
         {edgeZero, edgeOne}
-    });
+    }));
 
     return QMDDGate(QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
-        {QMDDEdge(1.0, cx2Node1), QMDDEdge(1.0, cx2Node2)},
-        {QMDDEdge(1.0, cx2Node2), QMDDEdge(1.0, cx2Node1)}
+        {cx2Edge1, cx2Edge2},
+        {cx2Edge2, cx2Edge1}
     })));
 }
 
@@ -157,29 +159,29 @@ QMDDGate gate::CZ() {
 }
 
 QMDDGate gate::DCNOT() {
-    shared_ptr<QMDDNode> dcnotNode1 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+    QMDDEdge dcnotEdge1 = QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
         {edgeOne, edgeZero},
         {edgeZero, edgeZero}
-    });
+    }));
 
-    shared_ptr<QMDDNode> dcnotNode2 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+    QMDDEdge dcnotEdge2 = QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
         {edgeZero, edgeZero},
         {edgeOne, edgeZero}
-    });
+    }));
 
-    shared_ptr<QMDDNode> dcnotNode3 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+    QMDDEdge dcnotEdge3 = QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
         {edgeZero, edgeZero},
         {edgeZero, edgeOne}
-    });
+    }));
 
-    shared_ptr<QMDDNode> dcnotNode4 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+    QMDDEdge dcnotEdge4 = QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
         {edgeZero, edgeOne},
         {edgeZero, edgeZero}
-    });
+    }));
 
     return QMDDGate(QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
-        {QMDDEdge(1.0, dcnotNode1), QMDDEdge(1.0, dcnotNode2)},
-        {QMDDEdge(1.0, dcnotNode3), QMDDEdge(1.0, dcnotNode4)}
+        {dcnotEdge1, dcnotEdge2},
+        {dcnotEdge3, dcnotEdge4}
     })));
 }
 
