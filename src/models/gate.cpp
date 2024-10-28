@@ -105,7 +105,7 @@ QMDDGate gate::Sdagger() {
 }
 
 QMDDGate gate::V() {
-    QMDDEdge vEdge = QMDDEdge(i, nullptr)
+    QMDDEdge vEdge = QMDDEdge(i, nullptr);
 
     return QMDDGate(QMDDEdge(1.0 / 2.0 + i / 2.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
         {edgeOne, vEdge},

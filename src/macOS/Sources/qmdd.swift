@@ -45,12 +45,12 @@ extension QMDDVariant: CustomStringConvertible {
 
 struct QMDDEdge: CustomStringConvertible {
     var weight: Complex<Double>
-    var uniqueTableKey: UInt32
+    var uniqueTableKey: UInt
     var isTerminal: Bool
 
     init(weight: Complex<Double> = Complex<Double>(0.0, 0.0), node: QMDDNode? = nil) {
         self.weight = weight
-        self.uniqueTableKey = node != nil ? calculation.generateUniqueTableKey(node!) : 0
+        self.uniqueTableKey = node != nil ? calculation.generateUniqueTableKey(node: node!) : 0
         self.isTerminal = node == nil
         if let node = node {
             let table = UniqueTable.getInstance()
@@ -62,7 +62,7 @@ struct QMDDEdge: CustomStringConvertible {
 
     init(weight: Double, node: QMDDNode? = nil) {
         self.weight = Complex<Double>(weight, 0.0)
-        self.uniqueTableKey = node != nil ? calculation.generateUniqueTableKey(node!) : 0
+        self.uniqueTableKey = node != nil ? calculation.generateUniqueTableKey(node: node!) : 0
         self.isTerminal = node == nil
         if let node = node {
             let table = UniqueTable.getInstance()
@@ -72,13 +72,13 @@ struct QMDDEdge: CustomStringConvertible {
         }
     }
 
-    init(weight: Complex<Double> = Complex<Double>(0.0, 0.0), uniqueTableKey: UInt32 = 0, isTerminal: Bool = false) {
+    init(weight: Complex<Double> = Complex<Double>(0.0, 0.0), uniqueTableKey: UInt = 0, isTerminal: Bool = false) {
         self.weight = weight
         self.uniqueTableKey = uniqueTableKey
         self.isTerminal = isTerminal
     }
 
-    init(weight: Double, uniqueTableKey: UInt32 = 0, isTerminal: Bool = false) {
+    init(weight: Double, uniqueTableKey: UInt = 0, isTerminal: Bool = false) {
         self.weight = Complex<Double>(weight, 0.0)
         self.uniqueTableKey = uniqueTableKey
         self.isTerminal = isTerminal
