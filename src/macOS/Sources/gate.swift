@@ -15,7 +15,7 @@ enum gate {
     }
 
     static func Ph(delta: Double) -> QMDDGate {
-        return QMDDGate(edge: QMDDEdge(weight: exp(i * delta), node: QMDDNode(edges: [
+        return QMDDGate(edge: QMDDEdge(weight: Complex<Double>.exp(i * Complex<Double>(delta, 0.0)), node: QMDDNode(edges: [
             [edgeOne, edgeZero],
             [edgeZero, edgeOne]
         ])))
@@ -57,9 +57,11 @@ enum gate {
     }
 
     static func V() -> QMDDGate {
-        return QMDDGate(edge: QMDDEdge(weight: 1.0 / 2.0 + i / 2.0, node: QMDDNode(edges: [
-            [edgeOne, QMDDEdge(weight: i, node: nil)],
-            [QMDDEdge(weight: i, node: nil), QMDDEdge(weight: 0.5, node: nil)]
+        let vEdge = QMDDEdge(weight: i, node: nil)
+
+        return QMDDGate(edge: QMDDEdge(weight: Complex<Double>(1.0 / 2.0, 1.0 / 2.0), node: QMDDNode(edges: [
+            [edgeOne, vEdge],
+            [vEdge, edgeOne]
         ])))
     }
 
@@ -78,19 +80,19 @@ enum gate {
     }
 
     static func CX2() -> QMDDGate {
-        let cx2Node1 = QMDDNode(edges: [
+        let cx2Edge1 = QMDDEdge(weight: 1.0, node: QMDDNode(edges: [
             [edgeOne, edgeZero],
             [edgeZero, edgeZero]
-        ])
+        ]))
 
-        let cx2Node2 = QMDDNode(edges: [
+        let cx2Edge2 = QMDDEdge(weight: 1.0, node: QMDDNode(edges: [
             [edgeZero, edgeZero],
             [edgeZero, edgeOne]
-        ])
+        ]))
 
         return QMDDGate(edge: QMDDEdge(weight: 1.0, node: QMDDNode(edges: [
-            [QMDDEdge(weight: 1.0, node: cx2Node1), QMDDEdge(weight: 1.0, node: cx2Node2)],
-            [QMDDEdge(weight: 1.0, node: cx2Node2), QMDDEdge(weight: 1.0, node: cx2Node1)]
+            [cx2Edge1, cx2Edge2],
+            [cx2Edge2, cx2Edge1]
         ])))
     }
 
@@ -98,6 +100,40 @@ enum gate {
         return QMDDGate(edge: QMDDEdge(weight: 1.0, node: QMDDNode(edges: [
             [gate.X().getInitialEdge(), edgeZero],
             [edgeZero, gate.I().getInitialEdge()]
+        ])))
+    }
+
+    static func CZ() -> QMDDGate {
+        return QMDDGate(edge: QMDDEdge(weight: 1.0, node: QMDDNode(edges: [
+            [gate.I().getInitialEdge(), edgeZero],
+            [edgeZero, gate.Z().getInitialEdge()]
+        ])))
+    }
+
+        static func DCNOT() -> QMDDGate {
+        let dcnotEdge1 = QMDDEdge(weight: 1.0, node: QMDDNode(edges: [
+            [edgeOne, edgeZero],
+            [edgeZero, edgeZero]
+        ]))
+
+        let dcnotEdge2 = QMDDEdge(weight: 1.0, node: QMDDNode(edges: [
+            [edgeZero, edgeZero],
+            [edgeOne, edgeZero]
+        ]))
+
+        let dcnotEdge3 = QMDDEdge(weight: 1.0, node: QMDDNode(edges: [
+            [edgeZero, edgeZero],
+            [edgeZero, edgeOne]
+        ]))
+
+        let dcnotEdge4 = QMDDEdge(weight: 1.0, node: QMDDNode(edges: [
+            [edgeZero, edgeOne],
+            [edgeZero, edgeZero]
+        ]))
+
+        return QMDDGate(edge: QMDDEdge(weight: 1.0, node: QMDDNode(edges: [
+            [dcnotEdge1, dcnotEdge2],
+            [dcnotEdge3, dcnotEdge4]
         ])))
     }
 }

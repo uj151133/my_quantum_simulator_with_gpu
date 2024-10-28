@@ -39,7 +39,7 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1) {
                 for (size_t k = 0; k < n0->edges[0].size(); k++) {
                     QMDDEdge p(e0Copy->weight * n0->edges[i][k].weight, table.find(n0->edges[i][k].uniqueTableKey));
                     QMDDEdge q(e1Copy->weight * n1->edges[k][j].weight, table.find(n1->edges[k][j].uniqueTableKey));
-                    z[i][j] = add(z[i][j], mul(p, q));
+                    z[i][j] = mathUtils::add(z[i][j], mathUtils::mul(p, q));
                 }
                 if (z[i][j].weight != .0 && tmpWeight == .0) {
                     tmpWeight = z[i][j].weight;
@@ -96,7 +96,7 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1) {
             for (size_t j = 0; j < n0->edges[i].size(); j++) {
                 QMDDEdge p(e0Copy->weight * n0->edges[i][j].weight, table.find(n0->edges[i][j].uniqueTableKey));
                 QMDDEdge q(e1Copy->weight * n1->edges[i][j].weight, table.find(n1->edges[i][j].uniqueTableKey));
-                z[i][j] = add(p, q);
+                z[i][j] = mathUtils::add(p, q);
 
                 if (z[i][j].weight != .0 && tmpWeight == .0) {
                     tmpWeight = z[i][j].weight;
@@ -146,7 +146,7 @@ QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1) {
         complex<double> tmpWeight = .0;
         for (size_t i = 0; i < n0->edges.size(); i++) {
             for (size_t j = 0; j < n0->edges[i].size(); j++) {
-                z[i][j] = kron(n0->edges[i][j], e1);
+                z[i][j] = mathUtils::kron(n0->edges[i][j], e1);
 
                 if (z[i][j].weight != .0 && tmpWeight == .0) {
                     tmpWeight = z[i][j].weight;
@@ -190,3 +190,4 @@ double mathUtils::sumOfSquares(const vector<complex<double>>& vec) {
         return sum + std::pow(abs(val), 2);
     });
 }
+
