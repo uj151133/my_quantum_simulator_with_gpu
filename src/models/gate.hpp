@@ -2,6 +2,7 @@
 #define GATE_HPP
 
 #include "qmdd.hpp"
+#include "../common/constant.hpp"
 #include "../common/mathUtils.hpp"
 #include "../modules/fiber.hpp"
 #include <iostream>
