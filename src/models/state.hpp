@@ -2,6 +2,7 @@
 #define STATE_HPP
 
 #include "qmdd.hpp"
+#include "../common/constant.hpp"
 
 using namespace std;
 
