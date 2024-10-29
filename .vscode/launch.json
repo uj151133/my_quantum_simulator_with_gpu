@@ -1,0 +1,22 @@
+{
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:my_quantum_simulator_with_gpu}/src/macOS",
+            "name": "Debug macOS (src/macOS)",
+            "program": "${workspaceFolder:my_quantum_simulator_with_gpu}/src/macOS/.build/debug/macOS",
+            "preLaunchTask": "swift: Build Debug macOS (src/macOS)"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:my_quantum_simulator_with_gpu}/src/macOS",
+            "name": "Release macOS (src/macOS)",
+            "program": "${workspaceFolder:my_quantum_simulator_with_gpu}/src/macOS/.build/release/macOS",
+            "preLaunchTask": "swift: Build Release macOS (src/macOS)"
+        }
+    ]
+}

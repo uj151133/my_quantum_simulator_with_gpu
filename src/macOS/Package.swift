@@ -1,16 +1,32 @@
-// swift-tools-version:5.3
+// swift-tools-version: 5.10
+// The swift-tools-version declares the minimum version of Swift required to build this package.
+
 import PackageDescription
 
 let package = Package(
-    name: "YourProjectName",
+    name: "macOS",
+    platforms: [
+        .macOS(.v10_15)
+    ],
+    products: [
+        .executable(name: "macOS", targets: ["macOS"])
+    ],
     dependencies: [
-        .package(url: "https://github.com/apple/swift-numerics.git", from: "0.0.7"),
+        .package(url: "https://github.com/apple/swift-numerics.git", from: "0.0.7")
     ],
     targets: [
-        .target(
-            name: "YourProjectName",
+        // Targets are the basic building blocks of a package, defining a module or a test suite.
+        // Targets can depend on other targets in this package and products from dependencies.
+        .executableTarget(
+            name: "macOS",
             dependencies: [
-                .product(name: "Numerics", package: "swift-numerics"),
-            ]),
+                .product(name: "Numerics", package: "swift-numerics")
+            ],
+            resources: [
+                .copy("Sources/calculation.metal"),
+                .copy("Sources/gate.metal"),
+                .copy("Sources/qmdd.metal")
+            ]
+        )
     ]
 )
