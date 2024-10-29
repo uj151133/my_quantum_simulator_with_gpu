@@ -5,6 +5,12 @@ import PackageDescription
 
 let package = Package(
     name: "macOS",
+    platforms: [
+        .macOS(.v10_15)
+    ],
+    products: [
+        .executable(name: "macOS", targets: ["macOS"])
+    ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-numerics.git", from: "0.0.7")
     ],
@@ -15,6 +21,11 @@ let package = Package(
             name: "macOS",
             dependencies: [
                 .product(name: "Numerics", package: "swift-numerics")
+            ],
+            resources: [
+                .process(String("Sources/calculation.metal")),
+                .process(String("Sources/qmdd.metal")),
+                .process(String("Sources/gate.metal")),
             ]
         )
     ]
