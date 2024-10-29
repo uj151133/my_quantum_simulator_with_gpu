@@ -93,11 +93,16 @@ struct QMDDEdge: CustomStringConvertible {
         // Metalを使用して計算を行う
         let edgeCount = 1 // 実際のエッジの数を設定
         var edges = [QMDDEdge(weight: Complex<Double>(1.0, 0.0), uniqueTableKey: 1)] // 実際のエッジデータを設定
-        var nodes = [QMDDNode(edges: [edges])] // 実際のノードデータを設定
+        let nodes = [QMDDNode(edges: [edges])] // 実際のノードデータを設定
         var results = [Complex<Double>](repeating: Complex<Double>(0.0, 0.0), count: edgeCount)
 
         let edgeBuffer = device.makeBuffer(bytes: &edges, length: MemoryLayout<QMDDEdge>.stride * edgeCount, options: [])
-        let nodeBuffer = device.makeBuffer(bytes: &nodes, length: MemoryLayout<QMDDNode>.stride * nodes.count, options: [])
+
+        let nodeValues = nodes.flatMap { $0.edges.flatMap { $0 } }
+        let nodeBuffer = nodeValues.withUnsafeBytes { bufferPointer in
+            device.makeBuffer(bytes: bufferPointer.baseAddress!, length: bufferPointer.count, options: [])
+        }
+
         let resultBuffer = device.makeBuffer(bytes: &results, length: MemoryLayout<Complex<Double>>.stride * edgeCount, options: [])
 
         var nodeCount = UInt32(nodes.count)

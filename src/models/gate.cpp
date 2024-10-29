@@ -1,9 +1,5 @@
 #include "gate.hpp"
 
-static complex<double> i(0.0, 1.0);
-static const QMDDEdge edgeZero(.0, nullptr);
-static const QMDDEdge edgeOne(1.0, nullptr);
-
 QMDDGate gate::I() {
     return QMDDGate(QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
         {edgeOne, edgeZero},
