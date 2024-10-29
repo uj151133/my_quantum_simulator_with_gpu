@@ -94,12 +94,12 @@ bool QMDDEdge::operator!=(const QMDDEdge& other) const {
 
 
 ostream& operator<<(ostream& os, const QMDDEdge& edge) {
-    os << "Weight: " << edge.weight << ", Node ";
+    os << "Weight = " << edge.weight;
 
     if (edge.uniqueTableKey != 0) {
-        os << ", Key: " << edge.uniqueTableKey;
+        os << ", Key = " << edge.uniqueTableKey << ", isTerminal = " << edge.isTerminal;
     } else {
-        os << ", Key: Null";
+        os << ", Key = Null" << ", isTerminal = " << edge.isTerminal;
     }
     return os;
 }
@@ -142,13 +142,12 @@ bool QMDDNode::operator!=(const QMDDNode& other) const {
 }
 
 ostream& operator<<(ostream& os, const QMDDNode& node) {
-    os << "QMDDNode with " << node.edges.size() << " rows of edges \n";
-    for (const auto& row : node.edges) {
-        os << "Row with " << row.size() << " edges: ";
-        for (const auto& edge : row) {
-            os << edge << " ";
+    os << "Node with " << node.edges.size() << " rows of edges \n";
+    for (int i = 0; i < node.edges.size(); i++) {
+        for (int j = 0; j < node.edges[i].size(); j++) {
+            auto edge = node.edges[i][j];
+            os << "    Edge (" << i << ", " << j << "): " << edge << "\n";
         }
-        os << "\n";
     }
     return os;
 }

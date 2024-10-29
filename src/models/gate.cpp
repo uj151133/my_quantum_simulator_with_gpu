@@ -1,9 +1,5 @@
 #include "gate.hpp"
 
-static complex<double> i(0.0, 1.0);
-static const QMDDEdge edgeZero(.0, nullptr);
-static const QMDDEdge edgeOne(1.0, nullptr);
-
 QMDDGate gate::I() {
     return QMDDGate(QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
         {edgeOne, edgeZero},
@@ -27,7 +23,7 @@ QMDDGate gate::X() {
 
 // const QMDDGate gate::PLUS_X_GATE = [] {
 //     complex<double> plusXWeight = 1 / sqrt(2.0);
-//     shared_ptr<QMDDNode> plusXNode = make_shared<QMDDNode>(4);
+//     QMDDEdge plusXNode = make_shared<QMDDNode>(4);
 
 //     plusXNode->children[0] = QMDDEdge(1, nullptr);
 //     plusXNode->children[1] = QMDDEdge(i, nullptr);
@@ -40,7 +36,7 @@ QMDDGate gate::X() {
 
 // const QMDDGate gate::MINUS_X_GATE = [] {
 //     complex<double> minusXWeight = 1 / sqrt(2.0);
-//     shared_ptr<QMDDNode> minusXNode = make_shared<QMDDNode>(4);
+//     QMDDEdge minusXNode = make_shared<QMDDNode>(4);
 
 //     minusXNode->children[0] = QMDDEdge(1, nullptr);
 //     minusXNode->children[1] = QMDDEdge(-i, nullptr);
@@ -105,9 +101,11 @@ QMDDGate gate::Sdagger() {
 }
 
 QMDDGate gate::V() {
+    QMDDEdge vEdge = QMDDEdge(i, nullptr);
+
     return QMDDGate(QMDDEdge(1.0 / 2.0 + i / 2.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
-        {edgeOne, QMDDEdge(i, nullptr)},
-        {QMDDEdge(i, nullptr), edgeOne}
+        {edgeOne, vEdge},
+        {vEdge, edgeOne}
     })));
 }
 
@@ -126,29 +124,29 @@ QMDDGate gate::CX1() {
 }
 
 QMDDGate gate::CX2() {
-    shared_ptr<QMDDNode> cx2Node1, cx2Node2;
+    QMDDEdge cx2Edge1, cx2Edge2;
     #pragma omp parallel sections
     {
         #pragma omp section
         {
-            cx2Node1 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+            cx2Edge1 = QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
                 {edgeOne, edgeZero},
                 {edgeZero, edgeZero}
-            });
+            }));
         }
 
         #pragma omp section
         {
-            cx2Node2 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+            cx2Edge2 = QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
                 {edgeZero, edgeZero},
                 {edgeZero, edgeOne}
-            });
+            }));
         }
     }
 
     return QMDDGate(QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
-        {QMDDEdge(1.0, cx2Node1), QMDDEdge(1.0, cx2Node2)},
-        {QMDDEdge(1.0, cx2Node2), QMDDEdge(1.0, cx2Node1)}
+        {cx2Edge1, cx2Edge2},
+        {cx2Edge2, cx2Edge1}
     })));
 }
 
@@ -167,45 +165,45 @@ QMDDGate gate::CZ() {
 }
 
 QMDDGate gate::DCNOT() {
-    shared_ptr<QMDDNode> dcnotNode1, dcnotNode2, dcnotNode3, dcnotNode4;
+    QMDDEdge dcnotEdge1, dcnotEdge2, dcnotEdge3, dcnotEdge4;
     #pragma omp parallel sections
     {
         #pragma omp section
         {
-            dcnotNode1 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+            dcnotEdge1 = QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
                 {edgeOne, edgeZero},
                 {edgeZero, edgeZero}
-            });
+            }));
         }
 
         #pragma omp section
         {
-            dcnotNode2 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+            dcnotEdge2 = QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
                 {edgeZero, edgeZero},
                 {edgeOne, edgeZero}
-            });
+            }));
         }
 
         #pragma omp section
         {
-            dcnotNode3 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+            dcnotEdge3 = QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
                 {edgeZero, edgeZero},
                 {edgeZero, edgeOne}
-            });
+            }));
         }
 
         #pragma omp section
         {
-            dcnotNode4 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+            dcnotEdge4 = QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
                 {edgeZero, edgeOne},
                 {edgeZero, edgeZero}
-            });
+            }));
         }
     }
 
     return QMDDGate(QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
-        {QMDDEdge(1.0, dcnotNode1), QMDDEdge(1.0, dcnotNode2)},
-        {QMDDEdge(1.0, dcnotNode3), QMDDEdge(1.0, dcnotNode4)}
+        {dcnotEdge1, dcnotEdge2},
+        {dcnotEdge3, dcnotEdge4}
     })));
 }
 
@@ -213,91 +211,91 @@ QMDDGate gate::SWAP(bool primitive) {
     if (primitive) {
         return QMDDGate(mathUtils::mul(mathUtils::mul(gate::CX1().getInitialEdge(), gate::CX2().getInitialEdge()), gate::CX1().getInitialEdge()));
     } else {
-        shared_ptr<QMDDNode> swapNode1, swapNode2, swapNode3, swapNode4;
+        QMDDEdge swapEdge1, swapEdge2, swapEdge3, swapEdge4;
         #pragma omp parallel sections
         {
             #pragma omp section
             {
-                swapNode1 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+                swapEdge1 = QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
                     {edgeOne, edgeZero},
                     {edgeZero, edgeZero}
-                });
+                }));
             }
 
             #pragma omp section
             {
-                swapNode2 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+                swapEdge2 = QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
                     {edgeZero, edgeZero},
                     {edgeOne, edgeZero}
-                });
+                }));
             }
 
             #pragma omp section
             {
-                swapNode3 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+                swapEdge3 = QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
                     {edgeZero, edgeOne},
                     {edgeZero, edgeZero}
-                });
+                }));
             }
 
             #pragma omp section
             {
-                swapNode4 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+                swapEdge4 = QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
                     {edgeZero, edgeZero},
                     {edgeZero, edgeOne}
-                });
+                }));
             }
         }
 
         #pragma omp barrier
 
         return QMDDGate(QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
-            {QMDDEdge(1.0, swapNode1), QMDDEdge(1.0, swapNode2)},
-            {QMDDEdge(1.0, swapNode3), QMDDEdge(1.0, swapNode4)}
+            {swapEdge1, swapEdge2},
+            {swapEdge3, swapEdge4}
         })));
     }
 }
 
 QMDDGate gate::iSWAP() {
-    shared_ptr<QMDDNode> iswapNode1, iswapNode2, iswapNode3, iswapNode4;
+    QMDDEdge iswapEdge1, iswapEdge2, iswapEdge3, iswapEdge4;
     #pragma omp parallel sections
     {
         #pragma omp section
         {
-            iswapNode1 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+            iswapEdge1 = QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
                 {edgeOne, edgeZero},
                 {edgeZero, edgeZero}
-            });
+            }));
         }
 
         #pragma omp section
         {
-            iswapNode2 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+            iswapEdge2 = QMDDEdge(i, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
                 {edgeZero, edgeZero},
                 {edgeOne, edgeZero}
-            });
+            }));
         }
 
         #pragma omp section
         {
-            iswapNode3 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+            iswapEdge3 = QMDDEdge(i, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
                 {edgeZero, edgeOne},
                 {edgeZero, edgeZero}
-            });
+            }));
         }
 
         #pragma omp section
         {
-            iswapNode4 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+            iswapEdge4 = QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
                 {edgeZero, edgeZero},
                 {edgeZero, edgeOne}
-            });
+            }));
         }
     }
 
     return QMDDGate(QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
-        {QMDDEdge(1.0, iswapNode1), QMDDEdge(i, iswapNode2)},
-        {QMDDEdge(i, iswapNode3), QMDDEdge(1.0, iswapNode4)}
+        {iswapEdge1, iswapEdge2},
+        {iswapEdge3, iswapEdge4}
     })));
 }
 
@@ -379,185 +377,185 @@ QMDDGate gate::Rzz(double phi) {
 }
 
 QMDDGate gate::Rxy(double phi) {
-    shared_ptr<QMDDNode> rxyNode1, rxyNode2, rxyNode3, rxyNode4;
+    QMDDEdge rxyEdge1, rxyEdge2, rxyEdge3, rxyEdge4;
     #pragma omp parallel sections
     {
         #pragma omp section
         {
-            rxyNode1 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+            rxyEdge1 = QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
                 {edgeOne, edgeZero},
                 {edgeZero, QMDDEdge(cos(phi / 2.0), nullptr)}
-            });
+            }));
         }
 
         #pragma omp section
         {
-            rxyNode2 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+            rxyEdge2 = QMDDEdge(-i * sin(phi / 2.0), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
                 {edgeZero, edgeZero},
                 {edgeOne, edgeZero}
-            });
+            }));
         }
 
         #pragma omp section
         {
-            rxyNode3 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+            rxyEdge3 = QMDDEdge(-i * sin(phi / 2.0), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
                 {edgeZero, edgeOne},
                 {edgeZero, edgeZero}
-            });
+            }));
         }
 
         #pragma omp section
         {
-            rxyNode4 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+            rxyEdge4 = QMDDEdge(cos(phi / 2.0), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
                 {edgeOne, edgeZero},
                 {edgeZero, QMDDEdge(1.0 * mathUtils::sec(phi / 2.0), nullptr)}
-            });
+            }));
         }
     }
 
     return QMDDGate(QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
-        {QMDDEdge(1.0, rxyNode1), QMDDEdge(-i * sin(phi / 2.0), rxyNode2)},
-        {QMDDEdge(-i * sin(phi / 2.0), rxyNode3), QMDDEdge(cos(phi / 2.0), rxyNode4)}
+        {rxyEdge1, rxyEdge2},
+        {rxyEdge3, rxyEdge4}
     })));
 }
 
 QMDDGate gate::SquareSWAP() {
-    shared_ptr<QMDDNode> squareSWAPNode1, squareSWAPNode2, squareSWAPNode3, squareSWAPNode4;
+    QMDDEdge squareSWAPEdge1, squareSWAPEdge2, squareSWAPEdge3, squareSWAPEdge4;
     #pragma omp parallel sections
     {
         #pragma omp section
         {
-            squareSWAPNode1 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+            squareSWAPEdge1 = QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
                 {edgeOne, edgeZero},
                 {edgeZero, QMDDEdge((1.0 + i) / 2.0, nullptr)}
-            });
+            }));
         }
 
         #pragma omp section
         {
-            squareSWAPNode2 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+            squareSWAPEdge2 = QMDDEdge((1.0 - i) / 2.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
                 {edgeZero, edgeZero},
                 {edgeOne, edgeZero}
-            });
+            }));
         }
 
         #pragma omp section
         {
-            squareSWAPNode3 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+            squareSWAPEdge3 = QMDDEdge((1.0 - i) / 2.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
                 {edgeZero, edgeOne},
                 {edgeZero, edgeZero}
-            });
+            }));
         }
 
         #pragma omp section
         {
-            squareSWAPNode4 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+            squareSWAPEdge4 = QMDDEdge((1.0 + i) / 2.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
                 {edgeOne, edgeZero},
                 {edgeZero, QMDDEdge(1.0 - i, nullptr)}
-            });
+            }));
         }
     }
 
     return QMDDGate(QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
-        {QMDDEdge(1.0, squareSWAPNode1), QMDDEdge((1.0 - i) / 2.0, squareSWAPNode2)},
-        {QMDDEdge((1.0 - i) / 2.0, squareSWAPNode3), QMDDEdge((1.0 + i) / 2.0, squareSWAPNode4)}
+        {squareSWAPEdge1, squareSWAPEdge2},
+        {squareSWAPEdge3, squareSWAPEdge4}
     })));
 }
 
 QMDDGate gate::SquareiSWAP() {
-    shared_ptr<QMDDNode> squareiSWAPNode1, squareiSWAPNode2, squareiSWAPNode3, squareiSWAPNode4;
+    QMDDEdge squareiSWAPEdge1, squareiSWAPEdge2, squareiSWAPEdge3, squareiSWAPEdge4;
     #pragma omp parallel sections
     {
         #pragma omp section
         {
-            squareiSWAPNode1 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+            squareiSWAPEdge1 = QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
                 {edgeOne, edgeZero},
                 {edgeZero, QMDDEdge(1.0 / sqrt(2.0), nullptr)}
-            });
+            }));
         }
 
         #pragma omp section
         {
-            squareiSWAPNode2 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+            squareiSWAPEdge2 = QMDDEdge(i / sqrt(2.0), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
                 {edgeZero, edgeZero},
                 {edgeOne, edgeZero}
-            });
+            }));
         }
 
         #pragma omp section
         {
-            squareiSWAPNode3 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+            squareiSWAPEdge3 = QMDDEdge(i / sqrt(2.0), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
                 {edgeZero, edgeOne},
                 {edgeZero, edgeZero}
-            });
+            }));
         }
 
         #pragma omp section
         {
-            squareiSWAPNode4 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+            squareiSWAPEdge4 = QMDDEdge(1.0 / sqrt(2.0), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
                 {edgeOne, edgeZero},
                 {edgeZero, QMDDEdge(sqrt(2.0), nullptr)}
-            });
+            }));
         }
     }
 
     return QMDDGate(QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
-        {QMDDEdge(1.0, squareiSWAPNode1), QMDDEdge(i / sqrt(2.0), squareiSWAPNode2)},
-        {QMDDEdge(i / sqrt(2.0), squareiSWAPNode3), QMDDEdge(1.0 / sqrt(2.0), squareiSWAPNode4)}
+        {squareiSWAPEdge1, squareiSWAPEdge2},
+        {squareiSWAPEdge3, squareiSWAPEdge4}
     })));
 }
 
 QMDDGate gate::SWAPalpha(double alpha) {
-    shared_ptr<QMDDNode> SWAPalphaNode1, SWAPalphaNode2, SWAPalphaNode3, SWAPalphaNode4;
+    QMDDEdge SWAPalphaEdge1, SWAPalphaEdge2, SWAPalphaEdge3, SWAPalphaEdge4;
     #pragma omp parallel sections
     {
         #pragma omp section
         {
-            SWAPalphaNode1 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+            SWAPalphaEdge1 =  QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
                 {edgeOne, edgeZero},
                 {edgeZero, QMDDEdge((1.0 + exp(i * M_PI * alpha)) / 2.0, nullptr)}
-            });
+            }));
         }
 
         #pragma omp section
         {
-            SWAPalphaNode2 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+            SWAPalphaEdge2 = QMDDEdge((1.0 - exp(i * M_PI * alpha)) / 2.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
                 {edgeZero, edgeZero},
                 {edgeOne, edgeZero}
-            });
+            }));
         }
 
         #pragma omp section
         {
-            SWAPalphaNode3 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+            SWAPalphaEdge3 = QMDDEdge((1.0 - exp(i * M_PI * alpha)) / 2.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
                 {edgeZero, edgeOne},
                 {edgeZero, edgeZero}
-            });
+            }));
         }
 
         #pragma omp section
         {
-            SWAPalphaNode4 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+            SWAPalphaEdge4 = QMDDEdge((1.0 + exp(i * M_PI * alpha)) / 2.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
                 {edgeOne, edgeZero},
                 {edgeZero, QMDDEdge(2.0 / (1.0 + exp(i * M_PI * alpha)), nullptr)}
-            });
+            }));
         }
     }
 
     return QMDDGate(QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
-        {QMDDEdge(1.0, SWAPalphaNode1), QMDDEdge((1.0 - exp(i * M_PI * alpha)) / 2.0, SWAPalphaNode2)},
-        {QMDDEdge((1.0 - exp(i * M_PI * alpha)) / 2.0, SWAPalphaNode3), QMDDEdge((1.0 + exp(i * M_PI * alpha)) / 2.0, SWAPalphaNode4)}
+        {SWAPalphaEdge1, SWAPalphaEdge2},
+        {SWAPalphaEdge3, SWAPalphaEdge4}
     })));
 }
 
 QMDDGate gate::FREDKIN() {
-    shared_ptr<QMDDNode> fredkinNode1 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+    QMDDEdge fredkinEdge1 = QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
         {gate::I().getInitialEdge(), edgeZero},
         {edgeZero, gate::I().getInitialEdge()}
-    });
+    }));
 
     return QMDDGate(QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
-        {QMDDEdge(1.0, fredkinNode1), edgeZero},
+        {fredkinEdge1, edgeZero},
         {edgeZero, gate::SWAP().getInitialEdge()}
     })));
 }
@@ -570,551 +568,551 @@ QMDDGate gate::U(double theta, double phi, double lambda) {
 }
 
 QMDDGate gate::BARENCO(double alpha, double phi, double theta) {
-    shared_ptr<QMDDNode> barencoNode1 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+    QMDDEdge barencoEdge1 = QMDDEdge(exp(i * alpha) * cos(theta), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
         {edgeOne, QMDDEdge(-i * exp(-i * phi) * tan(theta), nullptr)},
         {QMDDEdge(-i * exp(i * phi) * tan(theta), nullptr), edgeOne}
-    });
+    }));
 
     return QMDDGate(QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
         {gate::I().getInitialEdge(), edgeZero},
-        {edgeZero, QMDDEdge(exp(i * alpha) * cos(theta), barencoNode1)}
+        {edgeZero, barencoEdge1}
     })));
 }
 
 QMDDGate gate::B() {
-    shared_ptr<QMDDNode> bNode1, bNode2, bNode3, bNode4;
+    QMDDEdge bEdge1, bEdge2, bEdge3, bEdge4;
     #pragma omp parallel sections
     {
         #pragma omp section
         {
-            bNode1 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+            bEdge1 = QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
                 {edgeOne, edgeZero},
                 {edgeZero, QMDDEdge(cos(3.0 * M_PI / 8.0) * mathUtils::sec(M_PI / 8.0), nullptr)}
-            });
+            }));
         }
 
         #pragma omp section
         {
-            bNode2 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+            bEdge2 = QMDDEdge(i * tan(M_PI / 8.0), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
                 {edgeZero, edgeOne},
                 {QMDDEdge(sin(3.0 * M_PI / 8.0) * mathUtils::csc(M_PI / 8.0), nullptr), edgeZero}
-            });
+            }));
         }
 
         #pragma omp section
         {
-            bNode3 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+            bEdge3 = QMDDEdge(i * sin(3.0 * M_PI / 8.0) / cos(M_PI / 8.0), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
                 {edgeZero, edgeOne},
                 {QMDDEdge(sin(M_PI / 8.0) * mathUtils::csc(3.0 * M_PI / 8.0), nullptr), edgeZero}
-            });
+            }));
         }
 
         #pragma omp section
         {
-            bNode4 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+            bEdge4 = QMDDEdge(cos(3.0 * M_PI / 8.0) / cos(M_PI / 8.0), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
                 {edgeOne, edgeZero},
                 {edgeZero, QMDDEdge(cos(M_PI / 8.0) * mathUtils::sec(3.0 * M_PI / 8.0), nullptr)}
-            });
+            }));
         }
     }
 
-    return QMDDGate(QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
-        {QMDDEdge(cos(M_PI / 8.0), bNode1), QMDDEdge(i * sin(M_PI / 8.0), bNode2)},
-        {QMDDEdge(i * sin(3.0 * M_PI / 8.0), bNode3), QMDDEdge(cos(3.0 * M_PI / 8.0), bNode4)}
+    return QMDDGate(QMDDEdge(cos(M_PI / 8.0), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+        { bEdge1, bEdge2},
+        { bEdge3, bEdge4}
     })));
 }
 
 QMDDGate gate::CSX() {
-    shared_ptr<QMDDNode> csxNode1 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+    QMDDEdge csxEdge1 = QMDDEdge(exp(i * M_PI / 4.0), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
         {edgeOne, QMDDEdge(exp(-i * M_PI / 2.0), nullptr)},
         {QMDDEdge(exp(-i * M_PI / 2.0), nullptr), edgeOne}
-    });
+    }));
 
     return QMDDGate(QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
         {gate::I().getInitialEdge(), edgeZero},
-        {edgeZero, QMDDEdge(exp(i * M_PI / 4.0), csxNode1)}
+        {edgeZero, csxEdge1}
     })));
 }
 
 QMDDGate gate::N(double a, double b, double c) {
-    shared_ptr<QMDDNode> nNode1, nNode2, nNode3, nNode4;
+    QMDDEdge nEdge1, nEdge2, nEdge3, nEdge4;
     #pragma omp parallel sections
     {
         #pragma omp section
         {
-            nNode1 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+            nEdge1 = QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
                 {edgeOne, edgeZero},
                 {edgeZero, QMDDEdge(exp(-2.0 * i * c) * cos(a + b) * mathUtils::sec(a - b), nullptr)}
-            });
+            }));
         }
 
         #pragma omp section
         {
-            nNode2 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+            nEdge2 = QMDDEdge(i * tan(a - b), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
                 {edgeZero, edgeOne},
                 {QMDDEdge(exp(-2.0 * i * c) * sin(a + b) * mathUtils::csc(a - b), nullptr), edgeZero}
-            });
+            }));
         }
 
         #pragma omp section
         {
-            nNode3 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+            nEdge3 = QMDDEdge(i * exp(-2.0 * i * c) * sin(a + b) * mathUtils::sec(a - b), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
                 {edgeZero, edgeOne},
                 {QMDDEdge(exp(2.0 * i * c) * sin(a - b) * mathUtils::csc(a + b), nullptr), edgeZero}
-            });
+            }));
         }
 
         #pragma omp section
         {
-            nNode4 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+            nEdge4 = QMDDEdge(exp(-2.0 * i * c) * cos(a + b) * mathUtils::sec(a - b), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
                 {edgeOne, edgeZero},
                 {edgeZero, QMDDEdge(exp(2.0 * i * c) * cos(a - b) * mathUtils::sec(a + b), nullptr)}
-            });
+            }));
         }
     }
 
     return QMDDGate(QMDDEdge(exp(i * c) * cos(a - b), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
-        {QMDDEdge(1.0, nNode1), QMDDEdge(i * tan(a - b), nNode2)},
-        {QMDDEdge(i * exp(-2.0 * i * c) * sin(a + b) * mathUtils::sec(a - b), nNode3), QMDDEdge(exp(-2.0 * i * c) * cos(a + b) * mathUtils::sec(a - b), nNode4)}
+        {nEdge1, nEdge2},
+        {nEdge3, nEdge4}
     })));
 }
 
 QMDDGate gate::DB() {
-    shared_ptr<QMDDNode> dbNode1, dbNode2, dbNode3, dbNode4;
+    QMDDEdge dbEdge1, dbEdge2, dbEdge3, dbEdge4;
     #pragma omp parallel sections
     {
         #pragma omp section
         {
-            dbNode1 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+            dbEdge1 = QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
                 {edgeOne, edgeZero},
                 {edgeZero, QMDDEdge(cos(3.0 * M_PI / 8.0), nullptr)}
-            });
+            }));
         }
 
         #pragma omp section
         {
-            dbNode2 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+            dbEdge2 = QMDDEdge(-i * sin(3.0 * M_PI / 8.0), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
                 {edgeZero, edgeZero},
                 {edgeOne, edgeZero}
-            });
+            }));
         }
 
         #pragma omp section
         {
-            dbNode3 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+            dbEdge3 = QMDDEdge(-i * sin(3.0 * M_PI / 8.0), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
                 {edgeZero, edgeOne},
                 {edgeZero, edgeZero}
-            });
+            }));
         }
 
         #pragma omp section
         {
-            dbNode4 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+            dbEdge4 = QMDDEdge(cos(3.0 * M_PI / 8.0), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
                 {edgeOne, edgeZero},
                 {edgeZero, QMDDEdge(1.0 * mathUtils::sec(3.0 * M_PI / 8.0), nullptr)}
-            });
+            }));
         }
     }
 
     return QMDDGate(QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
-        {QMDDEdge(1.0, dbNode1), QMDDEdge(-i * sin(3.0 * M_PI / 8.0), dbNode2)},
-        {QMDDEdge(-i * sin(3.0 * M_PI / 8.0), dbNode3), QMDDEdge(cos(3.0 * M_PI / 8.0), dbNode4)}
+        {dbEdge1, dbEdge2},
+        {dbEdge3, dbEdge4}
     })));
 }
 
 QMDDGate gate::ECR() {
-    shared_ptr<QMDDNode> ecrNode1, ecrNode2;
+    QMDDEdge ecrEdge1, ecrEdge2;
     #pragma omp parallel sections
     {
         #pragma omp section
         {
-            ecrNode1 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+            ecrEdge1 = QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
                 {edgeOne, QMDDEdge(i, nullptr)},
                 {QMDDEdge(i, nullptr), edgeOne}
-            });
+            }));
         }
 
         #pragma omp section
         {
-            ecrNode2 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+            ecrEdge2 = QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
                 {edgeOne, QMDDEdge(-i, nullptr)},
                 {QMDDEdge(-i, nullptr), edgeOne}
-            });
+            }));
         }
     }
 
     return QMDDGate(QMDDEdge(1.0 / sqrt(2.0), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
-        {edgeZero, QMDDEdge(1.0, ecrNode1)},
-        {QMDDEdge(1.0, ecrNode2), edgeZero}
+        {edgeZero, ecrEdge1},
+        {ecrEdge2, edgeZero}
     })));
 }
 
 QMDDGate gate::fSim(double theta, double phi) {
-    shared_ptr<QMDDNode> fSimNode1, fSimNode2, fSimNode3, fSimNode4;
+    QMDDEdge fSimEdge1, fSimEdge2, fSimEdge3, fSimEdge4;
     #pragma omp parallel sections
     {
         #pragma omp section
         {
-            fSimNode1 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+            fSimEdge1 = QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
                 {edgeOne, edgeZero},
                 {edgeZero, QMDDEdge(cos(theta), nullptr)}
-            });
+            }));
         }
 
         #pragma omp section
         {
-            fSimNode2 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+            fSimEdge2 = QMDDEdge(-i * sin(theta), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
                 {edgeZero, edgeZero},
                 {edgeOne, edgeZero}
-            });
+            }));
         }
 
         #pragma omp section
         {
-            fSimNode3 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+            fSimEdge3 = QMDDEdge(-i * sin(theta), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
                 {edgeZero, edgeOne},
                 {edgeZero, edgeZero}
-            });
+            }));
         }
 
         #pragma omp section
         {
-            fSimNode4 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+            fSimEdge4 =QMDDEdge(cos(theta), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
                 {edgeOne, edgeZero},
                 {edgeZero, QMDDEdge(exp(i * phi) * mathUtils::sec(theta), nullptr)}
-            });
+            }));
         }
     }
 
     return QMDDGate(QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
-        {QMDDEdge(1.0, fSimNode1), QMDDEdge(-i * sin(theta), fSimNode2)},
-        {QMDDEdge(-i * sin(theta), fSimNode3), QMDDEdge(cos(theta), fSimNode4)}
+        {fSimEdge1, fSimEdge2},
+        {fSimEdge3, fSimEdge4}
     })));
 }
 
 QMDDGate gate::G(double theta) {
-    shared_ptr<QMDDNode> gNode1, gNode2, gNode3, gNode4;
+    QMDDEdge gEdge1, gEdge2, gEdge3, gEdge4;
     #pragma omp parallel sections
     {
         #pragma omp section
         {
-            gNode1 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+            gEdge1 = QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
                 {edgeOne, edgeZero},
                 {edgeZero, QMDDEdge(cos(theta), nullptr)}
-            });
+            }));
         }
 
         #pragma omp section
         {
-            gNode2 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+            gEdge2 = QMDDEdge(-sin(theta), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
                 {edgeZero, edgeZero},
                 {edgeOne, edgeZero}
-            });
+            }));
         }
 
         #pragma omp section
         {
-            gNode3 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+            gEdge3 = QMDDEdge(sin(theta),make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
                 {edgeZero, edgeOne},
                 {edgeZero, edgeZero}
-            });
+            }));
         }
 
         #pragma omp section
         {
-            gNode4 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+            gEdge4 = QMDDEdge(cos(theta), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
                 {edgeOne, edgeZero},
                 {edgeZero, QMDDEdge(1.0 * mathUtils::sec(theta), nullptr)}
-            });
+            }));
         }
     }
 
     return QMDDGate(QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
-        {QMDDEdge(1.0, gNode1), QMDDEdge(-sin(theta), gNode2)},
-        {QMDDEdge(sin(theta), gNode3), QMDDEdge(cos(theta), gNode4)}
+        {gEdge1, gEdge2},
+        { gEdge3, gEdge4}
     })));
 }
 
 QMDDGate gate::M() {
-    shared_ptr<QMDDNode> mNode1, mNode2, mNode3, mNode4;
+    QMDDEdge mEdge1, mEdge2, mEdge3, mEdge4;
     #pragma omp parallel sections
     {
         #pragma omp section
         {
-            mNode1 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+            mEdge1 = QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
                 {edgeOne, QMDDEdge(i, nullptr)},
                 {edgeZero, edgeZero}
-            });
+            }));
         }
 
         #pragma omp section
         {
-            mNode2 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+            mEdge2 = QMDDEdge(i, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
                 {edgeZero, edgeZero},
                 {edgeOne, QMDDEdge(-i, nullptr)}
-            });
+            }));
         }
 
         #pragma omp section
         {
-            mNode3 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+            mEdge3 = QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
                 {edgeZero, edgeZero},
                 {edgeOne, QMDDEdge(-i, nullptr)}
-            });
+            }));
         }
 
         #pragma omp section
         {
-            mNode4 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+            mEdge4 = QMDDEdge(i, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
                 {edgeOne, QMDDEdge(i, nullptr)},
                 {edgeZero, edgeZero}
-            });
+            }));
         }
     }
 
     return QMDDGate(QMDDEdge(1.0 / sqrt(2.0), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
-        {QMDDEdge(1.0, mNode1), QMDDEdge(i, mNode2)},
-        {QMDDEdge(1.0, mNode3), QMDDEdge(i, mNode4)}
+        {mEdge1, mEdge2},
+        {mEdge3, mEdge4}
     })));
 }
 
 QMDDGate gate::syc() {
-    shared_ptr<QMDDNode> sycNode1, sycNode2, sycNode3, sycNode4;
+    QMDDEdge sycEdge1, sycEdge2, sycEdge3, sycEdge4;
     #pragma omp parallel sections
     {
         #pragma omp section
         {
-            sycNode1 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+            sycEdge1 = QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
                 {edgeOne, edgeZero},
                 {edgeZero, edgeZero}
-            });
+            }));
         }
 
         #pragma omp section
         {
-            sycNode2 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+            sycEdge2 = QMDDEdge(-i, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
                 {edgeZero, edgeZero},
                 {edgeOne, edgeZero}
-            });
+            }));
         }
 
         #pragma omp section
         {
-            sycNode3 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+            sycEdge3 = QMDDEdge(-i, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
                 {edgeZero, edgeOne},
                 {edgeZero, edgeZero}
-            });
+            }));
         }
 
         #pragma omp section
         {
-            sycNode4 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+            sycEdge4 = QMDDEdge(exp(-i * M_PI / 6.0), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
                 {edgeZero, edgeZero},
                 {edgeZero, edgeOne}
-            });
+            }));
         }
     }
 
     return QMDDGate(QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
-        {QMDDEdge(1.0, sycNode1), QMDDEdge(-i, sycNode2)},
-        {QMDDEdge(-i, sycNode3), QMDDEdge(exp(-i * M_PI / 6.0), sycNode4)}
+        {sycEdge1, sycEdge2},
+        {sycEdge3, sycEdge4}
     })));
 }
 
 QMDDGate gate::CZS(double theta, double phi, double gamma) {
-    shared_ptr<QMDDNode> czsNode1, czsNode2, czsNode3, czsNode4;
+    QMDDEdge czsEdge1, czsEdge2, czsEdge3, czsEdge4;
     #pragma omp parallel sections
     {
         #pragma omp section
         {
-            czsNode1 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+            czsEdge1 = QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
                 {edgeOne, edgeZero},
                 {edgeZero, QMDDEdge(-exp(i * gamma) * std::pow(sin(theta / 2.0), 2) + std::pow(cos(theta / 2.0), 2), nullptr)}
-            });
+            }));
         }
 
         #pragma omp section
         {
-            czsNode2 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+            czsEdge2 = QMDDEdge((1.0 + exp(i * gamma)) / 2.0 * exp(-i * phi) * sin(theta), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
                 {edgeZero, edgeZero},
                 {edgeOne, edgeZero}
-            });
+            }));
         }
 
         #pragma omp section
         {
-            czsNode3 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+            czsEdge3 = QMDDEdge((1.0 + exp(i * gamma)) / 2.0 * exp(i * phi) * sin(theta), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
                 {edgeZero, edgeOne},
                 {edgeZero, edgeZero}
-            });
+            }));
         }
 
         #pragma omp section
         {
-            czsNode4 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+            czsEdge4 = QMDDEdge(-exp(i * gamma) * std::pow(cos(theta / 2.0), 2) + std::pow(sin(theta / 2.0), 2), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
                 {edgeOne, edgeZero},
                 {edgeZero, QMDDEdge(-exp(i * gamma) / (-exp(i * gamma) * std::pow(cos(theta / 2.0), 2) + std::pow(sin(theta / 2.0), 2)), nullptr)}
-            });
+            }));
         }
     }
 
     return QMDDGate(QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
-        {QMDDEdge(1.0, czsNode1), QMDDEdge((1.0 + exp(i * gamma)) / 2.0 * exp(-i * phi) * sin(theta), czsNode2)},
-        {QMDDEdge((1.0 + exp(i * gamma)) / 2.0 * exp(i * phi) * sin(theta), czsNode3), QMDDEdge(-exp(i * gamma) * std::pow(cos(theta / 2.0), 2) + std::pow(sin(theta / 2.0), 2), czsNode4)}
+        {czsEdge1, czsEdge2},
+        {czsEdge3, czsEdge4}
     })));
 }
 
 QMDDGate gate::D(double theta) {
-    shared_ptr<QMDDNode> dNode1, dNode2, dNode3, dNode4;
+    QMDDEdge dEdge1, dEdge2, dEdge3, dEdge4;
     #pragma omp parallel sections
     {
         #pragma omp section
         {
-            dNode1 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+            dEdge1 = QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
                 {gate::I().getInitialEdge(), edgeZero},
                 {edgeZero, gate::I().getInitialEdge()}
-            });
+            }));
         }
 
         #pragma omp section
         {
-            dNode2 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+            dEdge2 = QMDDEdge(i * cos(theta), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
                 {edgeOne, QMDDEdge(-i * tan(theta), nullptr)},
                 {QMDDEdge(-i * tan(theta), nullptr), edgeOne}
-            });
+            }));
 
-            dNode3 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+            dEdge3 = QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
                 {gate::I().getInitialEdge(), edgeZero},
-                {edgeZero, QMDDEdge(i * cos(theta), dNode2)}
-            });
+                {edgeZero, dEdge2}
+            }));
         }
     }
 
     return QMDDGate(QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
-        {QMDDEdge(1.0, dNode1), edgeZero},
-        {edgeZero, QMDDEdge(1.0, dNode3)}
+        {dEdge1, edgeZero},
+        {edgeZero, dEdge3}
     })));
 }
 
 QMDDGate gate::RCCX() {
-    shared_ptr<QMDDNode> rccxNode1, rccxNode2;
+    QMDDEdge rccxEdge1, rccxEdge2;
     #pragma omp parallel sections
     {
         #pragma omp section
         {
-            rccxNode1 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+            rccxEdge1 = QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
                 {gate::I().getInitialEdge(), edgeZero},
                 {edgeZero, gate::I().getInitialEdge()}
-            });
+            }));
         }
 
         #pragma omp section
         {
-            rccxNode2 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+            rccxEdge2 = QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
                 {gate::Z().getInitialEdge(), edgeZero},
                 {edgeZero, gate::X().getInitialEdge()}
-            });
+            }));
         }
     }
 
     return QMDDGate(QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
-        {QMDDEdge(1.0, rccxNode1), edgeZero},
-        {edgeZero, QMDDEdge(1.0, rccxNode2)}
+        {rccxEdge1, edgeZero},
+        {edgeZero, rccxEdge2}
     })));
 }
 
 QMDDGate gate::PG() {
-    shared_ptr<QMDDNode> pgNode1, pgNode2;
+    QMDDEdge pgEdge1, pgEdge2;
     #pragma omp parallel sections
     {
         #pragma omp section
         {
-            pgNode1 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+            pgEdge1 = QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
                 {gate::I().getInitialEdge(), edgeZero},
                 {edgeZero, gate::I().getInitialEdge()}
-            });
+            }));
         }
 
         #pragma omp section
         {
-            pgNode2 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+            pgEdge2 = QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
                 {edgeZero, gate::X().getInitialEdge()},
                 {gate::I().getInitialEdge(), edgeZero}
-            });
+            }));
         }
     }
 
     return QMDDGate(QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
-        {QMDDEdge(1.0, pgNode1), edgeZero},
-        {edgeZero, QMDDEdge(1.0, pgNode2)}
+        {pgEdge1, edgeZero},
+        {edgeZero,  pgEdge2}
     })));
 }
 
 QMDDGate gate::Toff() {
-    shared_ptr<QMDDNode> toffNode1 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+    QMDDEdge toffEdge1 = QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
         {gate::I().getInitialEdge(), edgeZero},
         {edgeZero, gate::I().getInitialEdge()}
-    });
+    }));
 
     return QMDDGate(QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
-        {QMDDEdge(1.0, toffNode1), edgeZero},
+        {toffEdge1, edgeZero},
         {edgeZero, gate::CX1().getInitialEdge()}
     })));
 }
 
 QMDDGate gate::fFredkin() {
-    shared_ptr<QMDDNode> fFredkinNode1, fFredkinNode2, fFredkinNode3, fFredkinNode4, fFredkinNode5, fFredkinNode6;
+    QMDDEdge fFredkinEdge1, fFredkinEdge2, fFredkinEdge3, fFredkinEdge4, fFredkinEdge5, fFredkinEdge6;
     #pragma omp parallel sections
     {
         #pragma omp section
         {
-            fFredkinNode1 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+            fFredkinEdge1 = QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
                 {gate::I().getInitialEdge(), edgeZero},
                 {edgeZero, gate::I().getInitialEdge()}
-            });
+            }));
         }
 
         #pragma omp section
         {
-            fFredkinNode2 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+            fFredkinEdge2 = QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
                 {edgeOne, edgeZero},
                 {edgeZero, edgeZero}
-            });
+            }));
         }
 
         #pragma omp section
         {
-            fFredkinNode3 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+            fFredkinEdge3 = QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
                 {edgeZero, edgeZero},
                 {edgeOne, edgeZero}
-            });
+            }));
         }
 
         #pragma omp section
         {
-            fFredkinNode4 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+            fFredkinEdge4 = QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
                 {edgeZero, edgeOne},
                 {edgeZero, edgeZero}
-            });
+            }));
         }
 
         #pragma omp section
         {
-            fFredkinNode5 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+            fFredkinEdge5 = QMDDEdge(-1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
                 {edgeZero, edgeZero},
                 {edgeZero, edgeOne}
-            });
+            }));
         }
     }
 
-    fFredkinNode6 = make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
-        {QMDDEdge(1.0, fFredkinNode2), QMDDEdge(1.0, fFredkinNode3)},
-        {QMDDEdge(1.0, fFredkinNode4), QMDDEdge(-1.0, fFredkinNode5)}
-    });
+    fFredkinEdge6 = QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+        {fFredkinEdge2, fFredkinEdge3},
+        {fFredkinEdge4, fFredkinEdge5}
+    }));
 
     return QMDDGate(QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
-        {QMDDEdge(1.0, fFredkinNode1), edgeZero},
-        {edgeZero, QMDDEdge(1.0, fFredkinNode6)}
+        {fFredkinEdge1, edgeZero},
+        {edgeZero, fFredkinEdge6}
     })));
 }
 
