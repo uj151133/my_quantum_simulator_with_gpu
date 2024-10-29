@@ -1,0 +1,4 @@
+module Numerics {
+    header "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/macOS/.build/arm64-apple-macosx/debug/Numerics.build/Numerics-Swift.h"
+    requires objc
+}
