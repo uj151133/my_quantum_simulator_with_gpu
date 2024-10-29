@@ -34,10 +34,30 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1) {
 
         vector<vector<QMDDEdge>> z(n0->edges.size(), vector<QMDDEdge>(n1->edges[0].size(), QMDDEdge(.0, nullptr)));
         complex<double> tmpWeight = .0;
+<<<<<<< HEAD
         boost::fibers::mutex mtx;
         boost::fibers::condition_variable cv;
         size_t remaining = n0->edges.size() * n1->edges[0].size();
         queue<pair<size_t, size_t>> taskQueue;
+=======
+        for (size_t i = 0; i < n0->edges.size(); i++) {
+            for (size_t j = 0; j < n1->edges[0].size(); j++){
+                for (size_t k = 0; k < n0->edges[0].size(); k++) {
+                    QMDDEdge p(e0Copy->weight * n0->edges[i][k].weight, table.find(n0->edges[i][k].uniqueTableKey));
+                    QMDDEdge q(e1Copy->weight * n1->edges[k][j].weight, table.find(n1->edges[k][j].uniqueTableKey));
+                    z[i][j] = mathUtils::add(z[i][j], mathUtils::mul(p, q));
+                }
+                if (z[i][j].weight != .0 && tmpWeight == .0) {
+                    tmpWeight = z[i][j].weight;
+                    z[i][j].weight = 1.0;
+                }else if (z[i][j].weight != .0 && tmpWeight != .0) {
+                    z[i][j].weight /= tmpWeight;
+                } else {
+                    if (z[i][j].weight != .0) {
+                        cout << "⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️" << endl;
+                    }
+                }
+>>>>>>> 7b7b6bd299912a07fa6561e430cbfd317cfc2438
 
         for (size_t i = 0; i < n0->edges.size(); i++) {
             for (size_t j = 0; j < n1->edges[0].size(); j++) {
@@ -145,7 +165,7 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1) {
                 boost::fibers::fiber([&, i, j] {
                     QMDDEdge p(e0Copy->weight * n0->edges[i][j].weight, table.find(n0->edges[i][j].uniqueTableKey));
                     QMDDEdge q(e1Copy->weight * n1->edges[i][j].weight, table.find(n1->edges[i][j].uniqueTableKey));
-                    z[i][j] = add(p, q);
+                    z[i][j] = mathUtils::add(p, q);
 
                     {
                         std::unique_lock<boost::fibers::mutex> lock(mtx);
@@ -220,7 +240,23 @@ QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1) {
 
         for (size_t i = 0; i < n0->edges.size(); i++) {
             for (size_t j = 0; j < n0->edges[i].size(); j++) {
+<<<<<<< HEAD
                 taskQueue.push(make_pair(i, j));
+=======
+                z[i][j] = mathUtils::kron(n0->edges[i][j], e1);
+
+                if (z[i][j].weight != .0 && tmpWeight == .0) {
+                    tmpWeight = z[i][j].weight;
+                    z[i][j].weight = 1.0;
+                }else if (z[i][j].weight != .0 && tmpWeight != .0) {
+                    z[i][j].weight /= tmpWeight;
+                } else {
+                    if (z[i][j].weight != .0) {
+                        cout << "⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️" << endl;
+                    }
+                }
+
+>>>>>>> 7b7b6bd299912a07fa6561e430cbfd317cfc2438
             }
         }
         for (size_t i = 0; i < n0->edges.size(); i++) {
@@ -291,3 +327,4 @@ double mathUtils::sumOfSquares(const vector<complex<double>>& vec) {
         return sum + std::pow(abs(val), 2);
     });
 }
+

@@ -29,7 +29,7 @@ void execute() {
 
     // cout << "finalState:" << circuit.getFinalState().getInitialEdge() << endl;
 
-
+    QMDDGate cx2 = gate::CX2();
     // QMDDGate zeroGate = gate::O();
 
     QMDDGate iGate = gate::I();
@@ -48,18 +48,18 @@ void execute() {
     // cout << "igate:" << iGate.getInitialEdge() << endl;
     // cout << "phgate:" << phGate.getInitialEdge() << endl;
     // cout << "cx1gate:" << *cx1Gate.getStartNode() << endl;
-    // cout << "cx2gate:" << cx2Gate.getDepth() << endl;
+    cout << "cx2:" << *cx2.getStartNode() << endl;
     // cout << "igate:" << gate::I().getInitialEdge() << endl;
     // cout << "x1gate:" << gate::X().getInitialEdge() << endl;
     QMDDGate hGate = gate::H();
     // cout << "hgate:" << hGate.getInitialEdge() << endl;
     // cout << "ket0" << ket0State.getInitialEdge().uniqueTableKey << endl;
     // cout << "bra0" << bra0State.getInitialEdge().uniqueTableKey << endl;
-    QMDDState ket0State = mathUtils::kron(ket0State1.getInitialEdge(), ket0State2.getInitialEdge());
-    vector<complex<double>> ket0Elements = ket0State.getInitialEdge().getAllElementsForKet();
-    for (size_t i = 0; i < ket0Elements.size(); i++) {
-        cout << "ket0: "<< ket0Elements[i] << endl;
-    }
+    // QMDDState ket0State = mathUtils::kron(ket0State1.getInitialEdge(), ket0State2.getInitialEdge());
+    // vector<complex<double>> ket0Elements = ket0State.getInitialEdge().getAllElementsForKet();
+    // for (size_t i = 0; i < ket0Elements.size(); i++) {
+    //     cout << "ket0: "<< ket0Elements[i] << endl;
+    // }
     // cout << "bra0:" << bra0State.getStartNode()->edges.size() << ", " << bra0State.getStartNode()->edges[0].size() << endl;
     // QMDDGate xGate = gate::X();
     // cout << "xgate:" << xGate.getInitialEdge() << endl;
