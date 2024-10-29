@@ -23,9 +23,9 @@ let package = Package(
                 .product(name: "Numerics", package: "swift-numerics")
             ],
             resources: [
-                .process(String("Sources/calculation.metal")),
-                .process(String("Sources/qmdd.metal")),
-                .process(String("Sources/gate.metal")),
+                .copy("Sources/calculation.metal"),
+                .copy("Sources/gate.metal"),
+                .copy("Sources/qmdd.metal")
             ]
         )
     ]
