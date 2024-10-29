@@ -17,8 +17,8 @@ size_t calculation::generateUniqueTableKey(const QMDDNode& node, size_t row, siz
     size_t hashValue = 0;
     UniqueTable& table = UniqueTable::getInstance();
 
-    for (size_t i = 0; i < node.edges.size(); ++i) {
-        for (size_t j = 0; j < node.edges[i].size(); ++j) {
+    for (size_t i = 0; i < node.edges.size(); i++) {
+        for (size_t j = 0; j < node.edges[i].size(); j++) {
             size_t newRow = row + i * rowStride;
             size_t newCol = col + j * colStride;
 
@@ -30,7 +30,7 @@ size_t calculation::generateUniqueTableKey(const QMDDNode& node, size_t row, siz
             } else {
                 shared_ptr<QMDDNode> foundNode = table.find(node.edges[i][j].uniqueTableKey);
                 if (foundNode) {
-                    elementHash = generateUniqueTableKey(*foundNode, newRow, newCol, rowStride * 2, colStride * 2, combinedWeight);
+                    elementHash = calculation::generateUniqueTableKey(*foundNode, newRow, newCol, rowStride * 2, colStride * 2, combinedWeight);
                 } else {
                     elementHash = 0;
                 }
