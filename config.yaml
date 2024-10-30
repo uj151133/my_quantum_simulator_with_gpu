@@ -3,4 +3,4 @@ gui:
   enabled: false
 
 process:
-  type: "sequential"  # "sequential", "multi-thread", "multi-fiber"のいずれか
+  type: "simd"  # "sequential", "multi-thread", "multi-fiber", "simd"のいずれか

@@ -4,9 +4,11 @@
 #include "qmdd.hpp"
 #include "../common/constant.hpp"
 #include "../common/mathUtils.hpp"
+#include <Eigen/Dense>
 #include <iostream>
 
 using namespace std;
+using namespace Eigen;
 namespace gate {
     /* Identity gate and global phase */
     QMDDGate I();

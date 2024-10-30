@@ -12,18 +12,6 @@
 #include <memory>
 #include <tuple>
 #include <stack>
-#if defined(__x86_64__) || defined(_M_X64)
-#include <immintrin.h>
-#elif defined(__ARM_NEON) || defined(__ARM_NEON__)
-#include <arm_neon.h>
-#elif defined(__riscv) || defined(__riscv__)
-#include <riscv_vector.h>
-#elif defined(__powerpc__) || defined(__PPC__)
-#include <altivec.h>
-#else
-#include <simde/simde.h>
-#include <eigen3/Eigen/Core>
-#endif
 
 using namespace std;
 
