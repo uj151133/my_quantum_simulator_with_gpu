@@ -8,7 +8,8 @@ install:
 	pip install -r requirements.txt
 	ifeq ($(shell uname), Darwin)
 		brew update
-		brew install libomp yaml-cpp gmp gsl
+		brew install libomp yaml-cpp gmp gsl eigen
+
 	else ifeq ($(shell uname), Linux)
 		if [ -f /etc/fedora-release ]; then \
             sudo dnf install -y libomp yaml-cpp gmp-devel gsl-devel; \
