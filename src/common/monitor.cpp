@@ -35,6 +35,15 @@ void fiberProcessing() {
     }
 }
 
+void simdProcessing() {
+    cout << "Eigen SIMD Support: ";
+    #ifdef EIGEN_VECTORIZE
+        cout << "Enabled" << std::endl;
+    #else
+        cout << "Disabled" << std::endl;
+    #endif
+}
+
 void printMemoryUsage() {
     pid_t pid = getpid();
     string command = "ps -o rss= -p " + to_string(pid);

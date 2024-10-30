@@ -97,7 +97,10 @@ int main() {
     } else if (processType == "multi-fiber") {
         cout << "マルチファイバー処理を実行します。" << endl;
         fiberProcessing();
-    } else {
+    } else if (processType == "simd") {
+        cout << "SIMDを実行します。" << endl;
+        simdProcessing();
+    } else{
         cerr << "不明な処理タイプ: " << processType << endl;
     }
     printMemoryUsage();
