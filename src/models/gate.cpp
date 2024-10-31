@@ -22,7 +22,7 @@ QMDDGate gate::X() {
 }
 
 // const QMDDGate gate::PLUS_X_GATE = [] {
-//     complex<double> plusXWeight = 1 / sqrt(2.0);
+//     complex<double> plusXWeight = 1 / M_SQRT2;
 //     QMDDEdge plusXNode = make_shared<QMDDNode>(4);
 
 //     plusXNode->children[0] = QMDDEdge(1, nullptr);
@@ -35,7 +35,7 @@ QMDDGate gate::X() {
 // }();
 
 // const QMDDGate gate::MINUS_X_GATE = [] {
-//     complex<double> minusXWeight = 1 / sqrt(2.0);
+//     complex<double> minusXWeight = 1 / M_SQRT2;
 //     QMDDEdge minusXNode = make_shared<QMDDNode>(4);
 
 //     minusXNode->children[0] = QMDDEdge(1, nullptr);
@@ -55,7 +55,7 @@ QMDDGate gate::Y() {
 }
 
 // QMDDGate createPlusYGate() {
-//     complex<double> plusYWeight = 1 / sqrt(2.0);
+//     complex<double> plusYWeight = 1 / M_SQRT2;
 //     QMDDNode* plusYNode = new QMDDNode(4);
 
 //     plusYNode->children[0] = QMDDEdge(1, nullptr);
@@ -68,7 +68,7 @@ QMDDGate gate::Y() {
 // }
 
 // QMDDGate createMinusYGate() {
-//     complex<double> minusYWeight = 1 / sqrt(2.0);
+//     complex<double> minusYWeight = 1 / M_SQRT2;
 //     QMDDNode* minusYNode = new QMDDNode(4);
 
 //     minusYNode->children[0] = QMDDEdge(1, nullptr);
@@ -110,7 +110,7 @@ QMDDGate gate::V() {
 }
 
 QMDDGate gate::H() {
-    return QMDDGate(QMDDEdge(1.0 / sqrt(2.0), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+    return QMDDGate(QMDDEdge(1.0 / M_SQRT2, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
         {edgeOne, edgeOne},
         {edgeOne, QMDDEdge(-1.0, nullptr)}
     })));
@@ -249,14 +249,14 @@ QMDDGate gate::P(double phi) {
 QMDDGate gate::T() {
     return QMDDGate(QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
         {edgeOne, edgeZero},
-        {edgeZero, QMDDEdge(exp(i * M_PI / 4.0), nullptr)}
+        {edgeZero, QMDDEdge(exp(i * M_PI_4), nullptr)}
     })));
 }
 
 QMDDGate gate::Tdagger() {
     return QMDDGate(QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
         {edgeOne, edgeZero},
-        {edgeZero, QMDDEdge(exp(-i * M_PI / 4.0), nullptr)}
+        {edgeZero, QMDDEdge(exp(-i * M_PI_4), nullptr)}
     })));
 }
 
@@ -387,26 +387,25 @@ QMDDGate gate::SquareSWAP() {
 }
 
 QMDDGate gate::SquareiSWAP() {
-    double sqrt2 = sqrt(2.0);
 
     QMDDEdge squareiSWAPEdge1 = QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
         {edgeOne, edgeZero},
-        {edgeZero, QMDDEdge(1.0 / sqrt2, nullptr)}
+        {edgeZero, QMDDEdge(1.0 / M_SQRT2, nullptr)}
     }));
 
-    QMDDEdge squareiSWAPEdge2 = QMDDEdge(i / sqrt2, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+    QMDDEdge squareiSWAPEdge2 = QMDDEdge(i / M_SQRT2, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
         {edgeZero, edgeZero},
         {edgeOne, edgeZero}
     }));
 
-    QMDDEdge squareiSWAPEdge3 = QMDDEdge(i / sqrt2, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+    QMDDEdge squareiSWAPEdge3 = QMDDEdge(i / M_SQRT2, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
         {edgeZero, edgeOne},
         {edgeZero, edgeZero}
     }));
 
-    QMDDEdge squareiSWAPEdge4 = QMDDEdge(1.0 / sqrt2, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+    QMDDEdge squareiSWAPEdge4 = QMDDEdge(1.0 / M_SQRT2, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
         {edgeOne, edgeZero},
-        {edgeZero, QMDDEdge(sqrt2, nullptr)}
+        {edgeZero, QMDDEdge(M_SQRT2, nullptr)}
     }));
 
     return QMDDGate(QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
@@ -514,9 +513,9 @@ QMDDGate gate::B() {
 }
 
 QMDDGate gate::CSX() {
-    complex<double> expMinusIPiHalf = exp(i * M_PI / 4.0);
+    complex<double> expMinusIPiHalf = exp(i * M_PI_4);
 
-    QMDDEdge csxEdge1 = QMDDEdge(exp(i * M_PI / 4.0), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+    QMDDEdge csxEdge1 = QMDDEdge(exp(i * M_PI_4), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
         {edgeOne, QMDDEdge(expMinusIPiHalf, nullptr)},
         {QMDDEdge(expMinusIPiHalf, nullptr), edgeOne}
     }));
@@ -601,7 +600,7 @@ QMDDGate gate::ECR() {
         {QMDDEdge(-i, nullptr), edgeOne}
     }));
 
-    return QMDDGate(QMDDEdge(1.0 / sqrt(2.0), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+    return QMDDGate(QMDDEdge(1.0 / M_SQRT2, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
         {edgeZero, ecrEdge1},
         {ecrEdge2, edgeZero}
     })));
@@ -688,7 +687,7 @@ QMDDGate gate::M() {
         {edgeZero, edgeZero}
     }));
 
-    return QMDDGate(QMDDEdge(1.0 / sqrt(2.0), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+    return QMDDGate(QMDDEdge(1.0 / M_SQRT2, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
         {mEdge1, mEdge2},
         {mEdge3, mEdge4}
     })));

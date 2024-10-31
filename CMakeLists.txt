@@ -31,10 +31,9 @@ find_package(yaml-cpp REQUIRED)
 find_package(OpenMP REQUIRED)
 find_package(Boost REQUIRED COMPONENTS fiber context)
 
-
 # GNUライブラリのインクルードとリンク
-find_package(GSL REQUIRED)  # GSLライブラリの例
-find_library(GMP_LIB gmp)   # GMPライブラリの例
+find_package(GSL REQUIRED)
+find_library(GMP_LIB gmp)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
@@ -42,7 +41,7 @@ set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}
 
 # インクルードディレクトリとリンクディレクトリを追加
 include_directories(${YAML_CPP_INCLUDE_DIR} ${LIBOMP_INCLUDE_DIR})
-link_directories(${YAML_CPP_LIB_DIR} ${LIBOMP_LIB_DIR} )
+link_directories(${YAML_CPP_LIB_DIR} ${LIBOMP_LIB_DIR})
 
 # 出力ディレクトリを親ディレクトリに設定
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/libs/__pycache__)
@@ -55,6 +54,7 @@ file(GLOB SOURCES "src/models/*.cpp" "src/common/*.cpp")
 
 # 通常のC++実行ファイルを追加
 add_executable(qmdd_sim main.cpp ${SOURCES})
+target_include_directories(qmdd_sim PRIVATE ${GSL_INCLUDE_DIRS})
 target_link_libraries(qmdd_sim PRIVATE yaml-cpp Python3::Python OpenMP::OpenMP_CXX Boost::fiber Boost::context GSL::gsl ${GMP_LIB})
 
 # make run ターゲットの追加
