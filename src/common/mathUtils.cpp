@@ -4,14 +4,14 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1) {
     OperationCache& cache = OperationCache::getInstance();
     UniqueTable& table = UniqueTable::getInstance();
     size_t operationCacheKey = calculation::generateOperationCacheKey(make_tuple(e0, OperationType::MUL, e1));
-    cout << "Operation cache key: " << operationCacheKey << endl;
+    // cout << "Operation cache key: " << operationCacheKey << endl;
     auto existingAnswer = cache.find(operationCacheKey);
     if (existingAnswer != OperationResult{.0, 0}) {
-        cout << "\033[1;36mCache hit!\033[0m" << endl;
+        // cout << "\033[1;36mCache hit!\033[0m" << endl;
         return QMDDEdge(existingAnswer.first, existingAnswer.second);
     }
     else {
-        cout << "\033[1;35mCache miss!\033[0m" << endl;
+        // cout << "\033[1;35mCache miss!\033[0m" << endl;
         shared_ptr<QMDDNode> n0 = table.find(e0.uniqueTableKey);
         shared_ptr<QMDDNode> n1 = table.find(e1.uniqueTableKey);
 
@@ -48,7 +48,7 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1) {
                     z[i][j].weight /= tmpWeight;
                 } else {
                     if (z[i][j].weight != .0) {
-                        cout << "⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️" << endl;
+                        // cout << "⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️" << endl;
                     }
                 }
 
@@ -65,14 +65,14 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1) {
     OperationCache& cache = OperationCache::getInstance();
     UniqueTable& table = UniqueTable::getInstance();
     size_t operationCacheKey = calculation::generateOperationCacheKey(make_tuple(e0, OperationType::ADD, e1));
-    cout << "Operation cache key: " << operationCacheKey << endl;
+    // cout << "Operation cache key: " << operationCacheKey << endl;
     auto existingAnswer = cache.find(operationCacheKey);
     if (existingAnswer != OperationResult{.0, 0}) {
-        cout << "\033[1;36mCache hit!\033[0m" << endl;
+        // cout << "\033[1;36mCache hit!\033[0m" << endl;
         return QMDDEdge(existingAnswer.first, existingAnswer.second);
     }
     else {
-        cout << "\033[1;35mCache miss!\033[0m" << endl;
+        // cout << "\033[1;35mCache miss!\033[0m" << endl;
         shared_ptr<QMDDNode> n0 = table.find(e0.uniqueTableKey);
         shared_ptr<QMDDNode> n1 = table.find(e1.uniqueTableKey);
         QMDDEdge* e0Copy = const_cast<QMDDEdge*>(&e0);
@@ -105,7 +105,7 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1) {
                     z[i][j].weight /= tmpWeight;
                 } else {
                     if (z[i][j].weight != .0) {
-                        cout << "⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️" << endl;
+                        // cout << "⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️" << endl;
                     }
                 }
 
@@ -121,14 +121,14 @@ QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1) {
     OperationCache& cache = OperationCache::getInstance();
     UniqueTable& table = UniqueTable::getInstance();
     size_t operationCacheKey = calculation::generateOperationCacheKey(make_tuple(e0, OperationType::KRONECKER, e1));
-    cout << "Operation cache key: " << operationCacheKey << endl;
+    // cout << "Operation cache key: " << operationCacheKey << endl;
     auto existingAnswer = cache.find(operationCacheKey);
     if (existingAnswer != OperationResult{.0, 0}) {
-        cout << "\033[1;36mCache hit!\033[0m" << endl;
+        // cout << "\033[1;36mCache hit!\033[0m" << endl;
         return QMDDEdge(existingAnswer.first, existingAnswer.second);
     }
     else {
-        cout << "\033[1;35mCache miss!\033[0m" << endl;
+        // cout << "\033[1;35mCache miss!\033[0m" << endl;
         shared_ptr<QMDDNode> n0 = table.find(e0.uniqueTableKey);
         shared_ptr<QMDDNode> n1 = table.find(e1.uniqueTableKey);
         QMDDEdge* e0Copy = const_cast<QMDDEdge*>(&e0);
@@ -155,7 +155,7 @@ QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1) {
                     z[i][j].weight /= tmpWeight;
                 } else {
                     if (z[i][j].weight != .0) {
-                        cout << "⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️" << endl;
+                        // cout << "⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️" << endl;
                     }
                 }
 

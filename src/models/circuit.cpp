@@ -127,9 +127,7 @@ void QuantumCircuit::addCX(int controlIndex, int targetIndex) {
         gateQueue.push(gate::CX2());
     }else {
         int minIndex = min(controlIndex, targetIndex);
-        cout << "minIndex: " << minIndex << endl;
         int maxIndex = max(controlIndex, targetIndex);
-        cout << "maxIndex: " << maxIndex << endl;
         array<QMDDEdge, 2> partialCX;
         if (minIndex == controlIndex) {
             partialCX[0] = braketZero;
