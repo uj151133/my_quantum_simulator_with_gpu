@@ -268,16 +268,34 @@ QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1) {
     }
 }
 
+double mathUtils::csc(const double theta) {
+    double sin_theta = sin(theta);
+    if (sin_theta == .0) throw overflow_error("csc(θ) is undefined (sin(θ) = 0)");
+    return 1.0 / sin_theta;
+}
+
 complex<double> mathUtils::csc(const complex<double> theta) {
     complex<double> sin_theta = sin(theta);
     if (sin_theta == .0) throw overflow_error("csc(θ) is undefined (sin(θ) = 0)");
     return 1.0 / sin_theta;
 }
 
+double mathUtils::sec(const double theta) {
+    double cos_theta = cos(theta);
+    if (cos_theta == .0) throw overflow_error("sec(θ) is undefined (cos(θ) = 0)");
+    return 1.0 / cos_theta;
+}
+
 complex<double> mathUtils::sec(const complex<double> theta) {
     complex<double> cos_theta = cos(theta);
     if (cos_theta == .0) throw overflow_error("sec(θ) is undefined (cos(θ) = 0)");
     return 1.0 / cos_theta;
+}
+
+double mathUtils::cot(const double theta) {
+    double tan_theta = tan(theta);
+    if (tan_theta == .0) throw overflow_error("cot(θ) is undefined (tan(θ) = 0)");
+    return 1.0 / tan_theta;
 }
 
 complex<double> mathUtils::cot(const complex<double> theta) {
