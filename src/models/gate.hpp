@@ -6,7 +6,7 @@
 #include "../common/mathUtils.hpp"
 #include <Eigen/Dense>
 #include <iostream>
-
+#include <gsl/gsl_sf_bessel.h>
 using namespace std;
 using namespace Eigen;
 namespace gate {
