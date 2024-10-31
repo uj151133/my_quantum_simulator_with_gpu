@@ -48,8 +48,8 @@ find_package(OpenMP REQUIRED)
 find_package(Boost REQUIRED COMPONENTS fiber context)
 
 # GNUライブラリのインクルードとリンク
-find_package(GSL REQUIRED)  # GSLライブラリの例
-find_library(GMP_LIB gmp)   # GMPライブラリの例
+find_package(GSL REQUIRED)
+find_library(GMP_LIB gmp)
 
 # SIMD最適化フラグの設定
 # if(CMAKE_SYSTEM_PROCESSOR MATCHES "(x86_64|AMD64)")
@@ -83,6 +83,7 @@ file(GLOB SOURCES "src/models/*.cpp" "src/common/*.cpp")
 
 # 通常のC++実行ファイルを追加
 add_executable(qmdd_sim main.cpp ${SOURCES})
+target_include_directories(qmdd_sim PRIVATE ${GSL_INCLUDE_DIRS})
 
 # 実行ファイルにリンクするライブラリを指定
 target_link_libraries(qmdd_sim PRIVATE 
