@@ -22,7 +22,7 @@ QMDDGate gate::X() {
 }
 
 // const QMDDGate gate::PLUS_X_GATE = [] {
-//     complex<double> plusXWeight = 1 / sqrt(2.0);
+//     complex<double> plusXWeight = 1 / M_SQRT2;
 //     QMDDEdge plusXNode = make_shared<QMDDNode>(4);
 
 //     plusXNode->children[0] = QMDDEdge(1, nullptr);
@@ -35,7 +35,7 @@ QMDDGate gate::X() {
 // }();
 
 // const QMDDGate gate::MINUS_X_GATE = [] {
-//     complex<double> minusXWeight = 1 / sqrt(2.0);
+//     complex<double> minusXWeight = 1 / M_SQRT2;
 //     QMDDEdge minusXNode = make_shared<QMDDNode>(4);
 
 //     minusXNode->children[0] = QMDDEdge(1, nullptr);
@@ -55,7 +55,7 @@ QMDDGate gate::Y() {
 }
 
 // QMDDGate createPlusYGate() {
-//     complex<double> plusYWeight = 1 / sqrt(2.0);
+//     complex<double> plusYWeight = 1 / M_SQRT2;
 //     QMDDNode* plusYNode = new QMDDNode(4);
 
 //     plusYNode->children[0] = QMDDEdge(1, nullptr);
@@ -68,7 +68,7 @@ QMDDGate gate::Y() {
 // }
 
 // QMDDGate createMinusYGate() {
-//     complex<double> minusYWeight = 1 / sqrt(2.0);
+//     complex<double> minusYWeight = 1 / M_SQRT2;
 //     QMDDNode* minusYNode = new QMDDNode(4);
 
 //     minusYNode->children[0] = QMDDEdge(1, nullptr);
@@ -110,7 +110,7 @@ QMDDGate gate::V() {
 }
 
 QMDDGate gate::H() {
-    return QMDDGate(QMDDEdge(1.0 / sqrt(2.0), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+    return QMDDGate(QMDDEdge(1.0 / M_SQRT2, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
         {edgeOne, edgeOne},
         {edgeOne, QMDDEdge(-1.0, nullptr)}
     })));
@@ -347,14 +347,14 @@ QMDDGate gate::P(double phi) {
 QMDDGate gate::T() {
     return QMDDGate(QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
         {edgeOne, edgeZero},
-        {edgeZero, QMDDEdge(exp(i * M_PI / 4.0), nullptr)}
+        {edgeZero, QMDDEdge(exp(i * M_PI_4), nullptr)}
     })));
 }
 
 QMDDGate gate::Tdagger() {
     return QMDDGate(QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
         {edgeOne, edgeZero},
-        {edgeZero, QMDDEdge(exp(-i * M_PI / 4.0), nullptr)}
+        {edgeZero, QMDDEdge(exp(-i * M_PI_4), nullptr)}
     })));
 }
 
@@ -373,16 +373,22 @@ QMDDGate gate::CS() {
 }
 
 QMDDGate gate::Rx(double theta) {
-    return QMDDGate(QMDDEdge(cos(theta / 2.0), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
-        {edgeOne, QMDDEdge(-i * tan(theta / 2.0), nullptr)},
-        {QMDDEdge(-i * tan(theta / 2.0), nullptr), edgeOne}
+    double thetaHalf = theta / 2.0;
+    double tanThetaHalf = tan(thetaHalf);
+
+    return QMDDGate(QMDDEdge(cos(thetaHalf), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+        {edgeOne, QMDDEdge(-i * tanThetaHalf, nullptr)},
+        {QMDDEdge(-i * tanThetaHalf, nullptr), edgeOne}
     })));
 }
 
 QMDDGate gate::Ry(double theta) {
-    return QMDDGate(QMDDEdge(cos(theta / 2.0), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
-        {edgeOne, QMDDEdge(-tan(theta / 2.0), nullptr)},
-        {QMDDEdge(tan(theta / 2.0), nullptr), edgeOne}
+    double thetaHalf = theta / 2.0;
+    double tanThetaHalf = tan(thetaHalf);
+
+    return QMDDGate(QMDDEdge(cos(thetaHalf), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+        {edgeOne, QMDDEdge(-tanThetaHalf, nullptr)},
+        {QMDDEdge(tanThetaHalf, nullptr), edgeOne}
     })));
 }
 
@@ -394,16 +400,22 @@ QMDDGate gate::Rz(double theta) {
 }
 
 QMDDGate gate::Rxx(double phi) {
-    return QMDDGate(QMDDEdge(cos(phi / 2.0), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
-        {gate::I().getInitialEdge(), QMDDEdge(-i * tan(phi / 2.0), make_shared<QMDDNode>(*gate::X().getStartNode()))},
-        {QMDDEdge(-i * tan(phi / 2.0), make_shared<QMDDNode>(*gate::X().getStartNode())), gate::I().getInitialEdge()}
+    double phiHalf = phi / 2.0;
+    double tanPhiHalf = tan(phiHalf);
+
+    return QMDDGate(QMDDEdge(cos(phiHalf), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+        {gate::I().getInitialEdge(), QMDDEdge(-i * tanPhiHalf, make_shared<QMDDNode>(*gate::X().getStartNode()))},
+        {QMDDEdge(-i * tanPhiHalf, make_shared<QMDDNode>(*gate::X().getStartNode())), gate::I().getInitialEdge()}
     })));
 }
 
 QMDDGate gate::Ryy(double phi) {
-    return QMDDGate(QMDDEdge(cos(phi / 2.0), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
-        {gate::I().getInitialEdge(), QMDDEdge(i * tan(phi / 2.0), make_shared<QMDDNode>(*gate::Y().getStartNode()))},
-        {QMDDEdge(-i * tan(phi / 2.0), make_shared<QMDDNode>(*gate::Y().getStartNode())), gate::I().getInitialEdge()}
+    double phiHalf = phi / 2.0;
+    double tanPhiHalf = tan(phiHalf);
+
+    return QMDDGate(QMDDEdge(cos(phiHalf), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+        {gate::I().getInitialEdge(), QMDDEdge(i * tanPhiHalf, make_shared<QMDDNode>(*gate::Y().getStartNode()))},
+        {QMDDEdge(-i * tanPhiHalf, make_shared<QMDDNode>(*gate::Y().getStartNode())), gate::I().getInitialEdge()}
     })));
 }
 
@@ -415,6 +427,9 @@ QMDDGate gate::Rzz(double phi) {
 }
 
 QMDDGate gate::Rxy(double phi) {
+    double phiHalf = phi / 2.0;
+    double sinPhiHalf = sin(phiHalf);
+    double cosPhiHalf = cos(phiHalf);
 
     boost::fibers::use_scheduling_algorithm<CustomScheduler>();
 
@@ -424,31 +439,31 @@ QMDDGate gate::Rxy(double phi) {
     boost::fibers::future<QMDDEdge> future3 = promise3.get_future();
     boost::fibers::future<QMDDEdge> future4 = promise4.get_future();
 
-    boost::fibers::fiber([&promise1, phi]() {
+    boost::fibers::fiber([&promise1, cosPhiHalf]() {
         promise1.set_value(QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
             {edgeOne, edgeZero},
-            {edgeZero, QMDDEdge(cos(phi / 2.0), nullptr)}
+            {edgeZero, QMDDEdge(cosPhiHalf, nullptr)}
         })));
     }).detach();
 
-    boost::fibers::fiber([&promise2, phi]() {
-        promise2.set_value(QMDDEdge(-i * sin(phi / 2.0), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+    boost::fibers::fiber([&promise2, sinPhiHalf]() {
+        promise2.set_value(QMDDEdge(-i * sinPhiHalf, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
             {edgeZero, edgeZero},
             {edgeOne, edgeZero}
         })));
     }).detach();
 
-    boost::fibers::fiber([&promise3, phi]() {
-        promise3.set_value(QMDDEdge(-i * sin(phi / 2.0), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+    boost::fibers::fiber([&promise3, sinPhiHalf]() {
+        promise3.set_value(QMDDEdge(-i * sinPhiHalf, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
             {edgeZero, edgeOne},
             {edgeZero, edgeZero}
         })));
     }).detach();
 
-    boost::fibers::fiber([&promise4, phi]() {
-        promise4.set_value(QMDDEdge(cos(phi / 2.0), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+    boost::fibers::fiber([&promise4, phiHalf, cosPhiHalf]() {
+        promise4.set_value(QMDDEdge(cosPhiHalf, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
             {edgeOne, edgeZero},
-            {edgeZero, QMDDEdge(1.0 * mathUtils::sec(phi / 2.0), nullptr)}
+            {edgeZero, QMDDEdge(1.0 * mathUtils::sec(phiHalf), nullptr)}
         })));
     }).detach();
 
@@ -535,28 +550,28 @@ QMDDGate gate::SquareiSWAP() {
     boost::fibers::fiber([&promise1]() {
         promise1.set_value(QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
             {edgeOne, edgeZero},
-            {edgeZero, QMDDEdge(1.0 / sqrt(2.0), nullptr)}
+            {edgeZero, QMDDEdge(1.0 / M_SQRT2, nullptr)}
         })));
     }).detach();
 
     boost::fibers::fiber([&promise2]() {
-        promise2.set_value(QMDDEdge(i / sqrt(2.0), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+        promise2.set_value(QMDDEdge(i / M_SQRT2, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
             {edgeZero, edgeZero},
             {edgeOne, edgeZero}
         })));
     }).detach();
 
     boost::fibers::fiber([&promise3]() {
-        promise3.set_value(QMDDEdge(i / sqrt(2.0), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+        promise3.set_value(QMDDEdge(i / M_SQRT2, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
             {edgeZero, edgeOne},
             {edgeZero, edgeZero}
         })));
     }).detach();
 
     boost::fibers::fiber([&promise4]() {
-        promise4.set_value(QMDDEdge(1.0 / sqrt(2.0), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+        promise4.set_value(QMDDEdge(1.0 / M_SQRT2, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
             {edgeOne, edgeZero},
-            {edgeZero, QMDDEdge(sqrt(2.0), nullptr)}
+            {edgeZero, QMDDEdge(M_SQRT2, nullptr)}
         })));
     }).detach();
 
@@ -577,6 +592,7 @@ QMDDGate gate::SquareiSWAP() {
 }
 
 QMDDGate gate::SWAPalpha(double alpha) {
+    complex<double> expIPiAlpha = exp(i * M_PI * alpha);
 
     boost::fibers::use_scheduling_algorithm<CustomScheduler>();
 
@@ -586,31 +602,31 @@ QMDDGate gate::SWAPalpha(double alpha) {
     boost::fibers::future<QMDDEdge> future3 = promise3.get_future();
     boost::fibers::future<QMDDEdge> future4 = promise4.get_future();
 
-    boost::fibers::fiber([&promise1, alpha]() {
+    boost::fibers::fiber([&promise1, expIPiAlpha]() {
         promise1.set_value(QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
             {edgeOne, edgeZero},
-            {edgeZero, QMDDEdge((1.0 + exp(i * M_PI * alpha)) / 2.0, nullptr)}
+            {edgeZero, QMDDEdge((1.0 + expIPiAlpha) / 2.0, nullptr)}
         })));
     }).detach();
 
-    boost::fibers::fiber([&promise2]() {
-        promise2.set_value(QMDDEdge((1.0 - exp(i * M_PI * alpha)) / 2.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+    boost::fibers::fiber([&promise2, expIPiAlpha]() {
+        promise2.set_value(QMDDEdge((1.0 - expIPiAlpha) / 2.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
             {edgeZero, edgeZero},
             {edgeOne, edgeZero}
         })));
     }).detach();
 
-    boost::fibers::fiber([&promise3]() {
-        promise3.set_value(QMDDEdge((1.0 - exp(i * M_PI * alpha)) / 2.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+    boost::fibers::fiber([&promise3, expIPiAlpha]() {
+        promise3.set_value(QMDDEdge((1.0 - expIPiAlpha) / 2.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
             {edgeZero, edgeOne},
             {edgeZero, edgeZero}
         })));
     }).detach();
 
-    boost::fibers::fiber([&promise4, alpha]() {
-        promise4.set_value(QMDDEdge((1.0 + exp(i * M_PI * alpha)) / 2.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+    boost::fibers::fiber([&promise4, expIPiAlpha]() {
+        promise4.set_value(QMDDEdge((1.0 + expIPiAlpha) / 2.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
             {edgeOne, edgeZero},
-            {edgeZero, QMDDEdge(2.0 / (1.0 + exp(i * M_PI * alpha)), nullptr)}
+            {edgeZero, QMDDEdge(2.0 / (1.0 + expIPiAlpha), nullptr)}
         })));
     }).detach();
 
@@ -643,16 +659,21 @@ QMDDGate gate::FREDKIN() {
 }
 
 QMDDGate gate::U(double theta, double phi, double lambda) {
-    return QMDDGate(QMDDEdge(cos(theta / 2.0), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
-        {edgeOne, QMDDEdge(-exp(i * lambda) * tan(theta / 2.0), nullptr)},
-        {QMDDEdge(exp(i * phi) * tan(theta / 2.0), nullptr), QMDDEdge(exp(i * (lambda + phi)), nullptr)}
+    double thetaHalf = theta / 2.0;
+    double tanThetaHalf = tan(thetaHalf);
+
+    return QMDDGate(QMDDEdge(cos(thetaHalf), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+        {edgeOne, QMDDEdge(-exp(i * lambda) * tanThetaHalf, nullptr)},
+        {QMDDEdge(exp(i * phi) * tanThetaHalf, nullptr), QMDDEdge(exp(i * (lambda + phi)), nullptr)}
     })));
 }
 
 QMDDGate gate::BARENCO(double alpha, double phi, double theta) {
+    double tanTheta = tan(theta);
+
     QMDDEdge barencoEdge1 = QMDDEdge(exp(i * alpha) * cos(theta), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
-        {edgeOne, QMDDEdge(-i * exp(-i * phi) * tan(theta), nullptr)},
-        {QMDDEdge(-i * exp(i * phi) * tan(theta), nullptr), edgeOne}
+        {edgeOne, QMDDEdge(-i * exp(-i * phi) * tanTheta, nullptr)},
+        {QMDDEdge(-i * exp(i * phi) * tanTheta, nullptr), edgeOne}
     }));
 
     return QMDDGate(QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
@@ -662,6 +683,11 @@ QMDDGate gate::BARENCO(double alpha, double phi, double theta) {
 }
 
 QMDDGate gate::B() {
+    double oneEighthPi = M_PI / 8.0;
+    double threeEighthsPi = 3.0 * oneEighthPi;
+    double sinThreeEighthsPi = sin(threeEighthsPi);
+    double cosThreeEighthsPi = cos(threeEighthsPi);
+    double cosOneEighthPi = cos(oneEighthPi);
 
     boost::fibers::use_scheduling_algorithm<CustomScheduler>();
 
@@ -671,31 +697,31 @@ QMDDGate gate::B() {
     boost::fibers::future<QMDDEdge> future3 = promise3.get_future();
     boost::fibers::future<QMDDEdge> future4 = promise4.get_future();
 
-    boost::fibers::fiber([&promise1]() {
+    boost::fibers::fiber([&promise1, oneEighthPi, cosThreeEighthsPi]() {
         promise1.set_value(QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
             {edgeOne, edgeZero},
-            {edgeZero, QMDDEdge(cos(3.0 * M_PI / 8.0) * mathUtils::sec(M_PI / 8.0), nullptr)}
+            {edgeZero, QMDDEdge(cosThreeEighthsPi * mathUtils::sec(oneEighthPi), nullptr)}
         })));
     }).detach();
 
-    boost::fibers::fiber([&promise2]() {
-        promise2.set_value(QMDDEdge(i * tan(M_PI / 8.0), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+    boost::fibers::fiber([&promise2, oneEighthPi, sinThreeEighthsPi]() {
+        promise2.set_value(QMDDEdge(i * tan(oneEighthPi), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
             {edgeZero, edgeOne},
-            {QMDDEdge(sin(3.0 * M_PI / 8.0) * mathUtils::csc(M_PI / 8.0), nullptr), edgeZero}
+            {QMDDEdge(sinThreeEighthsPi * mathUtils::csc(oneEighthPi), nullptr), edgeZero}
         })));
     }).detach();
 
-    boost::fibers::fiber([&promise3]() {
-        promise3.set_value(QMDDEdge(i * sin(3.0 * M_PI / 8.0) / cos(M_PI / 8.0), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+    boost::fibers::fiber([&promise3, oneEighthPi, threeEighthsPi, sinThreeEighthsPi, cosOneEighthPi]() {
+        promise3.set_value(QMDDEdge(i * sinThreeEighthsPi / cosOneEighthPi, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
             {edgeZero, edgeOne},
-            {QMDDEdge(sin(M_PI / 8.0) * mathUtils::csc(3.0 * M_PI / 8.0), nullptr), edgeZero}
+            {QMDDEdge(sin(oneEighthPi) * mathUtils::csc(threeEighthsPi), nullptr), edgeZero}
         })));
     }).detach();
 
-    boost::fibers::fiber([&promise4]() {
-        promise4.set_value(QMDDEdge(cos(3.0 * M_PI / 8.0) / cos(M_PI / 8.0), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+    boost::fibers::fiber([&promise4, threeEighthsPi, cosOneEighthPi, cosThreeEighthsPi]() {
+        promise4.set_value(QMDDEdge(cosThreeEighthsPi / cosOneEighthPi, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
             {edgeOne, edgeZero},
-            {edgeZero, QMDDEdge(cos(M_PI / 8.0) * mathUtils::sec(3.0 * M_PI / 8.0), nullptr)}
+            {edgeZero, QMDDEdge(cosOneEighthPi * mathUtils::sec(threeEighthsPi), nullptr)}
         })));
     }).detach();
 
@@ -709,16 +735,18 @@ QMDDGate gate::B() {
     QMDDEdge bEdge3 = future3.get();
     QMDDEdge bEdge4 = future4.get();
 
-    return QMDDGate(QMDDEdge(cos(M_PI / 8.0), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+    return QMDDGate(QMDDEdge(cosOneEighthPi, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
         { bEdge1, bEdge2},
         { bEdge3, bEdge4}
     })));
 }
 
 QMDDGate gate::CSX() {
-    QMDDEdge csxEdge1 = QMDDEdge(exp(i * M_PI / 4.0), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
-        {edgeOne, QMDDEdge(exp(-i * M_PI / 2.0), nullptr)},
-        {QMDDEdge(exp(-i * M_PI / 2.0), nullptr), edgeOne}
+    complex<double> expMinusIPiHalf = exp(i * M_PI_4);
+
+    QMDDEdge csxEdge1 = QMDDEdge(exp(i * M_PI_4), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+        {edgeOne, QMDDEdge(expMinusIPiHalf, nullptr)},
+        {QMDDEdge(expMinusIPiHalf, nullptr), edgeOne}
     }));
 
     return QMDDGate(QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
@@ -728,6 +756,11 @@ QMDDGate gate::CSX() {
 }
 
 QMDDGate gate::N(double a, double b, double c) {
+    double cosAPlusB = cos(a + b);
+    double cosAMinusB = cos(a - b);
+    double secAMinusB = mathUtils::sec(a - b);
+    complex<double> exp2IC = exp(2.0 * i * c);
+    complex<double> expMinus2IC = exp(-2.0 * i * c);
 
     boost::fibers::use_scheduling_algorithm<CustomScheduler>();
 
@@ -737,31 +770,31 @@ QMDDGate gate::N(double a, double b, double c) {
     boost::fibers::future<QMDDEdge> future3 = promise3.get_future();
     boost::fibers::future<QMDDEdge> future4 = promise4.get_future();
 
-    boost::fibers::fiber([&promise1, a, b, c]() {
+    boost::fibers::fiber([&promise1, cosAPlusB, secAMinusB, expMinus2IC]() {
         promise1.set_value(QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
             {edgeOne, edgeZero},
-            {edgeZero, QMDDEdge(exp(-2.0 * i * c) * cos(a + b) * mathUtils::sec(a - b), nullptr)}
+            {edgeZero, QMDDEdge(expMinus2IC * cosAPlusB * secAMinusB, nullptr)}
         })));
     }).detach();
 
-    boost::fibers::fiber([&promise2, a, b, c]() {
+    boost::fibers::fiber([&promise2, a, b, expMinus2IC]() {
         promise2.set_value(QMDDEdge(i * tan(a - b), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
             {edgeZero, edgeOne},
-            {QMDDEdge(exp(-2.0 * i * c) * sin(a + b) * mathUtils::csc(a - b), nullptr), edgeZero}
+            {QMDDEdge(expMinus2IC * sin(a + b) * mathUtils::csc(a - b), nullptr), edgeZero}
         })));
     }).detach();
 
-    boost::fibers::fiber([&promise3, a, b, c]() {
-        promise3.set_value(QMDDEdge(i * exp(-2.0 * i * c) * sin(a + b) * mathUtils::sec(a - b), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+    boost::fibers::fiber([&promise3, a, b, secAMinusB, exp2IC, expMinus2IC]() {
+        promise3.set_value(QMDDEdge(i * expMinus2IC * sin(a + b) * secAMinusB, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
             {edgeZero, edgeOne},
-            {QMDDEdge(exp(2.0 * i * c) * sin(a - b) * mathUtils::csc(a + b), nullptr), edgeZero}
+            {QMDDEdge(exp2IC * sin(a - b) * mathUtils::csc(a + b), nullptr), edgeZero}
         })));
     }).detach();
 
-    boost::fibers::fiber([&promise4, a, b, c]() {
-        promise4.set_value(QMDDEdge(exp(-2.0 * i * c) * cos(a + b) * mathUtils::sec(a - b), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+    boost::fibers::fiber([&promise4, a, b, cosAPlusB, cosAMinusB, secAMinusB, exp2IC, expMinus2IC]() {
+        promise4.set_value(QMDDEdge(expMinus2IC * cosAPlusB * secAMinusB, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
             {edgeOne, edgeZero},
-            {edgeZero, QMDDEdge(exp(2.0 * i * c) * cos(a - b) * mathUtils::sec(a + b), nullptr)}
+            {edgeZero, QMDDEdge(exp2IC * cosAMinusB * mathUtils::sec(a + b), nullptr)}
         })));
     }).detach();
 
@@ -775,13 +808,16 @@ QMDDGate gate::N(double a, double b, double c) {
     QMDDEdge nEdge3 = future3.get();
     QMDDEdge nEdge4 = future4.get();
 
-    return QMDDGate(QMDDEdge(exp(i * c) * cos(a - b), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+    return QMDDGate(QMDDEdge(exp(i * c) * cosAMinusB, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
         {nEdge1, nEdge2},
         {nEdge3, nEdge4}
     })));
 }
 
 QMDDGate gate::DB() {
+    double threeEighthsPi = 3.0 * M_PI / 8.0;
+    double sinThreeEighthsPi = sin(threeEighthsPi);
+    double cosThreeEighthsPi = cos(threeEighthsPi);
 
     boost::fibers::use_scheduling_algorithm<CustomScheduler>();
 
@@ -791,31 +827,31 @@ QMDDGate gate::DB() {
     boost::fibers::future<QMDDEdge> future3 = promise3.get_future();
     boost::fibers::future<QMDDEdge> future4 = promise4.get_future();
 
-    boost::fibers::fiber([&promise1]() {
+    boost::fibers::fiber([&promise1, cosThreeEighthsPi]() {
         promise1.set_value(QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
             {edgeOne, edgeZero},
-            {edgeZero, QMDDEdge(cos(3.0 * M_PI / 8.0), nullptr)}
+            {edgeZero, QMDDEdge(cosThreeEighthsPi, nullptr)}
         })));
     }).detach();
 
-    boost::fibers::fiber([&promise2]() {
-        promise2.set_value(QMDDEdge(-i * sin(3.0 * M_PI / 8.0), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+    boost::fibers::fiber([&promise2, sinThreeEighthsPi]() {
+        promise2.set_value(QMDDEdge(-i * sinThreeEighthsPi, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
             {edgeZero, edgeZero},
             {edgeOne, edgeZero}
         })));
     }).detach();
 
-    boost::fibers::fiber([&promise3]() {
-        promise3.set_value(QMDDEdge(-i * sin(3.0 * M_PI / 8.0), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+    boost::fibers::fiber([&promise3, sinThreeEighthsPi]() {
+        promise3.set_value(QMDDEdge(-i * sinThreeEighthsPi, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
             {edgeZero, edgeOne},
             {edgeZero, edgeZero}
         })));
     }).detach();
 
-    boost::fibers::fiber([&promise4]() {
-        promise4.set_value(QMDDEdge(cos(3.0 * M_PI / 8.0), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+    boost::fibers::fiber([&promise4, threeEighthsPi, cosThreeEighthsPi]() {
+        promise4.set_value(QMDDEdge(cosThreeEighthsPi, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
             {edgeOne, edgeZero},
-            {edgeZero, QMDDEdge(1.0 * mathUtils::sec(3.0 * M_PI / 8.0), nullptr)}
+            {edgeZero, QMDDEdge(1.0 * mathUtils::sec(threeEighthsPi), nullptr)}
         })));
     }).detach();
 
@@ -863,13 +899,15 @@ QMDDGate gate::ECR() {
     QMDDEdge ecrEdge1 = future1.get();
     QMDDEdge ecrEdge2 = future2.get();
 
-    return QMDDGate(QMDDEdge(1.0 / sqrt(2.0), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+    return QMDDGate(QMDDEdge(1.0 / M_SQRT2, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
         {edgeZero, ecrEdge1},
         {ecrEdge2, edgeZero}
     })));
 }
 
 QMDDGate gate::fSim(double theta, double phi) {
+    double sinTheta = sin(theta);
+    double cosTheta = cos(theta);
 
     boost::fibers::use_scheduling_algorithm<CustomScheduler>();
 
@@ -879,29 +917,29 @@ QMDDGate gate::fSim(double theta, double phi) {
     boost::fibers::future<QMDDEdge> future3 = promise3.get_future();
     boost::fibers::future<QMDDEdge> future4 = promise4.get_future();
 
-    boost::fibers::fiber([&promise1, theta]() {
+    boost::fibers::fiber([&promise1, cosTheta]() {
         promise1.set_value(QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
             {edgeOne, edgeZero},
-            {edgeZero, QMDDEdge(cos(theta), nullptr)}
+            {edgeZero, QMDDEdge(cosTheta, nullptr)}
         })));
     }).detach();
 
-    boost::fibers::fiber([&promise2, theta]() {
-        promise2.set_value(QMDDEdge(-i * sin(theta), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+    boost::fibers::fiber([&promise2, sinTheta]() {
+        promise2.set_value(QMDDEdge(-i * sinTheta, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
             {edgeZero, edgeZero},
             {edgeOne, edgeZero}
         })));
     }).detach();
 
-    boost::fibers::fiber([&promise3, theta]() {
-        promise3.set_value(QMDDEdge(-i * sin(theta), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+    boost::fibers::fiber([&promise3, sinTheta]() {
+        promise3.set_value(QMDDEdge(-i * sinTheta, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
             {edgeZero, edgeOne},
             {edgeZero, edgeZero}
         })));
     }).detach();
 
-    boost::fibers::fiber([&promise4, phi, theta]() {
-        promise4.set_value(QMDDEdge(cos(theta), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+    boost::fibers::fiber([&promise4, phi, theta, cosTheta]() {
+        promise4.set_value(QMDDEdge(cosTheta, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
             {edgeOne, edgeZero},
             {edgeZero, QMDDEdge(exp(i * phi) * mathUtils::sec(theta), nullptr)}
         })));
@@ -924,6 +962,8 @@ QMDDGate gate::fSim(double theta, double phi) {
 }
 
 QMDDGate gate::G(double theta) {
+    double sinTheta = sin(theta);
+    double cosTheta = cos(theta);
 
     boost::fibers::use_scheduling_algorithm<CustomScheduler>();
 
@@ -933,29 +973,29 @@ QMDDGate gate::G(double theta) {
     boost::fibers::future<QMDDEdge> future3 = promise3.get_future();
     boost::fibers::future<QMDDEdge> future4 = promise4.get_future();
 
-    boost::fibers::fiber([&promise1, theta]() {
+    boost::fibers::fiber([&promise1, cosTheta]() {
         promise1.set_value(QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
             {edgeOne, edgeZero},
-            {edgeZero, QMDDEdge(cos(theta), nullptr)}
+            {edgeZero, QMDDEdge(cosTheta, nullptr)}
         })));
     }).detach();
 
-    boost::fibers::fiber([&promise2, theta]() {
-        promise2.set_value(QMDDEdge(-sin(theta), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+    boost::fibers::fiber([&promise2, sinTheta]() {
+        promise2.set_value(QMDDEdge(-sinTheta, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
             {edgeZero, edgeZero},
             {edgeOne, edgeZero}
         })));
     }).detach();
 
-    boost::fibers::fiber([&promise3, theta]() {
-        promise3.set_value(QMDDEdge(sin(theta),make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+    boost::fibers::fiber([&promise3, sinTheta]() {
+        promise3.set_value(QMDDEdge(sinTheta,make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
             {edgeZero, edgeOne},
             {edgeZero, edgeZero}
         })));
     }).detach();
 
-    boost::fibers::fiber([&promise4, theta]() {
-        promise4.set_value(QMDDEdge(cos(theta), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+    boost::fibers::fiber([&promise4, cosTheta]() {
+        promise4.set_value(QMDDEdge(cosTheta, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
             {edgeOne, edgeZero},
             {edgeZero, QMDDEdge(1.0 * mathUtils::sec(theta), nullptr)}
         })));
@@ -1025,7 +1065,7 @@ QMDDGate gate::M() {
     QMDDEdge mEdge3 = future3.get();
     QMDDEdge mEdge4 = future4.get();
 
-    return QMDDGate(QMDDEdge(1.0 / sqrt(2.0), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+    return QMDDGate(QMDDEdge(1.0 / M_SQRT2, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
         {mEdge1, mEdge2},
         {mEdge3, mEdge4}
     })));
@@ -1086,6 +1126,14 @@ QMDDGate gate::syc() {
 }
 
 QMDDGate gate::CZS(double theta, double phi, double gamma) {
+    double sinTheta = sin(theta);
+    double sinThetaHalf = sin(theta / 2.0);
+    double cosThetaHalf = cos(theta / 2.0);
+    double powSinThetaHalf = std::pow(sinThetaHalf, 2);
+    double powCosThetaHalf = std::pow(cosThetaHalf, 2);
+    complex<double> expIGamma = exp(i * gamma);
+    complex<double> expIPhi = exp(i * phi);
+    complex<double> expMinusIPhi = exp(-i * phi);
 
     boost::fibers::use_scheduling_algorithm<CustomScheduler>();
 
@@ -1095,31 +1143,31 @@ QMDDGate gate::CZS(double theta, double phi, double gamma) {
     boost::fibers::future<QMDDEdge> future3 = promise3.get_future();
     boost::fibers::future<QMDDEdge> future4 = promise4.get_future();
 
-    boost::fibers::fiber([&promise1, theta, gamma]() {
+    boost::fibers::fiber([&promise1, powSinThetaHalf, powCosThetaHalf, expIGamma]() {
         promise1.set_value(QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
             {edgeOne, edgeZero},
-            {edgeZero, QMDDEdge(-exp(i * gamma) * std::pow(sin(theta / 2.0), 2) + std::pow(cos(theta / 2.0), 2), nullptr)}
+            {edgeZero, QMDDEdge(-expIGamma * powSinThetaHalf + powCosThetaHalf, nullptr)}
         })));
     }).detach();
 
-    boost::fibers::fiber([&promise2, theta, phi, gamma]() {
-        promise2.set_value(QMDDEdge((1.0 + exp(i * gamma)) / 2.0 * exp(-i * phi) * sin(theta), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+    boost::fibers::fiber([&promise2, sinTheta, expMinusIPhi, expIGamma]() {
+        promise2.set_value(QMDDEdge((1.0 + expIGamma) / 2.0 * expMinusIPhi * sinTheta, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
             {edgeZero, edgeZero},
             {edgeOne, edgeZero}
         })));
     }).detach();
 
-    boost::fibers::fiber([&promise3, theta, phi, gamma]() {
-        promise3.set_value(QMDDEdge((1.0 + exp(i * gamma)) / 2.0 * exp(i * phi) * sin(theta), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+    boost::fibers::fiber([&promise3, sinTheta, expIPhi, expIGamma]() {
+        promise3.set_value(QMDDEdge((1.0 + expIGamma) / 2.0 * expIPhi * sinTheta, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
             {edgeZero, edgeOne},
             {edgeZero, edgeZero}
         })));
     }).detach();
 
-    boost::fibers::fiber([&promise4, theta, gamma]() {
-        promise4.set_value(QMDDEdge(-exp(i * gamma) * std::pow(cos(theta / 2.0), 2) + std::pow(sin(theta / 2.0), 2), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+    boost::fibers::fiber([&promise4, powSinThetaHalf, powCosThetaHalf, expIGamma]() {
+        promise4.set_value(QMDDEdge(-expIGamma * powCosThetaHalf + powSinThetaHalf, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
             {edgeOne, edgeZero},
-            {edgeZero, QMDDEdge(-exp(i * gamma) / (-exp(i * gamma) * std::pow(cos(theta / 2.0), 2) + std::pow(sin(theta / 2.0), 2)), nullptr)}
+            {edgeZero, QMDDEdge(-expIGamma / (-expIGamma * powCosThetaHalf + powSinThetaHalf), nullptr)}
         })));
     }).detach();
 
@@ -1140,6 +1188,7 @@ QMDDGate gate::CZS(double theta, double phi, double gamma) {
 }
 
 QMDDGate gate::D(double theta) {
+    double tanTheta = tan(theta);
 
     boost::fibers::use_scheduling_algorithm<CustomScheduler>();
 
@@ -1154,10 +1203,10 @@ QMDDGate gate::D(double theta) {
         })));
     }).detach();
 
-    boost::fibers::fiber([&promise2, theta]() {
+    boost::fibers::fiber([&promise2, tanTheta]() {
         promise2.set_value(QMDDEdge(i * cos(theta), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
-            {edgeOne, QMDDEdge(-i * tan(theta), nullptr)},
-            {QMDDEdge(-i * tan(theta), nullptr), edgeOne}
+            {edgeOne, QMDDEdge(-i * tanTheta, nullptr)},
+            {QMDDEdge(-i * tanTheta, nullptr), edgeOne}
         })));
     }).detach();
 

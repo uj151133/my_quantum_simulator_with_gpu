@@ -17,8 +17,11 @@ namespace mathUtils {
     QMDDEdge add(const QMDDEdge& e0, const QMDDEdge& e1);
     QMDDEdge kron(const QMDDEdge& e0, const QMDDEdge& e1);
 
+    double csc(double theta);
     complex<double> csc(complex<double> theta);
+    double sec(double theta);
     complex<double> sec(complex<double> theta);
+    double cot(double theta);
     complex<double> cot(complex<double> theta);
 
     double sumOfSquares(const vector<complex<double>>& vec);

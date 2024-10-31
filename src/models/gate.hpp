@@ -6,7 +6,7 @@
 #include "../common/mathUtils.hpp"
 #include "../modules/fiber.hpp"
 #include <iostream>
-
+#include <gsl/gsl_sf_bessel.h>
 using namespace std;
 namespace gate {
     /* Identity gate and global phase */
