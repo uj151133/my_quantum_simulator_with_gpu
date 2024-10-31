@@ -560,25 +560,25 @@ QMDDGate gate::N(double a, double b, double c) {
 
 QMDDGate gate::DB() {
     double threeEighthsPi = 3.0 * M_PI / 8.0;
-    double sinThreeEightsPi = sin(threeEighthsPi);
-    double cosThreeEightsPi = cos(threeEighthsPi);
+    double sinThreeEighthsPi = sin(threeEighthsPi);
+    double cosThreeEighthsPi = cos(threeEighthsPi);
 
     QMDDEdge dbEdge1 = QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
         {edgeOne, edgeZero},
-        {edgeZero, QMDDEdge(cosThreeEightsPi, nullptr)}
+        {edgeZero, QMDDEdge(cosThreeEighthsPi, nullptr)}
     }));
 
-    QMDDEdge dbEdge2 = QMDDEdge(-i * sinThreeEightsPi, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+    QMDDEdge dbEdge2 = QMDDEdge(-i * sinThreeEighthsPi, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
         {edgeZero, edgeZero},
         {edgeOne, edgeZero}
     }));
 
-    QMDDEdge dbEdge3 = QMDDEdge(-i * sinThreeEightsPi, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+    QMDDEdge dbEdge3 = QMDDEdge(-i * sinThreeEighthsPi, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
         {edgeZero, edgeOne},
         {edgeZero, edgeZero}
     }));
 
-    QMDDEdge dbEdge4 = QMDDEdge(cosThreeEightsPi, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+    QMDDEdge dbEdge4 = QMDDEdge(cosThreeEighthsPi, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
         {edgeOne, edgeZero},
         {edgeZero, QMDDEdge(1.0 * mathUtils::sec(threeEighthsPi), nullptr)}
     }));
