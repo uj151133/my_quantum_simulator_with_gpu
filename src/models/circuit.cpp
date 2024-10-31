@@ -196,11 +196,7 @@ void QuantumCircuit::addCX(int controlIndex, int targetIndex) {
             partialCX[0] = identityEdge;
             partialCX[1] = gate::X().getInitialEdge();
         }
-        vector<QMDDEdge> edges(numQubits);
-        #pragma omp parallel for
-        for (int i = 0; i < minIndex; i++) {
-            edges[i] = identityEdge;
-        }
+        vector<QMDDEdge> edges(minIndex, identityEdge);
         #pragma omp parallel for ordered
         for (int index = minIndex + 1; index <= maxIndex; index++){
             if (index == controlIndex) {
@@ -241,11 +237,7 @@ void QuantumCircuit::addVarCX(int controlIndex, int targetIndex) {
             partialVarCX[0] = identityEdge;
             partialVarCX[1] = gate::X().getInitialEdge();
         }
-        vector<QMDDEdge> edges(numQubits);
-        #pragma omp parallel for
-        for (int i = 0; i < minIndex; i++) {
-            edges[i] = identityEdge;
-        }
+        vector<QMDDEdge> edges(minIndex, identityEdge);
         #pragma omp parallel for ordered
         for (int index = minIndex + 1; index <= maxIndex; index++){
             if (index == controlIndex) {
@@ -286,11 +278,7 @@ void QuantumCircuit::addCZ(int controlIndex, int targetIndex) {
             partialCZ[0] = identityEdge;
             partialCZ[1] = gate::Z().getInitialEdge();
         }
-        vector<QMDDEdge> edges(numQubits);
-        #pragma omp parallel for
-        for (int i = 0; i < minIndex; i++) {
-            edges[i] = identityEdge;
-        }
+        vector<QMDDEdge> edges(minIndex, identityEdge);
         #pragma omp parallel for ordered
         for (int index = minIndex + 1; index <= maxIndex; index++){
             if (index == controlIndex) {
@@ -492,11 +480,7 @@ void QuantumCircuit::addCP(int controlIndex, int targetIndex, double phi) {
             partialCP[0] = identityEdge;
             partialCP[1] = gate::P(phi).getInitialEdge();
         }
-        vector<QMDDEdge> edges(numQubits);
-        #pragma omp parallel for
-        for (int i = 0; i < minIndex; i++) {
-            edges[i] = identityEdge;
-        }
+        vector<QMDDEdge> edges(minIndex, identityEdge);
         for (int index = minIndex + 1; index <= maxIndex; index++){
             if (index == controlIndex) {
                 partialCP[0] = mathUtils::kron(partialCP[0], braketZero);
@@ -536,11 +520,7 @@ void QuantumCircuit::addCS(int controlIndex, int targetIndex) {
             partialCS[0] = identityEdge;
             partialCS[1] = gate::S().getInitialEdge();
         }
-                vector<QMDDEdge> edges(numQubits);
-        #pragma omp parallel for
-        for (int i = 0; i < minIndex; i++) {
-            edges[i] = identityEdge;
-        }
+        vector<QMDDEdge> edges(minIndex, identityEdge);
         for (int index = minIndex + 1; index <= maxIndex; index++){
             if (index == controlIndex) {
                 partialCS[0] = mathUtils::kron(partialCS[0], braketZero);
@@ -658,11 +638,7 @@ void QuantumCircuit::addToff(vector<int>& controlIndexes, int targetIndex) {
         sort(controlIndexes.begin(), controlIndexes.end());
         int minIndex = min(*min_element(controlIndexes.begin(), controlIndexes.end()), targetIndex);
         int maxIndex = max(*max_element(controlIndexes.begin(), controlIndexes.end()), targetIndex);
-        vector<QMDDEdge> edges(numQubits);
-        #pragma omp parallel for
-        for (int i = 0; i < minIndex; i++) {
-            edges[i] = identityEdge;
-        }
+        vector<QMDDEdge> edges(minIndex, identityEdge);
         vector<QMDDEdge> partialToff(controlIndexes.size() + 1, identityEdge);
         for (int i = minIndex; i <= maxIndex; i++) {
             if (i == targetIndex) {
