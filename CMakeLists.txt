@@ -75,11 +75,8 @@ link_directories(${YAML_CPP_LIB_DIR} ${LIBOMP_LIB_DIR})
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/libs/__pycache__)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
 
-# modelsディレクトリをincludeディレクトリとして設定
 include_directories(src)
-
-# ソースファイルの探索
-file(GLOB SOURCES "src/models/*.cpp" "src/common/*.cpp")
+file(GLOB SOURCES "src/models/*.cpp" "src/common/*.cpp" "src/test/ham3tc/*.cpp")
 
 # 通常のC++実行ファイルを追加
 add_executable(qmdd_sim main.cpp ${SOURCES})
