@@ -1,11 +1,17 @@
-#ifndef CONSTANT_HPP
-#define CONSTANT_HPP
-
+#pragma once
+// #ifndef CONSTANT_HPP
+// #define CONSTANT_HPP
+#include <complex>
+#include <mutex>
 #include "../models/qmdd.hpp"
+
 using namespace std;
 
-static complex<double> i(0.0, 1.0);
-static const QMDDEdge edgeZero(.0, nullptr);
-static const QMDDEdge edgeOne(1.0, nullptr);
+extern complex<double> i;
+extern QMDDEdge edgeZero;
+extern QMDDEdge edgeOne;
+extern once_flag initFlag;
 
-#endif
+void init();
+
+// #endif
