@@ -9,8 +9,10 @@
 #include "gate.hpp"
 #include "state.hpp"
 #include "../common/mathUtils.hpp"
+// #include "../common/constant.hpp"
 
 using namespace std;
+
 
 class QuantumCircuit {
 private:
@@ -85,7 +87,7 @@ public:
 template <typename T>
 void printQueue(queue<T> q) {
     while (!q.empty()) {
-        cout << q.front() << " ";
+        cout << "circuit queue: " << q.front() << endl;
         q.pop();
     }
     cout << endl;

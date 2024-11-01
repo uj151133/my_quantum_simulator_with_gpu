@@ -1,12 +1,12 @@
 #ifndef GATE_HPP
 #define GATE_HPP
 
+#include <iostream>
+#include <gsl/gsl_sf_bessel.h>
 #include "qmdd.hpp"
 #include "../common/constant.hpp"
 #include "../common/mathUtils.hpp"
 #include "../modules/fiber.hpp"
-#include <iostream>
-#include <gsl/gsl_sf_bessel.h>
 using namespace std;
 namespace gate {
     /* Identity gate and global phase */

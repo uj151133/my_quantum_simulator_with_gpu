@@ -87,6 +87,7 @@
         "fstream": "cpp",
         "list": "cpp",
         "execution": "cpp",
-        "queue": "cpp"
+        "queue": "cpp",
+        "print": "cpp"
     }
 }
