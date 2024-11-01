@@ -78,15 +78,12 @@ struct QMDDNode {
 class QMDDGate{
 private:
     QMDDEdge initialEdge;
-    size_t depth;
 public:
     QMDDGate(QMDDEdge edge, size_t numEdge = 4);
     QMDDGate(const QMDDGate& other) = default;
     ~QMDDGate() = default;
     shared_ptr<QMDDNode> getStartNode() const;
     QMDDEdge getInitialEdge() const;
-    size_t getDepth() const;
-    void calculateDepth();
     QMDDGate& operator=(const QMDDGate& other) = default;
     bool operator==(const QMDDGate& other) const;
     bool operator!=(const QMDDGate& other) const;
@@ -96,15 +93,12 @@ public:
 class QMDDState{
 private:
     QMDDEdge initialEdge;
-    size_t depth;
 public:
     QMDDState(QMDDEdge edge);
     QMDDState(const QMDDState& other) = default;
     ~QMDDState() = default;
     shared_ptr<QMDDNode> getStartNode() const;
     QMDDEdge getInitialEdge() const;
-    size_t getDepth() const;
-    void calculateDepth();
     vector<complex<double>> getAllElements();
     QMDDState& operator=(const QMDDState& other) = default;
     bool operator==(const QMDDState& other) const;

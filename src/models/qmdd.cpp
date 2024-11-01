@@ -159,21 +159,8 @@ ostream& operator<<(ostream& os, const QMDDNode& node) {
 /////////////////////////////////////
 
 QMDDGate::QMDDGate(QMDDEdge edge, size_t numEdge)
-    : initialEdge(std::move(edge)), depth(0) {
-    calculateDepth();
-}
+    : initialEdge(std::move(edge)){}
 
-void QMDDGate::calculateDepth() {
-    shared_ptr<QMDDNode> currentNode = getStartNode();
-    size_t currentDepth = 0;
-
-    while (currentNode && !currentNode->edges.empty()) {
-        ++currentDepth;
-        currentNode = currentNode->edges[0][0].getStartNode();
-    }
-    // cout << "Depth calculated: " << currentDepth << endl;
-    depth = currentDepth;
-}
 
 shared_ptr<QMDDNode> QMDDGate::getStartNode() const {
     UniqueTable& table = UniqueTable::getInstance();
@@ -184,12 +171,8 @@ QMDDEdge QMDDGate::getInitialEdge() const {
     return initialEdge;
 }
 
-size_t QMDDGate::getDepth() const {
-    return depth;
-}
-
 bool QMDDGate::operator==(const QMDDGate& other) const {
-    return initialEdge == other.initialEdge && depth == other.depth;
+    return initialEdge == other.initialEdge;
 }
 
 bool QMDDGate::operator!=(const QMDDGate& other) const {
@@ -197,7 +180,7 @@ bool QMDDGate::operator!=(const QMDDGate& other) const {
 }
 
 ostream& operator<<(ostream& os, const QMDDGate& gate) {
-    os << "QMDDGate with initial edge:\n" << gate.initialEdge << ", depth: " << gate.depth;
+    os << "QMDDGate with initial edge:\n" << gate.initialEdge;
     return os;
 }
 
@@ -208,21 +191,7 @@ ostream& operator<<(ostream& os, const QMDDGate& gate) {
 /////////////////////////////////////
 
 QMDDState::QMDDState(QMDDEdge edge)
-    : initialEdge(std::move(edge)) {
-    calculateDepth();
-}
-
-void QMDDState::calculateDepth() {
-    shared_ptr<QMDDNode> currentNode = getStartNode();
-    size_t currentDepth = 0;
-
-    while (currentNode && !currentNode->edges.empty()) {
-        ++currentDepth;
-        currentNode = currentNode->edges[0][0].getStartNode();
-    }
-    // cout << "Depth calculated: " << currentDepth << endl;
-    depth = currentDepth;
-}
+    : initialEdge(std::move(edge)) {}
 
 shared_ptr<QMDDNode> QMDDState::getStartNode() const {
     UniqueTable& table = UniqueTable::getInstance();
@@ -231,10 +200,6 @@ shared_ptr<QMDDNode> QMDDState::getStartNode() const {
 
 QMDDEdge QMDDState::getInitialEdge() const {
     return initialEdge;
-}
-
-size_t QMDDState::getDepth() const {
-    return depth;
 }
 
 bool QMDDState::operator==(const QMDDState& other) const {
