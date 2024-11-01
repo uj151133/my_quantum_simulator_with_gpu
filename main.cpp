@@ -4,23 +4,25 @@
 #include <string>
 #include <unistd.h>
 
-#include "src/models/state.hpp"
-#include "src/models/gate.hpp"
-#include "src/models/circuit.hpp"
-#include "src/models/uniqueTable.hpp"
 #include "src/models/qmdd.hpp"
+#include "src/common/constant.hpp"
+#include "src/models/gate.hpp"
+#include "src/models/state.hpp"
+#include "src/models/uniqueTable.hpp"
 #include "src/common/mathUtils.hpp"
 #include "src/common/calculation.hpp"
+#include "src/models/circuit.hpp"
 #include "src/common/monitor.hpp"
 #include "src/test/ham3tc/ham3tc.hpp"
+
 
 using namespace std;
 
 void execute() {
+
     // UniqueTable& uniqueTable = UniqueTable::getInstance();
 
     ham3tc();
-
 
     // uniqueTable.printAllEntries();
 }
