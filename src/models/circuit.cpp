@@ -1,8 +1,9 @@
 #include "circuit.hpp"
 
-static const QMDDEdge braketZero = mathUtils::mul(state::Ket0().getInitialEdge(), state::Bra0().getInitialEdge());
-static const QMDDEdge braketOne = mathUtils::mul(state::Ket1().getInitialEdge(), state::Bra1().getInitialEdge());
-static const QMDDEdge identityEdge = gate::I().getInitialEdge();
+const QMDDEdge identityEdge = gate::I().getInitialEdge();
+const QMDDEdge braketZero = mathUtils::mul(state::Ket0().getInitialEdge(), state::Bra0().getInitialEdge());
+const QMDDEdge braketOne = mathUtils::mul(state::Ket1().getInitialEdge(), state::Bra1().getInitialEdge());
+
 
 QuantumCircuit::QuantumCircuit(int numQubits, QMDDState initialState) : numQubits(numQubits), initialState(initialState), finalState(initialState) {
     if (numQubits < 1) {
@@ -127,31 +128,38 @@ void QuantumCircuit::addCX(int controlIndex, int targetIndex) {
         gateQueue.push(gate::CX2());
     }else {
         int minIndex = min(controlIndex, targetIndex);
-        cout << "minIndex: " << minIndex << endl;
         int maxIndex = max(controlIndex, targetIndex);
-        cout << "maxIndex: " << maxIndex << endl;
-        array<QMDDEdge, 2> partialCX;
-        if (minIndex == controlIndex) {
-            partialCX[0] = braketZero;
-            partialCX[1] = braketOne;
-        } else {
-            partialCX[0] = identityEdge;
-            partialCX[1] = gate::X().getInitialEdge();
-        }
+        QMDDEdge customCX;
         vector<QMDDEdge> edges(minIndex, identityEdge);
-        for (int index = minIndex + 1; index <= maxIndex; index++){
-            if (index == controlIndex) {
-                partialCX[0] = mathUtils::kron(partialCX[0], braketZero);
-                partialCX[1] = mathUtils::kron(partialCX[1], braketOne);
-            } else if (index == targetIndex) {
-                partialCX[0] = mathUtils::kron(partialCX[0], identityEdge);
-                partialCX[1] = mathUtils::kron(partialCX[1], gate::X().getInitialEdge());
+        if (maxIndex - minIndex == 1) {
+            if (minIndex == controlIndex) {
+                customCX = gate::CX1().getInitialEdge();
             } else {
-                partialCX[0] = mathUtils::kron(partialCX[0], identityEdge);
-                partialCX[1] = mathUtils::kron(partialCX[1], identityEdge);
+                customCX = gate::CX2().getInitialEdge();
             }
+        } else {
+            array<QMDDEdge, 2> partialCX;
+            if (minIndex == controlIndex) {
+                partialCX[0] = braketZero;
+                partialCX[1] = braketOne;
+            } else {
+                partialCX[0] = identityEdge;
+                partialCX[1] = gate::X().getInitialEdge();
+            }
+            for (int index = minIndex + 1; index <= maxIndex; index++){
+                if (index == controlIndex) {
+                    partialCX[0] = mathUtils::kron(partialCX[0], braketZero);
+                    partialCX[1] = mathUtils::kron(partialCX[1], braketOne);
+                } else if (index == targetIndex) {
+                    partialCX[0] = mathUtils::kron(partialCX[0], identityEdge);
+                    partialCX[1] = mathUtils::kron(partialCX[1], gate::X().getInitialEdge());
+                } else {
+                    partialCX[0] = mathUtils::kron(partialCX[0], identityEdge);
+                    partialCX[1] = mathUtils::kron(partialCX[1], identityEdge);
+                }
+            }
+            customCX = mathUtils::add(partialCX[0], partialCX[1]);
         }
-        QMDDEdge customCX = mathUtils::add(partialCX[0], partialCX[1]);
         edges.push_back(customCX);
         edges.insert(edges.end(), numQubits - maxIndex - 1, identityEdge);
         QMDDGate result = accumulate(edges.begin() + 1, edges.end(), edges[0], mathUtils::kron);
@@ -703,6 +711,8 @@ void QuantumCircuit::execute() {
         QMDDGate currentGate = gateQueue.front();
         cout << "Current gate: " << currentGate << endl;
         cout << "Current state: " << currentState << endl;
+
+        cout << "============================================================\n" << endl;
         gateQueue.pop();
         currentState = mathUtils::mul(currentGate.getInitialEdge(), currentState.getInitialEdge());
     }

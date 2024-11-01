@@ -1,12 +1,13 @@
 #ifndef GATE_HPP
 #define GATE_HPP
 
-#include "qmdd.hpp"
-#include "../common/constant.hpp"
-#include "../common/mathUtils.hpp"
 #include <Eigen/Dense>
 #include <iostream>
 #include <gsl/gsl_sf_bessel.h>
+#include "qmdd.hpp"
+#include "../common/constant.hpp"
+#include "../common/mathUtils.hpp"
+
 using namespace std;
 using namespace Eigen;
 namespace gate {
