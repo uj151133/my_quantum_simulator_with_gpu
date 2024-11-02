@@ -6,7 +6,7 @@ UniqueTable& UniqueTable::getInstance() {
 }
 
 void UniqueTable::insert(size_t hashKey, shared_ptr<QMDDNode> node) {
-    lock_guard<mutex> lock(tableMutex);  // キャッシュ全体の操作を保護
+    unique_lock<shared_mutex> lock(tableMutex);
     // auto it = table.find(hashKey);
     // if (it != table.end()) {
         // auto old_vector = it->second;  // 現在のベクトルを取得
@@ -14,16 +14,17 @@ void UniqueTable::insert(size_t hashKey, shared_ptr<QMDDNode> node) {
         // new_vector.push_back(node);    // 新しいノードを追加
         // compare_and_swap(it->second, it->second, new_vector);  // CASでベクトルを更新
     // } else {
-        table[hashKey].push_back(node);  // 新規挿入
+    table[hashKey].push_back(node);  // 新規挿入
     // }
 }
 
 shared_ptr<QMDDNode> UniqueTable::find(size_t hashKey) const {
-        auto it = table.find(hashKey);
-        if (it != table.end()) {
-            return it->second[0];
-        }
-        return nullptr;
+    shared_lock<shared_mutex> lock(tableMutex);
+    auto it = table.find(hashKey);
+    if (it != table.end()) {
+        return it->second[0];
+    }
+    return nullptr;
 }
 
 void UniqueTable::printAllEntries() const {
