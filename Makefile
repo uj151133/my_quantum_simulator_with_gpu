@@ -8,7 +8,7 @@ install:
 	pip install -r requirements.txt
 	ifeq ($(shell uname), Darwin)
 		brew update
-		brew install libomp yaml-cpp gmp gsl eigen
+		brew install libomp yaml-cpp gmp gsl eigen xsimd
 
 	else ifeq ($(shell uname), Linux)
 		if [ -f /etc/fedora-release ]; then \

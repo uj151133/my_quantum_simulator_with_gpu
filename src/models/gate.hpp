@@ -2,6 +2,7 @@
 #define GATE_HPP
 
 #include <Eigen/Dense>
+#include <xsimd/xsimd.hpp>
 #include <iostream>
 #include <gsl/gsl_sf_bessel.h>
 #include "qmdd.hpp"
