@@ -1,6 +1,7 @@
 #ifndef UNIQUETABLE_HPP
 #define UNIQUETABLE_HPP
 
+// #include <shared_mutex>
 #include "qmdd.hpp"
 
 using namespace std;
@@ -8,7 +9,7 @@ using namespace std;
 class UniqueTable {
 private:
     unordered_map<size_t, vector<shared_ptr<QMDDNode>>> table;
-    mutex tableMutex;
+    // mutable shared_mutex tableMutex;
     UniqueTable() = default;
 
 public:
