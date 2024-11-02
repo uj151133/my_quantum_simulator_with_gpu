@@ -12,8 +12,6 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1) {
     }
     else {
         // cout << "\033[1;35mCache miss!\033[0m" << endl;
-        shared_ptr<QMDDNode> n0 = table.find(e0.uniqueTableKey);
-        shared_ptr<QMDDNode> n1 = table.find(e1.uniqueTableKey);
 
         QMDDEdge* e0Copy = const_cast<QMDDEdge*>(&e0);
         QMDDEdge* e1Copy = const_cast<QMDDEdge*>(&e1);
@@ -28,36 +26,27 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1) {
             } else if (e0Copy->weight == 1.0){
                 return *e1Copy;
             } else {
-                return QMDDEdge(e0Copy->weight * e1Copy->weight, n1);
+                return QMDDEdge(e0Copy->weight * e1Copy->weight, e1Copy->uniqueTableKey);
             }
         }
+
+        shared_ptr<QMDDNode> n0 = table.find(e0.uniqueTableKey);
+        shared_ptr<QMDDNode> n1 = table.find(e1.uniqueTableKey);
 
         vector<vector<QMDDEdge>> z(n0->edges.size(), vector<QMDDEdge>(n1->edges[0].size(), QMDDEdge(.0, nullptr)));
         complex<double> tmpWeight = .0;
         QMDDEdge p, q;
         bool allWeightsAreZero = true;
-        #pragma omp parallel for collapse(3) private(p, q)
+        #pragma omp parallel for private(p, q) shared(z) num_threads(8)
         for (size_t i = 0; i < n0->edges.size(); i++) {
             for (size_t j = 0; j < n1->edges[0].size(); j++){
                 for (size_t k = 0; k < n0->edges[0].size(); k++) {
-                    p = QMDDEdge(e0Copy->weight * n0->edges[i][k].weight, table.find(n0->edges[i][k].uniqueTableKey));
-                    q = QMDDEdge(e1Copy->weight * n1->edges[k][j].weight, table.find(n1->edges[k][j].uniqueTableKey));
+
+                    p = QMDDEdge(e0Copy->weight * n0->edges[i][k].weight, n0->edges[i][k].uniqueTableKey);
+                    q = QMDDEdge(e1Copy->weight * n1->edges[k][j].weight, n1->edges[k][j].uniqueTableKey);
+
                     z[i][j] = mathUtils::add(z[i][j], mathUtils::mul(p, q));
                 }
-                // #pragma omp ordered
-                // {
-                //     if (z[i][j].weight != .0) {
-                //         allWeightsAreZero = false;
-                //         if (tmpWeight == .0) {
-                //             tmpWeight = z[i][j].weight;
-                //             z[i][j].weight = 1.0;
-                //         }else if (tmpWeight != .0) {
-                //             z[i][j].weight /= tmpWeight;
-                //         } else {
-                //             cout << "⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️" << endl;
-                //         }
-                //     }
-                // }
             }
         }
         for (size_t i = 0; i < z.size(); i++) {
@@ -99,10 +88,10 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1) {
     }
     else {
         // cout << "\033[1;35mCache miss!\033[0m" << endl;
-        shared_ptr<QMDDNode> n0 = table.find(e0.uniqueTableKey);
-        shared_ptr<QMDDNode> n1 = table.find(e1.uniqueTableKey);
+
         QMDDEdge* e0Copy = const_cast<QMDDEdge*>(&e0);
         QMDDEdge* e1Copy = const_cast<QMDDEdge*>(&e1);
+
         if (e1Copy->isTerminal) {
             QMDDEdge* tmpEdge = e0Copy;
             e0Copy = e1Copy;
@@ -115,6 +104,9 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1) {
                 return QMDDEdge(e0Copy->weight + e1Copy->weight, nullptr);
             }
         }
+
+        shared_ptr<QMDDNode> n0 = table.find(e0.uniqueTableKey);
+        shared_ptr<QMDDNode> n1 = table.find(e1.uniqueTableKey);
         bool allWeightsAreZero = true;
         vector<vector<QMDDEdge>> z(n0->edges.size(), vector<QMDDEdge>(n0->edges[0].size()));
         complex<double> tmpWeight = .0;
@@ -140,28 +132,14 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1) {
         //         }
         //     }
         // }
-        #pragma omp parallel for private(p, q)
+        size_t i, j;
+        #pragma omp parallel for private(i, j, p, q) num_threads(4) shared(z)
         for (size_t idx = 0; idx < n0->edges.size() * n0->edges[0].size(); idx++) {
-            size_t i = idx / n0->edges[0].size();
-            size_t j = idx % n0->edges[0].size();
-            p = QMDDEdge(e0Copy->weight * n0->edges[i][j].weight, table.find(n0->edges[i][j].uniqueTableKey));
-            q = QMDDEdge(e1Copy->weight * n1->edges[i][j].weight, table.find(n1->edges[i][j].uniqueTableKey));
+            i = idx / n0->edges[0].size();
+            j = idx % n0->edges[0].size();
+            p = QMDDEdge(e0Copy->weight * n0->edges[i][j].weight, n0->edges[i][j].uniqueTableKey);
+            q = QMDDEdge(e1Copy->weight * n1->edges[i][j].weight, n1->edges[i][j].uniqueTableKey);
             z[i][j] = mathUtils::add(p, q);
-
-            // #pragma omp ordered
-            // {
-            //     if (z[i][j].weight != .0) {
-            //         allWeightsAreZero = false;
-            //         if (tmpWeight == .0) {
-            //             tmpWeight = z[i][j].weight;
-            //             z[i][j].weight = 1.0;
-            //         }else if (tmpWeight != .0) {
-            //             z[i][j].weight /= tmpWeight;
-            //         } else {
-            //             cout << "⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️" << endl;
-            //         }
-            //     }
-            // }
         }
         for (size_t i = 0; i < z.size(); i++) {
             for (size_t j = 0; j < z[i].size(); j++) {
@@ -201,8 +179,7 @@ QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1) {
     }
     else {
         // cout << "\033[1;35mCache miss!\033[0m" << endl;
-        shared_ptr<QMDDNode> n0 = table.find(e0.uniqueTableKey);
-        shared_ptr<QMDDNode> n1 = table.find(e1.uniqueTableKey);
+
         QMDDEdge* e0Copy = const_cast<QMDDEdge*>(&e0);
         QMDDEdge* e1Copy = const_cast<QMDDEdge*>(&e1);
         if (e0Copy->isTerminal) {
@@ -211,9 +188,12 @@ QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1) {
             }else if (e0Copy->weight == 1.0) {
                 return *e1Copy;
             } else {
-                return QMDDEdge(e0Copy->weight * e1Copy->weight, n1);
+                return QMDDEdge(e0Copy->weight * e1Copy->weight, e1Copy->uniqueTableKey);
             }
         }
+
+        shared_ptr<QMDDNode> n0 = table.find(e0.uniqueTableKey);
+        shared_ptr<QMDDNode> n1 = table.find(e1.uniqueTableKey);
         vector<vector<QMDDEdge>> z(n0->edges.size(), vector<QMDDEdge>(n1->edges[0].size()));
         complex<double> tmpWeight = .0;
         // #pragma omp parallel for collapse(2) ordered shared(tmpWeight)
@@ -242,12 +222,14 @@ QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1) {
         //     }
         // }
         bool allWeightsAreZero = true;
-        #pragma omp parallel for
+        size_t i, j;
+        #pragma omp parallel for shared(z) num_threads(4) private(i, j)
         for (size_t idx = 0; idx < n0->edges.size() * n0->edges[0].size(); idx++) {
             size_t i = idx / n0->edges[0].size();
             size_t j = idx % n0->edges[0].size();
             z[i][j] = mathUtils::kron(n0->edges[i][j], e1);
         }
+
 
         for (size_t i = 0; i < z.size(); i++) {
             for (size_t j = 0; j < z[i].size(); j++) {
