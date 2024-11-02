@@ -37,4 +37,5 @@ void UniqueTable::printAllEntries() const {
         }
         cout << endl;
     }
+    cout << "Total entries: " << table.size() << endl;
 }
