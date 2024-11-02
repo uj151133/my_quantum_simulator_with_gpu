@@ -1,6 +1,6 @@
-#include "ham3tc.hpp"
+#include "benchHam3tc.hpp"
 
-void ham3tc() {
+void benchHam3tc() {
     QMDDState ket_0 = state::Ket0();
     QMDDEdge firstEdge = mathUtils::kron(ket_0.getInitialEdge(), ket_0.getInitialEdge());
     firstEdge = mathUtils::kron(firstEdge, ket_0.getInitialEdge());
