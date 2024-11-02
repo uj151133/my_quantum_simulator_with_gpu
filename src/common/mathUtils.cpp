@@ -37,7 +37,7 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1) {
         complex<double> tmpWeight = .0;
         QMDDEdge p, q;
         bool allWeightsAreZero = true;
-        #pragma omp parallel for private(p, q) shared(z) num_threads(8)
+        #pragma omp parallel for private(p, q) shared(z) num_threads(8) collapse(3)
         for (size_t i = 0; i < n0->edges.size(); i++) {
             for (size_t j = 0; j < n1->edges[0].size(); j++){
                 for (size_t k = 0; k < n0->edges[0].size(); k++) {
