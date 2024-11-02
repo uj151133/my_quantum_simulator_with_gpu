@@ -12,8 +12,7 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1) {
     }
     else {
         // cout << "\033[1;35mCache miss!\033[0m" << endl;
-        shared_ptr<QMDDNode> n0 = table.find(e0.uniqueTableKey);
-        shared_ptr<QMDDNode> n1 = table.find(e1.uniqueTableKey);
+        
 
         QMDDEdge* e0Copy = const_cast<QMDDEdge*>(&e0);
         QMDDEdge* e1Copy = const_cast<QMDDEdge*>(&e1);
@@ -28,9 +27,12 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1) {
             } else if (e0Copy->weight == 1.0){
                 return *e1Copy;
             } else {
-                return QMDDEdge(e0Copy->weight * e1Copy->weight, n1);
+                return QMDDEdge(e0Copy->weight * e1Copy->weight, e1Copy->uniqueTableKey);
             }
         }
+
+        shared_ptr<QMDDNode> n0 = table.find(e0.uniqueTableKey);
+        shared_ptr<QMDDNode> n1 = table.find(e1.uniqueTableKey);
 
         vector<vector<QMDDEdge>> z(n0->edges.size(), vector<QMDDEdge>(n1->edges[0].size(), QMDDEdge(.0, nullptr)));
         complex<double> tmpWeight = .0;
@@ -38,8 +40,8 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1) {
         for (size_t i = 0; i < n0->edges.size(); i++) {
             for (size_t j = 0; j < n1->edges[0].size(); j++){
                 for (size_t k = 0; k < n0->edges[0].size(); k++) {
-                    QMDDEdge p(e0Copy->weight * n0->edges[i][k].weight, table.find(n0->edges[i][k].uniqueTableKey));
-                    QMDDEdge q(e1Copy->weight * n1->edges[k][j].weight, table.find(n1->edges[k][j].uniqueTableKey));
+                    QMDDEdge p(e0Copy->weight * n0->edges[i][k].weight, n0->edges[i][k].uniqueTableKey);
+                    QMDDEdge q(e1Copy->weight * n1->edges[k][j].weight, n1->edges[k][j].uniqueTableKey);
                     z[i][j] = mathUtils::add(z[i][j], mathUtils::mul(p, q));
                 }
                 if (z[i][j].weight != .0) {
@@ -79,8 +81,7 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1) {
     }
     else {
         // cout << "\033[1;35mCache miss!\033[0m" << endl;
-        shared_ptr<QMDDNode> n0 = table.find(e0.uniqueTableKey);
-        shared_ptr<QMDDNode> n1 = table.find(e1.uniqueTableKey);
+        
         QMDDEdge* e0Copy = const_cast<QMDDEdge*>(&e0);
         QMDDEdge* e1Copy = const_cast<QMDDEdge*>(&e1);
         if (e1Copy->isTerminal) {
@@ -95,13 +96,15 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1) {
                 return QMDDEdge(e0Copy->weight + e1Copy->weight, nullptr);
             }
         }
+        shared_ptr<QMDDNode> n0 = table.find(e0.uniqueTableKey);
+        shared_ptr<QMDDNode> n1 = table.find(e1.uniqueTableKey);
         bool allWeightsAreZero = true;
         vector<vector<QMDDEdge>> z(n0->edges.size(), vector<QMDDEdge>(n0->edges[0].size()));
         complex<double> tmpWeight = .0;
         for (size_t i = 0; i < n0->edges.size(); i++) {
             for (size_t j = 0; j < n0->edges[i].size(); j++) {
-                QMDDEdge p(e0Copy->weight * n0->edges[i][j].weight, table.find(n0->edges[i][j].uniqueTableKey));
-                QMDDEdge q(e1Copy->weight * n1->edges[i][j].weight, table.find(n1->edges[i][j].uniqueTableKey));
+                QMDDEdge p(e0Copy->weight * n0->edges[i][j].weight, n0->edges[i][j].uniqueTableKey);
+                QMDDEdge q(e1Copy->weight * n1->edges[i][j].weight, n1->edges[i][j].uniqueTableKey);
                 z[i][j] = mathUtils::add(p, q);
 
                 if (z[i][j].weight != .0) {
@@ -140,8 +143,7 @@ QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1) {
     }
     else {
         // cout << "\033[1;35mCache miss!\033[0m" << endl;
-        shared_ptr<QMDDNode> n0 = table.find(e0.uniqueTableKey);
-        shared_ptr<QMDDNode> n1 = table.find(e1.uniqueTableKey);
+
         QMDDEdge* e0Copy = const_cast<QMDDEdge*>(&e0);
         QMDDEdge* e1Copy = const_cast<QMDDEdge*>(&e1);
         if (e0Copy->isTerminal) {
@@ -150,9 +152,11 @@ QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1) {
             }else if (e0Copy->weight == 1.0) {
                 return *e1Copy;
             } else {
-                return QMDDEdge(e0Copy->weight * e1Copy->weight, n1);
+                return QMDDEdge(e0Copy->weight * e1Copy->weight, e1Copy->uniqueTableKey);
             }
         }
+        shared_ptr<QMDDNode> n0 = table.find(e0.uniqueTableKey);
+        shared_ptr<QMDDNode> n1 = table.find(e1.uniqueTableKey);
         vector<vector<QMDDEdge>> z(n0->edges.size(), vector<QMDDEdge>(n1->edges[0].size()));
         complex<double> tmpWeight = .0;
         bool allWeightsAreZero = true;
