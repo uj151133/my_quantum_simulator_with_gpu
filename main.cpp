@@ -13,7 +13,7 @@
 #include "src/common/calculation.hpp"
 #include "src/models/circuit.hpp"
 #include "src/common/monitor.hpp"
-#include "src/test/xor5d1.tfc/benchXor5d1.hpp"
+#include "src/test/xor5d1/benchXor5d1.hpp"
 
 
 using namespace std;
