@@ -88,7 +88,6 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1) {
     }
     else {
         // cout << "\033[1;35mCache miss!\033[0m" << endl;
-
         QMDDEdge* e0Copy = const_cast<QMDDEdge*>(&e0);
         QMDDEdge* e1Copy = const_cast<QMDDEdge*>(&e1);
 
@@ -104,7 +103,6 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1) {
                 return QMDDEdge(e0Copy->weight + e1Copy->weight, nullptr);
             }
         }
-
         shared_ptr<QMDDNode> n0 = table.find(e0.uniqueTableKey);
         shared_ptr<QMDDNode> n1 = table.find(e1.uniqueTableKey);
         bool allWeightsAreZero = true;
@@ -191,7 +189,6 @@ QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1) {
                 return QMDDEdge(e0Copy->weight * e1Copy->weight, e1Copy->uniqueTableKey);
             }
         }
-
         shared_ptr<QMDDNode> n0 = table.find(e0.uniqueTableKey);
         shared_ptr<QMDDNode> n1 = table.find(e1.uniqueTableKey);
         vector<vector<QMDDEdge>> z(n0->edges.size(), vector<QMDDEdge>(n1->edges[0].size()));
