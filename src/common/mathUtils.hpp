@@ -3,12 +3,15 @@
 
 #include <cmath>
 #include <numeric>
+#include <Eigen/Core>
+#include <Eigen/Dense>
 #include "../models/qmdd.hpp"
 #include "../models/uniqueTable.hpp"
 #include "../models/operationCache.hpp"
 #include "calculation.hpp"
 
 using namespace std;
+using namespace Eigen;
 
 namespace mathUtils {
     QMDDEdge mul(const QMDDEdge& e0, const QMDDEdge& e1);
