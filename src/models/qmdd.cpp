@@ -34,12 +34,12 @@ QMDDEdge::QMDDEdge(double w, shared_ptr<QMDDNode> n)
 }
 
 QMDDEdge::QMDDEdge(complex<double> w, size_t key)
-    : weight(w), uniqueTableKey(key), isTerminal(false) {
+    : weight(w), uniqueTableKey(key), isTerminal(key == 0) {
     // cout << "Edge created with weight: " << weight << " and uniqueTableKey: " << uniqueTableKey << " and isTerminal: " << isTerminal << endl;
 }
 
 QMDDEdge::QMDDEdge(double w, size_t key)
-    : weight(complex<double>(w, 0.0)), uniqueTableKey(key), isTerminal(false) {
+    : weight(complex<double>(w, 0.0)), uniqueTableKey(key), isTerminal(key == 0) {
     // cout << "Edge created with weight: " << weight << " and uniqueTableKey: " << uniqueTableKey << " and isTerminal: " << isTerminal << endl;
 }
 

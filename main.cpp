@@ -13,7 +13,7 @@
 #include "src/common/calculation.hpp"
 #include "src/models/circuit.hpp"
 #include "src/common/monitor.hpp"
-#include "src/test/ham3tc/ham3tc.hpp"
+#include "src/test/hwb5tc/benchHwb5tc.hpp"
 
 
 using namespace std;
@@ -22,7 +22,7 @@ void execute() {
 
     // UniqueTable& uniqueTable = UniqueTable::getInstance();
 
-    ham3tc();
+    benchHwb5tc();
 
     // uniqueTable.printAllEntries();
 }

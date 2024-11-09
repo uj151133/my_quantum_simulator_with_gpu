@@ -1,5 +1,5 @@
-#ifndef HAM3TC_HPP
-#define HAM3TC_HPP
+#ifndef BENCHXOR5D1_HPP
+#define BENCHXOR5D1_HPP
 
 
 
@@ -7,6 +7,6 @@
 #include "../../common/mathUtils.hpp"
 #include "../../models/circuit.hpp"
 
-void ham3tc();
+void benchXor5d1();
 
 #endif
