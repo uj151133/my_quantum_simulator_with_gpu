@@ -35,11 +35,23 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1) {
         vector<vector<QMDDEdge>> z(n0->edges.size(), vector<QMDDEdge>(n1->edges[0].size(), QMDDEdge(.0, nullptr)));
         complex<double> tmpWeight = .0;
         bool allWeightsAreZero = true;
+
+        vector<complex<double>> n0Weights = n0->getWeights();
+        vector<complex<double>> n1Weights = n1->getWeights();
+        complex<double> e0Scalar = e0Copy->weight;
+        complex<double> e1Scalar = e1Copy->weight;
+        Map<VectorXcd> n0Vec(n0Weights.data(), n0Weights.size());
+        Map<VectorXcd> n1Vec(n1Weights.data(), n1Weights.size());
+        VectorXcd pWeights = e0Scalar * n0Vec;
+        VectorXcd qWeights = e1Scalar * n1Vec;
+
         for (size_t i = 0; i < n0->edges.size(); i++) {
             for (size_t j = 0; j < n1->edges[0].size(); j++){
                 for (size_t k = 0; k < n0->edges[0].size(); k++) {
-                    QMDDEdge p(e0Copy->weight * n0->edges[i][k].weight, table.find(n0->edges[i][k].uniqueTableKey));
-                    QMDDEdge q(e1Copy->weight * n1->edges[k][j].weight, table.find(n1->edges[k][j].uniqueTableKey));
+                    int idxP = i * n0->edges[0].size() + k;
+                    int idxQ = k * n1->edges[0].size() + j;
+                    QMDDEdge p(pWeights(idxP), table.find(n0->edges[i][k].uniqueTableKey));
+                    QMDDEdge q(qWeights(idxQ), table.find(n1->edges[k][j].uniqueTableKey));
                     z[i][j] = mathUtils::add(z[i][j], mathUtils::mul(p, q));
                 }
                 if (z[i][j].weight != .0) {
@@ -98,10 +110,21 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1) {
         bool allWeightsAreZero = true;
         vector<vector<QMDDEdge>> z(n0->edges.size(), vector<QMDDEdge>(n0->edges[0].size()));
         complex<double> tmpWeight = .0;
+
+        vector<complex<double>> n0Weights = n0->getWeights();
+        vector<complex<double>> n1Weights = n1->getWeights();
+        complex<double> e0Scalar = e0Copy->weight;
+        complex<double> e1Scalar = e1Copy->weight;
+        Map<VectorXcd> n0Vec(n0Weights.data(), n0Weights.size());
+        Map<VectorXcd> n1Vec(n1Weights.data(), n1Weights.size());
+        VectorXcd pWeights = e0Scalar * n0Vec;
+        VectorXcd qWeights = e1Scalar * n1Vec;
+
         for (size_t i = 0; i < n0->edges.size(); i++) {
             for (size_t j = 0; j < n0->edges[i].size(); j++) {
-                QMDDEdge p(e0Copy->weight * n0->edges[i][j].weight, table.find(n0->edges[i][j].uniqueTableKey));
-                QMDDEdge q(e1Copy->weight * n1->edges[i][j].weight, table.find(n1->edges[i][j].uniqueTableKey));
+                int idx = i * n0->edges[i].size() + j;
+                QMDDEdge p(pWeights(idx), table.find(n0->edges[i][j].uniqueTableKey));
+                QMDDEdge q(qWeights(idx), table.find(n1->edges[i][j].uniqueTableKey));
                 z[i][j] = mathUtils::add(p, q);
 
                 if (z[i][j].weight != .0) {
