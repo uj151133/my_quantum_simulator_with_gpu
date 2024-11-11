@@ -5,6 +5,7 @@
 #include <queue>
 #include <array>
 #include <random>
+#include <iostream>
 #include "qmdd.hpp"
 #include "gate.hpp"
 #include "state.hpp"
@@ -23,6 +24,7 @@ private:
 
 public:
     QuantumCircuit(int numQubitits, QMDDState initialState);
+    QuantumCircuit(int numQubitits);
     ~QuantumCircuit() = default;
     queue<QMDDGate> getGateQueue() const;
     QMDDState getFinalState() const;
@@ -34,11 +36,13 @@ public:
     void addI(int qubitIndex);
     void addPh(int qubitIndex, double delta);
     void addX(int qubitIndex);
+    void addAllX();
     void addY(int qubitIndex);
     void addZ(int qubitIndex);
     void addS(int qubitIndex);
     void addV(int qubitIndex);
     void addH(int qubitIndex);
+    void addAllH();
     void addCX(int controlIndex, int targetIndex);
     void addVarCX(int controlIndex, int targetIndex);
     void addCZ(int controlIndex, int targetIndex);
@@ -79,6 +83,10 @@ public:
     void addfFredkin(int controlIndex1, int controlIndex2, int targetIndex);
 
     void addGate(int qubitIndex, const QMDDGate& gate);
+
+    void addOracle(int qubitIndex);
+    void addIAM();
+
     void execute();
     QMDDState read(int qubitIndex);
     // コンストラクタやその他のメンバ関数はここに追加できます
