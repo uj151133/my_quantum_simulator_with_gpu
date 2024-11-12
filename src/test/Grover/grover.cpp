@@ -1,16 +1,16 @@
 #include "grover.hpp"
 
-void grover() {
-
-    size_t collectNum = 5;
-    size_t numQubits = 3;
+void grover(size_t numQubits, size_t omega) {
 
     QuantumCircuit circuit(numQubits);
 
     circuit.addAllH();
 
-    for (size_t i = 0; i < int(sqrt(numQubits) * M_PI_4); i++) {
-        circuit.addOracle(collectNum);
+    int times = max(1, int(sqrt(numQubits) * M_PI_4));
+    for (size_t i = 0; i < times; i++) {
+        circuit.addOracle(omega);
         circuit.addIAM();
     }
+
+    circuit.execute();
 }

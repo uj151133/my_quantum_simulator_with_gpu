@@ -182,9 +182,9 @@ QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1) {
         if (allWeightsAreZero) {
             result = QMDDEdge(.0, nullptr);
         } else {
-            result = QMDDEdge(tmpWeight, make_shared<QMDDNode>(z));
+            result = QMDDEdge(e0Copy->weight * tmpWeight, make_shared<QMDDNode>(z));
         }
-        cache.insert(operationCacheKey, make_pair(tmpWeight, result.uniqueTableKey));
+        cache.insert(operationCacheKey, make_pair(result.weight, result.uniqueTableKey));
         return result;
     }
 }
