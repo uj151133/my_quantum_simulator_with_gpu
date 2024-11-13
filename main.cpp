@@ -13,8 +13,8 @@
 #include "src/common/calculation.hpp"
 #include "src/models/circuit.hpp"
 #include "src/common/monitor.hpp"
-#include "src/test/hwb5tc/benchHwb5tc.hpp"
-
+// #include "src/test/hwb5tc/benchHwb5tc.hpp"
+#include "src/test/Grover/grover.hpp"
 
 using namespace std;
 
@@ -22,7 +22,8 @@ void execute() {
 
     // UniqueTable& uniqueTable = UniqueTable::getInstance();
 
-    benchHwb5tc();
+    grover(10, 1000);
+    // cout << mathUtils::kron(gate::H().getInitialEdge(), gate::H().getInitialEdge()) << endl;
 
     // uniqueTable.printAllEntries();
 }
