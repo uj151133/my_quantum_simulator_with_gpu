@@ -88,6 +88,7 @@
         "list": "cpp",
         "execution": "cpp",
         "queue": "cpp",
-        "print": "cpp"
+        "print": "cpp",
+        "shared_mutex": "cpp"
     }
 }
