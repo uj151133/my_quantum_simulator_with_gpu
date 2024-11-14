@@ -17,9 +17,7 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1) {
         QMDDEdge* e0Copy = const_cast<QMDDEdge*>(&e0);
         QMDDEdge* e1Copy = const_cast<QMDDEdge*>(&e1);
         if (e1Copy->isTerminal) {
-            QMDDEdge* tmpEdge = e0Copy;
-            e0Copy = e1Copy;
-            e1Copy = tmpEdge;
+            std::swap(e0Copy, e1Copy);
         }
         if (e0Copy->isTerminal) {
             if (e0Copy->weight == .0) {
@@ -86,9 +84,7 @@ QMDDEdge mathUtils::mulForDiagonal(const QMDDEdge& e0, const QMDDEdge& e1) {
         QMDDEdge* e0Copy = const_cast<QMDDEdge*>(&e0);
         QMDDEdge* e1Copy = const_cast<QMDDEdge*>(&e1);
         if (e1Copy->isTerminal) {
-            QMDDEdge* tmpEdge = e0Copy;
-            e0Copy = e1Copy;
-            e1Copy = tmpEdge;
+            std::swap(e0Copy, e1Copy);
         }
         if (e0Copy->isTerminal) {
             if (e0Copy->weight == .0) {
@@ -153,9 +149,7 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1) {
         QMDDEdge* e0Copy = const_cast<QMDDEdge*>(&e0);
         QMDDEdge* e1Copy = const_cast<QMDDEdge*>(&e1);
         if (e1Copy->isTerminal) {
-            QMDDEdge* tmpEdge = e0Copy;
-            e0Copy = e1Copy;
-            e1Copy = tmpEdge;
+            std::swap(e0Copy, e1Copy);
         }
         if (e0Copy->isTerminal) {
             if (e0Copy->weight == .0) {
@@ -215,9 +209,7 @@ QMDDEdge mathUtils::addForDiagonal(const QMDDEdge& e0, const QMDDEdge& e1) {
         QMDDEdge* e0Copy = const_cast<QMDDEdge*>(&e0);
         QMDDEdge* e1Copy = const_cast<QMDDEdge*>(&e1);
         if (e1Copy->isTerminal) {
-            QMDDEdge* tmpEdge = e0Copy;
-            e0Copy = e1Copy;
-            e1Copy = tmpEdge;
+            std::swap(e0Copy, e1Copy);
         }
         if (e0Copy->isTerminal) {
             if (e0Copy->weight == .0) {
