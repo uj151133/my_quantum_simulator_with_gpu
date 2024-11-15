@@ -22,7 +22,7 @@ void execute() {
 
     // UniqueTable& uniqueTable = UniqueTable::getInstance();
 
-    grover(10, 1000);
+    grover(5, 30);
     // cout << mathUtils::kron(gate::H().getInitialEdge(), gate::H().getInitialEdge()) << endl;
 
     // uniqueTable.printAllEntries();
