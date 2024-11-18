@@ -35,7 +35,7 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1) {
         complex<double> tmpWeight = .0;
         QMDDEdge p, q;
         bool allWeightsAreZero = true;
-        #pragma omp parallel for private(p, q) shared(z) collapse(3) schedule(auto)
+        #pragma omp parallel for private(p, q) shared(z) collapse(3) schedule(dynamic, 2)
         for (size_t i = 0; i < n0->edges.size(); i++) {
             for (size_t j = 0; j < n1->edges[0].size(); j++){
                 for (size_t k = 0; k < n0->edges[0].size(); k++) {
@@ -268,7 +268,6 @@ QMDDEdge mathUtils::mulMV(const QMDDEdge& e0, const QMDDEdge& e1) {
     }
 }
 
-
 QMDDEdge mathUtils::mulForDiagonal(const QMDDEdge& e0, const QMDDEdge& e1) {
     OperationCache& cache = OperationCache::getInstance();
     UniqueTable& table = UniqueTable::getInstance();
@@ -366,7 +365,7 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1) {
         complex<double> tmpWeight = .0;
         QMDDEdge p, q;
         size_t i, j;
-        #pragma omp parallel for shared(z) private(i, j, p, q) schedule(auto)
+        #pragma omp parallel for shared(z) private(i, j, p, q) schedule(dynamic, 2)
         for (size_t idx = 0; idx < n0->edges.size() * n0->edges[0].size(); idx++) {
             size_t i = idx / n0->edges[0].size();
             size_t j = idx % n0->edges[0].size();
@@ -613,14 +612,16 @@ QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1) {
         size_t i, j;
 
         // #pragma omp parallel for shared(z, n0) schedule(auto) collapse(2)
+        // #pragma omp parallel
+        // #pragma omp taskloop collapse(2) num_tasks(z.size() * z[0].size()) default(shared) private(e1)
         // for (size_t i = 0; i < z.size(); i++) {
         //     for (size_t j = 0; j < z[i].size(); j++) {
         //         z[i][j] = mathUtils::kron(n0->edges[i][j], e1);
         //     }
         // }
-
-        #pragma omp parallel for shared(z) private(i, j) schedule(auto)
-        for (size_t idx = 0; idx < n0->edges.size() * n0->edges[0].size(); idx++) {
+        size_t loopNum = n0->edges.size() * n0->edges[0].size();
+        #pragma omp parallel for shared(z) private(i, j) schedule(dynamic, 2)
+        for (size_t idx = 0; idx < loopNum; idx++) {
             size_t i = idx / n0->edges[0].size();
             size_t j = idx % n0->edges[0].size();
             z[i][j] = mathUtils::kron(n0->edges[i][j], e1);
@@ -797,7 +798,7 @@ QMDDEdge mathUtils::kronForDiagonal(const QMDDEdge& e0, const QMDDEdge& e1) {
         vector<vector<QMDDEdge>> z(2, vector<QMDDEdge>(2, QMDDEdge(.0, nullptr)));
         complex<double> tmpWeight = .0;
         bool allWeightsAreZero = true;
-        #pragma omp parallel for shared(z) num_threads(2) schedule(auto)
+        // #pragma omp parallel for shared(z) num_threads(2) schedule(auto)
         for (size_t n = 0; n < 2; n++) {
             z[n][n] = mathUtils::kronForDiagonal(n0->edges[n][n], e1);
             if (z[n][n].weight != .0) {
