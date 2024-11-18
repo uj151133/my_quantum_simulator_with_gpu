@@ -196,36 +196,33 @@ QMDDGate gate::DCNOT() {
     })));
 }
 
-QMDDGate gate::SWAP(bool primitive) {
+QMDDGate gate::SWAP() {
     call_once(initFlag, init);
-    if (primitive) {
-        return QMDDGate(mathUtils::mul(mathUtils::mul(gate::CX1().getInitialEdge(), gate::CX2().getInitialEdge()), gate::CX1().getInitialEdge()));
-    } else {
-        QMDDEdge swapEdge1 = QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
-            {edgeOne, edgeZero},
-            {edgeZero, edgeZero}
-        }));
+    
+    QMDDEdge swapEdge1 = QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+        {edgeOne, edgeZero},
+        {edgeZero, edgeZero}
+    }));
 
-        QMDDEdge swapEdge2 = QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
-            {edgeZero, edgeZero},
-            {edgeOne, edgeZero}
-        }));
+    QMDDEdge swapEdge2 = QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+        {edgeZero, edgeZero},
+        {edgeOne, edgeZero}
+    }));
 
-        QMDDEdge swapEdge3 = QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
-            {edgeZero, edgeOne},
-            {edgeZero, edgeZero}
-        }));
+    QMDDEdge swapEdge3 = QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+        {edgeZero, edgeOne},
+        {edgeZero, edgeZero}
+    }));
 
-        QMDDEdge swapEdge4 = QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
-            {edgeZero, edgeZero},
-            {edgeZero, edgeOne}
-        }));
+    QMDDEdge swapEdge4 = QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+        {edgeZero, edgeZero},
+        {edgeZero, edgeOne}
+    }));
 
-        return QMDDGate(QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
-            {swapEdge1, swapEdge2},
-            {swapEdge3, swapEdge4}
-        })));
-    }
+    return QMDDGate(QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+        {swapEdge1, swapEdge2},
+        {swapEdge3, swapEdge4}
+    })));
 }
 
 QMDDGate gate::iSWAP() {
