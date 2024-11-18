@@ -20,14 +20,14 @@ using namespace std;
 
 void execute() {
 
-    UniqueTable& uniqueTable = UniqueTable::getInstance();
+    // UniqueTable& uniqueTable = UniqueTable::getInstance();
 
-    // grover(6, 50);
-    cout << mathUtils::mulVV(state::KetPlusY().getInitialEdge(), state::KetPlusY().getInitialEdge()) << endl;
+    grover(6, 60);
+    // cout << mathUtils::mulMV(state::KetPlusY().getInitialEdge(), state::KetPlusY().getInitialEdge()) << endl;
 
     // cout << mathUtils::kron(gate::H().getInitialEdge(), gate::H().getInitialEdge()) << endl;
 
-    uniqueTable.printAllEntries();
+    // uniqueTable.printAllEntries();
 }
 
 int main() {
