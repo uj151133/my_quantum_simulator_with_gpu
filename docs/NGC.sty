@@ -1,0 +1,78 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                       %
+%               NGC研究室テンプレートファイル           %
+%                                                       %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%　　注意事項　　%%%%%%%%%%%%%%%%%%%%%
+%                                           
+%　文字列の色を変える場合：　\色名out{変える文字列}とする。
+%	例：赤色に変えたい場合： \redout{ほげほげ}
+%
+%　文字列の色の変更をキャンセルして黒文字に戻したい場合：　
+%	32〜37行目のコメントアウト(%)をすべてはずして、25〜30行目にコメントアウトを入れる
+%
+% 黒くした文字列にまた色を付けたい場合：　
+%	25〜30行目のコメントアウト(%)をすべてはずして、32〜37行目にコメントアウトを入れる
+%
+%%%%%%%%%%%%%%%%%%%%%　　注意事項　　%%%%%%%%%%%%%%%%%%%%%                                 
+
+\def\Hline{\noalign{\hrule height 1.5pt}}
+
+%\newcommand{\redout}[1]{\textcolor{red}{\bf #1}}
+%\newcommand{\blueout}[1]{\textcolor{blue}{\bf #1}}
+%\newcommand{\greenout}[1]{\textcolor{green}{\bf #1}}
+%\newcommand{\cyannout}[1]{\textcolor{cyan}{\bf #1}}
+%\newcommand{\magentaout}[1]{\textcolor{magenta}{\bf #1}}
+%\newcommand{\yellowout}[1]{\textcolor{yellow}{\bf #1}}
+
+\newcommand{\redout}[1]{#1}
+\newcommand{\blueout}[1]{#1}
+\newcommand{\greenout}[1]{#1}
+\newcommand{\cyannout}[1]{#1}
+\newcommand{\magentaout}[1]{#1}
+\newcommand{\yellowout}[1]{#1}
+
+
+%%% chapterのフォントサイズ %%%
+\newcommand{\CFONTSIZE}{\LARGE}
+\def\@chapter[#1]#2{%
+  \ifnum \c@secnumdepth >\m@ne
+    \refstepcounter{chapter}%
+    \typeout{\@chapapp\space\thechapter\space\@chappos}%
+    \addcontentsline{toc}{chapter}%
+      {\protect\numberline{\@chapapp\thechapter\@chappos}#1}%
+  \else
+    \addcontentsline{toc}{chapter}{#1}%
+  \fi
+  \chaptermark{#1}%
+  \addtocontents{lof}{\protect\addvspace{10\p@}}%
+  \addtocontents{lot}{\protect\addvspace{10\p@}}%
+  \@makechapterhead{#2}\@afterheading}
+\def\@makechapterhead#1{\hbox{}%
+  \vskip2\Cvs
+  {\parindent\z@
+   \raggedright
+   \reset@font\CFONTSIZE\bfseries
+   \leavevmode
+   \ifnum \c@secnumdepth >\m@ne
+     \setlength\@tempdima{\linewidth}%
+     \setbox\z@\hbox{\@chapapp\thechapter\@chappos\hskip1zw}%
+     \addtolength\@tempdima{-\wd\z@}%
+     \unhbox\z@\nobreak
+     \vtop{\hsize\@tempdima#1}%
+   \else
+     {#1}\relax
+   \fi}\nobreak\vskip3\Cvs}
+\def\@schapter#1{%
+  \@makeschapterhead{#1}\@afterheading
+}
+\def\@makeschapterhead#1{\hbox{}%
+  \vskip2\Cvs
+  {\parindent\z@
+   \raggedright
+   \reset@font\CFONTSIZE\bfseries
+   \leavevmode
+   \setlength\@tempdima{\linewidth}%
+   \vtop{\hsize\@tempdima#1}}\vskip3\Cvs}
