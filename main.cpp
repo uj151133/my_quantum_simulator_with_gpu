@@ -22,8 +22,11 @@ void execute() {
 
     // UniqueTable& uniqueTable = UniqueTable::getInstance();
 
-    grover(6, 60);
-    // cout << mathUtils::mulMV(state::KetPlusY().getInitialEdge(), state::KetPlusY().getInitialEdge()) << endl;
+    int numQubits = 10;
+    int omega = std::pow(2, numQubits) - 1;
+
+    grover(numQubits, omega);
+    // cout << mathUtils::mul(state::KetPlusY().getInitialEdge(), state::KetPlusY().getInitialEdge()) << endl;
 
     // cout << mathUtils::kron(gate::H().getInitialEdge(), gate::H().getInitialEdge()) << endl;
 
