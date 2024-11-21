@@ -26,7 +26,7 @@ namespace gate {
     QMDDGate varCX();
     QMDDGate CZ();
     QMDDGate DCNOT();
-    QMDDGate SWAP(bool primitive = false);
+    QMDDGate SWAP();
     QMDDGate iSWAP();
 
     /* Non-Clifford qubit gates */
