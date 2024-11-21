@@ -33,9 +33,8 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1) {
 
         vector<vector<QMDDEdge>> z(n0->edges.size(), vector<QMDDEdge>(n1->edges[0].size(), QMDDEdge(.0, nullptr)));
         complex<double> tmpWeight = .0;
-        QMDDEdge p, q;
         bool allWeightsAreZero = true;
-        #pragma omp parallel for private(p, q) shared(z) collapse(3) schedule(dynamic, 2)
+        // #pragma omp parallel for collapse(3) schedule(dynamic, 3)
         for (size_t i = 0; i < n0->edges.size(); i++) {
             for (size_t j = 0; j < n1->edges[0].size(); j++){
                 for (size_t k = 0; k < n0->edges[0].size(); k++) {
@@ -363,16 +362,14 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1) {
         bool allWeightsAreZero = true;
         vector<vector<QMDDEdge>> z(n0->edges.size(), vector<QMDDEdge>(n0->edges[0].size()));
         complex<double> tmpWeight = .0;
-        QMDDEdge p, q;
-        size_t i, j;
-        #pragma omp parallel for shared(z) private(i, j, p, q) schedule(dynamic, 2)
+
+        #pragma omp parallel for schedule(dynamic, 3)
         for (size_t idx = 0; idx < n0->edges.size() * n0->edges[0].size(); idx++) {
             size_t i = idx / n0->edges[0].size();
             size_t j = idx % n0->edges[0].size();
             QMDDEdge p = QMDDEdge(e0Copy->weight * n0->edges[i][j].weight, n0->edges[i][j].uniqueTableKey);
             QMDDEdge q = QMDDEdge(e1Copy->weight * n1->edges[i][j].weight, n1->edges[i][j].uniqueTableKey);
             z[i][j] = mathUtils::add(p, q);
-            // z[i][j] = mathUtils::add(QMDDEdge(e0Copy->weight * n0->edges[i][j].weight, n0->edges[i][j].uniqueTableKey), QMDDEdge(e1Copy->weight * n1->edges[i][j].weight, n1->edges[i][j].uniqueTableKey));
         }
         for (size_t i = 0; i < z.size(); i++) {
             for (size_t j = 0; j < z[i].size(); j++) {
@@ -611,16 +608,14 @@ QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1) {
         bool allWeightsAreZero = true;
         size_t i, j;
 
-        // #pragma omp parallel for shared(z, n0) schedule(auto) collapse(2)
-        // #pragma omp parallel
-        // #pragma omp taskloop collapse(2) num_tasks(z.size() * z[0].size()) default(shared) private(e1)
+        // #pragma omp parallel for shared(z, n0) schedule(dynamic, 2) collapse(2)
         // for (size_t i = 0; i < z.size(); i++) {
         //     for (size_t j = 0; j < z[i].size(); j++) {
         //         z[i][j] = mathUtils::kron(n0->edges[i][j], e1);
         //     }
         // }
         size_t loopNum = n0->edges.size() * n0->edges[0].size();
-        #pragma omp parallel for shared(z) private(i, j) schedule(dynamic, 2)
+        // #pragma omp parallel for shared(z) private(i, j) schedule(dynamic, 2)
         for (size_t idx = 0; idx < loopNum; idx++) {
             size_t i = idx / n0->edges[0].size();
             size_t j = idx % n0->edges[0].size();
