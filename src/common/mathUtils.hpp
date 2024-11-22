@@ -9,6 +9,7 @@
 #include "../models/uniqueTable.hpp"
 #include "../models/operationCache.hpp"
 #include "calculation.hpp"
+#include "../modules/fiber.hpp"
 
 using namespace std;
 

@@ -1,19 +1,43 @@
+// FiberPool.hpp
 #ifndef FIBER_HPP
 #define FIBER_HPP
 
 #include <boost/fiber/all.hpp>
-#include <deque>
+#include <vector>
+#include <queue>
+#include <functional>
+#include <thread>
+#include <mutex>
+#include <condition_variable>
+#include <atomic>
+#include <memory>
 
-class CustomScheduler : public boost::fibers::algo::algorithm {
+class FiberPool {
 public:
-    void awakened(boost::fibers::context *ctx) noexcept override;
-    boost::fibers::context* pick_next() noexcept override;
-    bool has_ready_fibers() const noexcept override;
-    void suspend_until(std::chrono::steady_clock::time_point const&) noexcept override;
-    void notify() noexcept override;
+    explicit FiberPool(size_t threadCount = std::thread::hardware_concurrency());
+    ~FiberPool();
+
+    // Delete copy constructor and assignment operator
+    FiberPool(const FiberPool&) = delete;
+    FiberPool& operator=(const FiberPool&) = delete;
+
+    // タスクをキューに追加
+    template <typename F>
+    void enqueue(F&& task);
+
+    // プールを停止してリソースを解放
+    void stop();
 
 private:
-    std::deque<boost::fibers::context*> ready_queue;
+    std::vector<std::thread> threads;
+    std::queue<std::function<void()>> taskQueue;
+    std::mutex queueMutex;
+    std::condition_variable queueCondition;
+    std::atomic<bool> stopFlag;
+
+    void workerThread();
 };
+
+#include "fiber.tpp"
 
 #endif
