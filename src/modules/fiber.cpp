@@ -1,22 +1,45 @@
+// FiberPool.cpp
 #include "fiber.hpp"
 
-void CustomScheduler::awakened(boost::fibers::context *ctx) noexcept {
-    ready_queue.push_back(ctx);
-}
-
-boost::fibers::context* CustomScheduler::pick_next() noexcept {
-    if (ready_queue.empty()) {
-        return nullptr;
+FiberPool::FiberPool(size_t threadCount)
+    : stopFlag(false) {
+    for (size_t i = 0; i < threadCount; ++i) {
+        threads.emplace_back([this]() { this->workerThread(); });
     }
-    boost::fibers::context* ctx = ready_queue.front();
-    ready_queue.pop_front();
-    return ctx;
 }
 
-bool CustomScheduler::has_ready_fibers() const noexcept {
-    return !ready_queue.empty();
+FiberPool::~FiberPool() {
+    stop();
 }
 
-void CustomScheduler::suspend_until(std::chrono::steady_clock::time_point const&) noexcept {}
+void FiberPool::stop() {
+    {
+        std::lock_guard<std::mutex> lock(queueMutex);
+        stopFlag = true;
+    }
+    queueCondition.notify_all();
+    for (auto& thread : threads) {
+        if (thread.joinable()) {
+            thread.join();
+        }
+    }
+}
 
-void CustomScheduler::notify() noexcept {}
+void FiberPool::workerThread() {
+    while (true) {
+        std::function<void()> task;
+        {
+            std::unique_lock<std::mutex> lock(queueMutex);
+            queueCondition.wait(lock, [this]() {
+                return stopFlag || !taskQueue.empty();
+            });
+            if (stopFlag && taskQueue.empty()) {
+                return;
+            }
+            task = std::move(taskQueue.front());
+            taskQueue.pop();
+        }
+        // タスクを実行
+        boost::fibers::fiber(std::move(task)).detach();
+    }
+}
