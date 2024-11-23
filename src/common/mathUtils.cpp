@@ -1,6 +1,7 @@
 #include "mathUtils.hpp"
 
 QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1) {
+    // printf("thread = %d\n", omp_get_thread_num());
     OperationCache& cache = OperationCache::getInstance();
     UniqueTable& table = UniqueTable::getInstance();
     size_t operationCacheKey = calculation::generateOperationCacheKey(make_tuple(e0, OperationType::MUL, e1));
@@ -100,10 +101,12 @@ QMDDEdge mathUtils::mulParallel(const QMDDEdge& e0, const QMDDEdge& e1) {
         complex<double> tmpWeight = .0;
         bool allWeightsAreZero = true;
 
-        #pragma omp parallel for collapse(3) schedule(dynamic, 3)
-        for (size_t i = 0; i < n0->edges.size(); i++) {
-            for (size_t j = 0; j < n1->edges[0].size(); j++){
-                for (size_t k = 0; k < n0->edges[0].size(); k++) {
+        size_t i, j, k;
+
+        #pragma omp parallel for schedule(dynamic, 3) private(j, k) shared(z)
+        for (i = 0; i < n0->edges.size(); i++) {
+            for (j = 0; j < n1->edges[0].size(); j++){
+                for (k = 0; k < n0->edges[0].size(); k++) {
                     QMDDEdge p = QMDDEdge(e0Copy->weight * n0->edges[i][k].weight, n0->edges[i][k].uniqueTableKey);
                     QMDDEdge q = QMDDEdge(e1Copy->weight * n1->edges[k][j].weight, n1->edges[k][j].uniqueTableKey);
                     z[i][j] = mathUtils::addParallel(z[i][j], mathUtils::mul(p, q));
