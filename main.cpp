@@ -22,7 +22,7 @@ void execute() {
 
     // UniqueTable& uniqueTable = UniqueTable::getInstance();
 
-    int numQubits = 10;
+    int numQubits = 13;
     int omega = std::pow(2, numQubits) - 1;
 
     grover(numQubits, omega);
