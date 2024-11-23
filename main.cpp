@@ -22,7 +22,7 @@ void execute() {
 
     // UniqueTable& uniqueTable = UniqueTable::getInstance();
 
-    int numQubits = 5;
+    int numQubits = 10;
     int omega = std::pow(2, numQubits) - 1;
 
     grover(numQubits, omega);
@@ -58,7 +58,8 @@ int main() {
     //     cout << "GUI is disabled." << endl;
     // }
 
-    measureExecutionTime(execute);
+    // measureExecutionTime(execute);
+    execute();
 
     // printMemoryUsage();
     // printMemoryUsageOnMac();
