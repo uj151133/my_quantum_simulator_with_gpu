@@ -58,8 +58,8 @@ int main() {
     //     cout << "GUI is disabled." << endl;
     // }
 
-    // measureExecutionTime(execute);
-    execute();
+    measureExecutionTime(execute);
+    // execute();
 
     // printMemoryUsage();
     // printMemoryUsageOnMac();
