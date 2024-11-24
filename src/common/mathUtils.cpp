@@ -39,7 +39,7 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1) {
                 for (size_t k = 0; k < n0->edges[0].size(); k++) {
                     QMDDEdge p(e0Copy->weight * n0->edges[i][k].weight, n0->edges[i][k].uniqueTableKey);
                     QMDDEdge q(e1Copy->weight * n1->edges[k][j].weight, n1->edges[k][j].uniqueTableKey);
-                    z[i][j] = mathUtils::add(z[i][j], mathUtils::mul(p, q));
+                    z[i][j] += mathUtils::mul(p, q);
                 }
                 if (z[i][j].weight != .0) {
                     allWeightsAreZero = false;
