@@ -60,7 +60,7 @@ void execute() {
 
     // testRecursiveFunction();
 
-    int numQubits = 10;
+    int numQubits = 8;
     int omega = std::pow(2, numQubits) - 1;
 
     grover(numQubits, omega);
