@@ -11,7 +11,7 @@ using namespace std;
 class OperationCache {
 private:
     unordered_map<size_t, OperationResult> cache;
-    mutable shared_mutex cacheMutex;
+    // mutable shared_mutex cacheMutex;
     OperationCache() = default;
 
 public:
