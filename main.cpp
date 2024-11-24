@@ -14,7 +14,8 @@
 #include "src/models/circuit.hpp"
 #include "src/common/monitor.hpp"
 // #include "src/test/hwb5tc/benchHwb5tc.hpp"
-#include "src/test/Grover/grover.hpp"
+// #include "src/test/Grover/grover.hpp"
+#include "src/test/random/randomRotate.hpp"
 
 using namespace std;
 
@@ -23,9 +24,12 @@ void execute() {
     // UniqueTable& uniqueTable = UniqueTable::getInstance();
 
     int numQubits = 10;
-    int omega = std::pow(2, numQubits) - 1;
+    int numGates = 200;
 
-    grover(numQubits, omega);
+    randomRotate(numQubits, numGates);
+    // int omega = std::pow(2, numQubits) - 1;
+
+    // grover(numQubits, omega);
     // cout << mathUtils::mul(state::KetPlusY().getInitialEdge(), state::KetPlusY().getInitialEdge()) << endl;
 
     // cout << mathUtils::kron(gate::H().getInitialEdge(), gate::H().getInitialEdge()) << endl;
