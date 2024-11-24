@@ -13,18 +13,16 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1) {
     else {
         // cout << "\033[1;35mCache miss!\033[0m" << endl;
 
-        QMDDEdge* e0Copy = const_cast<QMDDEdge*>(&e0);
-        QMDDEdge* e1Copy = const_cast<QMDDEdge*>(&e1);
-        if (e1Copy->isTerminal) {
-            std::swap(e0Copy, e1Copy);
+        if (e1.isTerminal) {
+            std::swap(const_cast<QMDDEdge&>(e0), const_cast<QMDDEdge&>(e1));
         }
-        if (e0Copy->isTerminal) {
-            if (e0Copy->weight == .0) {
-                return *e0Copy;
-            } else if (e0Copy->weight == 1.0){
-                return *e1Copy;
+        if (e0.isTerminal) {
+            if (e0.weight == .0) {
+                return e0;
+            } else if (e0.weight == 1.0){
+                return e1;
             } else {
-                return QMDDEdge(e0Copy->weight * e1Copy->weight, e1Copy->uniqueTableKey);
+                return QMDDEdge(e0.weight * e1.weight, e1.uniqueTableKey);
             }
         }
 
@@ -37,8 +35,8 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1) {
         for (size_t i = 0; i < n0->edges.size(); i++) {
             for (size_t j = 0; j < n1->edges[0].size(); j++){
                 for (size_t k = 0; k < n0->edges[0].size(); k++) {
-                    QMDDEdge p(e0Copy->weight * n0->edges[i][k].weight, n0->edges[i][k].uniqueTableKey);
-                    QMDDEdge q(e1Copy->weight * n1->edges[k][j].weight, n1->edges[k][j].uniqueTableKey);
+                    QMDDEdge p(e0.weight * n0->edges[i][k].weight, n0->edges[i][k].uniqueTableKey);
+                    QMDDEdge q(e1.weight * n1->edges[k][j].weight, n1->edges[k][j].uniqueTableKey);
                     z[i][j] += mathUtils::mul(p, q);
                 }
                 if (z[i][j].weight != .0) {
@@ -150,18 +148,16 @@ QMDDEdge mathUtils::mulForDiagonal(const QMDDEdge& e0, const QMDDEdge& e1) {
     else {
         // cout << "\033[1;35mCache miss!\033[0m" << endl;
 
-        QMDDEdge* e0Copy = const_cast<QMDDEdge*>(&e0);
-        QMDDEdge* e1Copy = const_cast<QMDDEdge*>(&e1);
-        if (e1Copy->isTerminal) {
-            std::swap(e0Copy, e1Copy);
+        if (e1.isTerminal) {
+            std::swap(const_cast<QMDDEdge&>(e0), const_cast<QMDDEdge&>(e1));
         }
-        if (e0Copy->isTerminal) {
-            if (e0Copy->weight == .0) {
-                return *e0Copy;
-            } else if (e0Copy->weight == 1.0){
-                return *e1Copy;
+        if (e0.isTerminal) {
+            if (e0.weight == .0) {
+                return e0;
+            } else if (e0.weight == 1.0){
+                return e1;
             } else {
-                return QMDDEdge(e0Copy->weight * e1Copy->weight, e1Copy->uniqueTableKey);
+                return QMDDEdge(e0.weight * e1.weight, e1.uniqueTableKey);
             }
         }
 
@@ -174,8 +170,8 @@ QMDDEdge mathUtils::mulForDiagonal(const QMDDEdge& e0, const QMDDEdge& e1) {
         for (size_t i = 0; i < n0->edges.size(); i++) {
             for (size_t j = 0; j < n1->edges[0].size(); j++){
                 for (size_t k = 0; k < n0->edges[0].size(); k++) {
-                    QMDDEdge p(e0Copy->weight * n0->edges[i][k].weight, n0->edges[i][k].uniqueTableKey);
-                    QMDDEdge q(e1Copy->weight * n1->edges[k][j].weight, n1->edges[k][j].uniqueTableKey);
+                    QMDDEdge p(e0.weight * n0->edges[i][k].weight, n0->edges[i][k].uniqueTableKey);
+                    QMDDEdge q(e1.weight * n1->edges[k][j].weight, n1->edges[k][j].uniqueTableKey);
                     z[i][j] = mathUtils::add(z[i][j], mathUtils::mulForDiagonal(p, q));
                 }
                 if (z[i][j].weight != .0) {
@@ -213,7 +209,7 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1) {
     }
     else {
         // cout << "\033[1;35mCache miss!\033[0m" << endl;
-        
+
         QMDDEdge* e0Copy = const_cast<QMDDEdge*>(&e0);
         QMDDEdge* e1Copy = const_cast<QMDDEdge*>(&e1);
         if (e1Copy->isTerminal) {
