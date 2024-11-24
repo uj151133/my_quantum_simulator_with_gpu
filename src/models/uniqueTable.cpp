@@ -6,12 +6,12 @@ UniqueTable& UniqueTable::getInstance() {
 }
 
 void UniqueTable::insert(size_t hashKey, shared_ptr<QMDDNode> node) {
-    unique_lock<shared_mutex> lock(tableMutex);
+    // unique_lock<shared_mutex> lock(tableMutex);
     table[hashKey].push_back(node);  // 新規挿入
 }
 
 shared_ptr<QMDDNode> UniqueTable::find(size_t hashKey) const {
-    shared_lock<shared_mutex> lock(tableMutex);
+    // shared_lock<shared_mutex> lock(tableMutex);
     auto it = table.find(hashKey);
     if (it != table.end()) {
         return it->second[0];

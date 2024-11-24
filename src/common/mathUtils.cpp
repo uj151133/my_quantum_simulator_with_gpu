@@ -101,16 +101,16 @@ QMDDEdge mathUtils::mulParallel(const QMDDEdge& e0, const QMDDEdge& e1) {
         complex<double> tmpWeight = .0;
         bool allWeightsAreZero = true;
 
-        size_t i, j, k;
-
-        #pragma omp parallel for schedule(dynamic, 3) private(j, k) shared(z)
-        for (i = 0; i < n0->edges.size(); i++) {
-            for (j = 0; j < n1->edges[0].size(); j++){
-                for (k = 0; k < n0->edges[0].size(); k++) {
+        // #pragma omp parallel for schedule(dynamic, 3) collapse(2) default(shared)
+        for (size_t i = 0; i < n0->edges.size(); i++) {
+            for (size_t j = 0; j < n1->edges[0].size(); j++){
+                QMDDEdge r(.0, nullptr);
+                for (size_t k = 0; k < n0->edges[0].size(); k++) {
                     QMDDEdge p = QMDDEdge(e0Copy->weight * n0->edges[i][k].weight, n0->edges[i][k].uniqueTableKey);
                     QMDDEdge q = QMDDEdge(e1Copy->weight * n1->edges[k][j].weight, n1->edges[k][j].uniqueTableKey);
-                    z[i][j] = mathUtils::addParallel(z[i][j], mathUtils::mul(p, q));
+                    r = mathUtils::add(r, mathUtils::mul(p, q));
                 }
+                z[i][j] = r;
             }
         }
 
@@ -295,15 +295,14 @@ QMDDEdge mathUtils::addParallel(const QMDDEdge& e0, const QMDDEdge& e1) {
         bool allWeightsAreZero = true;
         vector<vector<QMDDEdge>> z(n0->edges.size(), vector<QMDDEdge>(n0->edges[0].size()));
         complex<double> tmpWeight = .0;
-        size_t loopNum = n0->edges.size() * n0->edges[0].size();
 
-        // #pragma omp parallel for schedule(dynamic, 3)
-        for (size_t idx = 0; idx < loopNum; idx++) {
-            size_t i = idx / n0->edges[0].size();
-            size_t j = idx % n0->edges[0].size();
-            QMDDEdge p = QMDDEdge(e0Copy->weight * n0->edges[i][j].weight, n0->edges[i][j].uniqueTableKey);
-            QMDDEdge q = QMDDEdge(e1Copy->weight * n1->edges[i][j].weight, n1->edges[i][j].uniqueTableKey);
-            z[i][j] = mathUtils::add(p, q);
+        // #pragma omp parallel for schedule(dynamic, 3) default(shared)
+        for (size_t i = 0; i < n0->edges.size(); i++) {
+            for (size_t j = 0; j < n0->edges[i].size(); j++) {
+                QMDDEdge p(e0Copy->weight * n0->edges[i][j].weight, n0->edges[i][j].uniqueTableKey);
+                QMDDEdge q(e1Copy->weight * n1->edges[i][j].weight, n1->edges[i][j].uniqueTableKey);
+                z[i][j] = mathUtils::add(p, q);
+            }
         }
 
         for (size_t i = 0; i < z.size(); i++) {
@@ -394,7 +393,6 @@ QMDDEdge mathUtils::addForDiagonal(const QMDDEdge& e0, const QMDDEdge& e1) {
 
 QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1) {
     OperationCache& cache = OperationCache::getInstance();
-    UniqueTable& table = UniqueTable::getInstance();
     size_t operationCacheKey = calculation::generateOperationCacheKey(make_tuple(e0, OperationType::KRONECKER, e1));
     // cout << "Operation cache key: " << operationCacheKey << endl;
     auto existingAnswer = cache.find(operationCacheKey);
@@ -416,17 +414,15 @@ QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1) {
                 return QMDDEdge(e0Copy->weight * e1Copy->weight, e1Copy->uniqueTableKey);
             }
         }
-        shared_ptr<QMDDNode> n0 = table.find(e0.uniqueTableKey);
-        shared_ptr<QMDDNode> n1 = table.find(e1.uniqueTableKey);
+        shared_ptr<QMDDNode> n0 = e0.getStartNode();
+        shared_ptr<QMDDNode> n1 = e1.getStartNode();
         vector<vector<QMDDEdge>> z(n0->edges.size(), vector<QMDDEdge>(n1->edges[0].size()));
         complex<double> tmpWeight = .0;
         bool allWeightsAreZero = true;
-        size_t i, j;
 
         for (size_t i = 0; i < z.size(); i++) {
             for (size_t j = 0; j < z[i].size(); j++) {
                 z[i][j] = mathUtils::kron(n0->edges[i][j], e1);
-
                 if (z[i][j].weight != .0) {
                     allWeightsAreZero = false;
                     if (tmpWeight == .0) {
@@ -453,7 +449,6 @@ QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1) {
 
 QMDDEdge mathUtils::kronParallel(const QMDDEdge& e0, const QMDDEdge& e1) {
     OperationCache& cache = OperationCache::getInstance();
-    UniqueTable& table = UniqueTable::getInstance();
     size_t operationCacheKey = calculation::generateOperationCacheKey(make_tuple(e0, OperationType::KRONECKER, e1));
     // cout << "Operation cache key: " << operationCacheKey << endl;
     auto existingAnswer = cache.find(operationCacheKey);
@@ -475,18 +470,18 @@ QMDDEdge mathUtils::kronParallel(const QMDDEdge& e0, const QMDDEdge& e1) {
                 return QMDDEdge(e0Copy->weight * e1Copy->weight, e1Copy->uniqueTableKey);
             }
         }
-        shared_ptr<QMDDNode> n0 = table.find(e0.uniqueTableKey);
-        shared_ptr<QMDDNode> n1 = table.find(e1.uniqueTableKey);
+        shared_ptr<QMDDNode> n0 = e0.getStartNode();
+        shared_ptr<QMDDNode> n1 = e1.getStartNode();
         vector<vector<QMDDEdge>> z(n0->edges.size(), vector<QMDDEdge>(n1->edges[0].size()));
         complex<double> tmpWeight = .0;
         bool allWeightsAreZero = true;
 
         size_t loopNum = n0->edges.size() * n0->edges[0].size();
-        // #pragma omp parallel for schedule(dynamic, 3)
-        for (size_t idx = 0; idx < loopNum; idx++) {
-            size_t i = idx / n0->edges[0].size();
-            size_t j = idx % n0->edges[0].size();
-            z[i][j] = mathUtils::kron(n0->edges[i][j], e1);
+        #pragma omp parallel for schedule(dynamic, 3) default(shared)
+         for (size_t i = 0; i < z.size(); i++) {
+            for (size_t j = 0; j < z[i].size(); j++) {
+                z[i][j] = mathUtils::kron(n0->edges[i][j], e1);
+            }
         }
 
         for (size_t i = 0; i < z.size(); i++) {
