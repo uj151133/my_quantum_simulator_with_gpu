@@ -9,7 +9,7 @@ using namespace std;
 class UniqueTable {
 private:
     unordered_map<size_t, vector<shared_ptr<QMDDNode>>> table;
-    // mutable shared_mutex tableMutex;
+    mutable shared_mutex tableMutex;
     UniqueTable() = default;
 
 public:

@@ -97,7 +97,7 @@ QMDDEdge mathUtils::mulParallel(const QMDDEdge& e0, const QMDDEdge& e1) {
         complex<double> tmpWeight = .0;
         bool allWeightsAreZero = true;
 
-        // #pragma omp parallel for schedule(dynamic, 3) collapse(2) default(shared)
+        #pragma omp parallel for schedule(dynamic) collapse(2) default(shared)
         for (size_t i = 0; i < n0->edges.size(); i++) {
             for (size_t j = 0; j < n1->edges[0].size(); j++){
                 QMDDEdge r(.0, nullptr);
@@ -287,7 +287,7 @@ QMDDEdge mathUtils::addParallel(const QMDDEdge& e0, const QMDDEdge& e1) {
         vector<vector<QMDDEdge>> z(n0->edges.size(), vector<QMDDEdge>(n0->edges[0].size()));
         complex<double> tmpWeight = .0;
 
-        // #pragma omp parallel for schedule(dynamic, 3) default(shared)
+        #pragma omp parallel for schedule(dynamic) default(shared)
         for (size_t i = 0; i < n0->edges.size(); i++) {
             for (size_t j = 0; j < n0->edges[i].size(); j++) {
                 QMDDEdge p(e0Copy->weight * n0->edges[i][j].weight, n0->edges[i][j].uniqueTableKey);
@@ -463,7 +463,7 @@ QMDDEdge mathUtils::kronParallel(const QMDDEdge& e0, const QMDDEdge& e1) {
         complex<double> tmpWeight = .0;
         bool allWeightsAreZero = true;
 
-        #pragma omp parallel for schedule(dynamic) default(shared)
+        #pragma omp parallel for s_chedule(dynamic) default(shared)
         for (size_t i = 0; i < z.size(); i++) {
             for (size_t j = 0; j < z[i].size(); j++) {
                 z[i][j] = mathUtils::kron(n0->edges[i][j], e1);
