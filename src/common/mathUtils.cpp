@@ -2,7 +2,6 @@
 
 QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1) {
     OperationCache& cache = OperationCache::getInstance();
-    UniqueTable& table = UniqueTable::getInstance();
     size_t operationCacheKey = calculation::generateOperationCacheKey(make_tuple(e0, OperationType::MUL, e1));
     // cout << "Operation cache key: " << operationCacheKey << endl;
     auto existingAnswer = cache.find(operationCacheKey);
@@ -28,8 +27,8 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1) {
             }
         }
 
-        shared_ptr<QMDDNode> n0 = table.find(e0.uniqueTableKey);
-        shared_ptr<QMDDNode> n1 = table.find(e1.uniqueTableKey);
+        shared_ptr<QMDDNode> n0 = e0.getStartNode();
+        shared_ptr<QMDDNode> n1 = e1.getStartNode();
 
         vector<vector<QMDDEdge>> z(n0->edges.size(), vector<QMDDEdge>(n1->edges[0].size(), QMDDEdge(.0, nullptr)));
         complex<double> tmpWeight = .0;
@@ -67,7 +66,6 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1) {
 
 QMDDEdge mathUtils::mulForDiagonal(const QMDDEdge& e0, const QMDDEdge& e1) {
     OperationCache& cache = OperationCache::getInstance();
-    UniqueTable& table = UniqueTable::getInstance();
     size_t operationCacheKey = calculation::generateOperationCacheKey(make_tuple(e0, OperationType::MUL, e1));
     // cout << "Operation cache key: " << operationCacheKey << endl;
     auto existingAnswer = cache.find(operationCacheKey);
@@ -94,8 +92,8 @@ QMDDEdge mathUtils::mulForDiagonal(const QMDDEdge& e0, const QMDDEdge& e1) {
             }
         }
 
-        shared_ptr<QMDDNode> n0 = table.find(e0.uniqueTableKey);
-        shared_ptr<QMDDNode> n1 = table.find(e1.uniqueTableKey);
+        shared_ptr<QMDDNode> n0 = e0.getStartNode();
+        shared_ptr<QMDDNode> n1 = e1.getStartNode();
 
         vector<vector<QMDDEdge>> z(n0->edges.size(), vector<QMDDEdge>(n1->edges[0].size(), QMDDEdge(.0, nullptr)));
         complex<double> tmpWeight = .0;
@@ -133,7 +131,6 @@ QMDDEdge mathUtils::mulForDiagonal(const QMDDEdge& e0, const QMDDEdge& e1) {
 
 QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1) {
     OperationCache& cache = OperationCache::getInstance();
-    UniqueTable& table = UniqueTable::getInstance();
     size_t operationCacheKey = calculation::generateOperationCacheKey(make_tuple(e0, OperationType::ADD, e1));
     // cout << "Operation cache key: " << operationCacheKey << endl;
     auto existingAnswer = cache.find(operationCacheKey);
@@ -156,8 +153,8 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1) {
                 return QMDDEdge(e0Copy->weight + e1Copy->weight, nullptr);
             }
         }
-        shared_ptr<QMDDNode> n0 = table.find(e0.uniqueTableKey);
-        shared_ptr<QMDDNode> n1 = table.find(e1.uniqueTableKey);
+        shared_ptr<QMDDNode> n0 = e0.getStartNode();
+        shared_ptr<QMDDNode> n1 = e1.getStartNode();
         bool allWeightsAreZero = true;
         vector<vector<QMDDEdge>> z(n0->edges.size(), vector<QMDDEdge>(n0->edges[0].size()));
         complex<double> tmpWeight = .0;
@@ -193,7 +190,6 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1) {
 
 QMDDEdge mathUtils::addForDiagonal(const QMDDEdge& e0, const QMDDEdge& e1) {
     OperationCache& cache = OperationCache::getInstance();
-    UniqueTable& table = UniqueTable::getInstance();
     size_t operationCacheKey = calculation::generateOperationCacheKey(make_tuple(e0, OperationType::ADD, e1));
     // cout << "Operation cache key: " << operationCacheKey << endl;
     auto existingAnswer = cache.find(operationCacheKey);
@@ -216,8 +212,8 @@ QMDDEdge mathUtils::addForDiagonal(const QMDDEdge& e0, const QMDDEdge& e1) {
                 return QMDDEdge(e0Copy->weight + e1Copy->weight, nullptr);
             }
         }
-        shared_ptr<QMDDNode> n0 = table.find(e0.uniqueTableKey);
-        shared_ptr<QMDDNode> n1 = table.find(e1.uniqueTableKey);
+        shared_ptr<QMDDNode> n0 = e0.getStartNode();
+        shared_ptr<QMDDNode> n1 = e1.getStartNode();
         bool allWeightsAreZero = true;
         vector<vector<QMDDEdge>> z(n0->edges.size(), vector<QMDDEdge>(n0->edges[0].size()));
         complex<double> tmpWeight = .0;
@@ -253,7 +249,6 @@ QMDDEdge mathUtils::addForDiagonal(const QMDDEdge& e0, const QMDDEdge& e1) {
 
 QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1) {
     OperationCache& cache = OperationCache::getInstance();
-    UniqueTable& table = UniqueTable::getInstance();
     size_t operationCacheKey = calculation::generateOperationCacheKey(make_tuple(e0, OperationType::KRONECKER, e1));
     // cout << "Operation cache key: " << operationCacheKey << endl;
     auto existingAnswer = cache.find(operationCacheKey);
@@ -275,8 +270,8 @@ QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1) {
                 return QMDDEdge(e0Copy->weight * e1Copy->weight, e1Copy->uniqueTableKey);
             }
         }
-        shared_ptr<QMDDNode> n0 = table.find(e0.uniqueTableKey);
-        shared_ptr<QMDDNode> n1 = table.find(e1.uniqueTableKey);
+        shared_ptr<QMDDNode> n0 = e0.getStartNode();
+        shared_ptr<QMDDNode> n1 = e1.getStartNode();
         vector<vector<QMDDEdge>> z(n0->edges.size(), vector<QMDDEdge>(n1->edges[0].size()));
         complex<double> tmpWeight = .0;
         bool allWeightsAreZero = true;
@@ -311,7 +306,6 @@ QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1) {
 
 QMDDEdge mathUtils::kronForDiagonal(const QMDDEdge& e0, const QMDDEdge& e1) {
     OperationCache& cache = OperationCache::getInstance();
-    UniqueTable& table = UniqueTable::getInstance();
     size_t operationCacheKey = calculation::generateOperationCacheKey(make_tuple(e0, OperationType::KRONECKER, e1));
     // cout << "Operation cache key: " << operationCacheKey << endl;
     auto existingAnswer = cache.find(operationCacheKey);
@@ -333,8 +327,8 @@ QMDDEdge mathUtils::kronForDiagonal(const QMDDEdge& e0, const QMDDEdge& e1) {
                 return QMDDEdge(e0Copy->weight * e1Copy->weight, e1Copy->uniqueTableKey);
             }
         }
-        shared_ptr<QMDDNode> n0 = table.find(e0.uniqueTableKey);
-        shared_ptr<QMDDNode> n1 = table.find(e1.uniqueTableKey);
+        shared_ptr<QMDDNode> n0 = e0.getStartNode();
+        shared_ptr<QMDDNode> n1 = e1.getStartNode();
         vector<vector<QMDDEdge>> z(2, vector<QMDDEdge>(2, QMDDEdge(.0, nullptr)));
         complex<double> tmpWeight = .0;
         bool allWeightsAreZero = true;
