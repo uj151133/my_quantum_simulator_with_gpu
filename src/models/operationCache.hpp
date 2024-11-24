@@ -3,6 +3,7 @@
 
 #include <unordered_map>
 #include <cstring>
+#include <shared_mutex>
 #include "qmdd.hpp"
 #include "../common/calculation.hpp"
 using namespace std;
@@ -10,6 +11,7 @@ using namespace std;
 class OperationCache {
 private:
     unordered_map<size_t, OperationResult> cache;
+    mutable shared_mutex cacheMutex;
     OperationCache() = default;
 
 public:
