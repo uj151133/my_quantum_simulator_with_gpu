@@ -29,6 +29,7 @@ enum class OperationType {
     ADD,
     MUL,
     KRONECKER,
+    TEST,
 };
 
 using OperationKey = tuple<QMDDEdge, OperationType, QMDDEdge>;
