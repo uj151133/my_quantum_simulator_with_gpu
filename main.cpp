@@ -48,7 +48,9 @@ QMDDEdge complexRecursive(int n, int m, QMDDEdge e0, QMDDEdge e1) {
     bool allWeightsAreZero = true;
     for (int i = 0; i < n0->edges.size(); ++i) {
         for (int j = 0; j < n0->edges[0].size(); ++j) {
-            z[i][j] = complexRecursive(n - 1, m - 1, e0, e1);
+            QMDDEdge p(e0.weight * n0->edges[i][j].weight, n0->edges[i][j].uniqueTableKey);
+            QMDDEdge q(e1.weight * n1->edges[i][j].weight, n1->edges[j][j].uniqueTableKey);
+            z[i][j] = complexRecursive(n - 1, m - 1, p, q);
 
             if (z[i][j].weight != .0) {
                 allWeightsAreZero = false;
@@ -78,7 +80,7 @@ void testRecursiveFunction() {
     const int recursionDepthN = 6; // 再帰の深さ (n方向)
     const int recursionDepthM = 6; // 再帰の深さ (m方向)
 
-    QMDDEdge edge = mathUtils::kron(gate::Toff().getInitialEdge(), gate::Toff().getInitialEdge());
+    QMDDEdge edge = mathUtils::kron(mathUtils::kron(gate::H().getInitialEdge(), gate::H().getInitialEdge()), gate::B().getInitialEdge());
     // QMDDEdge edge = gate::CX1().getInitialEdge();
     shared_ptr<QMDDNode> node = edge.getStartNode();
     int outerLoop = node->edges.size();
@@ -88,7 +90,7 @@ void testRecursiveFunction() {
     vector<vector<QMDDEdge>> z(outerLoop, vector<QMDDEdge>(innerLoop));
 
     // OpenMP並列化
-    // #pragma omp parallel for schedule(dynamic) default(shared)
+    #pragma omp parallel for schedule(dynamic) default(shared)
     for (int i = 0; i < outerLoop; ++i) {
         for (int j = 0; j < innerLoop; ++j) {
             QMDDEdge p(edge.weight * node->edges[i][j].weight, node->edges[i][j].uniqueTableKey);
@@ -99,19 +101,19 @@ void testRecursiveFunction() {
 }
 
 void execute() {
-    for (int i = 0; i < 10; i++){
-        testRecursiveFunction();
-    }
+    // for (int i = 0; i < 10; i++){
+    //     testRecursiveFunction();
+    // }
     
     // UniqueTable& uniqueTable = UniqueTable::getInstance();
 
-    int numQubits = 11;
-    int numGates = 700;
+    int numQubits = 1;
+    // int numGates = 700;
 
-    randomRotate(numQubits, numGates);
-    // int omega = std::pow(2, numQubits) - 1;
+    // randomRotate(numQubits, numGates);
+    int omega = std::pow(2, numQubits) - 1;
 
-    // grover(numQubits, omega);
+    grover(numQubits, omega);
     // cout << mathUtils::mul(state::KetPlusY().getInitialEdge(), state::KetPlusY().getInitialEdge()) << endl;
 
     // cout << mathUtils::kron(gate::H().getInitialEdge(), gate::H().getInitialEdge()) << endl;
