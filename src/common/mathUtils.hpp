@@ -5,6 +5,7 @@
 #include <numeric>
 #include <Eigen/Core>
 #include <Eigen/Dense>
+#include <functional>
 #include "../models/qmdd.hpp"
 #include "../models/uniqueTable.hpp"
 #include "../models/operationCache.hpp"

@@ -56,6 +56,8 @@ struct QMDDEdge{
     bool operator==(const QMDDEdge& other) const;
     bool operator!=(const QMDDEdge& other) const;
     friend ostream& operator<<(ostream& os, const QMDDEdge& edge);
+    QMDDEdge operator+(const QMDDEdge& other) const;
+    QMDDEdge& operator+=(const QMDDEdge& other);
 };
 
 struct QMDDNode {
