@@ -5,6 +5,7 @@
 #include <cmath>
 #include <numeric>
 #include <queue>
+#include <functional>
 #include "../models/qmdd.hpp"
 #include "../models/uniqueTable.hpp"
 #include "../models/operationCache.hpp"
@@ -15,18 +16,13 @@ using namespace std;
 
 namespace mathUtils {
     QMDDEdge mul(const QMDDEdge& e0, const QMDDEdge& e1);
-    QMDDEdge mulMM(const QMDDEdge& e0, const QMDDEdge& e1);
-    QMDDEdge mulKB(const QMDDEdge& e0, const QMDDEdge& e1);
-    QMDDEdge mulMV(const QMDDEdge& e0, const QMDDEdge& e1);
+    QMDDEdge mulParallel(const QMDDEdge& e0, const QMDDEdge& e1);
     QMDDEdge mulForDiagonal(const QMDDEdge& e0, const QMDDEdge& e1);
     QMDDEdge add(const QMDDEdge& e0, const QMDDEdge& e1);
-    QMDDEdge addVV(const QMDDEdge& e0, const QMDDEdge& e1);
-    QMDDEdge addMM(const QMDDEdge& e0, const QMDDEdge& e1);
+    QMDDEdge addParallel(const QMDDEdge& e0, const QMDDEdge& e1);
     QMDDEdge addForDiagonal(const QMDDEdge& e0, const QMDDEdge& e1);
     QMDDEdge kron(const QMDDEdge& e0, const QMDDEdge& e1);
-    QMDDEdge kronVV(const QMDDEdge& e0, const QMDDEdge& e1);
-    QMDDEdge kronMM(const QMDDEdge& e0, const QMDDEdge& e1);
-    // QMDDEdge kronMV(const QMDDEdge& e0, const QMDDEdge& e1);
+    QMDDEdge kronParallel(const QMDDEdge& e0, const QMDDEdge& e1);
     QMDDEdge kronForDiagonal(const QMDDEdge& e0, const QMDDEdge& e1);
 
     double csc(double theta);
