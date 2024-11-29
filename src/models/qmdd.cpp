@@ -1,6 +1,7 @@
 #include "qmdd.hpp"
 #include "uniqueTable.hpp"
 #include "../common/calculation.hpp"
+#include "../common/mathUtils.hpp"
 
 ostream& operator<<(ostream& os, const QMDDVariant& variant) {
     visit([&os](auto&& arg) {
@@ -102,6 +103,15 @@ ostream& operator<<(ostream& os, const QMDDEdge& edge) {
         os << ", Key = Null" << ", isTerminal = " << edge.isTerminal;
     }
     return os;
+}
+
+QMDDEdge QMDDEdge::operator+(const QMDDEdge& other) const {
+    return mathUtils::add(*this, other);
+}
+
+QMDDEdge& QMDDEdge::operator+=(const QMDDEdge& other) {
+    *this = *this + other;
+    return *this;
 }
 
 /////////////////////////////////////
