@@ -14,7 +14,15 @@ cd build
 cmake ..
 make
 sudo make install
+```
 
+### GUI
+please do this.
+
+```zsh
+echo 'export PATH=$PATH:/usr/local/share/dotnet' >> ~/.zshrc
+source ~/.zshrc
+sudo dotnet workload install maui
 ```
 
 ### others
