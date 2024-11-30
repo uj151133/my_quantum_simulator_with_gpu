@@ -76,34 +76,30 @@ struct QMDDNode {
     friend ostream& operator<<(ostream& os, const QMDDNode& node);
 };
 
-class QMDDGate{
-private:
+class QMDDBase{
+protected:
     QMDDEdge initialEdge;
 public:
-    QMDDGate(QMDDEdge edge, size_t numEdge = 4);
-    QMDDGate(const QMDDGate& other) = default;
-    ~QMDDGate() = default;
+    QMDDBase(QMDDEdge edge);
+    virtual ~QMDDBase() = default;
+    QMDDBase(const QMDDBase& other) = default;
+    QMDDBase& operator=(const QMDDBase& other) = default;
+    bool operator==(const QMDDBase& other) const;
+    bool operator!=(const QMDDBase& other) const;
     shared_ptr<QMDDNode> getStartNode() const;
     QMDDEdge getInitialEdge() const;
-    QMDDGate& operator=(const QMDDGate& other) = default;
-    bool operator==(const QMDDGate& other) const;
-    bool operator!=(const QMDDGate& other) const;
+};
+
+class QMDDGate : public QMDDBase{
+public:
+    QMDDGate(QMDDEdge edge);
     friend ostream& operator<<(ostream& os, const QMDDGate& gate);
 };
 
-class QMDDState{
-private:
-    QMDDEdge initialEdge;
+class QMDDState : public QMDDBase{
 public:
     QMDDState(QMDDEdge edge);
-    QMDDState(const QMDDState& other) = default;
-    ~QMDDState() = default;
-    shared_ptr<QMDDNode> getStartNode() const;
-    QMDDEdge getInitialEdge() const;
     vector<complex<double>> getAllElements();
-    QMDDState& operator=(const QMDDState& other) = default;
-    bool operator==(const QMDDState& other) const;
-    bool operator!=(const QMDDState& other) const;
     friend ostream& operator<<(ostream& os, const QMDDState& state);
 };
 

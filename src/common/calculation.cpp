@@ -55,11 +55,29 @@ size_t calculation::generateOperationCacheKey(const OperationKey& key) {
         };
 
         size_t seed = 0;
-        hash_combine(seed, customHash(get<0>(key).weight));
-        hash_combine(seed, hash<size_t>()(get<0>(key).uniqueTableKey));
-        hash_combine(seed, hash<OperationType>()(get<1>(key)));
-        hash_combine(seed, customHash(get<2>(key).weight));
-        hash_combine(seed, hash<size_t>()(get<2>(key).uniqueTableKey));
+        size_t combinedKey0 = customHash(get<0>(key).weight);
+        hash_combine(combinedKey0, hash<size_t>()(get<0>(key).uniqueTableKey));
+        size_t combinedKey2 = customHash(get<2>(key).weight);
+        hash_combine(combinedKey2, hash<size_t>()(get<2>(key).uniqueTableKey));
+        // size_t combinedKey2 = calculation::generateQMDDKey(QMDDVariant(get<2>()));
 
+        hash_combine(seed, combinedKey0);
+        hash_combine(seed, hash<OperationType>()(get<1>(key)));
+        hash_combine(seed, combinedKey2);
         return seed;
     }
+
+// size_t calculation::generateQMDDKey(QMDDVariant& qmdd) {
+//     auto customHash = [](const complex<double>& c) {
+//             size_t realHash = hash<double>()(c.real());
+//             size_t imagHash = hash<double>()(c.imag());
+//             return realHash ^ (imagHash << 1);
+//     };
+
+//     auto hash_combine = [](size_t& seed, size_t hash) {
+//             seed ^= hash + 0x9e3779b9 + (seed << 6) + (seed >> 2);
+//     };
+
+//     size_t combinedKey0 = customHash(qmdd.getInitialEdge().weight);
+//     hash_combine(combinedKey0, hash<size_t>()(qmdd.getInitialEdge().uniqueTableKey));
+// }

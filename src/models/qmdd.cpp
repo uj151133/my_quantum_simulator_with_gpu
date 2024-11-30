@@ -162,32 +162,41 @@ ostream& operator<<(ostream& os, const QMDDNode& node) {
     return os;
 }
 
+
+/////////////////////////////////////
+//
+//	QMDDBase
+//
+/////////////////////////////////////
+
+QMDDBase::QMDDBase(QMDDEdge edge)
+    : initialEdge(std::move(edge)){}
+
+bool QMDDBase::operator==(const QMDDBase& other) const {
+    return initialEdge == other.initialEdge;
+}
+
+bool QMDDBase::operator!=(const QMDDBase& other) const {
+    return !(*this == other);
+}
+
+shared_ptr<QMDDNode> QMDDBase::getStartNode() const {
+    UniqueTable& table = UniqueTable::getInstance();
+    return table.find(initialEdge.uniqueTableKey);
+}
+
+QMDDEdge QMDDBase::getInitialEdge() const {
+    return initialEdge;
+}
+
 /////////////////////////////////////
 //
 //	QMDDGate
 //
 /////////////////////////////////////
 
-QMDDGate::QMDDGate(QMDDEdge edge, size_t numEdge)
-    : initialEdge(std::move(edge)){}
-
-
-shared_ptr<QMDDNode> QMDDGate::getStartNode() const {
-    UniqueTable& table = UniqueTable::getInstance();
-    return table.find(initialEdge.uniqueTableKey);
-}
-
-QMDDEdge QMDDGate::getInitialEdge() const {
-    return initialEdge;
-}
-
-bool QMDDGate::operator==(const QMDDGate& other) const {
-    return initialEdge == other.initialEdge;
-}
-
-bool QMDDGate::operator!=(const QMDDGate& other) const {
-    return !(*this == other);
-}
+QMDDGate::QMDDGate(QMDDEdge edge)
+    : QMDDBase(std::move(edge)) {}
 
 ostream& operator<<(ostream& os, const QMDDGate& gate) {
     os << "QMDDGate with initial edge:\n" << gate.initialEdge;
@@ -201,24 +210,7 @@ ostream& operator<<(ostream& os, const QMDDGate& gate) {
 /////////////////////////////////////
 
 QMDDState::QMDDState(QMDDEdge edge)
-    : initialEdge(std::move(edge)) {}
-
-shared_ptr<QMDDNode> QMDDState::getStartNode() const {
-    UniqueTable& table = UniqueTable::getInstance();
-    return table.find(initialEdge.uniqueTableKey);
-}
-
-QMDDEdge QMDDState::getInitialEdge() const {
-    return initialEdge;
-}
-
-bool QMDDState::operator==(const QMDDState& other) const {
-    return initialEdge == other.initialEdge;
-}
-
-bool QMDDState::operator!=(const QMDDState& other) const {
-    return !(*this == other);
-}
+    : QMDDBase(std::move(edge)) {}
 
 ostream& operator<<(ostream& os, const QMDDState& state) {
     os << "QMDDState with initial edge:\n" << state.initialEdge;
