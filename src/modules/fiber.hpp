@@ -1,43 +1,64 @@
-// FiberPool.hpp
-#ifndef FIBER_HPP
-#define FIBER_HPP
+#pragma once
 
 #include <boost/fiber/all.hpp>
+#include <boost/asio.hpp>
+#include <thread>
 #include <vector>
 #include <queue>
 #include <functional>
-#include <thread>
 #include <mutex>
 #include <condition_variable>
-#include <atomic>
-#include <memory>
+
+namespace parallel {
 
 class FiberPool {
 public:
-    explicit FiberPool(size_t threadCount = std::thread::hardware_concurrency());
+    // シングルトンインスタンスを取得
+    static FiberPool& getInstance(size_t threadCount = std::thread::hardware_concurrency());
+
+    // ファイバータスクを追加
+    template<typename Func>
+    void enqueue(Func&& task);
+
+    // すべてのファイバーの完了を待つ
+    void wait();
+
+    // デストラクタ
     ~FiberPool();
 
-    // Delete copy constructor and assignment operator
-    FiberPool(const FiberPool&) = delete;
-    FiberPool& operator=(const FiberPool&) = delete;
-
-    // タスクをキューに追加
-    template <typename F>
-    void enqueue(F&& task);
-
-    // プールを停止してリソースを解放
-    void stop();
-
 private:
-    std::vector<std::thread> threads;
-    std::queue<std::function<void()>> taskQueue;
-    std::mutex queueMutex;
-    std::condition_variable queueCondition;
-    std::atomic<bool> stopFlag;
+    // コンストラクタは privateで、シングルトンパターンを実現
+    explicit FiberPool(size_t threadCount);
 
+    // ワークステアリングを実装するワーカースレッド関数
     void workerThread();
+
+    // スレッドプール
+    std::vector<std::thread> threads;
+
+    // タスクキュー
+    std::queue<std::function<void()>> tasks;
+
+    // 同期プリミティブ
+    std::mutex queueMutex;
+    std::condition_variable condition;
+    bool stop;
+
+    // 実行中のファイバー数
+    std::atomic<size_t> activeFibers;
+
+    // コンテキストスイッチングのためのI/Oサービス
+    boost::asio::io_context ioContext;
+    std::unique_ptr<boost::asio::io_context::work> work;
 };
 
-#include "fiber.tpp"
+template<typename Func>
+void FiberPool::enqueue(Func&& task) {
+    {
+        std::unique_lock<std::mutex> lock(queueMutex);
+        tasks.emplace(std::forward<Func>(task));
+    }
+    condition.notify_one();
+}
 
-#endif
+} 

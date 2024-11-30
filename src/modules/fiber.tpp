@@ -1,13 +1,29 @@
+// このファイルは主にテンプレートのインライン実装のために使用
+// 通常、.tppファイルは#includeされることを想定
+
 #ifndef FIBER_TPP
 #define FIBER_TPP
 
-template <typename F>
-void FiberPool::enqueue(F&& task) {
+#include "fiber.hpp"
+
+namespace parallel {
+
+template<typename Func>
+void FiberPool::enqueue(Func&& task) {
     {
-        std::lock_guard<std::mutex> lock(queueMutex);
-        taskQueue.emplace(std::forward<F>(task));
+        std::unique_lock<std::mutex> lock(queueMutex);
+        
+        // タスクキューに追加
+        tasks.emplace([task = std::forward<Func>(task)]() {
+            // ラムダ内でタスクを実行
+            task();
+        });
     }
-    queueCondition.notify_one();
+    
+    // ワーカースレッドに通知
+    condition.notify_one();
 }
+
+} // namespace parallel
 
 #endif
