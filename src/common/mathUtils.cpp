@@ -241,28 +241,24 @@ QMDDEdge mathUtils::addParallel(const QMDDEdge& e0, const QMDDEdge& e1) {
     bool allWeightsAreZero = true;
     vector<vector<QMDDEdge>> z(n0->edges.size(), vector<QMDDEdge>(n0->edges[0].size()));
     complex<double> tmpWeight = .0;
-    boost::fibers::mutex mtx;
-    boost::fibers::condition_variable cv;
-    size_t remaining = n0->edges.size() * n0->edges[0].size();
-    queue<pair<size_t, size_t>> taskQueue;
+
+    std::mutex zMutex;
+    auto& fiberPool = parallel::FiberPool::getInstance();
 
     for (size_t i = 0; i < n0->edges.size(); i++) {
-        for (size_t j = 0; j < n0->edges[i].size(); j++) {
-            taskQueue.push(make_pair(i, j));
-        }
-    }
-
-    for (size_t i = 0; i < n0->edges.size(); i++) {
-        for (size_t j = 0; j < n0->edges[i].size(); j++) {
-            boost::fibers::fiber([&, i, j] {
+        fiberPool.enqueue([i, &e0, &n0, &e1, &n1]() {
+            for (size_t j = 0; j < n0->edges[i].size(); j++) {
                 QMDDEdge p(e0.weight * n0->edges[i][j].weight, n0->edges[i][j].uniqueTableKey);
                 QMDDEdge q(e1.weight * n1->edges[i][j].weight, n1->edges[i][j].uniqueTableKey);
-                z[i][j] = mathUtils::add(p, q);
+                QMDDEdge result = mathUtils::add(p, q);
+            }
+        });
+    }
 
-            {
-                std::unique_lock<boost::fibers::mutex> lock(mtx);
-                cv.wait(lock, [&] { return taskQueue.front() == make_pair(i, j); });
+    fiberPool.wait();
 
+    for (size_t i = 0; i < z.size(); i++) {
+        for (size_t j = 0; j < z[i].size(); j++) {
                 if (z[i][j].weight != .0) {
                     allWeightsAreZero = false;
                     if (tmpWeight == .0) {
@@ -274,24 +270,7 @@ QMDDEdge mathUtils::addParallel(const QMDDEdge& e0, const QMDDEdge& e1) {
                         cout << "⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️" << endl;
                     }
                 }
-
-                taskQueue.pop();
-                cv.notify_all();
-            }
-
-            {
-                std::unique_lock<boost::fibers::mutex> lock(mtx);
-                if (--remaining == 0) {
-                    cv.notify_all();
-                }
-            }
-        }).detach();
         }
-    }
-
-    {
-        std::unique_lock<boost::fibers::mutex> lock(mtx);
-        cv.wait(lock, [&] { return remaining == 0; });
     }
 
     QMDDEdge result;

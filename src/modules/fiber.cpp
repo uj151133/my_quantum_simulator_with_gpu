@@ -1,27 +1,19 @@
-// FiberPool.cpp
 #include "fiber.hpp"
 
-FiberPool::FiberPool(size_t threadCount)
-    : stopFlag(false) {
+namespace parallel {
+
+FiberPool& FiberPool::getInstance(size_t threadCount) {
+    static FiberPool instance(threadCount);
+    return instance;
+}
+
+FiberPool::FiberPool(size_t threadCount) : stop(false), activeFibers(0) {
+    // I/Oコンテキストの作業を設定してスレッドがすぐに終了しないようにする
+    work = std::make_unique<boost::asio::io_context::work>(ioContext);
+
+    // ワーカースレッドを起動
     for (size_t i = 0; i < threadCount; ++i) {
-        threads.emplace_back([this]() { this->workerThread(); });
-    }
-}
-
-FiberPool::~FiberPool() {
-    stop();
-}
-
-void FiberPool::stop() {
-    {
-        std::lock_guard<std::mutex> lock(queueMutex);
-        stopFlag = true;
-    }
-    queueCondition.notify_all();
-    for (auto& thread : threads) {
-        if (thread.joinable()) {
-            thread.join();
-        }
+        threads.emplace_back([this] { workerThread(); });
     }
 }
 
@@ -30,16 +22,55 @@ void FiberPool::workerThread() {
         std::function<void()> task;
         {
             std::unique_lock<std::mutex> lock(queueMutex);
-            queueCondition.wait(lock, [this]() {
-                return stopFlag || !taskQueue.empty();
+            
+            // タスクが来るまで待機
+            condition.wait(lock, [this] { 
+                return stop || !tasks.empty(); 
             });
-            if (stopFlag && taskQueue.empty()) {
+
+            // 停止フラグが立っていて、タスクキューが空の場合は終了
+            if (stop && tasks.empty()) {
                 return;
             }
-            task = std::move(taskQueue.front());
-            taskQueue.pop();
+
+            // タスクを取得
+            task = std::move(tasks.front());
+            tasks.pop();
         }
-        // タスクを実行
-        boost::fibers::fiber(std::move(task)).detach();
+
+        // ワークステアリング：現在のスレッドでファイバーを実行
+        boost::fibers::fiber([&task, this]() {
+            ++activeFibers;
+            try {
+                task();
+            } catch (const std::exception& e) {
+                // エラーハンドリング
+                std::cerr << "Fiber task failed: " << e.what() << std::endl;
+            }
+            --activeFibers;
+        }).detach();
     }
 }
+
+void FiberPool::wait() {
+    // すべてのファイバーの完了を待つ
+    while (activeFibers > 0) {
+        std::this_thread::yield();
+    }
+}
+
+FiberPool::~FiberPool() {
+    // すべてのスレッドを停止
+    {
+        std::unique_lock<std::mutex> lock(queueMutex);
+        stop = true;
+    }
+    condition.notify_all();
+
+    // すべてのワーカースレッドを結合
+    for (auto& thread : threads) {
+        thread.join();
+    }
+}
+
+} // namespace parallel
