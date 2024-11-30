@@ -107,13 +107,9 @@ void execute() {
     
     // UniqueTable& uniqueTable = UniqueTable::getInstance();
 
-<<<<<<< HEAD
     int numQubits = 1;
     // int numGates = 700;
-=======
-    int numQubits = 13;
-    // int numGates = 200;
->>>>>>> daef3ccedf2c741f32305c25fb421aa25087f3e6
+
 
     // randomRotate(numQubits, numGates);
     int omega = std::pow(2, numQubits) - 1;
