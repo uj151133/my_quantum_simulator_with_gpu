@@ -7,7 +7,7 @@ UniqueTable& UniqueTable::getInstance() {
 
 void UniqueTable::insert(size_t hashKey, shared_ptr<QMDDNode> node) {
     unique_lock<shared_mutex> lock(tableMutex);
-    table[hashKey].push_back(node);  // 新規挿入
+    table[hashKey].push_back(node);
 }
 
 shared_ptr<QMDDNode> UniqueTable::find(size_t hashKey) const {
