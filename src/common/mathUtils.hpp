@@ -2,6 +2,8 @@
 #define MATHUTILS_HPP
 
 #include <boost/fiber/all.hpp>
+#include <boost/fiber/algo/work_stealing.hpp>
+#include <boost/fiber/mutex.hpp>
 #include <cmath>
 #include <numeric>
 #include <queue>
