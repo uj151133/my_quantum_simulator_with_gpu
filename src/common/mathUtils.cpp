@@ -35,7 +35,7 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1) {
             for (size_t k = 0; k < n0->edges[0].size(); k++) {
                 QMDDEdge p(e0.weight * n0->edges[i][k].weight, n0->edges[i][k].uniqueTableKey);
                 QMDDEdge q(e1.weight * n1->edges[k][j].weight, n1->edges[k][j].uniqueTableKey);
-                z[i][j] += mathUtils::mul(p, q);
+                z[i][j] = mathUtils::add(z[i][j], mathUtils::mul(p, q));
             }
             if (z[i][j].weight != .0) {
                 allWeightsAreZero = false;
@@ -91,61 +91,47 @@ QMDDEdge mathUtils::mulParallel(const QMDDEdge& e0, const QMDDEdge& e1) {
         bool allWeightsAreZero = true;
 
         boost::fibers::mutex mtx;
-        boost::fibers::condition_variable cv;
-        size_t remaining = n0->edges.size() * n1->edges[0].size();
-        queue<pair<size_t, size_t>> taskQueue;
+        std::vector<boost::fibers::fiber> fibers;
+        // FiberPool pool(4);
 
-        for (size_t i = 0; i < n0->edges.size(); i++) {
-            for (size_t j = 0; j < n1->edges[0].size(); j++) {
-                taskQueue.push(make_pair(i, j));
-            }
-        }
-
-        for (size_t i = 0; i < n0->edges.size(); i++) {
-            for (size_t j = 0; j < n1->edges[0].size(); j++) {
-                boost::fibers::fiber([&, i, j] {
+        for (int i = 0; i < n0->edges.size(); i++) {
+            for (int j = 0; j < n1->edges[0].size(); j++) {
+                fibers.emplace_back(boost::fibers::fiber([i, j, &z, &mtx, &n0, &n1, &e0, &e1]() {
+                // pool.enqueue([i, j, &z, &mtx, &n0, &n1, &e0, &e1]() {
+                    QMDDEdge computedResult;
                     for (size_t k = 0; k < n0->edges[0].size(); k++) {
                         QMDDEdge p(e0.weight * n0->edges[i][k].weight, n0->edges[i][k].uniqueTableKey);
                         QMDDEdge q(e1.weight * n1->edges[k][j].weight, n1->edges[k][j].uniqueTableKey);
-                        {
-                            std::unique_lock<boost::fibers::mutex> lock(mtx);
-                            z[i][j] = mathUtils::addParallel(z[i][j], mathUtils::mul(p, q));
-                        }
+                        computedResult = mathUtils::addParallel(computedResult, mathUtils::mul(p, q));
                     }
-
                     {
                         std::unique_lock<boost::fibers::mutex> lock(mtx);
-                        cv.wait(lock, [&] { return taskQueue.front() == make_pair(i, j); });
-
-                        if (z[i][j].weight != .0) {
-                            allWeightsAreZero = false;
-                            if (tmpWeight == .0) {
-                                tmpWeight = z[i][j].weight;
-                                z[i][j].weight = 1.0;
-                            }else if (tmpWeight != .0) {
-                                z[i][j].weight /= tmpWeight;
-                            } else {
-                                cout << "⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️" << endl;
-                            }
-                        }
-
-                        taskQueue.pop();
-                        cv.notify_all();
+                        z[i][j] = computedResult;
                     }
-
-                    {
-                        std::unique_lock<boost::fibers::mutex> lock(mtx);
-                        if (--remaining == 0) {
-                            cv.notify_all();
-                        }
-                    }
-                }).detach();
+                }));
+                // });
             }
         }
 
-        {
-            std::unique_lock<boost::fibers::mutex> lock(mtx);
-            cv.wait(lock, [&] { return remaining == 0; });
+        for (auto& f : fibers) {
+            f.join();
+        }
+
+
+        for (size_t i = 0; i < z.size(); i++) {
+            for (size_t j = 0; j < z[i].size(); j++) {
+                if (z[i][j].weight != .0) {
+                    allWeightsAreZero = false;
+                    if (tmpWeight == .0) {
+                        tmpWeight = z[i][j].weight;
+                        z[i][j].weight = 1.0;
+                    }else if (tmpWeight != .0) {
+                        z[i][j].weight /= tmpWeight;
+                    } else {
+                        cout << "⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️" << endl;
+                    }
+                }
+            }
         }
 
 
@@ -242,20 +228,27 @@ QMDDEdge mathUtils::addParallel(const QMDDEdge& e0, const QMDDEdge& e1) {
     vector<vector<QMDDEdge>> z(n0->edges.size(), vector<QMDDEdge>(n0->edges[0].size()));
     complex<double> tmpWeight = .0;
 
-    std::mutex zMutex;
-    auto& fiberPool = parallel::FiberPool::getInstance();
+    boost::fibers::mutex mtx;
+    std::vector<boost::fibers::fiber> fibers;
 
-    for (size_t i = 0; i < n0->edges.size(); i++) {
-        fiberPool.enqueue([i, &e0, &n0, &e1, &n1]() {
-            for (size_t j = 0; j < n0->edges[i].size(); j++) {
+    for (int i = 0; i < n0->edges.size(); i++) {
+        for (int j = 0; j < n0->edges[i].size(); j++) {
+            fibers.emplace_back(boost::fibers::fiber([i, j, &z, &mtx, &n0, &n1, &e0, &e1]() {
                 QMDDEdge p(e0.weight * n0->edges[i][j].weight, n0->edges[i][j].uniqueTableKey);
                 QMDDEdge q(e1.weight * n1->edges[i][j].weight, n1->edges[i][j].uniqueTableKey);
-                QMDDEdge result = mathUtils::add(p, q);
-            }
-        });
+                QMDDEdge computedResult = mathUtils::add(p, q);
+                {
+                    std::unique_lock<boost::fibers::mutex> lock(mtx);
+                    z[i][j] = computedResult;
+                }
+            }));
+        }
     }
 
-    fiberPool.wait();
+    for (auto& f : fibers) {
+        f.join();
+    }
+
 
     for (size_t i = 0; i < z.size(); i++) {
         for (size_t j = 0; j < z[i].size(); j++) {
@@ -422,54 +415,41 @@ QMDDEdge mathUtils::kronParallel(const QMDDEdge& e0, const QMDDEdge& e1) {
     vector<vector<QMDDEdge>> z(n0->edges.size(), vector<QMDDEdge>(n1->edges[0].size()));
     complex<double> tmpWeight = .0;
     bool allWeightsAreZero = true;
+
     boost::fibers::mutex mtx;
-    boost::fibers::condition_variable cv;
-    size_t remaining = n0->edges.size() * n0->edges[0].size();
-    queue<pair<size_t, size_t>> taskQueue;
+    std::vector<boost::fibers::fiber> fibers;
 
-    for (size_t i = 0; i < n0->edges.size(); i++) {
-        for (size_t j = 0; j < n0->edges[i].size(); j++) {
-            taskQueue.push(make_pair(i, j));
-        }
-    }
-    for (size_t i = 0; i < n0->edges.size(); i++) {
-        for (size_t j = 0; j < n0->edges[i].size(); j++) {
-            boost::fibers::fiber([&, i, j] {
-                z[i][j] = mathUtils::kronParallel(n0->edges[i][j], e1);
+    for (int i = 0; i < n0->edges.size(); i++) {
+        for (int j = 0; j < n0->edges[i].size(); j++) {
 
+            fibers.emplace_back(boost::fibers::fiber([i, j, &z, &mtx, &n0, &e1]() {
+                QMDDEdge computedResult = mathUtils::kron(n0->edges[i][j], e1);
                 {
                     std::unique_lock<boost::fibers::mutex> lock(mtx);
-                    cv.wait(lock, [&] { return taskQueue.front() == make_pair(i, j); });
-
-                    if (z[i][j].weight != .0) {
-                        allWeightsAreZero = false;
-                        if (tmpWeight == .0) {
-                            tmpWeight = z[i][j].weight;
-                            z[i][j].weight = 1.0;
-                        }else if (tmpWeight != .0) {
-                            z[i][j].weight /= tmpWeight;
-                        } else {
-                            cout << "⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️" << endl;
-                        }
-                    }
-
-                    taskQueue.pop();
-                    cv.notify_all();
+                    z[i][j] = computedResult;
                 }
-
-                {
-                    std::unique_lock<boost::fibers::mutex> lock(mtx);
-                    if (--remaining == 0) {
-                        cv.notify_all();
-                    }
-                }
-            }).detach();
+            }));
         }
     }
 
-    {
-        std::unique_lock<boost::fibers::mutex> lock(mtx);
-        cv.wait(lock, [&] { return remaining == 0; });
+    for (auto& f : fibers) {
+        f.join();
+    }
+
+    for (size_t i = 0; i < z.size(); i++) {
+        for (size_t j = 0; j < z[i].size(); j++) {
+            if (z[i][j].weight != .0) {
+                allWeightsAreZero = false;
+                if (tmpWeight == .0) {
+                    tmpWeight = z[i][j].weight;
+                    z[i][j].weight = 1.0;
+                }else if (tmpWeight != .0) {
+                    z[i][j].weight /= tmpWeight;
+                } else {
+                    cout << "⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️" << endl;
+                }
+            }
+        }
     }
 
     QMDDEdge result;

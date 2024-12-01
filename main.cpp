@@ -38,7 +38,7 @@ void execute() {
 }
 
 int main() {
-    // boost::fibers::use_scheduling_algorithm<boost::fibers::algo::work_stealing>(1, true);
+    boost::fibers::use_scheduling_algorithm<boost::fibers::algo::work_stealing>(1, true);
     // string processType = getProcessType();
     // if (processType == "sequential") {
     //     cout << "逐次処理を実行します。" << endl;
