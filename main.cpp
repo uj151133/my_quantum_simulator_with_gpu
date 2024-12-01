@@ -23,7 +23,7 @@ void execute() {
 
     // UniqueTable& uniqueTable = UniqueTable::getInstance();
 
-    int numQubits = 1;
+    int numQubits = 10;
     // int numGates = 200;
 
     // randomRotate(numQubits, numGates);
@@ -38,6 +38,7 @@ void execute() {
 }
 
 int main() {
+    // boost::fibers::use_scheduling_algorithm<boost::fibers::algo::work_stealing>(1, true);
     // string processType = getProcessType();
     // if (processType == "sequential") {
     //     cout << "逐次処理を実行します。" << endl;
