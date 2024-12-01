@@ -23,7 +23,7 @@ void execute() {
 
     // UniqueTable& uniqueTable = UniqueTable::getInstance();
 
-    int numQubits = 10;
+    int numQubits = 14;
     // int numGates = 200;
 
     // randomRotate(numQubits, numGates);
@@ -38,7 +38,8 @@ void execute() {
 }
 
 int main() {
-    boost::fibers::use_scheduling_algorithm<boost::fibers::algo::work_stealing>(1, true);
+
+    // boost::fibers::use_scheduling_algorithm<boost::fibers::algo::shared_work>();
     // string processType = getProcessType();
     // if (processType == "sequential") {
     //     cout << "逐次処理を実行します。" << endl;
@@ -48,7 +49,7 @@ int main() {
     //     parallelProcessing();
     // } else if (processType == "multi-fiber") {
     //     cout << "マルチファイバー処理を実行します。" << endl;
-    //     fiberProcessing();
+        // fiberProcessing();
     // } else {
     //     cerr << "不明な処理タイプ: " << processType << endl;
     // }
