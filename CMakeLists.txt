@@ -41,7 +41,7 @@ endif()
 
 find_package(yaml-cpp REQUIRED)
 find_package(OpenMP REQUIRED)
-find_package(Boost REQUIRED COMPONENTS fiber context)
+find_package(Boost REQUIRED COMPONENTS fiber context thread system)
 find_package(Threads REQUIRED)
 
 # GNUライブラリのインクルードとリンク
@@ -97,7 +97,7 @@ file(GLOB SOURCES "src/models/*.cpp" "src/common/*.cpp" "src/test/*/*.cpp" )
 # 通常のC++実行ファイルを追加
 add_executable(qmdd_sim main.cpp ${SOURCES})
 target_include_directories(qmdd_sim PRIVATE ${GSL_INCLUDE_DIRS})
-target_link_libraries(qmdd_sim PRIVATE yaml-cpp::yaml-cpp Python3::Python OpenMP::OpenMP_CXX Boost::fiber Boost::context GSL::gsl ${GMP_LIB} Threads::Threads)
+target_link_libraries(qmdd_sim PRIVATE yaml-cpp::yaml-cpp Python3::Python OpenMP::OpenMP_CXX Boost::fiber Boost::thread Boost::context Boost::system GSL::gsl ${GMP_LIB} Threads::Threads)
 
 # make run ターゲットの追加
 add_custom_target(run
