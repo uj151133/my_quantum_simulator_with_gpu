@@ -30,9 +30,9 @@ void execute() {
     int omega = std::pow(2, numQubits) - 1;
 
     grover(numQubits, omega);
-    // cout << mathUtils::mul(state::KetPlusY().getInitialEdge(), state::KetPlusY().getInitialEdge()) << endl;
+    // cout << mathUtils::mulParallel(state::KetPlusY().getInitialEdge(), state::KetPlusY().getInitialEdge()) << endl;
 
-    // cout << mathUtils::kron(gate::H().getInitialEdge(), gate::H().getInitialEdge()) << endl;
+    // cout << mathUtils::kronParallel(gate::H().getInitialEdge(), gate::H().getInitialEdge()) << endl;
 
     // uniqueTable.printAllEntries();
 }

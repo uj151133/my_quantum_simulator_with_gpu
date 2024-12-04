@@ -1,8 +1,8 @@
 #include "circuit.hpp"
 
 const QMDDEdge identityEdge = gate::I().getInitialEdge();
-const QMDDEdge braketZero = mathUtils::mul(state::Ket0().getInitialEdge(), state::Bra0().getInitialEdge());
-const QMDDEdge braketOne = mathUtils::mul(state::Ket1().getInitialEdge(), state::Bra1().getInitialEdge());
+const QMDDEdge braketZero = mathUtils::mulParallel(state::Ket0().getInitialEdge(), state::Bra0().getInitialEdge());
+const QMDDEdge braketOne = mathUtils::mulParallel(state::Ket1().getInitialEdge(), state::Bra1().getInitialEdge());
 
 
 QuantumCircuit::QuantumCircuit(int numQubits, QMDDState initialState) : numQubits(numQubits), initialState(initialState), finalState(initialState) {
@@ -327,7 +327,7 @@ void QuantumCircuit::addSWAP(int qubitIndex1, int qubitIndex2) {
                 }
             }
             for (size_t i = 0; i < partialPreSWAP.size(); i++){
-                partialSWAP[i] = mathUtils::mul(partialPreSWAP[i][0], partialPreSWAP[i][1]);
+                partialSWAP[i] = mathUtils::mulParallel(partialPreSWAP[i][0], partialPreSWAP[i][1]);
             }
             customSWAP = accumulate(partialSWAP.begin() + 1, partialSWAP.end(), partialSWAP[0], mathUtils::add);
         }
@@ -615,7 +615,7 @@ void QuantumCircuit::execute() {
 
         cout << "============================================================\n" << endl;
         gateQueue.pop();
-        currentState = mathUtils::mul(currentGate.getInitialEdge(), currentState.getInitialEdge());
+        currentState = mathUtils::mulParallel(currentGate.getInitialEdge(), currentState.getInitialEdge());
     }
     finalState = currentState;
     cout << "Final state: " << finalState << endl;
@@ -632,8 +632,8 @@ QMDDState QuantumCircuit::read(int qubitIndex) {
     edges1.insert(edges1.end(), numQubits - qubitIndex - 1, identityEdge);
     QMDDGate m0 = accumulate(edges0.begin() + 1, edges0.end(), edges0[0], mathUtils::kron);
     QMDDGate m1 = accumulate(edges1.begin() + 1, edges1.end(), edges1[0], mathUtils::kron);
-    QMDDEdge result0 = mathUtils::mul(m0.getInitialEdge(), finalState.getInitialEdge());
-    QMDDEdge result1 = mathUtils::mul(m1.getInitialEdge(), finalState.getInitialEdge());
+    QMDDEdge result0 = mathUtils::mulParallel(m0.getInitialEdge(), finalState.getInitialEdge());
+    QMDDEdge result1 = mathUtils::mulParallel(m1.getInitialEdge(), finalState.getInitialEdge());
 
     vector<complex<double>> v0 = result0.getAllElementsForKet();
     vector<complex<double>> v1 = result1.getAllElementsForKet();
