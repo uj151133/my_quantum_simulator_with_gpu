@@ -91,37 +91,32 @@ QMDDEdge mathUtils::mulParallel(const QMDDEdge& e0, const QMDDEdge& e1) {
     vector<vector<QMDDEdge>> z(n0->edges.size(), vector<QMDDEdge>(n1->edges[0].size(), QMDDEdge(.0, nullptr)));
     complex<double> tmpWeight = .0;
     bool allWeightsAreZero = true;
-    vector<thread> threads(n0->edges.size() * n1->edges[0].size());
+    vector<std::thread> threads;
+    // boost::thread_group threadpool;
     mutex z_mutex;
     for (size_t i = 0; i < n0->edges.size(); i++) {
         for (size_t j = 0; j < n1->edges[i].size(); j++) {
-            if (i >= n0->edges.size() || j >= n0->edges[0].size() ||
-                i >= n1->edges.size() || j >= n1->edges[0].size()) {
-                cerr << "Skipping invalid indices: [" << i << "][" << j << "]" << endl;
-                continue;
-            }
-            threads.emplace_back([=, &z, &z_mutex, &n0, &n1, &e0, &e1, &i, &j]() {
-                cout << "Creating thread [" << i << "][" << j << "]" << endl;
+            threads.emplace_back([&, i, j]() {
+                // cout << "Creating thread [" << i << "][" << j << "]" << endl;
                 QMDDEdge answer = QMDDEdge(.0, nullptr);
                 for (size_t k = 0; k < n0->edges[0].size(); k++) {
                     QMDDEdge p(e0.weight * n0->edges[i][k].weight, n0->edges[i][k].uniqueTableKey);
                     QMDDEdge q(e1.weight * n1->edges[k][j].weight, n1->edges[k][j].uniqueTableKey);
-                    cout << "Thread started" << endl;
+                    // cout << "Thread started" << endl;
                     answer = mathUtils::add(answer, mathUtils::mul(p, q));
-                    cout << "Thread ended" << endl;
+                    // cout << "Thread ended" << endl;
                 }
                 {
                     lock_guard<mutex> lock(z_mutex);
-                    cout << "Lock acquired" << endl;
                     z[i][j] = answer;
                 }
             });
         }
     }
-    cout << "Threads created" << endl;
     for (auto& thread : threads) {
-        thread.join();
-        cout << "Thread joined" << endl;
+        if (thread.joinable()) {
+            thread.join();
+        }
     }
 
     for (size_t i = 0; i < z.size(); i++) {
@@ -140,15 +135,7 @@ QMDDEdge mathUtils::mulParallel(const QMDDEdge& e0, const QMDDEdge& e1) {
 
         }
     }
-    // for (size_t i = 0; i < n0->edges.size(); i++) {
-    //     for (size_t j = 0; j < n1->edges[0].size(); j++){
-    //         for (size_t k = 0; k < n0->edges[0].size(); k++) {
-    //             QMDDEdge p(e0.weight * n0->edges[i][k].weight, n0->edges[i][k].uniqueTableKey);
-    //             QMDDEdge q(e1.weight * n1->edges[k][j].weight, n1->edges[k][j].uniqueTableKey);
-    //             z[i][j] += mathUtils::mul(p, q);
-    //         }
-    //     }
-    // }
+
     QMDDEdge result;
     if (allWeightsAreZero) {
         result = QMDDEdge(.0, nullptr);
@@ -303,7 +290,7 @@ QMDDEdge mathUtils::addParallel(const QMDDEdge& e0, const QMDDEdge& e1) {
     vector<vector<QMDDEdge>> z(n0->edges.size(), vector<QMDDEdge>(n0->edges[0].size()));
     complex<double> tmpWeight = .0;
 
-    #pragma omp parallel for schedule(dynamic, 3) default(shared)
+    // #pragma omp parallel for schedule(dynamic, 3) default(shared)
     for (size_t i = 0; i < n0->edges.size(); i++) {
         for (size_t j = 0; j < n0->edges[i].size(); j++) {
             QMDDEdge p(e0.weight * n0->edges[i][j].weight, n0->edges[i][j].uniqueTableKey);
@@ -473,9 +460,8 @@ QMDDEdge mathUtils::kronParallel(const QMDDEdge& e0, const QMDDEdge& e1) {
         complex<double> tmpWeight = .0;
         bool allWeightsAreZero = true;
 
-        vector<thread> threads(n0->edges.size() * n0->edges[0].size());
+        vector<std::thread> threads;
         mutex z_mutex;
-
         for (size_t i = 0; i < n0->edges.size(); i++) {
             for (size_t j = 0; j < n0->edges[i].size(); j++) {
                 threads.emplace_back([&, i, j]() {
@@ -488,7 +474,9 @@ QMDDEdge mathUtils::kronParallel(const QMDDEdge& e0, const QMDDEdge& e1) {
             }
         }
         for (auto& thread : threads) {
-            thread.join();
+            if (thread.joinable()) {
+                thread.join();
+            }
         }
 
         for (size_t i = 0; i < z.size(); i++) {

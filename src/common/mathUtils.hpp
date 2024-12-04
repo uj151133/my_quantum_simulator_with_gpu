@@ -5,6 +5,9 @@
 #include <numeric>
 #include <functional>
 #include <thread>
+#include <boost/asio/io_service.hpp>
+#include <boost/bind.hpp>
+#include <boost/thread/thread.hpp>
 #include "../models/qmdd.hpp"
 #include "../models/uniqueTable.hpp"
 #include "../models/operationCache.hpp"

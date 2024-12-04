@@ -1,8 +1,8 @@
 #include "circuit.hpp"
 
 const QMDDEdge identityEdge = gate::I().getInitialEdge();
-const QMDDEdge braketZero = mathUtils::mulParallel(state::Ket0().getInitialEdge(), state::Bra0().getInitialEdge());
-const QMDDEdge braketOne = mathUtils::mulParallel(state::Ket1().getInitialEdge(), state::Bra1().getInitialEdge());
+const QMDDEdge braketZero = mathUtils::mul(state::Ket0().getInitialEdge(), state::Bra0().getInitialEdge());
+const QMDDEdge braketOne = mathUtils::mul(state::Ket1().getInitialEdge(), state::Bra1().getInitialEdge());
 
 
 QuantumCircuit::QuantumCircuit(int numQubits, QMDDState initialState) : numQubits(numQubits), initialState(initialState), finalState(initialState) {
