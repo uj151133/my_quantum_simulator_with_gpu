@@ -93,7 +93,6 @@ QMDDEdge mathUtils::mulParallel(const QMDDEdge& e0, const QMDDEdge& e1) {
     bool allWeightsAreZero = true;
     vector<thread> threads(n0->edges.size() * n1->edges[0].size());
     mutex z_mutex;
-
     for (size_t i = 0; i < n0->edges.size(); i++) {
         for (size_t j = 0; j < n1->edges[i].size(); j++) {
             if (i >= n0->edges.size() || j >= n0->edges[0].size() ||
@@ -101,16 +100,16 @@ QMDDEdge mathUtils::mulParallel(const QMDDEdge& e0, const QMDDEdge& e1) {
                 cerr << "Skipping invalid indices: [" << i << "][" << j << "]" << endl;
                 continue;
             }
-            threads.emplace_back([=, &z, &z_mutex, &n0, &n1, &e0, &e1]() {
+            threads.emplace_back([=, &z, &z_mutex, &n0, &n1, &e0, &e1, &i, &j]() {
                 cout << "Creating thread [" << i << "][" << j << "]" << endl;
-                thread_local QMDDEdge answer = QMDDEdge(.0, nullptr);
-                // for (size_t k = 0; k < n0->edges[0].size(); k++) {
-                //     QMDDEdge p(e0.weight * n0->edges[i][k].weight, n0->edges[i][k].uniqueTableKey);
-                //     QMDDEdge q(e1.weight * n1->edges[k][j].weight, n1->edges[k][j].uniqueTableKey);
-                //     cout << "Thread started" << endl;
-                //     answer = mathUtils::add(answer, mathUtils::mul(p, q));
-                //     cout << "Thread ended" << endl;
-                // }
+                QMDDEdge answer = QMDDEdge(.0, nullptr);
+                for (size_t k = 0; k < n0->edges[0].size(); k++) {
+                    QMDDEdge p(e0.weight * n0->edges[i][k].weight, n0->edges[i][k].uniqueTableKey);
+                    QMDDEdge q(e1.weight * n1->edges[k][j].weight, n1->edges[k][j].uniqueTableKey);
+                    cout << "Thread started" << endl;
+                    answer = mathUtils::add(answer, mathUtils::mul(p, q));
+                    cout << "Thread ended" << endl;
+                }
                 {
                     lock_guard<mutex> lock(z_mutex);
                     cout << "Lock acquired" << endl;
