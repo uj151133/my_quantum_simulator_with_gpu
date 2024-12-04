@@ -1,6 +1,7 @@
 #ifndef UNIQUETABLE_HPP
 #define UNIQUETABLE_HPP
 
+#include <mutex>
 #include <shared_mutex>
 #include "qmdd.hpp"
 
