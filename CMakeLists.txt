@@ -45,7 +45,21 @@ find_package(Boost REQUIRED COMPONENTS fiber context)
 
 # GNUライブラリのインクルードとリンク
 find_package(GSL REQUIRED)
-find_library(GMP_LIB gmp)
+if(APPLE)
+    # MacOS (Homebrew) settings
+    find_library(GMP_LIB
+        NAMES gmp
+        PATHS /opt/homebrew/lib
+        REQUIRED
+    )
+    include_directories(/opt/homebrew/include)
+elseif(UNIX AND NOT APPLE)
+    # Ubuntu settings
+    find_package(GMP REQUIRED)
+    if(GMP_FOUND)
+        set(GMP_LIB gmp)
+    endif()
+endif()
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
