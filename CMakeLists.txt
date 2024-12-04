@@ -55,18 +55,25 @@ if(APPLE)
     include_directories(/opt/homebrew/include)
 elseif(UNIX AND NOT APPLE)
     # Ubuntu settings
-    find_package(GMP QUIET)
-    if(NOT GMP_FOUND)
-        # 手動でGMPを探す
-        find_library(GMP_LIBRARIES NAMES gmp)
-        find_path(GMP_INCLUDE_DIRS NAMES gmp.h)
-        if(GMP_LIBRARIES AND GMP_INCLUDE_DIRS)
-            set(GMP_FOUND TRUE)
-            set(GMP_LIB ${GMP_LIBRARIES})
-            include_directories(${GMP_INCLUDE_DIRS})
-        else()
-            message(FATAL_ERROR "GMP library not found. Please install libgmp-dev")
-        endif()
+    find_library(GMP_LIB
+        NAMES gmp
+        PATHS
+        /usr/lib
+        /usr/local/lib
+        /usr/lib/x86_64-linux-gnu  # Ubuntu特有のパスを追加
+        REQUIRED
+    )
+    find_path(GMP_INCLUDE_DIRS
+        NAMES gmp.h
+        PATHS
+        /usr/include
+        /usr/local/include
+        REQUIRED
+    )
+    if(GMP_LIB AND GMP_INCLUDE_DIRS)
+        include_directories(${GMP_INCLUDE_DIRS})
+    else()
+        message(FATAL_ERROR "GMP library not found. Please install libgmp-dev")
     endif()
 endif()
 
