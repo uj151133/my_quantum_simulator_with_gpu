@@ -62,16 +62,27 @@ void printMemoryUsage() {
     cout << "\033[1;34mMemory usage: " << result << " KB\033[0m" << endl;
 }
 
+#ifdef __APPLE__
 void printMemoryUsageOnMac() {
-    mach_task_basic_info info;
+    struct mach_task_basic_info info;
     mach_msg_type_number_t count = MACH_TASK_BASIC_INFO_COUNT;
+    
     if (task_info(mach_task_self(), MACH_TASK_BASIC_INFO, (task_info_t)&info, &count) != KERN_SUCCESS) {
-        cerr << "\033[1;31mError getting memory info\033[0m\n";
+        std::cout << "Failed to get task info" << std::endl;
         return;
     }
-
-    cout << "\033[1;34mMemory usage on mac enviroment: " << info.resident_size / 1024 << " KB\033[0m\n";
+    
+    cout << "\033[1;34mMemory usage on mac environment: " << info.resident_size / 1024 << " KB\033[0m\n";
 }
+#elif defined(__linux__)
+void printMemoryUsageOnLinux() {
+    // Linuxでのメモリ使用量取得処理
+    struct rusage usage;
+    if (getrusage(RUSAGE_SELF, &usage) == 0) {
+        cout << "\033[1;34mMemory usage on Linux environment: " << usage.ru_maxrss << " KB\033[0m\n";
+    }
+}
+#endif
 
 void measureExecutionTime(function<void()> func) {
     auto start = chrono::high_resolution_clock::now();

@@ -25,7 +25,11 @@ void parallelProcessing();
 void sequentialProcessing();
 void fiberProcessing();
 void printMemoryUsage();
+#ifdef __APPLE__
 void printMemoryUsageOnMac();
+#elif defined(__linux__)
+void printMemoryUsageOnLinux();
+#endif
 void measureExecutionTime(function<void()> func);
 bool isExecuteGui();
 
