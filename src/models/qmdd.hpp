@@ -11,6 +11,7 @@
 #include <cmath>
 #include <memory>
 #include <tuple>
+#include <omp.h>
 #include <stack>
 
 using namespace std;
@@ -28,6 +29,7 @@ enum class OperationType {
     ADD,
     MUL,
     KRONECKER,
+    TEST,
 };
 
 using OperationKey = tuple<QMDDEdge, OperationType, QMDDEdge>;
