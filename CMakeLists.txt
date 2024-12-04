@@ -53,7 +53,7 @@ file(GLOB SOURCES "src/models/*.cpp" "src/common/*.cpp" "src/test/*/*.cpp" )
 # 通常のC++実行ファイルを追加
 add_executable(qmdd_sim main.cpp ${SOURCES})
 target_include_directories(qmdd_sim PRIVATE ${GSL_INCLUDE_DIRS})
-target_link_libraries(qmdd_sim PRIVATE yaml-cpp Python3::Python OpenMP::OpenMP_CXX Boost::fiber Boost::context GSL::gsl ${GMP_LIB})
+target_link_libraries(qmdd_sim PRIVATE yaml-cpp::yaml-cpp Python3::Python OpenMP::OpenMP_CXX Boost::fiber Boost::context GSL::gsl ${GMP_LIB})
 
 # make run ターゲットの追加
 add_custom_target(run
