@@ -1,10 +1,19 @@
 #ifndef MONITOR_HPP
 #define MONITOR_HPP
 
+#pragma once
+
 #include <yaml-cpp/yaml.h>
 #include <omp.h>
 #include <boost/fiber/all.hpp>
-#include <mach/mach.h>
+#ifdef __APPLE__
+    #include <mach/mach.h>
+#elif defined(__linux__)
+    #include <sys/sysinfo.h>
+    #include <sys/resource.h>
+    #include <unistd.h>
+#endif
+
 #include <chrono>
 #include <iostream>
 #include <functional>
