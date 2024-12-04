@@ -23,7 +23,7 @@ void execute() {
 
     // UniqueTable& uniqueTable = UniqueTable::getInstance();
 
-    int numQubits = 13;
+    int numQubits = 1;
     // int numGates = 200;
 
     // randomRotate(numQubits, numGates);
