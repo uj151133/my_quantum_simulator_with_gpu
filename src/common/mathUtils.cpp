@@ -91,20 +91,17 @@ QMDDEdge mathUtils::mulParallel(const QMDDEdge& e0, const QMDDEdge& e1) {
     vector<vector<QMDDEdge>> z(n0->edges.size(), vector<QMDDEdge>(n1->edges[0].size(), QMDDEdge(.0, nullptr)));
     complex<double> tmpWeight = .0;
     bool allWeightsAreZero = true;
-    vector<std::thread> threads;
-    // boost::thread_group threadpool;
+    // vector<std::thread> threads;
+    boost::thread_group threadPool;
     mutex z_mutex;
     for (size_t i = 0; i < n0->edges.size(); i++) {
         for (size_t j = 0; j < n1->edges[i].size(); j++) {
-            threads.emplace_back([&, i, j]() {
-                // cout << "Creating thread [" << i << "][" << j << "]" << endl;
+            threadPool.create_thread([&, i, j]() {
                 QMDDEdge answer = QMDDEdge(.0, nullptr);
                 for (size_t k = 0; k < n0->edges[0].size(); k++) {
                     QMDDEdge p(e0.weight * n0->edges[i][k].weight, n0->edges[i][k].uniqueTableKey);
                     QMDDEdge q(e1.weight * n1->edges[k][j].weight, n1->edges[k][j].uniqueTableKey);
-                    // cout << "Thread started" << endl;
                     answer = mathUtils::add(answer, mathUtils::mul(p, q));
-                    // cout << "Thread ended" << endl;
                 }
                 {
                     lock_guard<mutex> lock(z_mutex);
@@ -113,11 +110,12 @@ QMDDEdge mathUtils::mulParallel(const QMDDEdge& e0, const QMDDEdge& e1) {
             });
         }
     }
-    for (auto& thread : threads) {
-        if (thread.joinable()) {
-            thread.join();
-        }
-    }
+    threadPool.join_all();
+    // for (auto& thread : threads) {
+    //     if (thread.joinable()) {
+    //         thread.join();
+    //     }
+    // }
 
     for (size_t i = 0; i < z.size(); i++) {
         for (size_t j = 0; j < z[i].size(); j++) {
@@ -290,14 +288,29 @@ QMDDEdge mathUtils::addParallel(const QMDDEdge& e0, const QMDDEdge& e1) {
     vector<vector<QMDDEdge>> z(n0->edges.size(), vector<QMDDEdge>(n0->edges[0].size()));
     complex<double> tmpWeight = .0;
 
-    // #pragma omp parallel for schedule(dynamic, 3) default(shared)
+    boost::thread_group threadPool;
+    mutex z_mutex;
     for (size_t i = 0; i < n0->edges.size(); i++) {
         for (size_t j = 0; j < n0->edges[i].size(); j++) {
-            QMDDEdge p(e0.weight * n0->edges[i][j].weight, n0->edges[i][j].uniqueTableKey);
-            QMDDEdge q(e1.weight * n1->edges[i][j].weight, n1->edges[i][j].uniqueTableKey);
-            z[i][j] = mathUtils::add(p, q);
+            threadPool.create_thread([&, i, j]() {
+                QMDDEdge p(e0.weight * n0->edges[i][j].weight, n0->edges[i][j].uniqueTableKey);
+                QMDDEdge q(e1.weight * n1->edges[i][j].weight, n1->edges[i][j].uniqueTableKey);
+                QMDDEdge answer = mathUtils::add(p, q);
+                {
+                    lock_guard<mutex> lock(z_mutex);
+                    z[i][j] = answer;
+                }
+            });
         }
     }
+    threadPool.join_all();
+    // for (size_t i = 0; i < n0->edges.size(); i++) {
+    //     for (size_t j = 0; j < n0->edges[i].size(); j++) {
+    //         QMDDEdge p(e0.weight * n0->edges[i][j].weight, n0->edges[i][j].uniqueTableKey);
+    //         QMDDEdge q(e1.weight * n1->edges[i][j].weight, n1->edges[i][j].uniqueTableKey);
+    //         z[i][j] = mathUtils::add(p, q);
+    //     }
+    // }
 
     for (size_t i = 0; i < z.size(); i++) {
         for (size_t j = 0; j < z[i].size(); j++) {
@@ -460,11 +473,11 @@ QMDDEdge mathUtils::kronParallel(const QMDDEdge& e0, const QMDDEdge& e1) {
         complex<double> tmpWeight = .0;
         bool allWeightsAreZero = true;
 
-        vector<std::thread> threads;
+        boost::thread_group threadPool;
         mutex z_mutex;
         for (size_t i = 0; i < n0->edges.size(); i++) {
             for (size_t j = 0; j < n0->edges[i].size(); j++) {
-                threads.emplace_back([&, i, j]() {
+                threadPool.create_thread([&, i, j]() {
                     QMDDEdge answer = mathUtils::kron(n0->edges[i][j], e1);
                     {
                         lock_guard<mutex> lock(z_mutex);
@@ -473,11 +486,7 @@ QMDDEdge mathUtils::kronParallel(const QMDDEdge& e0, const QMDDEdge& e1) {
                 });
             }
         }
-        for (auto& thread : threads) {
-            if (thread.joinable()) {
-                thread.join();
-            }
-        }
+        threadPool.join_all();
 
         for (size_t i = 0; i < z.size(); i++) {
             for (size_t j = 0; j < z[i].size(); j++) {
