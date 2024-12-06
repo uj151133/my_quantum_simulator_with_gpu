@@ -5,6 +5,8 @@
 
 #include <yaml-cpp/yaml.h>
 #include <omp.h>
+#include <fstream>
+#include <limits.h>
 #include <boost/fiber/all.hpp>
 #ifdef __APPLE__
     #include <mach/mach.h>
