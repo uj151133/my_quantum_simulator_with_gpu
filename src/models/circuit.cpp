@@ -25,6 +25,10 @@ queue<QMDDGate> QuantumCircuit::getGateQueue() const {
     return gateQueue;
 }
 
+QMDDState QuantumCircuit::getInitialState() const {
+    return initialState;
+}
+
 QMDDState QuantumCircuit::getFinalState() const {
     return finalState;
 }
