@@ -85,11 +85,33 @@ void printMemoryUsageOnLinux() {
 #endif
 
 void measureExecutionTime(function<void()> func) {
-    auto start = chrono::high_resolution_clock::now();
+auto start = chrono::high_resolution_clock::now();
     func();
     auto end = chrono::high_resolution_clock::now();
     chrono::duration<double, milli> duration = end - start;
+    
+    // ホスト名を取得
+    char hostname[255];
+    gethostname(hostname, 255);
+    
+    // 時刻を取得
+    time_t now = time(nullptr);
+    char timestamp[26];
+    ctime_r(&now, timestamp);
+    timestamp[24] = '\0';
+    
+    // コンソール出力
     cout << "\033[1;32mExecution time: " << duration.count() << " ms\033[0m" << endl;
+    
+    // ファイル出力
+    ofstream logFile("record.log", ios::app);
+    if (logFile.is_open()) {
+        logFile << "[" << timestamp << "] "
+                << "Host: " << hostname << " | "
+                << "Execution time: " << duration.count() << " ms" 
+                << endl;
+        logFile.close();
+    }
 }
 
 bool isExecuteGui() {
