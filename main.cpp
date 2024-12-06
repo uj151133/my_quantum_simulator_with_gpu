@@ -38,20 +38,23 @@ void execute() {
     //     }
     // }
     
-    // UniqueTable& uniqueTable = UniqueTable::getInstance();
+    UniqueTable& uniqueTable = UniqueTable::getInstance();
+    QuantumCircuit circuit(14);
 
-    int numQubits = 14;
+    cout << "Initial state: " << circuit.getFinalState() << endl;
+
+    // int numQubits = 14;
     // int numGates = 200;
 
     // randomRotate(numQubits, numGates);
-    int omega = std::pow(2, numQubits) - 1;
+    // int omega = std::pow(2, numQubits) - 1;
 
-    grover(numQubits, omega);
+    // grover(numQubits, omega);
     // cout << mathUtils::mulParallel(gate::CX1().getInitialEdge(), gate::CX2().getInitialEdge()) << endl;
 
     // cout << mathUtils::kronParallel(gate::H().getInitialEdge(), gate::H().getInitialEdge()) << endl;
 
-    // uniqueTable.printAllEntries();
+    uniqueTable.printAllEntries();
 }
 
 
