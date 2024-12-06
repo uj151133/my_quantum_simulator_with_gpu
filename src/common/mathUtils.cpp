@@ -96,6 +96,7 @@ QMDDEdge mathUtils::mulParallel(const QMDDEdge& e0, const QMDDEdge& e1) {
     mutex z_mutex;
     for (size_t i = 0; i < n0->edges.size(); i++) {
         for (size_t j = 0; j < n1->edges[i].size(); j++) {
+            // threads.emplace_back([&, i, j]() {
             threadPool.create_thread([&, i, j]() {
                 QMDDEdge answer = QMDDEdge(.0, nullptr);
                 for (size_t k = 0; k < n0->edges[0].size(); k++) {
@@ -287,11 +288,12 @@ QMDDEdge mathUtils::addParallel(const QMDDEdge& e0, const QMDDEdge& e1) {
     bool allWeightsAreZero = true;
     vector<vector<QMDDEdge>> z(n0->edges.size(), vector<QMDDEdge>(n0->edges[0].size()));
     complex<double> tmpWeight = .0;
-
+    // vector<std::thread> threads;
     boost::thread_group threadPool;
     mutex z_mutex;
     for (size_t i = 0; i < n0->edges.size(); i++) {
         for (size_t j = 0; j < n0->edges[i].size(); j++) {
+            // threads.emplace_back([&, i, j]() {
             threadPool.create_thread([&, i, j]() {
                 QMDDEdge p(e0.weight * n0->edges[i][j].weight, n0->edges[i][j].uniqueTableKey);
                 QMDDEdge q(e1.weight * n1->edges[i][j].weight, n1->edges[i][j].uniqueTableKey);
@@ -304,11 +306,9 @@ QMDDEdge mathUtils::addParallel(const QMDDEdge& e0, const QMDDEdge& e1) {
         }
     }
     threadPool.join_all();
-    // for (size_t i = 0; i < n0->edges.size(); i++) {
-    //     for (size_t j = 0; j < n0->edges[i].size(); j++) {
-    //         QMDDEdge p(e0.weight * n0->edges[i][j].weight, n0->edges[i][j].uniqueTableKey);
-    //         QMDDEdge q(e1.weight * n1->edges[i][j].weight, n1->edges[i][j].uniqueTableKey);
-    //         z[i][j] = mathUtils::add(p, q);
+    // for (auto& thread : threads) {
+    //     if (thread.joinable()) {
+    //         thread.join();
     //     }
     // }
 
@@ -472,11 +472,12 @@ QMDDEdge mathUtils::kronParallel(const QMDDEdge& e0, const QMDDEdge& e1) {
         vector<vector<QMDDEdge>> z(n0->edges.size(), vector<QMDDEdge>(n1->edges[0].size()));
         complex<double> tmpWeight = .0;
         bool allWeightsAreZero = true;
-
+        // vector<std::thread> threads;
         boost::thread_group threadPool;
         mutex z_mutex;
         for (size_t i = 0; i < n0->edges.size(); i++) {
             for (size_t j = 0; j < n0->edges[i].size(); j++) {
+                // threads.emplace_back([&, i, j]() {
                 threadPool.create_thread([&, i, j]() {
                     QMDDEdge answer = mathUtils::kron(n0->edges[i][j], e1);
                     {
@@ -487,6 +488,11 @@ QMDDEdge mathUtils::kronParallel(const QMDDEdge& e0, const QMDDEdge& e1) {
             }
         }
         threadPool.join_all();
+        // for (auto& thread : threads) {
+        //     if (thread.joinable()) {
+        //         thread.join();
+        //     }
+        // }
 
         for (size_t i = 0; i < z.size(); i++) {
             for (size_t j = 0; j < z[i].size(); j++) {
