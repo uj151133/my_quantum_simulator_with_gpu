@@ -1,6 +1,6 @@
 #include "mathUtils.hpp"
 
-QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1) {
+QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
     OperationCache& cache = OperationCache::getInstance();
     size_t operationCacheKey = calculation::generateOperationCacheKey(make_tuple(e0, OperationType::MUL, e1));
     // cout << "Operation cache key: " << operationCacheKey << endl;
@@ -122,7 +122,7 @@ QMDDEdge mathUtils::mulForDiagonal(const QMDDEdge& e0, const QMDDEdge& e1) {
     }
 }
 
-QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1) {
+QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
     OperationCache& cache = OperationCache::getInstance();
     size_t operationCacheKey = calculation::generateOperationCacheKey(make_tuple(e0, OperationType::ADD, e1));
     // cout << "Operation cache key: " << operationCacheKey << endl;
@@ -236,7 +236,7 @@ QMDDEdge mathUtils::addForDiagonal(const QMDDEdge& e0, const QMDDEdge& e1) {
     }
 }
 
-QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1) {
+QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
     OperationCache& cache = OperationCache::getInstance();
     size_t operationCacheKey = calculation::generateOperationCacheKey(make_tuple(e0, OperationType::KRONECKER, e1));
     // cout << "Operation cache key: " << operationCacheKey << endl;

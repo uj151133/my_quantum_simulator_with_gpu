@@ -4,5 +4,5 @@ gui:
 
 process:
   # type: "sequential"  # "sequential", "multi-thread", "multi-fiber"のいずれか
-  concurrency: 4 #並行性
-  parallelism: 2 #並列性
+  concurrency: 0 #並行性
+  parallelism: 0 #並列性

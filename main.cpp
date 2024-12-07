@@ -23,7 +23,6 @@ using namespace std;
 void execute() {
 
     // UniqueTable& uniqueTable = UniqueTable::getInstance();
-    CONFIG.printConfig();
 
     int numQubits = 1;
     // int numGates = 200;
