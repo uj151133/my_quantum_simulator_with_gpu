@@ -91,6 +91,7 @@
         "queue": "cpp",
         "print": "cpp",
         "shared_mutex": "cpp",
-        "future": "cpp"
+        "future": "cpp",
+        "*.tpp": "cpp"
     }
 }

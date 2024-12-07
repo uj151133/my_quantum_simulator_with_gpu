@@ -71,7 +71,7 @@ int main() {
     //     parallelProcessing();
     // } else if (processType == "multi-fiber") {
     //     cout << "マルチファイバー処理を実行します。" << endl;
-    //     fiberProcessing();
+        // fiberProcessing();
     // } else {
     //     cerr << "不明な処理タイプ: " << processType << endl;
     // }

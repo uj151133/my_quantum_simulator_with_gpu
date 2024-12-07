@@ -11,6 +11,7 @@
 #include <cmath>
 #include <memory>
 #include <tuple>
+#include <boost/fiber/all.hpp>
 #include <omp.h>
 #include <stack>
 

@@ -92,12 +92,13 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/libs/__pycache__)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
 
 include_directories(src)
-file(GLOB SOURCES "src/models/*.cpp" "src/common/*.cpp" "src/test/*/*.cpp" )
+
+file(GLOB SOURCES "src/models/*.cpp" "src/common/*.cpp" "src/modules/*.cpp" "src/test/*/*.cpp")
 
 # 通常のC++実行ファイルを追加
 add_executable(qmdd_sim main.cpp ${SOURCES})
 target_include_directories(qmdd_sim PRIVATE ${GSL_INCLUDE_DIRS})
-target_link_libraries(qmdd_sim PRIVATE yaml-cpp::yaml-cpp Python3::Python OpenMP::OpenMP_CXX Boost::fiber Boost::thread Boost::context Boost::system GSL::gsl ${GMP_LIB} Threads::Threads)
+target_link_libraries(qmdd_sim PRIVATE pthread yaml-cpp::yaml-cpp Python3::Python OpenMP::OpenMP_CXX Boost::fiber Boost::thread Boost::context Boost::system GSL::gsl ${GMP_LIB} Threads::Threads)
 
 # make run ターゲットの追加
 add_custom_target(run
