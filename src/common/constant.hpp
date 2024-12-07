@@ -1,6 +1,6 @@
 #pragma once
-// #ifndef CONSTANT_HPP
-// #define CONSTANT_HPP
+#ifndef CONSTANT_HPP
+#define CONSTANT_HPP
 #include <complex>
 #include <mutex>
 #include "../models/qmdd.hpp"
@@ -14,4 +14,4 @@ extern once_flag initFlag;
 
 void init();
 
-// #endif
+#endif

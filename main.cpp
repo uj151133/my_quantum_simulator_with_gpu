@@ -6,6 +6,7 @@
 
 #include "src/models/qmdd.hpp"
 #include "src/common/constant.hpp"
+#include "src/common/config.hpp"
 #include "src/models/gate.hpp"
 #include "src/models/state.hpp"
 #include "src/models/uniqueTable.hpp"
@@ -22,8 +23,9 @@ using namespace std;
 void execute() {
 
     // UniqueTable& uniqueTable = UniqueTable::getInstance();
+    CONFIG.printConfig();
 
-    int numQubits = 14;
+    int numQubits = 1;
     // int numGates = 200;
 
     // randomRotate(numQubits, numGates);
@@ -38,6 +40,7 @@ void execute() {
 }
 
 int main() {
+    CONFIG.loadFromFile("/Users/mitsuishikaito/my_quantum_simulator_with_gpu/config.yaml");
     // string processType = getProcessType();
     // if (processType == "sequential") {
     //     cout << "逐次処理を実行します。" << endl;
