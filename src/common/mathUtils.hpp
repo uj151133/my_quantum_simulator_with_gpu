@@ -1,8 +1,12 @@
 #ifndef MATHUTILS_HPP
 #define MATHUTILS_HPP
 
+#include <boost/fiber/all.hpp>
+#include <boost/fiber/algo/work_stealing.hpp>
+#include <boost/fiber/mutex.hpp>
 #include <cmath>
 #include <numeric>
+#include <queue>
 #include <functional>
 #include <thread>
 #include <boost/asio/io_service.hpp>
@@ -13,15 +17,19 @@
 #include "../models/operationCache.hpp"
 #include "config.hpp"
 #include "calculation.hpp"
+#include "../modules/fiber.hpp"
 
 using namespace std;
 
 namespace mathUtils {
     QMDDEdge mul(const QMDDEdge& e0, const QMDDEdge& e1, int depth = 0);
+    QMDDEdge mulParallel(const QMDDEdge& e0, const QMDDEdge& e1);
     QMDDEdge mulForDiagonal(const QMDDEdge& e0, const QMDDEdge& e1);
     QMDDEdge add(const QMDDEdge& e0, const QMDDEdge& e1, int depth = 0);
+    QMDDEdge addParallel(const QMDDEdge& e0, const QMDDEdge& e1);
     QMDDEdge addForDiagonal(const QMDDEdge& e0, const QMDDEdge& e1);
     QMDDEdge kron(const QMDDEdge& e0, const QMDDEdge& e1, int depth = 0);
+    QMDDEdge kronParallel(const QMDDEdge& e0, const QMDDEdge& e1);
     QMDDEdge kronForDiagonal(const QMDDEdge& e0, const QMDDEdge& e1);
 
     inline QMDDEdge mulWrapper(const QMDDEdge& a, const QMDDEdge& b) {
