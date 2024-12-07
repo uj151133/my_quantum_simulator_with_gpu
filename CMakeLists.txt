@@ -21,25 +21,69 @@ set(YAML_CPP_LIB_DIR /opt/homebrew/Cellar/yaml-cpp/0.8.0/lib)
 set(LIBOMP_LIB_DIR /opt/homebrew/opt/libomp/lib)
 set(LIBOMP_INCLUDE_DIR /opt/homebrew/opt/libomp/include)
 
-set(OpenMP_C_FLAGS "-Xpreprocessor -fopenmp")
-set(OpenMP_CXX_FLAGS "-Xpreprocessor -fopenmp")
-set(OpenMP_C_LIB_NAMES "omp")
-set(OpenMP_CXX_LIB_NAMES "omp")
-set(OpenMP_omp_LIBRARY "/opt/homebrew/opt/libomp/lib/libomp.dylib")
+if(APPLE)
+    # MacOS (Homebrew) settings
+    set(OpenMP_C_FLAGS "-Xpreprocessor -fopenmp")
+    set(OpenMP_CXX_FLAGS "-Xpreprocessor -fopenmp")
+    set(OpenMP_C_LIB_NAMES "omp")
+    set(OpenMP_CXX_LIB_NAMES "omp")
+    set(OpenMP_omp_LIBRARY "/opt/homebrew/opt/libomp/lib/libomp.dylib")
+elseif(UNIX AND NOT APPLE)
+    # Ubuntu settings
+    find_package(OpenMP REQUIRED)
+    if(OpenMP_CXX_FOUND)
+        set(OpenMP_C_FLAGS "-fopenmp")
+        set(OpenMP_CXX_FLAGS "-fopenmp")
+        set(OpenMP_C_LIB_NAMES "gomp")
+        set(OpenMP_CXX_LIB_NAMES "gomp")
+    endif()
+endif()
 
 find_package(yaml-cpp REQUIRED)
 find_package(OpenMP REQUIRED)
-find_package(Boost REQUIRED COMPONENTS fiber context)
+find_package(Boost REQUIRED COMPONENTS fiber context thread system)
+find_package(Threads REQUIRED)
 
 # GNUライブラリのインクルードとリンク
 find_package(GSL REQUIRED)
-find_library(GMP_LIB gmp)
+if(APPLE)
+    # MacOS (Homebrew) settings
+    find_library(GMP_LIB
+        NAMES gmp
+        PATHS /opt/homebrew/lib
+        REQUIRED
+    )
+    include_directories(/opt/homebrew/include)
+elseif(UNIX AND NOT APPLE)
+    # Ubuntu settings
+    find_library(GMP_LIB
+        NAMES gmp
+        PATHS
+        /usr/lib
+        /usr/local/lib
+        /usr/lib/x86_64-linux-gnu  # Ubuntu特有のパスを追加
+        REQUIRED
+    )
+    find_path(GMP_INCLUDE_DIRS
+        NAMES gmp.h
+        PATHS
+        /usr/include
+        /usr/local/include
+        REQUIRED
+    )
+    if(GMP_LIB AND GMP_INCLUDE_DIRS)
+        include_directories(${GMP_INCLUDE_DIRS})
+    else()
+        message(FATAL_ERROR "GMP library not found. Please install libgmp-dev")
+    endif()
+endif()
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
 
-# インクルードディレクトリとリンクディレクトリを追加
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
+
 include_directories(${YAML_CPP_INCLUDE_DIR} ${LIBOMP_INCLUDE_DIR})
 link_directories(${YAML_CPP_LIB_DIR} ${LIBOMP_LIB_DIR})
 
@@ -54,7 +98,7 @@ file(GLOB SOURCES "src/models/*.cpp" "src/common/*.cpp" "src/modules/*.cpp" "src
 # 通常のC++実行ファイルを追加
 add_executable(qmdd_sim main.cpp ${SOURCES})
 target_include_directories(qmdd_sim PRIVATE ${GSL_INCLUDE_DIRS})
-target_link_libraries(qmdd_sim PRIVATE pthread yaml-cpp Python3::Python OpenMP::OpenMP_CXX Boost::fiber Boost::context GSL::gsl ${GMP_LIB})
+target_link_libraries(qmdd_sim PRIVATE pthread yaml-cpp::yaml-cpp Python3::Python OpenMP::OpenMP_CXX Boost::fiber Boost::thread Boost::context Boost::system GSL::gsl ${GMP_LIB} Threads::Threads)
 
 # make run ターゲットの追加
 add_custom_target(run
