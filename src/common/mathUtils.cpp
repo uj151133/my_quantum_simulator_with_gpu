@@ -30,22 +30,29 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
     vector<vector<QMDDEdge>> z(n0->edges.size(), vector<QMDDEdge>(n1->edges[0].size(), QMDDEdge(.0, nullptr)));
     complex<double> tmpWeight = .0;
     bool allWeightsAreZero = true;
-    for (size_t i = 0; i < n0->edges.size(); i++) {
-        for (size_t j = 0; j < n1->edges[0].size(); j++){
-            for (size_t k = 0; k < n0->edges[0].size(); k++) {
-                QMDDEdge p(e0.weight * n0->edges[i][k].weight, n0->edges[i][k].uniqueTableKey);
-                QMDDEdge q(e1.weight * n1->edges[k][j].weight, n1->edges[k][j].uniqueTableKey);
-                z[i][j] += mathUtils::mul(p, q);
-            }
-            if (z[i][j].weight != .0) {
-                allWeightsAreZero = false;
-                if (tmpWeight == .0) {
-                    tmpWeight = z[i][j].weight;
-                    z[i][j].weight = 1.0;
-                }else if (tmpWeight != .0) {
-                    z[i][j].weight /= tmpWeight;
-                } else {
-                    cout << "⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️" << endl;
+    if (depth < CONFIG.process.parallelism){
+        cout << "multi thread mul" << endl;
+    } else if (depth < CONFIG.process.parallelism + CONFIG.process.concurrency){
+        cout << "multi fiber mul" << endl;
+    } else{
+        cout << "sequential mul" << endl;
+        for (size_t i = 0; i < n0->edges.size(); i++) {
+            for (size_t j = 0; j < n1->edges[0].size(); j++){
+                for (size_t k = 0; k < n0->edges[0].size(); k++) {
+                    QMDDEdge p(e0.weight * n0->edges[i][k].weight, n0->edges[i][k].uniqueTableKey);
+                    QMDDEdge q(e1.weight * n1->edges[k][j].weight, n1->edges[k][j].uniqueTableKey);
+                    z[i][j] = mathUtils::add(z[i][j], mathUtils::mul(p, q, depth + 1), depth + 1);
+                }
+                if (z[i][j].weight != .0) {
+                    allWeightsAreZero = false;
+                    if (tmpWeight == .0) {
+                        tmpWeight = z[i][j].weight;
+                        z[i][j].weight = 1.0;
+                    }else if (tmpWeight != .0) {
+                        z[i][j].weight /= tmpWeight;
+                    } else {
+                        cout << "⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️" << endl;
+                    }
                 }
             }
         }
@@ -148,21 +155,27 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
     bool allWeightsAreZero = true;
     vector<vector<QMDDEdge>> z(n0->edges.size(), vector<QMDDEdge>(n0->edges[0].size()));
     complex<double> tmpWeight = .0;
-    for (size_t i = 0; i < n0->edges.size(); i++) {
-        for (size_t j = 0; j < n0->edges[i].size(); j++) {
-            QMDDEdge p(e0.weight * n0->edges[i][j].weight, n0->edges[i][j].uniqueTableKey);
-            QMDDEdge q(e1.weight * n1->edges[i][j].weight, n1->edges[i][j].uniqueTableKey);
-            z[i][j] = mathUtils::add(p, q);
-
-            if (z[i][j].weight != .0) {
-                allWeightsAreZero = false;
-                if (tmpWeight == .0) {
-                    tmpWeight = z[i][j].weight;
-                    z[i][j].weight = 1.0;
-                }else if (tmpWeight != .0) {
-                    z[i][j].weight /= tmpWeight;
-                } else {
-                    cout << "⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️" << endl;
+    if (depth < CONFIG.process.parallelism){
+        cout << "multi thread add" << endl;
+    } else if (depth < CONFIG.process.parallelism + CONFIG.process.concurrency){
+        cout << "multi fiber add" << endl;
+    } else{
+        cout << "sequential add" << endl;
+        for (size_t i = 0; i < n0->edges.size(); i++) {
+            for (size_t j = 0; j < n0->edges[i].size(); j++) {
+                QMDDEdge p(e0.weight * n0->edges[i][j].weight, n0->edges[i][j].uniqueTableKey);
+                QMDDEdge q(e1.weight * n1->edges[i][j].weight, n1->edges[i][j].uniqueTableKey);
+                z[i][j] = mathUtils::add(p, q, depth + 1);
+                if (z[i][j].weight != .0) {
+                    allWeightsAreZero = false;
+                    if (tmpWeight == .0) {
+                        tmpWeight = z[i][j].weight;
+                        z[i][j].weight = 1.0;
+                    }else if (tmpWeight != .0) {
+                        z[i][j].weight /= tmpWeight;
+                    } else {
+                        cout << "⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️" << endl;
+                    }
                 }
             }
         }
@@ -262,22 +275,28 @@ QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
         vector<vector<QMDDEdge>> z(n0->edges.size(), vector<QMDDEdge>(n1->edges[0].size()));
         complex<double> tmpWeight = .0;
         bool allWeightsAreZero = true;
-        for (size_t i = 0; i < n0->edges.size(); i++) {
-            for (size_t j = 0; j < n0->edges[i].size(); j++) {
-                z[i][j] = mathUtils::kron(n0->edges[i][j], e1);
+        if (depth < CONFIG.process.parallelism){
+            cout << "multi thread kron" << endl;
+        } else if (depth < CONFIG.process.parallelism + CONFIG.process.concurrency){
+            cout << "multi fiber kron" << endl;
+        } else{
+            cout << "sequential kron" << endl;
+            for (size_t i = 0; i < n0->edges.size(); i++) {
+                for (size_t j = 0; j < n0->edges[i].size(); j++) {
+                    z[i][j] = mathUtils::kron(n0->edges[i][j], e1, depth + 1);
 
-                if (z[i][j].weight != .0) {
-                    allWeightsAreZero = false;
-                    if (tmpWeight == .0) {
-                        tmpWeight = z[i][j].weight;
-                        z[i][j].weight = 1.0;
-                    }else if (tmpWeight != .0) {
-                        z[i][j].weight /= tmpWeight;
-                    } else {
-                        cout << "⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️" << endl;
+                    if (z[i][j].weight != .0) {
+                        allWeightsAreZero = false;
+                        if (tmpWeight == .0) {
+                            tmpWeight = z[i][j].weight;
+                            z[i][j].weight = 1.0;
+                        }else if (tmpWeight != .0) {
+                            z[i][j].weight /= tmpWeight;
+                        } else {
+                            cout << "⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️" << endl;
+                        }
                     }
                 }
-
             }
         }
         QMDDEdge result;

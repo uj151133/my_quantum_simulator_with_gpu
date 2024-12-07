@@ -7,6 +7,7 @@
 #include "../models/qmdd.hpp"
 #include "../models/uniqueTable.hpp"
 #include "../models/operationCache.hpp"
+#include "config.hpp"
 #include "calculation.hpp"
 
 using namespace std;
