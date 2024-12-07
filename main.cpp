@@ -51,7 +51,7 @@ void execute() {
     int omega = std::pow(2, numQubits) - 1;
 
     grover(numQubits, omega);
-    // cout << mathUtils::mulParallel(gate::CX1().getInitialEdge(), gate::CX2().getInitialEdge()) << endl;
+    // cout << mathUtils::mul(gate::CX1().getInitialEdge(), gate::CX2().getInitialEdge()) << endl;
 
     // cout << mathUtils::kronParallel(gate::H().getInitialEdge(), gate::H().getInitialEdge()) << endl;
 
