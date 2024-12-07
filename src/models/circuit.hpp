@@ -27,6 +27,7 @@ public:
     QuantumCircuit(int numQubitits);
     ~QuantumCircuit() = default;
     queue<QMDDGate> getGateQueue() const;
+    QMDDState getInitialState() const;
     QMDDState getFinalState() const;
     QuantumCircuit(const QuantumCircuit& other) = default;
     QuantumCircuit& operator=(const QuantumCircuit& other) = default;
