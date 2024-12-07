@@ -8,6 +8,8 @@
 #include <fstream>
 #include <limits.h>
 #include <boost/fiber/all.hpp>
+#include <fstream>
+#include <limits.h>
 #ifdef __APPLE__
     #include <mach/mach.h>
 #elif defined(__linux__)
