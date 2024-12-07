@@ -6,7 +6,7 @@ Config& Config::getInstance() {
     return instance;
 }
 
-Config::Config() : gui{false}, process{4, 2} {} // デフォルト値を設定
+Config::Config() {}
 
 void Config::loadFromFile(const std::string& filepath) {
     try {
