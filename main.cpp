@@ -20,23 +20,45 @@
 
 using namespace std;
 
+
 void execute() {
-
+    // cout << "Executing..." << endl;
+    // vector<thread> threads;
+    // mutex z_mutex;
+    // for (size_t i = 0; i < 2; i++) {
+    //     for (size_t j = 0; j < 2; j++) {
+    //         threads.emplace_back([&, i, j]() {
+    //             cout << "Creating thread [" << i << "][" << j << "]" << endl;
+    //         });
+    //     }
+    // }
+    // for (auto& thread : threads) {
+    //     if (thread.joinable()) {
+    //         thread.join();
+    //         cout << "Thread joined" << endl;
+    //     }
+    // }
+    
     // UniqueTable& uniqueTable = UniqueTable::getInstance();
+    // QuantumCircuit circuit(14);
 
-    int numQubits = 1;
+    // cout << "Initial state: " << circuit.getInitialState() << endl;
+
+    int numQubits = 6;
     // int numGates = 200;
 
     // randomRotate(numQubits, numGates);
     int omega = std::pow(2, numQubits) - 1;
 
     grover(numQubits, omega);
-    // cout << mathUtils::mul(state::KetPlusY().getInitialEdge(), state::KetPlusY().getInitialEdge()) << endl;
+    // cout << mathUtils::mulParallel(gate::CX1().getInitialEdge(), gate::CX2().getInitialEdge()) << endl;
 
-    // cout << mathUtils::kron(gate::H().getInitialEdge(), gate::H().getInitialEdge()) << endl;
+    // cout << mathUtils::kronParallel(gate::H().getInitialEdge(), gate::H().getInitialEdge()) << endl;
 
     // uniqueTable.printAllEntries();
 }
+
+
 
 int main() {
     CONFIG.loadFromFile("/Users/mitsuishikaito/my_quantum_simulator_with_gpu/config.yaml");
@@ -65,6 +87,7 @@ int main() {
     // }
 
     measureExecutionTime(execute);
+    // execute();
 
     // printMemoryUsage();
     // printMemoryUsageOnMac();
