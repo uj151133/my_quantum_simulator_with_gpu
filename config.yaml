@@ -3,4 +3,6 @@ gui:
   enabled: false
 
 process:
-  type: "sequential"  # "sequential", "multi-thread", "multi-fiber"のいずれか
+  # type: "sequential"  # "sequential", "multi-thread", "multi-fiber"のいずれか
+  concurrency: 4 #並行性
+  parallelism: 2 #並列性

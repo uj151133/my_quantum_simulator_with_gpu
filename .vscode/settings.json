@@ -1,5 +1,6 @@
 {
     "files.associations": {
+        ".fantomasignore": "ignore",
         "vector": "cpp",
         "complex": "cpp",
         "__bit_reference": "cpp",
@@ -89,6 +90,7 @@
         "execution": "cpp",
         "queue": "cpp",
         "print": "cpp",
-        "shared_mutex": "cpp"
+        "shared_mutex": "cpp",
+        "future": "cpp"
     }
 }
