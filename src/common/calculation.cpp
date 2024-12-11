@@ -2,9 +2,6 @@
 #include "../models/uniqueTable.hpp"
 
 size_t calculation::generateUniqueTableKey(const shared_ptr<QMDDNode>& node, size_t row, size_t col, size_t rowStride, size_t colStride, const complex<double>& parentWeight) {
-    cout << "address: " << node.get() << endl;
-    cout << "address: 0x" << hex << reinterpret_cast<uintptr_t>(node.get()) << dec << endl;
-    cout << "Type of node.get(): " << typeid(reinterpret_cast<uintptr_t>(node.get())).name() << endl;
     auto customHash = [](const complex<double>& c) {
         size_t realHash = hash<double>()(c.real());
         size_t imagHash = hash<double>()(c.imag());
@@ -43,7 +40,7 @@ size_t calculation::generateUniqueTableKey(const shared_ptr<QMDDNode>& node, siz
         }
     }
 
-    return hashValue;
+    return hashValue % ENTRY_COUNT;
 }
 
 size_t calculation::generateOperationCacheKey(const OperationKey& key) {

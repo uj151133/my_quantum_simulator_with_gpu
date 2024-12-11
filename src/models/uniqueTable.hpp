@@ -11,7 +11,8 @@ class UniqueTable {
 private:
     unordered_map<size_t, vector<shared_ptr<QMDDNode>>> table;
     mutable shared_mutex tableMutex;
-    UniqueTable() = default;
+    size_t tableSize ;
+    UniqueTable() : tableSize(ENTRY_COUNT) {};
 
 public:
     UniqueTable(const UniqueTable&) = delete;
