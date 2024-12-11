@@ -5,32 +5,53 @@ UniqueTable& UniqueTable::getInstance() {
     return instance;
 }
 
+size_t UniqueTable::hash(size_t key) const {
+    return key % ENTRY_COUNT;
+}
+
 void UniqueTable::insert(size_t hashKey, shared_ptr<QMDDNode> node) {
     unique_lock<shared_mutex> lock(tableMutex);
-    table[hashKey].push_back(node);
+    size_t index = hash(hashKey);
+    auto it = table.find(index);
+    if (it != table.end()) {
+
+        for (const auto& existingEntry : it->second) {
+            if (existingEntry.key == hashKey) {
+                return;
+            }
+        }
+    }
+    table[index].push_back(Entry(hashKey, node));
+    return;
 }
 
 shared_ptr<QMDDNode> UniqueTable::find(size_t hashKey) const {
     shared_lock<shared_mutex> lock(tableMutex);
-    auto it = table.find(hashKey);
+    size_t index = hash(hashKey);
+    auto it = table.find(index);
     if (it != table.end()) {
-        return it->second[0];
+        for (const auto& entry : it->second) {
+            if (entry.key == hashKey) {
+                return entry.value;
+            }
+        }
     }
     return nullptr;
 }
 
 void UniqueTable::printAllEntries() const {
     for (const auto& entry : table) {
-        size_t key = entry.first;
-        const auto& nodes = entry.second;
+        size_t index = entry.first;
+        const auto& entries = entry.second;
 
-        cout << "Key: " << key << endl;
-        cout << "Nodes: " << endl;
+        cout << "Index: " << index << endl;
+        cout << "Entries: " << endl;
 
-        for (const auto& nodePtr : nodes) {
-            if (nodePtr) {
-                const QMDDNode& node = *nodePtr;
-                cout << "  " << node << endl;
+        for (const auto& entry : entries) {
+            cout << "  Key: " << entry.key << endl;
+            if (entry.value) {
+                const QMDDNode& node = *(entry.value);
+                cout << "  Node: " << node << endl;
             } else {
                 cout << "  Null node" << endl;
             }
