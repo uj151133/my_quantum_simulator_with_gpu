@@ -4,3 +4,4 @@ CMakeLists.txt
 qmdd_sim
 __pycache__/
 
+config.yaml
