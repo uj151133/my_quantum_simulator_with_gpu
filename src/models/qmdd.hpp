@@ -11,6 +11,8 @@
 #include <cmath>
 #include <memory>
 #include <tuple>
+#include <boost/fiber/all.hpp>
+#include <omp.h>
 #include <stack>
 
 using namespace std;
@@ -28,6 +30,7 @@ enum class OperationType {
     ADD,
     MUL,
     KRONECKER,
+    TEST,
 };
 
 using OperationKey = tuple<QMDDEdge, OperationType, QMDDEdge>;

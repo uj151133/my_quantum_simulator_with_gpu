@@ -8,7 +8,7 @@
 #include "qmdd.hpp"
 #include "../common/constant.hpp"
 #include "../common/mathUtils.hpp"
-
+#include "../modules/fiber.hpp"
 using namespace std;
 using namespace Eigen;
 namespace gate {

@@ -8,15 +8,16 @@ install:
 	pip install -r requirements.txt
 	ifeq ($(shell uname), Darwin)
 		brew update
-		brew install libomp yaml-cpp gmp gsl eigen xsimd
-
+		brew install libomp yaml-cpp gmp gsl cmake boost
 	else ifeq ($(shell uname), Linux)
 		if [ -f /etc/fedora-release ]; then \
-            sudo dnf install -y libomp yaml-cpp gmp-devel gsl-devel; \
+            sudo dnf install -y libomp yaml-cpp gmp-devel gsl-devel cmake boost-devel; \
         else \
+			sudo snap install cmake --classic; \
+			export PATH=$PATH:/snap/bin; \
             sudo apt-get update; \
-            sudo apt-get install -y libomp-dev libyaml-cpp-dev libgmp-dev libgsl-dev; \
-        fi
+            sudo apt-get install -y libomp-dev libyaml-cpp-dev libgmp-dev libgsl-dev cmake libboost-all-dev; \
+		fi
 
 .PHONY: setup
 setup:
