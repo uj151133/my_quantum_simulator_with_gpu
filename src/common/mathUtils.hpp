@@ -23,13 +23,10 @@ using namespace std;
 
 namespace mathUtils {
     QMDDEdge mul(const QMDDEdge& e0, const QMDDEdge& e1, int depth = 0);
-    QMDDEdge mulParallel(const QMDDEdge& e0, const QMDDEdge& e1);
     QMDDEdge mulForDiagonal(const QMDDEdge& e0, const QMDDEdge& e1);
     QMDDEdge add(const QMDDEdge& e0, const QMDDEdge& e1, int depth = 0);
-    QMDDEdge addParallel(const QMDDEdge& e0, const QMDDEdge& e1);
     QMDDEdge addForDiagonal(const QMDDEdge& e0, const QMDDEdge& e1);
     QMDDEdge kron(const QMDDEdge& e0, const QMDDEdge& e1, int depth = 0);
-    QMDDEdge kronParallel(const QMDDEdge& e0, const QMDDEdge& e1);
     QMDDEdge kronForDiagonal(const QMDDEdge& e0, const QMDDEdge& e1);
 
     inline QMDDEdge mulWrapper(const QMDDEdge& a, const QMDDEdge& b) {

@@ -2,9 +2,9 @@
 
 void benchHwb5tc() {
     QMDDState ket_0 = state::Ket0();
-    QMDDEdge firstEdge = mathUtils::kronParallel(ket_0.getInitialEdge(), ket_0.getInitialEdge());
-    firstEdge = mathUtils::kronParallel(firstEdge, firstEdge);
-    firstEdge = mathUtils::kronParallel(firstEdge, ket_0.getInitialEdge());
+    QMDDEdge firstEdge = mathUtils::kron(ket_0.getInitialEdge(), ket_0.getInitialEdge());
+    firstEdge = mathUtils::kron(firstEdge, firstEdge);
+    firstEdge = mathUtils::kron(firstEdge, ket_0.getInitialEdge());
     QuantumCircuit circuit(5, QMDDState(firstEdge));
     circuit.addCX(3, 1);
     circuit.addCX(4, 3);

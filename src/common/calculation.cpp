@@ -1,7 +1,10 @@
 #include "calculation.hpp"
 #include "../models/uniqueTable.hpp"
 
-size_t calculation::generateUniqueTableKey(const QMDDNode& node, size_t row, size_t col, size_t rowStride, size_t colStride, const complex<double>& parentWeight) {
+size_t calculation::generateUniqueTableKey(const shared_ptr<QMDDNode>& node, size_t row, size_t col, size_t rowStride, size_t colStride, const complex<double>& parentWeight) {
+    cout << "address: " << node.get() << endl;
+    cout << "address: 0x" << hex << reinterpret_cast<uintptr_t>(node.get()) << dec << endl;
+    cout << "Type of node.get(): " << typeid(reinterpret_cast<uintptr_t>(node.get())).name() << endl;
     auto customHash = [](const complex<double>& c) {
         size_t realHash = hash<double>()(c.real());
         size_t imagHash = hash<double>()(c.imag());
@@ -17,20 +20,20 @@ size_t calculation::generateUniqueTableKey(const QMDDNode& node, size_t row, siz
     size_t hashValue = 0;
     UniqueTable& table = UniqueTable::getInstance();
 
-    for (size_t i = 0; i < node.edges.size(); i++) {
-        for (size_t j = 0; j < node.edges[i].size(); j++) {
+    for (size_t i = 0; i < node->edges.size(); i++) {
+        for (size_t j = 0; j < node->edges[i].size(); j++) {
             size_t newRow = row + i * rowStride;
             size_t newCol = col + j * colStride;
 
-            complex<double> combinedWeight = parentWeight * node.edges[i][j].weight;
+            complex<double> combinedWeight = parentWeight * node->edges[i][j].weight;
 
             size_t elementHash;
-            if (node.edges[i][j].isTerminal || node.edges[i][j].uniqueTableKey == 0) {
+            if (node->edges[i][j].isTerminal || node->edges[i][j].uniqueTableKey == 0) {
                 elementHash = hashMatrixElement(combinedWeight, newRow, newCol);
             } else {
-                shared_ptr<QMDDNode> foundNode = table.find(node.edges[i][j].uniqueTableKey);
+                shared_ptr<QMDDNode> foundNode = table.find(node->edges[i][j].uniqueTableKey);
                 if (foundNode) {
-                    elementHash = calculation::generateUniqueTableKey(*foundNode, newRow, newCol, rowStride * 2, colStride * 2, combinedWeight);
+                    elementHash = calculation::generateUniqueTableKey(foundNode, newRow, newCol, rowStride * 2, colStride * 2, combinedWeight);
                 } else {
                     elementHash = 0;
                 }
