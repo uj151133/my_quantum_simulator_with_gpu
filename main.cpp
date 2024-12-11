@@ -61,13 +61,13 @@ void execute() {
 
     // cout << "Initial state: " << circuit.getInitialState() << endl;
 
-
+    QuantumCircuit circuit(2);
 
     int numQubits = 2;
     // int numGates = 200;
 
     // randomRotate(numQubits, numGates);
-    // int omega = std::pow(2, numQubits) - 1;
+    int omega = std::pow(2, numQubits) - 1;
 
     // grover(numQubits, omega);
     // cout << mathUtils::mul(gate::CX1().getInitialEdge(), gate::CX2().getInitialEdge()) << endl;
@@ -107,8 +107,6 @@ int main() {
     // } else {
     //     cout << "GUI is disabled." << endl;
     // }
-    QMDDState state00 = state::Ket0();
-    cout << "Initial state 00: " << state00.getStartNode().get() << endl;
     measureExecutionTime(execute);
     // execute();
 
