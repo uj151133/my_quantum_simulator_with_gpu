@@ -2,6 +2,10 @@
 #include <yaml-cpp/yaml.h>
 #include <string>
 
+#ifndef ENTRY_COUNT
+#define ENTRY_COUNT 1000000
+#endif
+
 class Config {
 public:
     struct GuiSettings {

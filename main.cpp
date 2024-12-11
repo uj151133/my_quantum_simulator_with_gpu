@@ -1,12 +1,13 @@
 #include <iostream>
 #include <cstdlib>
-#include <cstdlib>
 #include <string>
 #include <unistd.h>
+#include <getopt.h>
 
+
+#include "src/common/config.hpp"
 #include "src/models/qmdd.hpp"
 #include "src/common/constant.hpp"
-#include "src/common/config.hpp"
 #include "src/models/gate.hpp"
 #include "src/models/state.hpp"
 #include "src/models/uniqueTable.hpp"
@@ -40,7 +41,9 @@ void execute() {
     QMDDState state10 = state::Ket0();
 
     cout << "Initial state 01: " << state01.getStartNode().get() << endl;
+    cout << "Initial state 01: " << state01.getStartNode() << endl;
     cout << "Initial state 02: " << state02.getStartNode().get() << endl;
+    // cout << "Initial state 02: " << state02.getStartNode() << endl;
     cout << "Initial state 03: " << state03.getStartNode().get() << endl;
     cout << "Initial state 04: " << state04.getStartNode().get() << endl;
     cout << "Initial state 05: " << state05.getStartNode().get() << endl;
@@ -77,6 +80,9 @@ void execute() {
 
 
 int main() {
+
+    cout << "entry count: " << ENTRY_COUNT << endl;
+
     CONFIG.loadFromFile("/Users/mitsuishikaito/my_quantum_simulator_with_gpu/config.yaml");
     // string processType = getProcessType();
     // if (processType == "sequential") {
@@ -101,7 +107,8 @@ int main() {
     // } else {
     //     cout << "GUI is disabled." << endl;
     // }
-
+    QMDDState state00 = state::Ket0();
+    cout << "Initial state 00: " << state00.getStartNode().get() << endl;
     measureExecutionTime(execute);
     // execute();
 
