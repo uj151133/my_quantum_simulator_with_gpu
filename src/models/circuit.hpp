@@ -10,7 +10,7 @@
 #include "gate.hpp"
 #include "state.hpp"
 #include "../common/mathUtils.hpp"
-// #include "../common/constant.hpp"
+#include "../common/constant.hpp"
 
 using namespace std;
 

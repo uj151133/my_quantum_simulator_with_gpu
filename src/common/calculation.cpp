@@ -40,7 +40,7 @@ size_t calculation::generateUniqueTableKey(const shared_ptr<QMDDNode>& node, siz
         }
     }
 
-    return hashValue % ENTRY_COUNT;
+    return hashValue;
 }
 
 size_t calculation::generateOperationCacheKey(const OperationKey& key) {
