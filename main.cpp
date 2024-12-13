@@ -29,31 +29,6 @@ void task(int index) {
 
 
 void execute() {
-    QMDDState state01 = state::Ket0();
-    QMDDState state02 = state::Ket0();
-    QMDDState state03 = state::Ket0();
-    QMDDState state04 = state::Ket0();
-    QMDDState state05 = state::Ket0();
-    QMDDState state06 = state::Ket0();
-    QMDDState state07 = state::Ket0();
-    QMDDState state08 = state::Ket0();
-    QMDDState state09 = state::Ket0();
-    QMDDState state10 = state::Ket0();
-
-    cout << "Initial state 01: " << state01.getStartNode().get() << endl;
-    cout << "Initial state 01: " << state01.getStartNode() << endl;
-    cout << "Initial state 02: " << state02.getStartNode().get() << endl;
-    // cout << "Initial state 02: " << state02.getStartNode() << endl;
-    cout << "Initial state 03: " << state03.getStartNode().get() << endl;
-    cout << "Initial state 04: " << state04.getStartNode().get() << endl;
-    cout << "Initial state 05: " << state05.getStartNode().get() << endl;
-    cout << "Initial state 06: " << state06.getStartNode().get() << endl;
-    cout << "Initial state 07: " << state07.getStartNode().get() << endl;
-    cout << "Initial state 08: " << state08.getStartNode().get() << endl;
-    cout << "Initial state 09: " << state09.getStartNode().get() << endl;
-    cout << "Initial state 10: " << state10.getStartNode().get() << endl;
-
-
     // CONFIG.printConfig();
     UniqueTable& table = UniqueTable::getInstance();
     // table.printAllEntries();
@@ -61,13 +36,13 @@ void execute() {
 
     // cout << "Initial state: " << circuit.getInitialState() << endl;
 
-    QuantumCircuit circuit(2);
 
-    int numQubits = 2;
-    // int numGates = 200;
 
-    // randomRotate(numQubits, numGates);
-    int omega = std::pow(2, numQubits) - 1;
+    int numQubits = 20;
+    int numGates = 200;
+
+    randomRotate(numQubits, numGates);
+    // int omega = std::pow(2, numQubits) - 1;
 
     // grover(numQubits, omega);
     // cout << mathUtils::mul(gate::CX1().getInitialEdge(), gate::CX2().getInitialEdge()) << endl;
