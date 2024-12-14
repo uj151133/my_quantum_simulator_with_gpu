@@ -15,13 +15,17 @@ void UniqueTable::insert(size_t hashKey, shared_ptr<QMDDNode> node) {
     auto it = table.find(index);
     if (it != table.end()) {
 
-        for (const auto& existingEntry : it->second) {
+        for (auto& existingEntry : it->second) {
             if (existingEntry.key == hashKey) {
-                return;
+                if (existingEntry.value.lock() == node) return;
+                else if (existingEntry.value.expired()) {
+                    existingEntry.value = weak_ptr<QMDDNode>(node);
+                    return;
+                }
             }
         }
     }
-    table[index].push_back(Entry(hashKey, node));
+    table[index].push_back(Entry(hashKey, weak_ptr<QMDDNode>(node)));
     return;
 }
 
@@ -31,8 +35,8 @@ shared_ptr<QMDDNode> UniqueTable::find(size_t hashKey) const {
     auto it = table.find(index);
     if (it != table.end()) {
         for (const auto& entry : it->second) {
-            if (entry.key == hashKey) {
-                return entry.value;
+            if (entry.key == hashKey && !entry.value.expired()) {
+                return entry.value.lock();
             }
         }
     }
@@ -40,6 +44,7 @@ shared_ptr<QMDDNode> UniqueTable::find(size_t hashKey) const {
 }
 
 void UniqueTable::printAllEntries() const {
+    size_t validEntries = 0;
     for (const auto& entry : table) {
         size_t index = entry.first;
         const auto& entries = entry.second;
@@ -49,14 +54,16 @@ void UniqueTable::printAllEntries() const {
 
         for (const auto& entry : entries) {
             cout << "  Key: " << entry.key << endl;
-            if (entry.value) {
-                const QMDDNode& node = *(entry.value);
+            if (!entry.value.expired()) {
+                const QMDDNode& node = *(entry.value.lock());
                 cout << "  Node: " << node << endl;
+                validEntries++;
             } else {
-                cout << "  Null node" << endl;
+                cout << "  Node expired!" << endl;
             }
         }
         cout << endl;
     }
     cout << "Total entries: " << table.size() << endl;
+    cout << "Valid (non-expired) entries: " << validEntries << endl;
 }

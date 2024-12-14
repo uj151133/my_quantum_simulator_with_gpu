@@ -18,7 +18,6 @@ using namespace std;
 class QuantumCircuit {
 private:
     queue<QMDDGate> gateQueue;
-    QMDDState initialState;
     QMDDState finalState;
     int numQubits;
 
@@ -27,7 +26,6 @@ public:
     QuantumCircuit(int numQubitits);
     ~QuantumCircuit() = default;
     queue<QMDDGate> getGateQueue() const;
-    QMDDState getInitialState() const;
     QMDDState getFinalState() const;
     QuantumCircuit(const QuantumCircuit& other) = default;
     QuantumCircuit& operator=(const QuantumCircuit& other) = default;
@@ -90,16 +88,15 @@ public:
 
     void execute();
     QMDDState read(int qubitIndex);
-    // コンストラクタやその他のメンバ関数はここに追加できます
 };
 
-template <typename T>
-void printQueue(queue<T> q) {
-    while (!q.empty()) {
-        cout << "circuit queue: " << q.front() << endl;
-        q.pop();
-    }
-    cout << endl;
-}
+// template <typename T>
+// void printQueue(queue<T> q) {
+//     while (!q.empty()) {
+//         cout << "circuit queue: " << q.front() << endl;
+//         q.pop();
+//     }
+//     cout << endl;
+// }
 
 #endif

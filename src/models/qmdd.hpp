@@ -45,6 +45,7 @@ ostream& operator<<(ostream& os, const QMDDVariant& variant);
 struct QMDDEdge{
     complex<double> weight;
     size_t uniqueTableKey;
+    shared_ptr<QMDDNode> node;
     bool isTerminal;
 
     QMDDEdge(complex<double> w = {0.0, 0.0}, shared_ptr<QMDDNode> n = nullptr);
@@ -59,8 +60,6 @@ struct QMDDEdge{
     bool operator==(const QMDDEdge& other) const;
     bool operator!=(const QMDDEdge& other) const;
     friend ostream& operator<<(ostream& os, const QMDDEdge& edge);
-    QMDDEdge operator+(const QMDDEdge& other) const;
-    QMDDEdge& operator+=(const QMDDEdge& other);
 };
 
 struct QMDDNode {
@@ -68,10 +67,8 @@ struct QMDDNode {
 
     QMDDNode(const vector<vector<QMDDEdge>>& edges);
     ~QMDDNode() = default;
-    // コピーコンストラクタとコピー代入演算子
     QMDDNode(const QMDDNode& other) = default;
     QMDDNode& operator=(const QMDDNode& other) = default;
-    // ムーブコンストラクタとムーブ代入演算子
     QMDDNode(QMDDNode&& other) noexcept = default;
     QMDDNode& operator=(QMDDNode&& other) noexcept;
     bool operator==(const QMDDNode& other) const;
@@ -83,7 +80,7 @@ class QMDDGate{
 private:
     QMDDEdge initialEdge;
 public:
-    QMDDGate(QMDDEdge edge, size_t numEdge = 4);
+    QMDDGate(QMDDEdge edge);
     QMDDGate(const QMDDGate& other) = default;
     ~QMDDGate() = default;
     shared_ptr<QMDDNode> getStartNode() const;
@@ -109,14 +106,5 @@ public:
     bool operator!=(const QMDDState& other) const;
     friend ostream& operator<<(ostream& os, const QMDDState& state);
 };
-
-template<typename T>
-bool compare_and_swap(T& variable, const T& expected, const T& new_value) {
-    if (variable == expected) {
-        variable = new_value;
-        return true;  // 成功
-    }
-    return false;  // 失敗
-}
 
 #endif

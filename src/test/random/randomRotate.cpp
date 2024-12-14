@@ -14,6 +14,7 @@ void randomRotate(size_t numQubits, size_t numGates = 200) {
         int qubit = qubitDist(gen);
         double phase = phaseDist(gen);
         int gateType = gateDist(gen);
+        cout <<"gate num: " << i << ", qubit: " << qubit << ", phase: " << phase << ", gateType: " << gateType << endl;
 
         switch (gateType) {
             case 0:

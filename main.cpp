@@ -21,12 +21,6 @@
 
 using namespace std;
 
-void task(int index) {
-    // スレッドIDとループのインデックスを出力
-    std::cout << "Thread ID: " << std::this_thread::get_id() 
-              << ", Index: " << index << std::endl;
-}
-
 
 void execute() {
     // CONFIG.printConfig();
@@ -36,9 +30,19 @@ void execute() {
 
     // cout << "Initial state: " << circuit.getInitialState() << endl;
 
+    // QuantumCircuit circuit(20);
+    // circuit.addRx(9, 2.61854);
+    // cout << "finish adding rx gate" << endl;
 
+    // QMDDEdge edge = QMDDEdge(1.0, 13421976852400610425);
+    // QMDDGate gate1 = mathUtils::kron(gate::I().getInitialEdge(), gate::I().getInitialEdge());
+    // cout << "gate1: " << gate1.getInitialEdge().uniqueTableKey << endl;
+    // cout << "gate1: " << gate1.getStartNode() << endl;
+    // QMDDEdge edge = QMDDEdge(1.0, shared_ptr<QMDDNode>(gate1.getStartNode()));
+    // cout << "edge: " << edge << endl;
+    // circuit.addRz(6, 1.49602);
 
-    int numQubits = 20;
+    int numQubits = 2;
     int numGates = 200;
 
     randomRotate(numQubits, numGates);
@@ -49,7 +53,7 @@ void execute() {
 
     // cout << mathUtils::kron(gate::H().getInitialEdge(), gate::H().getInitialEdge()) << endl;
 
-    table.printAllEntries();
+    // table.printAllEntries();
 }
 
 

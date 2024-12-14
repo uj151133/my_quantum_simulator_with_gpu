@@ -1,34 +1,25 @@
 #include "circuit.hpp"
 
-// const QMDDEdge identityEdge = gate::I().getInitialEdge();
-// const QMDDEdge braketZero = mathUtils::mul(state::Ket0().getInitialEdge(), state::Bra0().getInitialEdge());
-// const QMDDEdge braketOne = mathUtils::mul(state::Ket1().getInitialEdge(), state::Bra1().getInitialEdge());
-
-
-QuantumCircuit::QuantumCircuit(int numQubits, QMDDState initialState) : numQubits(numQubits), initialState(initialState), finalState(initialState) {
+QuantumCircuit::QuantumCircuit(int numQubits, QMDDState initialState) : numQubits(numQubits), finalState(initialState) {
     call_once(initExtendedEdgeFlag, initExtendedEdge);
     if (numQubits < 1) {
         throw std::invalid_argument("Number of qubits must be at least 1.");
     }
 }
-QuantumCircuit::QuantumCircuit(int numQubits) : numQubits(numQubits), initialState(state::Ket0()), finalState(initialState) {
+
+QuantumCircuit::QuantumCircuit(int numQubits) : numQubits(numQubits), finalState(state::Ket0()) {
     call_once(initExtendedEdgeFlag, initExtendedEdge);
     if (numQubits < 1) {
         throw std::invalid_argument("Number of qubits must be at least 1.");
     }
 
     for (int i = 1; i < numQubits; i++) {
-        initialState = mathUtils::kron(initialState.getInitialEdge(), state::Ket0().getInitialEdge());
+        finalState = mathUtils::kron(finalState.getInitialEdge(), state::Ket0().getInitialEdge());
     }
 }
 
-
 queue<QMDDGate> QuantumCircuit::getGateQueue() const {
     return gateQueue;
-}
-
-QMDDState QuantumCircuit::getInitialState() const {
-    return initialState;
 }
 
 QMDDState QuantumCircuit::getFinalState() const {
@@ -143,7 +134,10 @@ void QuantumCircuit::addH(int qubitIndex) {
 void QuantumCircuit::addAllH() {
     vector<QMDDEdge> edges(numQubits, gate::H().getInitialEdge());
     QMDDGate result = accumulate(edges.begin() + 1, edges.end(), edges[0], mathUtils::kronWrapper);
+    // cout << "addAllH: " << result.getStartNode().use_count() << endl;
     gateQueue.push(result);
+    // result.getStartNode().reset();
+    // cout << "addAllH: " << gateQueue.back().getStartNode().use_count() << endl;
     return;
 }
 
@@ -461,7 +455,6 @@ void QuantumCircuit::addRx(int qubitIndex, double theta) {
     } else {
         vector<QMDDEdge> edges(qubitIndex, identityEdge);
         edges.push_back(gate::Rx(theta).getInitialEdge());
-        // edges.insert(edges.end(), numQubits - qubitIndex - 1, identityEdge);
         QMDDGate result = accumulate(edges.begin() + 1, edges.end(), edges[0], mathUtils::kronWrapper);
         gateQueue.push(result);
     }
@@ -474,7 +467,6 @@ void QuantumCircuit::addRy(int qubitIndex, double theta) {
     } else {
         vector<QMDDEdge> edges(qubitIndex, identityEdge);
         edges.push_back(gate::Ry(theta).getInitialEdge());
-        // edges.insert(edges.end(), numQubits - qubitIndex - 1, identityEdge);
         QMDDGate result = accumulate(edges.begin() + 1, edges.end(), edges[0], mathUtils::kronWrapper);
         gateQueue.push(result);
     }
@@ -487,7 +479,6 @@ void QuantumCircuit::addRz(int qubitIndex, double theta) {
     } else {
         vector<QMDDEdge> edges(qubitIndex, identityEdge);
         edges.push_back(gate::Rz(theta).getInitialEdge());
-        // edges.insert(edges.end(), numQubits - qubitIndex - 1, identityEdge);
         QMDDGate result = accumulate(edges.begin() + 1, edges.end(), edges[0], mathUtils::kronWrapper);
         gateQueue.push(result);
     }
@@ -616,17 +607,16 @@ void QuantumCircuit::addIAM() {
 }
 
 void QuantumCircuit::execute() {
-    QMDDState currentState = initialState;
+
     while (!gateQueue.empty()) {
         QMDDGate currentGate = gateQueue.front();
         cout << "Current gate: " << currentGate << endl;
-        cout << "Current state: " << currentState << endl;
+        cout << "Current state: " << finalState << endl;
 
         cout << "============================================================\n" << endl;
         gateQueue.pop();
-        currentState = mathUtils::mul(currentGate.getInitialEdge(), currentState.getInitialEdge());
+        finalState = QMDDState(mathUtils::mul(currentGate.getInitialEdge(), finalState.getInitialEdge()));
     }
-    finalState = currentState;
     cout << "Final state: " << finalState << endl;
     return;
 }

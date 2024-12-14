@@ -19,28 +19,45 @@ ostream& operator<<(ostream& os, const QMDDVariant& variant) {
 QMDDEdge::QMDDEdge(complex<double> w, shared_ptr<QMDDNode> n)
     : weight(w), uniqueTableKey(n ? calculation::generateUniqueTableKey(n) : 0), isTerminal(!n) {
     UniqueTable& table = UniqueTable::getInstance();
-    auto existingNode = table.find(uniqueTableKey);
-    if (existingNode == nullptr && n) table.insert(uniqueTableKey, n);
-    n.reset();
+    if (n) {
+        auto existingNode = table.find(uniqueTableKey);
+        if (existingNode == nullptr) {
+            table.insert(uniqueTableKey, n);
+            node = n;
+        } else {
+            node = existingNode;
+        }
+    }
     // cout << "Edge created with weight: " << weight << " and uniqueTableKey: " << uniqueTableKey << " and isTerminal: " << isTerminal << endl;
 }
 
 QMDDEdge::QMDDEdge(double w, shared_ptr<QMDDNode> n)
-    : weight(complex<double>(w, 0.0)), uniqueTableKey(n ? calculation::generateUniqueTableKey(n) : 0), isTerminal(!n) {
+    : weight(complex<double>(w, 0.0)), uniqueTableKey(n ? calculation::generateUniqueTableKey(n) : 0), node(n), isTerminal(!n) {
     UniqueTable& table = UniqueTable::getInstance();
-    auto existingNode = table.find(uniqueTableKey);
-    if (existingNode == nullptr && n) table.insert(uniqueTableKey, n);
-    n.reset();
+    // cout << "uniqueTableKey: " << uniqueTableKey << endl;
+    if (n) {
+        auto existingNode = table.find(uniqueTableKey);
+        if (existingNode == nullptr) {
+            table.insert(uniqueTableKey, n);
+            node = n;
+        } else {
+            node = existingNode;
+        }
+    }
     // cout << "Edge created with weight: " << weight << " and uniqueTableKey: " << uniqueTableKey << " and isTerminal: " << isTerminal << endl;
 }
 
 QMDDEdge::QMDDEdge(complex<double> w, size_t key)
     : weight(w), uniqueTableKey(key), isTerminal(key == 0) {
+    UniqueTable& table = UniqueTable::getInstance();
+    node = table.find(uniqueTableKey);
     // cout << "Edge created with weight: " << weight << " and uniqueTableKey: " << uniqueTableKey << " and isTerminal: " << isTerminal << endl;
 }
 
 QMDDEdge::QMDDEdge(double w, size_t key)
     : weight(complex<double>(w, 0.0)), uniqueTableKey(key), isTerminal(key == 0) {
+    UniqueTable& table = UniqueTable::getInstance();
+    node = table.find(uniqueTableKey);
     // cout << "Edge created with weight: " << weight << " and uniqueTableKey: " << uniqueTableKey << " and isTerminal: " << isTerminal << endl;
 }
 
@@ -105,14 +122,6 @@ ostream& operator<<(ostream& os, const QMDDEdge& edge) {
     return os;
 }
 
-QMDDEdge QMDDEdge::operator+(const QMDDEdge& other) const {
-    return mathUtils::add(*this, other);
-}
-
-QMDDEdge& QMDDEdge::operator+=(const QMDDEdge& other) {
-    *this = *this + other;
-    return *this;
-}
 
 /////////////////////////////////////
 //
@@ -121,15 +130,12 @@ QMDDEdge& QMDDEdge::operator+=(const QMDDEdge& other) {
 /////////////////////////////////////
 
 QMDDNode::QMDDNode(const vector<vector<QMDDEdge>>& edges) : edges(edges) {
-    // cout << endl;
-    // cout << "Node created with " << edges.size() << " edges" << endl;
-    // cout << endl;
 }
+
 
 QMDDNode& QMDDNode::operator=(QMDDNode&& other) noexcept {
     if (this != &other) {
         edges = std::move(other.edges);
-        // ムーブされた後のオブジェクトが安全に破棄されるようにする
         other.edges.clear();
     }
     return *this;
@@ -168,7 +174,7 @@ ostream& operator<<(ostream& os, const QMDDNode& node) {
 //
 /////////////////////////////////////
 
-QMDDGate::QMDDGate(QMDDEdge edge, size_t numEdge)
+QMDDGate::QMDDGate(QMDDEdge edge)
     : initialEdge(std::move(edge)){}
 
 
