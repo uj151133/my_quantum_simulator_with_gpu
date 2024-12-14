@@ -96,31 +96,24 @@ include_directories(src)
 file(GLOB SOURCES "src/models/*.cpp" "src/common/*.cpp" "src/modules/*.cpp" "src/test/*/*.cpp")
 
 
-if(NOT DEFINED ENTRY_COUNT)
-    set(ENTRY_COUNT 1000000)
-else()
-    message(STATUS "Using custom ENTRY_COUNT: ${ENTRY_COUNT}")
-endif()
-
 # 通常のC++実行ファイルを追加
 add_executable(qmdd_sim main.cpp ${SOURCES})
-target_compile_definitions(qmdd_sim PRIVATE ENTRY_COUNT=${ENTRY_COUNT})
 target_include_directories(qmdd_sim PRIVATE ${GSL_INCLUDE_DIRS})
 target_link_libraries(qmdd_sim PRIVATE pthread yaml-cpp::yaml-cpp Python3::Python OpenMP::OpenMP_CXX Boost::fiber Boost::thread Boost::context Boost::system GSL::gsl ${GMP_LIB} Threads::Threads)
 
 
 # make run ターゲットの追加
 add_custom_target(run
-    COMMAND ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qmdd_sim -e ${ENTRY_COUNT}
+    COMMAND ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qmdd_sim
     DEPENDS qmdd_sim
     WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
-    COMMENT "Running the application with ${ENTRY_COUNT} entries..."
+    COMMENT "Running the application ..."
 )
 
 # make debug ターゲットの追加
 add_custom_target(debug
-    COMMAND lldb --file ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qmdd_sim ${ENTRY_COUNT}
+    COMMAND lldb --file ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qmdd_sim
     DEPENDS qmdd_sim
     WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
-    COMMENT "Debugging the application with lldb (with ${ENTRY_COUNT} entries)..."
+    COMMENT "Debugging the application with lldb ..."
 )

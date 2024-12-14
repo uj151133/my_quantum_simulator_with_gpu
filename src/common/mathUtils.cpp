@@ -289,16 +289,15 @@ QMDDEdge mathUtils::addForDiagonal(const QMDDEdge& e0, const QMDDEdge& e1) {
     else {
         cout << "\033[1;35mCache miss!\033[0m" << endl;
         
-        QMDDEdge* e0Copy = const_cast<QMDDEdge*>(&e0);
-        QMDDEdge* e1Copy = const_cast<QMDDEdge*>(&e1);
-        if (e1Copy->isTerminal) {
-            std::swap(e0Copy, e1Copy);
+
+        if (e1.isTerminal) {
+            std::swap(const_cast<QMDDEdge&>(e0), const_cast<QMDDEdge&>(e1));
         }
-        if (e0Copy->isTerminal) {
-            if (e0Copy->weight == .0) {
-                return *e1Copy;
-            } else if (e1Copy->isTerminal) {
-                return QMDDEdge(e0Copy->weight + e1Copy->weight, nullptr);
+        if (e0.isTerminal) {
+            if (e0.weight == .0) {
+                return e1;
+            } else if (e1.isTerminal) {
+                return QMDDEdge(e0.weight + e1.weight, nullptr);
             }
         }
         shared_ptr<QMDDNode> n0 = e0.getStartNode();
@@ -308,8 +307,8 @@ QMDDEdge mathUtils::addForDiagonal(const QMDDEdge& e0, const QMDDEdge& e1) {
         complex<double> tmpWeight = .0;
         for (size_t i = 0; i < n0->edges.size(); i++) {
             for (size_t j = 0; j < n0->edges[i].size(); j++) {
-                QMDDEdge p(e0Copy->weight * n0->edges[i][j].weight, n0->edges[i][j].uniqueTableKey);
-                QMDDEdge q(e1Copy->weight * n1->edges[i][j].weight, n1->edges[i][j].uniqueTableKey);
+                QMDDEdge p(e0.weight * n0->edges[i][j].weight, n0->edges[i][j].uniqueTableKey);
+                QMDDEdge q(e1.weight * n1->edges[i][j].weight, n1->edges[i][j].uniqueTableKey);
                 z[i][j] = mathUtils::addForDiagonal(p, q);
 
                 if (z[i][j].weight != .0) {
@@ -473,15 +472,14 @@ QMDDEdge mathUtils::kronForDiagonal(const QMDDEdge& e0, const QMDDEdge& e1) {
     else {
         cout << "\033[1;35mCache miss!\033[0m" << endl;
 
-        QMDDEdge* e0Copy = const_cast<QMDDEdge*>(&e0);
-        QMDDEdge* e1Copy = const_cast<QMDDEdge*>(&e1);
-        if (e0Copy->isTerminal) {
-            if (e0Copy->weight == .0) {
-                return *e0Copy;
-            }else if (e0Copy->weight == 1.0) {
-                return *e1Copy;
+
+        if (e0.isTerminal) {
+            if (e0.weight == .0) {
+                return e0;
+            }else if (e0.weight == 1.0) {
+                return e1;
             } else {
-                return QMDDEdge(e0Copy->weight * e1Copy->weight, e1Copy->uniqueTableKey);
+                return QMDDEdge(e0.weight * e1.weight, e1.uniqueTableKey);
             }
         }
         shared_ptr<QMDDNode> n0 = e0.getStartNode();
@@ -489,7 +487,7 @@ QMDDEdge mathUtils::kronForDiagonal(const QMDDEdge& e0, const QMDDEdge& e1) {
         vector<vector<QMDDEdge>> z(2, vector<QMDDEdge>(2, QMDDEdge(.0, nullptr)));
         complex<double> tmpWeight = .0;
         bool allWeightsAreZero = true;
-        #pragma omp parallel for shared(z) num_threads(2) schedule(auto)
+
         for (size_t n = 0; n < 2; n++) {
             z[n][n] = mathUtils::kronForDiagonal(n0->edges[n][n], e1);
             if (z[n][n].weight != .0) {
@@ -508,7 +506,7 @@ QMDDEdge mathUtils::kronForDiagonal(const QMDDEdge& e0, const QMDDEdge& e1) {
         if (allWeightsAreZero) {
             result = QMDDEdge(.0, nullptr);
         } else {
-            result = QMDDEdge(e0Copy->weight * tmpWeight, make_shared<QMDDNode>(z));
+            result = QMDDEdge(e0.weight * tmpWeight, make_shared<QMDDNode>(z));
         }
         cache.insert(operationCacheKey, make_pair(result.weight, result.uniqueTableKey));
         return result;
