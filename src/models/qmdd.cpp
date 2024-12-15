@@ -18,6 +18,7 @@ ostream& operator<<(ostream& os, const QMDDVariant& variant) {
 
 QMDDEdge::QMDDEdge(complex<double> w, shared_ptr<QMDDNode> n)
     : weight(w), uniqueTableKey(n ? calculation::generateUniqueTableKey(n) : 0), node(n), isTerminal(!n) {
+    CONFIG.loadFromFile("/Users/mitsuishikaito/my_quantum_simulator_with_gpu/config.yaml");
     UniqueTable& table = UniqueTable::getInstance();
     // auto existingNode = table.find(uniqueTableKey);
     // if (existingNode == nullptr && n) table.insert(uniqueTableKey, n);
@@ -25,9 +26,9 @@ QMDDEdge::QMDDEdge(complex<double> w, shared_ptr<QMDDNode> n)
         auto existingNode = table.find(uniqueTableKey);
         if (existingNode == nullptr) {
             table.insert(uniqueTableKey, n);
-        //     node = n;
-        // } else {
-        //     node = existingNode;
+            node = n;
+        } else {
+            node = existingNode;
         }
     }
     // cout << "Edge created with weight: " << weight << " and uniqueTableKey: " << uniqueTableKey << " and isTerminal: " << isTerminal << endl;
@@ -35,6 +36,7 @@ QMDDEdge::QMDDEdge(complex<double> w, shared_ptr<QMDDNode> n)
 
 QMDDEdge::QMDDEdge(double w, shared_ptr<QMDDNode> n)
     : weight(complex<double>(w, 0.0)), uniqueTableKey(n ? calculation::generateUniqueTableKey(n) : 0), node(n), isTerminal(!n) {
+    CONFIG.loadFromFile("/Users/mitsuishikaito/my_quantum_simulator_with_gpu/config.yaml");
     UniqueTable& table = UniqueTable::getInstance();
     // auto existingNode = table.find(uniqueTableKey);
     // if (existingNode == nullptr && n) table.insert(uniqueTableKey, n);
@@ -42,9 +44,9 @@ QMDDEdge::QMDDEdge(double w, shared_ptr<QMDDNode> n)
         auto existingNode = table.find(uniqueTableKey);
         if (existingNode == nullptr) {
             table.insert(uniqueTableKey, n);
-        //     node = n;
-        // } else {
-        //     node = existingNode;
+            node = n;
+        } else {
+            node = existingNode;
         }
     }
     // cout << "Edge created with weight: " << weight << " and uniqueTableKey: " << uniqueTableKey << " and isTerminal: " << isTerminal << endl;
@@ -52,6 +54,7 @@ QMDDEdge::QMDDEdge(double w, shared_ptr<QMDDNode> n)
 
 QMDDEdge::QMDDEdge(complex<double> w, size_t key)
     : weight(w), uniqueTableKey(key), isTerminal(key == 0) {
+    CONFIG.loadFromFile("/Users/mitsuishikaito/my_quantum_simulator_with_gpu/config.yaml");
     UniqueTable& table = UniqueTable::getInstance();
     node = table.find(uniqueTableKey);
     // cout << "Edge created with weight: " << weight << " and uniqueTableKey: " << uniqueTableKey << " and isTerminal: " << isTerminal << endl;
@@ -59,6 +62,7 @@ QMDDEdge::QMDDEdge(complex<double> w, size_t key)
 
 QMDDEdge::QMDDEdge(double w, size_t key)
     : weight(complex<double>(w, 0.0)), uniqueTableKey(key), isTerminal(key == 0) {
+    CONFIG.loadFromFile("/Users/mitsuishikaito/my_quantum_simulator_with_gpu/config.yaml");
     UniqueTable& table = UniqueTable::getInstance();
     node = table.find(uniqueTableKey);
     // cout << "Edge created with weight: " << weight << " and uniqueTableKey: " << uniqueTableKey << " and isTerminal: " << isTerminal << endl;

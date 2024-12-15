@@ -19,6 +19,9 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
 
     // table.printAllEntries();
 
+    // cout << "e0: " << e0.uniqueTableKey << endl;
+    // cout << "e1: " << e1.uniqueTableKey << endl;
+
     if (e1.isTerminal) {
         std::swap(const_cast<QMDDEdge&>(e0), const_cast<QMDDEdge&>(e1));
     }
