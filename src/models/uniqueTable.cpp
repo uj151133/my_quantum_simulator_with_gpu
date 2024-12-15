@@ -2,7 +2,7 @@
 
 UniqueTable::UniqueTable() {
     // CONFIG.loadFromFile("/Users/mitsuishikaito/my_quantum_simulator_with_gpu/config.yaml");
-    tableSize = 1000000;
+    tableSize = CONFIG.table.size;
     table.reserve(tableSize);
 }
 

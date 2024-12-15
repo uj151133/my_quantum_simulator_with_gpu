@@ -10,8 +10,13 @@ using namespace std;
 extern complex<double> i;
 extern QMDDEdge edgeZero;
 extern QMDDEdge edgeOne;
-extern once_flag initFlag;
+extern QMDDEdge identityEdge;
+extern QMDDEdge braketZero;
+extern QMDDEdge braketOne;
+extern once_flag initEdgeFlag;
+extern once_flag initExtendedEdgeFlag;
 
-void init();
+void initEdge();
+void initExtendedEdge();
 
 #endif
