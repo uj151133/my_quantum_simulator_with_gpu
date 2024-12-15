@@ -1,29 +1,25 @@
 #include "circuit.hpp"
 
-QuantumCircuit::QuantumCircuit(int numQubits, QMDDState initialState) : numQubits(numQubits), initialState(initialState), finalState(initialState) {
+QuantumCircuit::QuantumCircuit(int numQubits, QMDDState initialState) : numQubits(numQubits), finalState(initialState) {
     call_once(initExtendedEdgeFlag, initExtendedEdge);
     if (numQubits < 1) {
         throw std::invalid_argument("Number of qubits must be at least 1.");
     }
 }
-QuantumCircuit::QuantumCircuit(int numQubits) : numQubits(numQubits), initialState(state::Ket0()), finalState(initialState) {
+QuantumCircuit::QuantumCircuit(int numQubits) : numQubits(numQubits), finalState(state::Ket0()) {
     call_once(initExtendedEdgeFlag, initExtendedEdge);
     if (numQubits < 1) {
         throw std::invalid_argument("Number of qubits must be at least 1.");
     }
 
     for (int i = 1; i < numQubits; i++) {
-        initialState = mathUtils::kron(initialState.getInitialEdge(), state::Ket0().getInitialEdge());
+        finalState = mathUtils::kron(finalState.getInitialEdge(), state::Ket0().getInitialEdge());
     }
 }
 
 
 queue<QMDDGate> QuantumCircuit::getGateQueue() const {
     return gateQueue;
-}
-
-QMDDState QuantumCircuit::getInitialState() const {
-    return initialState;
 }
 
 QMDDState QuantumCircuit::getFinalState() const {
@@ -611,17 +607,15 @@ void QuantumCircuit::addIAM() {
 }
 
 void QuantumCircuit::execute() {
-    QMDDState currentState = initialState;
     while (!gateQueue.empty()) {
         QMDDGate currentGate = gateQueue.front();
         cout << "Current gate: " << currentGate << endl;
-        cout << "Current state: " << currentState << endl;
+        cout << "Current state: " << finalState << endl;
 
         cout << "============================================================\n" << endl;
         gateQueue.pop();
-        currentState = mathUtils::mul(currentGate.getInitialEdge(), currentState.getInitialEdge());
+        finalState = QMDDState(mathUtils::mul(currentGate.getInitialEdge(), finalState.getInitialEdge()));
     }
-    finalState = currentState;
     cout << "Final state: " << finalState << endl;
     return;
 }
