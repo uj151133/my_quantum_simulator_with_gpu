@@ -1,8 +1,9 @@
 #include "uniqueTable.hpp"
 
 UniqueTable::UniqueTable() {
-    // CONFIG.loadFromFile("/Users/mitsuishikaito/my_quantum_simulator_with_gpu/config.yaml");
+    CONFIG.loadFromFile("/Users/mitsuishikaito/my_quantum_simulator_with_gpu/config.yaml");
     tableSize = CONFIG.table.size;
+    cout << "Init table size: " << tableSize << endl;
     table.reserve(tableSize);
 }
 
@@ -22,15 +23,15 @@ void UniqueTable::insert(size_t hashKey, shared_ptr<QMDDNode> node) {
     if (it != table.end()) {
         for (auto& existingEntry : it->second) {
             if (existingEntry.key == hashKey) {
-                if (existingEntry.value == node) return;
-                // else if (existingEntry.value.expired()) {
-                //     existingEntry.value = weak_ptr<QMDDNode>(node);
-                //     return;
-                // }
+                if (existingEntry.value.lock() == node) return;
+                else if (existingEntry.value.expired()) {
+                    existingEntry.value = weak_ptr<QMDDNode>(node);
+                    return;
+                }
             }
         }
     }
-    table[index].push_back(Entry(hashKey, node));
+    table[index].push_back(Entry(hashKey, weak_ptr<QMDDNode>(node)));
     return;
 }
 
@@ -41,7 +42,7 @@ shared_ptr<QMDDNode> UniqueTable::find(size_t hashKey) const {
     if (it != table.end()) {
         for (const auto& entry : it->second) {
             if (entry.key == hashKey) {
-                return entry.value;
+                return entry.value.lock();
             }
         }
     }
@@ -49,6 +50,8 @@ shared_ptr<QMDDNode> UniqueTable::find(size_t hashKey) const {
 }
 
 void UniqueTable::printAllEntries() const {
+    int validEntries = 0;
+    int invalidEntries = 0;
     for (const auto& item : table) {
         size_t index = item.first;
         const auto& entries = item.second;
@@ -58,17 +61,20 @@ void UniqueTable::printAllEntries() const {
         for (const auto& entry : entries) {
             cout << "  Key: " << entry.key << endl;
             cout << "  Nodes: " << endl;
-            if (entry.value) {
-                const QMDDNode& node = *entry.value;
+            if (!entry.value.expired()) {
+                const QMDDNode& node = *entry.value.lock();
                 cout << "    " << node << endl;
+                validEntries++;
             } else {
                 cout << "    Null node" << endl;
+                invalidEntries++;
             }
         }
         cout << endl;
     }
     cout << "Total entries: " << table.size() << endl;
     cout << "Table size: " << tableSize << endl;
-    cout << "Table max bucket count: " << table.max_bucket_count() << endl;
+    cout << "Valid entries: " << validEntries << endl;
+    cout << "Invalid entries: " << invalidEntries << endl;
     cout << "Table bucket count: " << table.bucket_count() << endl;
 }

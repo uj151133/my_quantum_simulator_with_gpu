@@ -109,13 +109,4 @@ public:
     friend ostream& operator<<(ostream& os, const QMDDState& state);
 };
 
-template<typename T>
-bool compare_and_swap(T& variable, const T& expected, const T& new_value) {
-    if (variable == expected) {
-        variable = new_value;
-        return true;  // 成功
-    }
-    return false;  // 失敗
-}
-
 #endif

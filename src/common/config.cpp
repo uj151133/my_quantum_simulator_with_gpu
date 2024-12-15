@@ -12,6 +12,7 @@ Config::Config() {}
 
 void Config::loadFromFile(const std::string& filepath) {
     std::call_once(load_flag, [this, &filepath]() {
+        cout << "Loading config file: " << std::endl;
         try {
             YAML::Node config = YAML::LoadFile(filepath);
             

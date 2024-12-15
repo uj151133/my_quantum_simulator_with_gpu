@@ -24,8 +24,6 @@ using namespace std;
 
 void execute() {
 
-
-    // CONFIG.printConfig();
     UniqueTable& table = UniqueTable::getInstance();
     // table.printAllEntries();
     // QuantumCircuit circuit(14);
@@ -34,7 +32,7 @@ void execute() {
 
     cout << "raw table size: " << CONFIG.table.size << endl;
 
-    int numQubits = 2;
+    int numQubits = 15;
     int numGates = 200;
 
     randomRotate(numQubits, numGates);
@@ -48,7 +46,7 @@ void execute() {
     // table.printAllEntries();
 
     // cout << CONFIG.table.size << endl;
-    // table.printAllEntries();
+    table.printAllEntries();
 }
 
 

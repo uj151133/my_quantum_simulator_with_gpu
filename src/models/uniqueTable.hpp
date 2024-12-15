@@ -10,8 +10,8 @@ using namespace std;
 
 struct Entry {
     size_t key;
-    shared_ptr<QMDDNode> value;
-    Entry(size_t k, shared_ptr<QMDDNode> v) : key(k), value(v) {}
+    weak_ptr<QMDDNode> value;
+    Entry(size_t k, weak_ptr<QMDDNode> v) : key(k), value(v) {}
 };
 
 class UniqueTable {
