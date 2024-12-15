@@ -18,13 +18,13 @@ ostream& operator<<(ostream& os, const QMDDVariant& variant) {
 
 QMDDEdge::QMDDEdge(complex<double> w, shared_ptr<QMDDNode> n)
     : weight(w), uniqueTableKey(n ? calculation::generateUniqueTableKey(n) : 0), node(n), isTerminal(!n) {
-    CONFIG.loadFromFile("#ifdef __APPLE__
+    #ifdef __APPLE__
         CONFIG.loadFromFile("/Users/mitsuishikaito/my_quantum_simulator_with_gpu/config.yaml");
     #elif __linux__
         CONFIG.loadFromFile("/home/ark/my_quantum_simulator_with_gpu/config.yaml");
     #else
         #error "Unsupported operating system"
-    #endif");
+    #endif
     UniqueTable& table = UniqueTable::getInstance();
     // auto existingNode = table.find(uniqueTableKey);
     // if (existingNode == nullptr && n) table.insert(uniqueTableKey, n);
