@@ -53,7 +53,13 @@ void execute() {
 
 int main() {
 
-    CONFIG.loadFromFile("/Users/mitsuishikaito/my_quantum_simulator_with_gpu/config.yaml");
+    #ifdef __APPLE__
+        CONFIG.loadFromFile("/Users/mitsuishikaito/my_quantum_simulator_with_gpu/config.yaml");
+    #elif __linux__
+        CONFIG.loadFromFile("/home/ark/my_quantum_simulator_with_gpu/config.yaml");
+    #else
+        #error "Unsupported operating system"
+    #endif
     // string processType = getProcessType();
     // if (processType == "sequential") {
     //     cout << "逐次処理を実行します。" << endl;
