@@ -1,12 +1,15 @@
 #include "circuit.hpp"
 
+
 QuantumCircuit::QuantumCircuit(int numQubits, QMDDState initialState) : numQubits(numQubits), finalState(initialState) {
     call_once(initExtendedEdgeFlag, initExtendedEdge);
     if (numQubits < 1) {
         throw std::invalid_argument("Number of qubits must be at least 1.");
     }
 }
+
 QuantumCircuit::QuantumCircuit(int numQubits) : numQubits(numQubits), finalState(state::Ket0()) {
+
     call_once(initExtendedEdgeFlag, initExtendedEdge);
     if (numQubits < 1) {
         throw std::invalid_argument("Number of qubits must be at least 1.");

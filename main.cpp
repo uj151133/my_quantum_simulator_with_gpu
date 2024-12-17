@@ -24,9 +24,12 @@ using namespace std;
 
 void execute() {
 
+
     // UniqueTable& table = UniqueTable::getInstance();
     // OperationCache& cache = OperationCache::getInstance();
-    // table.printAllEntries();
+
+    // CONFIG.printConfig();
+
     // QuantumCircuit circuit(14);
 
     // cout << "Initial state: " << circuit.getInitialState() << endl;
@@ -34,7 +37,7 @@ void execute() {
 
     int numQubits = 21;
     int numGates = 200;
-
+  
     randomRotate(numQubits, numGates);
     // int omega = std::pow(2, numQubits) - 1;
 
