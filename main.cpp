@@ -21,44 +21,43 @@
 
 using namespace std;
 
-void task(int index) {
-    // スレッドIDとループのインデックスを出力
-    std::cout << "Thread ID: " << std::this_thread::get_id() 
-              << ", Index: " << index << std::endl;
-}
-
 
 void execute() {
+
+
+    // UniqueTable& table = UniqueTable::getInstance();
+    // OperationCache& cache = OperationCache::getInstance();
+
     // CONFIG.printConfig();
-    UniqueTable& table = UniqueTable::getInstance();
-    // table.printAllEntries();
+
     // QuantumCircuit circuit(14);
 
     // cout << "Initial state: " << circuit.getInitialState() << endl;
 
 
-
-    int numQubits = 20;
+    int numQubits = 21;
     int numGates = 200;
-
+  
     randomRotate(numQubits, numGates);
     // int omega = std::pow(2, numQubits) - 1;
 
     // grover(numQubits, omega);
-    // cout << mathUtils::mul(gate::CX1().getInitialEdge(), gate::CX2().getInitialEdge()) << endl;
 
-    // cout << mathUtils::kron(gate::H().getInitialEdge(), gate::H().getInitialEdge()) << endl;
-
-    table.printAllEntries();
+    // table.printAllEntries();
+    // cache.printAllEntries();
 }
 
 
 
 int main() {
 
-    cout << "entry count: " << ENTRY_COUNT << endl;
-
-    CONFIG.loadFromFile("/Users/mitsuishikaito/my_quantum_simulator_with_gpu/config.yaml");
+    #ifdef __APPLE__
+        CONFIG.loadFromFile("/Users/mitsuishikaito/my_quantum_simulator_with_gpu/config.yaml");
+    #elif __linux__
+        CONFIG.loadFromFile("/home/ark/my_quantum_simulator_with_gpu/config.yaml");
+    #else
+        #error "Unsupported operating system"
+    #endif
     // string processType = getProcessType();
     // if (processType == "sequential") {
     //     cout << "逐次処理を実行します。" << endl;
