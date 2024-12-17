@@ -10,7 +10,6 @@ UniqueTable::UniqueTable() {
     #endif
     
     tableSize = CONFIG.table.size;
-    cout << "Init table size: " << tableSize << endl;
     table.reserve(tableSize);
 }
 

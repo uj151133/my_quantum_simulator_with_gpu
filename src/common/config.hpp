@@ -20,6 +20,10 @@ public:
         int size;
     } table;
 
+    struct CacheSettings {
+        int size;
+    } cache;
+
     static Config& getInstance();
     void loadFromFile(const std::string& filepath);
     void printConfig() const;

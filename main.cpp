@@ -24,29 +24,24 @@ using namespace std;
 
 void execute() {
 
-    UniqueTable& table = UniqueTable::getInstance();
+    // UniqueTable& table = UniqueTable::getInstance();
+    // OperationCache& cache = OperationCache::getInstance();
     // table.printAllEntries();
     // QuantumCircuit circuit(14);
 
     // cout << "Initial state: " << circuit.getInitialState() << endl;
 
-    cout << "raw table size: " << CONFIG.table.size << endl;
 
-    int numQubits = 15;
+    int numQubits = 21;
     int numGates = 200;
 
     randomRotate(numQubits, numGates);
     // int omega = std::pow(2, numQubits) - 1;
 
     // grover(numQubits, omega);
-    // cout << mathUtils::mul(gate::CX1().getInitialEdge(), gate::CX2().getInitialEdge()) << endl;
-
-    // cout << mathUtils::kron(gate::H().getInitialEdge(), gate::H().getInitialEdge()) << endl;
 
     // table.printAllEntries();
-
-    // cout << CONFIG.table.size << endl;
-    table.printAllEntries();
+    // cache.printAllEntries();
 }
 
 

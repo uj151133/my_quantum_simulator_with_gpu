@@ -28,6 +28,10 @@ void Config::loadFromFile(const std::string& filepath) {
             if (config["table"]) {
                 table.size = config["table"]["size"].as<int>();
             }
+
+            if (config["cache"]) {
+                cache.size = config["cache"]["size"].as<int>();
+            }
         } catch (const YAML::Exception& e) {
             std::cerr << "設定ファイルの読み込みに失敗: " << e.what() << std::endl;
         }

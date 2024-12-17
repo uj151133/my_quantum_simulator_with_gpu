@@ -607,7 +607,12 @@ void QuantumCircuit::addIAM() {
 }
 
 void QuantumCircuit::execute() {
+
+    OperationCache& cache = OperationCache::getInstance();
+    cache.clear();
+    int i = 0;
     while (!gateQueue.empty()) {
+        cout << "number of gates: " << i++ << endl;
         QMDDGate currentGate = gateQueue.front();
         cout << "Current gate: " << currentGate << endl;
         cout << "Current state: " << finalState << endl;
