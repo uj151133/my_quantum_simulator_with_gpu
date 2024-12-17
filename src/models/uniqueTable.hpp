@@ -10,8 +10,10 @@ using namespace std;
 
 struct Entry {
     size_t key;
+
     weak_ptr<QMDDNode> value;
     Entry(size_t k, weak_ptr<QMDDNode> v) : key(k), value(v) {}
+
 };
 
 class UniqueTable {
@@ -21,6 +23,7 @@ private:
     size_t tableSize ;
     UniqueTable();
     size_t hash(size_t hashKey) const;
+
 
 public:
     UniqueTable(const UniqueTable&) = delete;

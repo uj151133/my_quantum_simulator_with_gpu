@@ -10,6 +10,7 @@ using namespace std;
 extern complex<double> i;
 extern QMDDEdge edgeZero;
 extern QMDDEdge edgeOne;
+
 extern QMDDEdge identityEdge;
 extern QMDDEdge braketZero;
 extern QMDDEdge braketOne;

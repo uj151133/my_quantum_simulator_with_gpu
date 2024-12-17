@@ -2,7 +2,6 @@
 
 QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
     OperationCache& cache = OperationCache::getInstance();
-    // UniqueTable& table = UniqueTable::getInstance();
     size_t operationCacheKey = calculation::generateOperationCacheKey(make_tuple(e0, OperationType::MUL, e1));
     // cout << "Operation cache key: " << operationCacheKey << endl;
     auto existingAnswer = cache.find(operationCacheKey);
@@ -17,7 +16,7 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
     }
     // cout << "\033[1;35mCache miss!\033[0m" << endl;
 
-    // table.printAllEntries();
+    
 
     // cout << "e0: " << e0.uniqueTableKey << endl;
     // cout << "e1: " << e1.uniqueTableKey << endl;
