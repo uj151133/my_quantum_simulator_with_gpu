@@ -22,10 +22,6 @@ UniqueTable& UniqueTable::getInstance() {
     return instance;
 }
 
-size_t UniqueTable::hash(size_t key) const {
-    return key % ENTRY_COUNT;
-}
-
 void UniqueTable::insert(size_t hashKey, shared_ptr<QMDDNode> node) {
     unique_lock<shared_mutex> lock(tableMutex);
     size_t index = hash(hashKey);
