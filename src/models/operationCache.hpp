@@ -18,11 +18,9 @@ struct CacheEntry {
 class OperationCache {
 private:
     unordered_map<size_t, OperationResult> cache;
-    // std::list<size_t> lruList;
     size_t cacheSize;
     // mutable shared_mutex cacheMutex;c
     OperationCache();
-    // void updateLRU(size_t cacheKey);
 
 public:
     OperationCache(const OperationCache&) = delete;

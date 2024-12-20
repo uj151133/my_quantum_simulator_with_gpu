@@ -1,15 +1,16 @@
 #include "uniqueTable.hpp"
 
 UniqueTable::UniqueTable() {
-    #ifdef __APPLE__
-        CONFIG.loadFromFile("/Users/mitsuishikaito/my_quantum_simulator_with_gpu/config.yaml");
-    #elif __linux__
-        CONFIG.loadFromFile("/home/ark/my_quantum_simulator_with_gpu/config.yaml");
-    #else
-        #error "Unsupported operating system"
-    #endif
+    // #ifdef __APPLE__
+    //     CONFIG.loadFromFile("/Users/mitsuishikaito/my_quantum_simulator_with_gpu/config.yaml");
+    // #elif __linux__
+    //     CONFIG.loadFromFile("/home/ark/my_quantum_simulator_with_gpu/config.yaml");
+    // #else
+    //     #error "Unsupported operating system"
+    // #endif
     
-    tableSize = CONFIG.table.size;
+    // tableSize = CONFIG.table.size;
+    tableSize = 1000000;
     table.reserve(tableSize);
 }
 
