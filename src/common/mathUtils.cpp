@@ -7,19 +7,12 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
     auto existingAnswer = cache.find(operationCacheKey);
     if (existingAnswer != OperationResult{.0, 0}) {
         // cout << "\033[1;36mCache hit!\033[0m" << endl;
-        // return QMDDEdge(existingAnswer.first, existingAnswer.second);
         QMDDEdge answer = QMDDEdge(existingAnswer.first, existingAnswer.second);
         if (answer.getStartNode() != nullptr) {
             // cout << "\033[1;36mCache hit!\033[0m" << endl;
             return answer;
         }
     }
-    // cout << "\033[1;35mCache miss!\033[0m" << endl;
-
-    
-
-    // cout << "e0: " << e0.uniqueTableKey << endl;
-    // cout << "e1: " << e1.uniqueTableKey << endl;
 
     if (e1.isTerminal) {
         std::swap(const_cast<QMDDEdge&>(e0), const_cast<QMDDEdge&>(e1));
@@ -162,7 +155,6 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
     auto existingAnswer = cache.find(operationCacheKey);
     if (existingAnswer != OperationResult{.0, 0}) {
         // cout << "\033[1;36mCache hit!\033[0m" << endl;
-        // return QMDDEdge(existingAnswer.first, existingAnswer.second);
         QMDDEdge answer = QMDDEdge(existingAnswer.first, existingAnswer.second);
         if (answer.getStartNode() != nullptr) {
             // cout << "\033[1;36mCache hit!\033[0m" << endl;
@@ -292,18 +284,16 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
 QMDDEdge mathUtils::addForDiagonal(const QMDDEdge& e0, const QMDDEdge& e1) {
     OperationCache& cache = OperationCache::getInstance();
     size_t operationCacheKey = calculation::generateOperationCacheKey(make_tuple(e0, OperationType::ADD, e1));
-    cout << "Operation cache key: " << operationCacheKey << endl;
+    // cout << "Operation cache key: " << operationCacheKey << endl;
     auto existingAnswer = cache.find(operationCacheKey);
     if (existingAnswer != OperationResult{.0, 0}) {
-        // cout << "\033[1;36mCache hit!\033[0m" << endl;
-        // return QMDDEdge(existingAnswer.first, existingAnswer.second);
         QMDDEdge answer = QMDDEdge(existingAnswer.first, existingAnswer.second);
         if (answer.getStartNode() != nullptr) {
-            cout << "\033[1;36mCache hit!\033[0m" << endl;
+            // cout << "\033[1;36mCache hit!\033[0m" << endl;
             return answer;
         }
     }
-    cout << "\033[1;35mCache miss!\033[0m" << endl;
+    // cout << "\033[1;35mCache miss!\033[0m" << endl;
 
     if (e1.isTerminal) {
         std::swap(const_cast<QMDDEdge&>(e0), const_cast<QMDDEdge&>(e1));
@@ -345,7 +335,7 @@ QMDDEdge mathUtils::addForDiagonal(const QMDDEdge& e0, const QMDDEdge& e1) {
     } else {
         result = QMDDEdge(tmpWeight, make_shared<QMDDNode>(z));
     }
-    cache.insert(operationCacheKey, make_pair(tmpWeight, result.uniqueTableKey));
+    cache.insert(operationCacheKey, make_pair(result.weight, result.uniqueTableKey));
     return result;
 }
 
@@ -356,7 +346,6 @@ QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
     auto existingAnswer = cache.find(operationCacheKey);
     if (existingAnswer != OperationResult{.0, 0}) {
         // cout << "\033[1;36mCache hit!\033[0m" << endl;
-        // return QMDDEdge(existingAnswer.first, existingAnswer.second);
         QMDDEdge answer = QMDDEdge(existingAnswer.first, existingAnswer.second);
         if (answer.getStartNode() != nullptr) {
             // cout << "\033[1;36mCache hit!\033[0m" << endl;
@@ -486,7 +475,6 @@ QMDDEdge mathUtils::kronForDiagonal(const QMDDEdge& e0, const QMDDEdge& e1) {
     auto existingAnswer = cache.find(operationCacheKey);
     if (existingAnswer != OperationResult{.0, 0}) {
         // cout << "\033[1;36mCache hit!\033[0m" << endl;
-        // return QMDDEdge(existingAnswer.first, existingAnswer.second);
         QMDDEdge answer = QMDDEdge(existingAnswer.first, existingAnswer.second);
         if (answer.getStartNode() != nullptr) {
             // cout << "\033[1;36mCache hit!\033[0m" << endl;

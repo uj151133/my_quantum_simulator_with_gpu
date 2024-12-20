@@ -1,16 +1,16 @@
 #include "operationCache.hpp"
 
 OperationCache::OperationCache() {
-    #ifdef __APPLE__
-        CONFIG.loadFromFile("/Users/mitsuishikaito/my_quantum_simulator_with_gpu/config.yaml");
-    #elif __linux__
-        CONFIG.loadFromFile("/home/ark/my_quantum_simulator_with_gpu/config.yaml");
-    #else
-        #error "Unsupported operating system"
-    #endif
+    // #ifdef __APPLE__
+    //     CONFIG.loadFromFile("/Users/mitsuishikaito/my_quantum_simulator_with_gpu/config.yaml");
+    // #elif __linux__
+    //     CONFIG.loadFromFile("/home/ark/my_quantum_simulator_with_gpu/config.yaml");
+    // #else
+    //     #error "Unsupported operating system"
+    // #endif
 
-    cacheSize = CONFIG.cache.size;
-    cache.reserve(cacheSize);
+    // cacheSize = 1000000 / 4;
+    // cache.reserve(cacheSize);
 }
 
 // void OperationCache::updateLRU(size_t cacheKey) {
@@ -28,7 +28,7 @@ OperationCache& OperationCache::getInstance() {
 
 void OperationCache::insert(size_t cacheKey, OperationResult result) {
     // unique_lock<shared_mutex> lock(cacheMutex);
-    if (cache.size() >= cacheSize) {
+    if (cache.size() >= 250000) {
         // size_t oldestKey = lruList.back();
         // lruList.pop_back();
         // cache.erase(oldestKey);
@@ -67,5 +67,5 @@ void OperationCache::printAllEntries() const {
     }
 
     cout << "Number of valid entries: " << cache.size() << endl;
-    cout << "Cache size: " << cacheSize << endl;
+    // cout << "Cache size: " << cacheSize << endl;
 }

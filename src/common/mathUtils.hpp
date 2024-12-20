@@ -17,7 +17,6 @@
 #include "../models/operationCache.hpp"
 #include "config.hpp"
 #include "calculation.hpp"
-#include "../modules/fiber.hpp"
 
 using namespace std;
 

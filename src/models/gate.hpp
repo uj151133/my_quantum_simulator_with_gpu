@@ -6,7 +6,6 @@
 #include "qmdd.hpp"
 #include "../common/constant.hpp"
 #include "../common/mathUtils.hpp"
-#include "../modules/fiber.hpp"
 using namespace std;
 namespace gate {
     /* Identity gate and global phase */

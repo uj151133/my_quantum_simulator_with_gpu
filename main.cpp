@@ -35,7 +35,7 @@ void execute() {
     // cout << "Initial state: " << circuit.getInitialState() << endl;
 
 
-    int numQubits = 21;
+    int numQubits = 2;
     int numGates = 200;
   
     randomRotate(numQubits, numGates);
