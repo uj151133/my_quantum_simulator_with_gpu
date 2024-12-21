@@ -1,6 +1,6 @@
 #include "uniqueTable.hpp"
 
-UniqueTable::UniqueTable() {
+UniqueTable::UniqueTable() : tableSize(1000000) {
     // #ifdef __APPLE__
     //     CONFIG.loadFromFile("/Users/mitsuishikaito/my_quantum_simulator_with_gpu/config.yaml");
     // #elif __linux__
@@ -10,7 +10,6 @@ UniqueTable::UniqueTable() {
     // #endif
     
     // tableSize = CONFIG.table.size;
-    tableSize = 1000000;
     table.reserve(tableSize);
 }
 
@@ -24,7 +23,10 @@ UniqueTable& UniqueTable::getInstance() {
 }
 
 void UniqueTable::insert(size_t hashKey, shared_ptr<QMDDNode> node) {
-    unique_lock<shared_mutex> lock(tableMutex);
+    while (!tableMutex.try_lock()) {
+        boost::this_fiber::yield();
+    }
+    unique_lock<shared_mutex> lock(tableMutex, adopt_lock);
     size_t index = hash(hashKey);
     auto it = table.find(index);
     if (it != table.end()) {
@@ -43,7 +45,10 @@ void UniqueTable::insert(size_t hashKey, shared_ptr<QMDDNode> node) {
 }
 
 shared_ptr<QMDDNode> UniqueTable::find(size_t hashKey) const {
-    shared_lock<shared_mutex> lock(tableMutex);
+    while (!tableMutex.try_lock_shared()) {
+        boost::this_fiber::yield();
+    }
+    shared_lock<shared_mutex> lock(tableMutex, adopt_lock);
     size_t index = hash(hashKey);
     auto it = table.find(index);
     if (it != table.end()) {
