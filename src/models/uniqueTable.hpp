@@ -18,7 +18,7 @@ class UniqueTable {
 private:
     unordered_map<size_t, vector<Entry>> table;
     mutable shared_mutex tableMutex;
-    size_t tableSize ;
+    const size_t tableSize ;
     UniqueTable();
     size_t hash(size_t hashKey) const;
 

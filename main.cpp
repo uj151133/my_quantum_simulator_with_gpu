@@ -35,9 +35,9 @@ void execute() {
     // cout << "Initial state: " << circuit.getInitialState() << endl;
 
 
-    int numQubits = 2;
+    int numQubits = 20;
     int numGates = 200;
-  
+
     randomRotate(numQubits, numGates);
     // int omega = std::pow(2, numQubits) - 1;
 
