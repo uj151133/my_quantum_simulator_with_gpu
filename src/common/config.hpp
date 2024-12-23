@@ -1,10 +1,9 @@
 #pragma once
 #include <yaml-cpp/yaml.h>
 #include <string>
+#include <mutex>
 
-#ifndef ENTRY_COUNT
-#define ENTRY_COUNT 1000000
-#endif
+using namespace std;
 
 class Config {
 public:
@@ -16,6 +15,14 @@ public:
         int concurrency;
         int parallelism;
     } process;
+
+    struct TableSettings {
+        int size;
+    } table;
+
+    struct CacheSettings {
+        int size;
+    } cache;
 
     static Config& getInstance();
     void loadFromFile(const std::string& filepath);

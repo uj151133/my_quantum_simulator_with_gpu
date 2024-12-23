@@ -92,6 +92,7 @@
         "print": "cpp",
         "shared_mutex": "cpp",
         "future": "cpp",
-        "*.tpp": "cpp"
+        "*.tpp": "cpp",
+        "filesystem": "cpp"
     }
 }
