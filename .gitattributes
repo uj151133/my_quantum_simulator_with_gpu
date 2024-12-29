@@ -1,0 +1,2 @@
+GUI/GUI/obj/Debug/net9.0-ios/iossimulator-arm64/nativelibraries/aot-output/arm64/aot-instances.dll.s filter=lfs diff=lfs merge=lfs -text
+GUI/GUI/obj/Debug/net9.0-maccatalyst/maccatalyst-arm64/nativelibraries/aot-output/arm64/aot-instances.dll.s filter=lfs diff=lfs merge=lfs -text

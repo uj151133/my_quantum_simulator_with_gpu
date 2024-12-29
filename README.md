@@ -16,21 +16,17 @@ make
 sudo make install
 ```
 
-### GUI
-please do this.
-
-```zsh
-echo 'export PATH=$PATH:/usr/local/share/dotnet' >> ~/.zshrc
-source ~/.zshrc
-sudo dotnet workload install maui
-```
-
 ### OpenMP
 ```zsh
 export OMP_NUM_THREADS=4
 export OMP_PROC_BIND=spread
 export OMP_PLACES=cores
 ```
+
+
+### .NET MAUI
+↓download from this link
+https://dotnet.microsoft.com/ja-jp/download/dotnet/thank-you/sdk-9.0.101-macos-arm64-installer
 
 ### others
 ```zsh

@@ -1,6 +1,3 @@
-[submodule "docs/docs/my_bachelor_thesis"]
-	path = docs/docs/my_bachelor_thesis
-	url = git@github.com:uj151133/my_bachelor_thesis.git
 [submodule "docs/my_bachelor_thesis"]
 	path = docs/my_bachelor_thesis
 	url = git@github.com:uj151133/my_bachelor_thesis.git
