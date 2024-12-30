@@ -1,0 +1,33 @@
+{
+  "Files": [
+    {
+      "Id": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI/wwwroot/app.css",
+      "PackagePath": "staticwebassets/app.css"
+    },
+    {
+      "Id": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI/wwwroot/index.html",
+      "PackagePath": "staticwebassets/index.html"
+    },
+    {
+      "Id": "obj/Debug/net9.0-android/staticwebassets/msbuild.GUI.Microsoft.AspNetCore.StaticWebAssetEndpoints.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssetEndpoints.props"
+    },
+    {
+      "Id": "obj/Debug/net9.0-android/staticwebassets/msbuild.GUI.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj/Debug/net9.0-android/staticwebassets/msbuild.build.GUI.props",
+      "PackagePath": "build\\GUI.props"
+    },
+    {
+      "Id": "obj/Debug/net9.0-android/staticwebassets/msbuild.buildMultiTargeting.GUI.props",
+      "PackagePath": "buildMultiTargeting\\GUI.props"
+    },
+    {
+      "Id": "obj/Debug/net9.0-android/staticwebassets/msbuild.buildTransitive.GUI.props",
+      "PackagePath": "buildTransitive\\GUI.props"
+    }
+  ],
+  "ElementsToRemove": []
+}

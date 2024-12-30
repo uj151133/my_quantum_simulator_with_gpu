@@ -1,1 +1,0 @@
--v --force --timestamp=none --sign - --entitlements /Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/obj/Debug/net9.0-maccatalyst/maccatalyst-arm64/Entitlements.xcent /Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/bin/Debug/net9.0-maccatalyst/maccatalyst-arm64/GUI.app
