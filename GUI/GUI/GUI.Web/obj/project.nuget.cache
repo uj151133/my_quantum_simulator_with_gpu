@@ -1,0 +1,21 @@
+{
+  "version": 2,
+  "dgSpecHash": "PxPkasIHxGU=",
+  "success": true,
+  "projectFilePath": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Web/GUI.Web.csproj",
+  "expectedPackageFiles": [
+    "/Users/mitsuishikaito/.nuget/packages/microsoft.aspnetcore.authorization/9.0.0/microsoft.aspnetcore.authorization.9.0.0.nupkg.sha512",
+    "/Users/mitsuishikaito/.nuget/packages/microsoft.aspnetcore.components/9.0.0/microsoft.aspnetcore.components.9.0.0.nupkg.sha512",
+    "/Users/mitsuishikaito/.nuget/packages/microsoft.aspnetcore.components.analyzers/9.0.0/microsoft.aspnetcore.components.analyzers.9.0.0.nupkg.sha512",
+    "/Users/mitsuishikaito/.nuget/packages/microsoft.aspnetcore.components.forms/9.0.0/microsoft.aspnetcore.components.forms.9.0.0.nupkg.sha512",
+    "/Users/mitsuishikaito/.nuget/packages/microsoft.aspnetcore.components.web/9.0.0/microsoft.aspnetcore.components.web.9.0.0.nupkg.sha512",
+    "/Users/mitsuishikaito/.nuget/packages/microsoft.aspnetcore.metadata/9.0.0/microsoft.aspnetcore.metadata.9.0.0.nupkg.sha512",
+    "/Users/mitsuishikaito/.nuget/packages/microsoft.extensions.dependencyinjection/9.0.0/microsoft.extensions.dependencyinjection.9.0.0.nupkg.sha512",
+    "/Users/mitsuishikaito/.nuget/packages/microsoft.extensions.dependencyinjection.abstractions/9.0.0/microsoft.extensions.dependencyinjection.abstractions.9.0.0.nupkg.sha512",
+    "/Users/mitsuishikaito/.nuget/packages/microsoft.extensions.logging.abstractions/9.0.0/microsoft.extensions.logging.abstractions.9.0.0.nupkg.sha512",
+    "/Users/mitsuishikaito/.nuget/packages/microsoft.extensions.options/9.0.0/microsoft.extensions.options.9.0.0.nupkg.sha512",
+    "/Users/mitsuishikaito/.nuget/packages/microsoft.extensions.primitives/9.0.0/microsoft.extensions.primitives.9.0.0.nupkg.sha512",
+    "/Users/mitsuishikaito/.nuget/packages/microsoft.jsinterop/9.0.0/microsoft.jsinterop.9.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}
