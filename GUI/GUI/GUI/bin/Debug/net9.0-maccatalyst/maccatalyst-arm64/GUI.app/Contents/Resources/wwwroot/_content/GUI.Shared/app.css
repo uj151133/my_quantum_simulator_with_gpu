@@ -114,6 +114,7 @@ h1:focus {
 }
 
 .h-gate {
+    position: relative;
     text-align: center;
     width: 40px;
     height: 40px;
@@ -125,10 +126,22 @@ h1:focus {
     font-family: OpenSansRegular, sans-serif;
     font-size: 20px;
     font-weight: medium;
-    padding: 0;
-    margin: 0;
     cursor: move;
     user-select: none;
+}
+
+.h-gate p {
+    margin: 0;
+    padding: 0;
+}
+
+.qubit-line {
+    position: relative;
+    flex-grow: 1;
+    height: 1px;
+    background-color: currentColor;
+    border: none;
+    margin: 0;
 }
 
 @media (prefers-color-scheme: dark) {
