@@ -398,15 +398,15 @@
 		</data>
 		<key>Resources/wwwroot/_content/GUI.Shared/app.css</key>
 		<data>
-		18RZh1QNdtHdjFVrbBvs639UCKk=
+		YZpf25WVuDoUZHJu3+kxHAAXc7k=
 		</data>
 		<key>Resources/wwwroot/_content/GUI.Shared/app.css.br</key>
 		<data>
-		XCYGcRNDAWgEh8pnT4hVkrjmCuk=
+		YprA0i0k3FStluJhj2C2rSYYqak=
 		</data>
 		<key>Resources/wwwroot/_content/GUI.Shared/app.css.gz</key>
 		<data>
-		qhKS+8NXq3Ea3GUQNFIDjLcgamY=
+		KvPdx2IiWj8KThoFeYRR/dF1IWw=
 		</data>
 		<key>Resources/wwwroot/_content/GUI.Shared/bootstrap/bootstrap.min.css</key>
 		<data>
@@ -471,28 +471,28 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			mXo9C1Vc8kzEfjdtqJ0k6zJ+MfAq07bZiaRGvS1kW3Y=
+			1gGmTPhh+RFaD6h1f+ceXDKgi+G5+k0IC23C8RsD36w=
 			</data>
 		</dict>
 		<key>MonoBundle/GUI.Shared.pdb</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			/eWntiuiOvHi+td3E5bO7mNzU53hOnXQyHllpV/p5To=
+			WxIbJ/T9glMlWSfH/STpVyuNi9mmVrHjcJDpM1TMxJs=
 			</data>
 		</dict>
 		<key>MonoBundle/GUI.dll</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			bRC6xTo1hkO7ILPGKXon+mmXlKcchBhBdXpcopb+D14=
+			ifD9X9vaRrYZrZXom4IdIy4l1CZuAbam4fPtk91fOLc=
 			</data>
 		</dict>
 		<key>MonoBundle/GUI.pdb</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			StT1DiqNaNXJFmtX7yOBG/KfnOMXQftbfHC8nw5gjiA=
+			AqLsaQN3kP5ORzpMGk5b6btBBzY8BQPgKk1bDz92Sig=
 			</data>
 		</dict>
 		<key>MonoBundle/Microsoft.AspNetCore.Authorization.dll</key>
@@ -2872,21 +2872,21 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			e+mDWkUbHDZ2X1Av/8yJCLpEleZdPvtNv5UI9adCvmU=
+			8kAlxkXiRhhmn4kd7bbzzlyLePoQAzXBJGW5ru5xIT4=
 			</data>
 		</dict>
 		<key>Resources/wwwroot/_content/GUI.Shared/app.css.br</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			4gYaXRPx6ZSwKTmYkdejvQJp7Nsv5x/BbdHPnKCuEyg=
+			GUrlGdhU26rl1ihmTjwKYmqP5qT6Qe60u6nyoyX4cqc=
 			</data>
 		</dict>
 		<key>Resources/wwwroot/_content/GUI.Shared/app.css.gz</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			6N55ytAxU36YS/1TFB8GkCVFbQPoGsQX5GfFy6m94Z4=
+			uJfhyEWArUADw9CUv8esd4ZV6e4wG4pylDB0yLmrHOI=
 			</data>
 		</dict>
 		<key>Resources/wwwroot/_content/GUI.Shared/bootstrap/bootstrap.min.css</key>
