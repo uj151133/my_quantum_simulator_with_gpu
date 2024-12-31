@@ -1,6 +1,10 @@
 {
   "Files": [
     {
+      "Id": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI/obj/Debug/net9.0-android/scopedcss/bundle/GUI.styles.css",
+      "PackagePath": "staticwebassets/GUI.styles.css"
+    },
+    {
       "Id": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI/wwwroot/app.css",
       "PackagePath": "staticwebassets/app.css"
     },
