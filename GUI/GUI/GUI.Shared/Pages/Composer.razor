@@ -1,0 +1,52 @@
+﻿@page "/composer"
+
+<PageTitle>Composer</PageTitle>
+
+<h1>Composer</h1>
+
+<p role="status">number of qubits: @currentCount</p>
+
+<div class="horizontal-container">
+    <div class="stepper">
+        <button class="button stepper-button" @onclick="DecrementCount">-</button>
+        <input type="number" 
+            class="stepper-input" 
+            value="@currentCount"
+            @onchange="OnInputChange" />
+        <button class="button stepper-button" @onclick="IncrementCount">+</button>
+    </div>
+    <div class="h-parts">
+        <p>H</p>
+    </div>
+</div>
+
+@code {
+    private int currentCount = 0;
+
+    private void IncrementCount()
+    {
+        currentCount++;
+    }
+
+    private void DecrementCount()
+    {
+        currentCount--;
+    }
+
+    private void OnInputChange(ChangeEventArgs e)
+    {
+        if (int.TryParse(e.Value?.ToString(), out int value))
+        {
+            currentCount = value;
+        }
+    }
+}
+
+
+@for (int i = 0; i < currentCount; i++)
+{
+    <div style="display: flex; align-items: center;">
+        <span style="margin-right: 20px; font-size: 20px;">q<sub>@i</sub></span>
+        <hr style="flex-grow: 1;"/>
+    </div>
+}
