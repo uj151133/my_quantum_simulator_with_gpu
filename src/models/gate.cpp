@@ -198,7 +198,6 @@ QMDDGate gate::DCNOT() {
 
 QMDDGate gate::SWAP() {
     call_once(initEdgeFlag, initEdge);
-    
     QMDDEdge swapEdge1 = QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
         {edgeOne, edgeZero},
         {edgeZero, edgeZero}
