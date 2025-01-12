@@ -15,7 +15,6 @@
 #include "src/common/calculation.hpp"
 #include "src/models/circuit.hpp"
 #include "src/common/monitor.hpp"
-// #include "src/test/hwb5tc/benchHwb5tc.hpp"
 #include "src/test/Grover/grover.hpp"
 #include "src/test/random/randomRotate.hpp"
 
@@ -28,23 +27,15 @@ void execute() {
     // UniqueTable& table = UniqueTable::getInstance();
     // OperationCache& cache = OperationCache::getInstance();
 
-    // CONFIG.printConfig();
-
-    // QuantumCircuit circuit(14);
-
-    // cout << "Initial state: " << circuit.getInitialState() << endl;
-
-
-    int numQubits = 20;
+    int numQubits = 11;
     int numGates = 200;
 
     randomRotate(numQubits, numGates);
-    // int omega = std::pow(2, numQubits) - 1;
+    int omega = std::pow(2, numQubits) - 1;
 
     // grover(numQubits, omega);
 
     // table.printAllEntries();
-    // cache.printAllEntries();
 }
 
 

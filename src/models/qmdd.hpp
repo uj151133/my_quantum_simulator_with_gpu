@@ -12,7 +12,6 @@
 #include <memory>
 #include <tuple>
 #include <boost/fiber/all.hpp>
-#include <omp.h>
 #include <stack>
 
 using namespace std;

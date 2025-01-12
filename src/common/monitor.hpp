@@ -4,7 +4,6 @@
 #pragma once
 
 #include <yaml-cpp/yaml.h>
-#include <omp.h>
 #include <fstream>
 #include <limits.h>
 #include <boost/fiber/all.hpp>
@@ -25,7 +24,6 @@
 using namespace std;
 
 string getProcessType();
-void parallelProcessing();
 void sequentialProcessing();
 void fiberProcessing();
 void printMemoryUsage();
