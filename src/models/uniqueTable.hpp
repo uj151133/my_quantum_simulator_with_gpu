@@ -16,11 +16,14 @@ struct Entry {
 
 class UniqueTable {
 private:
+    mutable chrono::nanoseconds totalWaitTime{0};
+    // mutable atomic<size_t> totalWaitCount{0};
     unordered_map<size_t, vector<Entry>> table;
     mutable shared_mutex tableMutex;
     const size_t tableSize ;
     UniqueTable();
     size_t hash(size_t hashKey) const;
+
 
 
 public:
@@ -30,6 +33,9 @@ public:
     void insert(size_t hashKey, shared_ptr<QMDDNode> node);
     shared_ptr<QMDDNode> find(size_t hashKey) const;
     void printAllEntries() const;
+
+    // pair<chrono::microseconds, size_t> getWaitMetrics() const;
+    chrono::nanoseconds getWaitMetrics() const;
 };
 
 #endif
