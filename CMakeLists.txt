@@ -3,15 +3,21 @@ cmake_policy(SET CMP0167 NEW)
 
 project(Qmdd_Sim VERSION 0.1.0)
 
-project(Qmdd_Sim VERSION 0.1.0)
 
-set(CMAKE_OSX_SYSROOT "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk")
-set(CMAKE_OSX_DEPLOYMENT_TARGET "15.0")
-set(CMAKE_OSX_ARCHITECTURES "arm64")
-
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -isysroot ${CMAKE_OSX_SYSROOT}")
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -isysroot ${CMAKE_OSX_SYSROOT}")
-
+if(APPLE)
+    set(CMAKE_OSX_SYSROOT "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk")
+    set(CMAKE_OSX_DEPLOYMENT_TARGET "15.0")
+    set(CMAKE_OSX_ARCHITECTURES "arm64")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -isysroot ${CMAKE_OSX_SYSROOT}")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -isysroot ${CMAKE_OSX_SYSROOT}")
+    
+    set(BOOST_MIN_VERSION "1.87.0")
+    set(YAML_CPP_INCLUDE_DIR /opt/homebrew/Cellar/yaml-cpp/0.8.0/include)
+    set(YAML_CPP_LIB_DIR /opt/homebrew/Cellar/yaml-cpp/0.8.0/lib)
+elseif(UNIX AND NOT APPLE)
+    # Ubuntu用のBoost設定
+    set(BOOST_MIN_VERSION "1.83.0")
+endif()
 
 # C++20を使用する
 set(CMAKE_CXX_STANDARD 20)
@@ -24,11 +30,10 @@ include_directories(${Python3_INCLUDE_DIRS})
 link_directories(${Python3_LIBRARY_DIRS})
 
 # 環境変数の設定をCMakeの変数に変換
-set(YAML_CPP_INCLUDE_DIR /opt/homebrew/Cellar/yaml-cpp/0.8.0/include)
-set(YAML_CPP_LIB_DIR /opt/homebrew/Cellar/yaml-cpp/0.8.0/lib)
+
 
 find_package(yaml-cpp REQUIRED)
-find_package(Boost 1.87.0 REQUIRED COMPONENTS 
+find_package(Boost ${BOOST_MIN_VERSION} REQUIRED COMPONENTS 
     system
     thread
     fiber
