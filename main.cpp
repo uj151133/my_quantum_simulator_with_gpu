@@ -24,10 +24,10 @@ using namespace std;
 void execute() {
 
 
-    // UniqueTable& table = UniqueTable::getInstance();
+    UniqueTable& table = UniqueTable::getInstance();
     // OperationCache& cache = OperationCache::getInstance();
 
-    int numQubits = 20;
+    int numQubits = 1;
     int numGates = 200;
 
     randomRotate(numQubits, numGates);
@@ -35,7 +35,8 @@ void execute() {
 
     // grover(numQubits, omega);
 
-    // table.printAllEntries();
+
+    cout << table.getWaitMetrics() << endl;
 }
 
 
