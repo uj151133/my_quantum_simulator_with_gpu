@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.24)
 cmake_policy(SET CMP0167 NEW)
 
 project(Qmdd_Sim VERSION 0.1.0)
