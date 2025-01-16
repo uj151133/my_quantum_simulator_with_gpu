@@ -17,8 +17,7 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -isysroot ${CMAKE_OSX_SYSROOT}")
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Python 3.10を探す
-find_package(Python3 3.10 EXACT REQUIRED COMPONENTS Interpreter Development)
+find_package(Python3 REQUIRED COMPONENTS Interpreter Development)
 
 # インクルードディレクトリとリンクディレクトリの設定
 include_directories(${Python3_INCLUDE_DIRS})
