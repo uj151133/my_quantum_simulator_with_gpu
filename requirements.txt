@@ -10,3 +10,7 @@ python-dotenv
 matplotlib
 pyqt5
 
+tensorflow
+tensorflow-macos
+tensorflow-metal
+
