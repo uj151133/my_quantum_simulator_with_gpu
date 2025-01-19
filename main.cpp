@@ -27,7 +27,7 @@ void execute() {
     UniqueTable& table = UniqueTable::getInstance();
     // OperationCache& cache = OperationCache::getInstance();
 
-    int numQubits = 1;
+    int numQubits = 15;
     int numGates = 200;
 
     randomRotate(numQubits, numGates);
