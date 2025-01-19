@@ -2608,7 +2608,6 @@
 [Thu Jan 16 15:07:56 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 1025.82 ms
 [Thu Jan 16 15:08:00 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 1019.89 ms
 [Thu Jan 16 15:08:29 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 17475.7 ms
-<<<<<<< HEAD
 [Thu Jan 16 07:40:30 2025] Host: sota | Execution time: 7.32694 ms
 [Thu Jan 16 07:56:00 2025] Host: sota | Execution time: 7.23494 ms
 [Thu Jan 16 07:56:20 2025] Host: sota | Execution time: 7.46987 ms
@@ -3178,7 +3177,6 @@
 [Sun Jan 19 07:21:23 2025] Host: sota | Execution time: 2988.9 ms
 [Sun Jan 19 07:21:41 2025] Host: sota | Execution time: 3539.99 ms
 [Sun Jan 19 07:21:58 2025] Host: sota | Execution time: 3396.45 ms
-=======
 [Sun Jan 19 15:47:42 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 698.79 ms
 [Sun Jan 19 15:47:47 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 793.774 ms
 [Sun Jan 19 15:47:49 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 759.95 ms
@@ -3253,4 +3251,4 @@
 [Sun Jan 19 16:25:01 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 710.299 ms
 [Sun Jan 19 16:25:03 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 871.811 ms
 [Sun Jan 19 16:25:10 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 723.044 ms
->>>>>>> 8fe81c719dee2ae796b3a00a2e5f2c6eff5576d5
+
