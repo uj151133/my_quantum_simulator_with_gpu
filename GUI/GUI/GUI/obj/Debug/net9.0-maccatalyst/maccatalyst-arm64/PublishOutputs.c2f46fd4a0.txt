@@ -64,9 +64,6 @@
 /Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI/bin/Debug/net9.0-maccatalyst/maccatalyst-arm64/publish/../GUI.app/Contents/MonoBundle/Microsoft.Maui.Essentials.dll
 /Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI/bin/Debug/net9.0-maccatalyst/maccatalyst-arm64/publish/../GUI.app/Contents/MonoBundle/Microsoft.Maui.Graphics.dll
 /Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI/bin/Debug/net9.0-maccatalyst/maccatalyst-arm64/publish/../GUI.app/Contents/MonoBundle/GUI.Shared.dll
-/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI/bin/Debug/net9.0-maccatalyst/maccatalyst-arm64/publish/../GUI.app/Contents/MonoBundle/Microsoft.Maui.Controls.HotReload.Forms.dll
-/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI/bin/Debug/net9.0-maccatalyst/maccatalyst-arm64/publish/../GUI.app/Contents/MonoBundle/Microsoft.VisualStudio.DesignTools.MobileTapContracts.dll
-/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI/bin/Debug/net9.0-maccatalyst/maccatalyst-arm64/publish/../GUI.app/Contents/MonoBundle/Microsoft.VisualStudio.DesignTools.TapContract.dll
 /Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI/bin/Debug/net9.0-maccatalyst/maccatalyst-arm64/publish/../GUI.app/Contents/MonoBundle/GUI.dll
 /Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI/bin/Debug/net9.0-maccatalyst/maccatalyst-arm64/publish/../GUI.app/Contents/MonoBundle/Microsoft.CSharp.dll
 /Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI/bin/Debug/net9.0-maccatalyst/maccatalyst-arm64/publish/../GUI.app/Contents/MonoBundle/Microsoft.VisualBasic.Core.dll

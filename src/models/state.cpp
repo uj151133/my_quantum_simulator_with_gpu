@@ -38,7 +38,7 @@ QMDDState state::KetMinus() {
     })));
 };
 
-QMDDState state::KetPlusY() {
+QMDDState state::KetI() {
     call_once(initEdgeFlag, initEdge);
     return QMDDState(QMDDEdge(1.0 / sqrt(2.0), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
         {edgeOne},
@@ -46,7 +46,7 @@ QMDDState state::KetPlusY() {
     })));
 };
 
-QMDDState state::KetMinusY() {
+QMDDState state::KetIMinus() {
     call_once(initEdgeFlag, initEdge);
     return QMDDState(QMDDEdge(1.0 / sqrt(2.0), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
         {edgeOne},
@@ -90,14 +90,14 @@ QMDDState state::BraMinus() {
     })));
 };
 
-QMDDState state::BraPlusY() {
+QMDDState state::BraI() {
     call_once(initEdgeFlag, initEdge);
     return QMDDState(QMDDEdge(1.0 / sqrt(2.0), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
         {edgeOne, QMDDEdge(i, nullptr)}
     })));
 };
 
-QMDDState state::BraMinusY() {
+QMDDState state::BraIMinus() {
     call_once(initEdgeFlag, initEdge);
     return QMDDState(QMDDEdge(1.0 / sqrt(2.0), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
         {edgeOne, QMDDEdge(-i, nullptr)}

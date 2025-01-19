@@ -126,11 +126,42 @@ h1:focus {
     font-family: OpenSansRegular, sans-serif;
     font-size: 20px;
     font-weight: medium;
-    cursor: move;
+    cursor: pointer;
     user-select: none;
 }
 
 .h-gate p {
+    margin: 0;
+    padding: 0;
+}
+
+.classical-gate {
+    position: relative;
+    text-align: center;
+    width: 39px;
+    height: 39px;
+    line-height: 39px;
+    border: none;
+    border-radius: 0px;
+    background-color: #4588ff;
+    color: black;
+    font-family: OpenSansRegular, sans-serif;
+    font-size: 20px;
+    font-weight: medium;
+    cursor: pointer;
+    user-select: none;
+}
+
+.x-gate {
+    width: 40px;
+    height: 40px;
+}
+
+.x-gate:hover {
+    filter: brightness(0.9);
+}
+
+.classical-gate p {
     margin: 0;
     padding: 0;
 }

@@ -3,8 +3,8 @@
 
 #include <unordered_map>
 #include <cstring>
-// #include <shared_mutex>
-
+#include <shared_mutex>
+#include <mutex>
 #include "../common/config.hpp"
 #include "qmdd.hpp"
 #include "../common/calculation.hpp"
@@ -19,8 +19,11 @@ class OperationCache {
 private:
     unordered_map<size_t, OperationResult> cache;
     size_t cacheSize;
-    // mutable shared_mutex cacheMutex;c
+    static mutex instancesMutex;
+    static vector<OperationCache*> instances;
+    // mutable shared_mutex cacheMutex;
     OperationCache();
+    ~OperationCache();
 
 public:
     OperationCache(const OperationCache&) = delete;
@@ -28,6 +31,7 @@ public:
     static OperationCache& getInstance();
     void insert(size_t cacheKey, OperationResult result);
     void clear();
+    static void clearAllCaches();
     OperationResult find(size_t cacheKey) const;
     void printAllEntries() const;
 };

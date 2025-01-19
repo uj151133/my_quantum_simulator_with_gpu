@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "2zK75AM0P0VzvbAxRLWO7bVBt2CAZ5S8OuxVAy8J9KY=",
+  "Hash": "zc/2i2Ia5/ItN4Kd6LH5jWRihkRFSVC52pbWCS4neFM=",
   "Source": "GUI.Shared",
   "BasePath": "_content/GUI.Shared",
   "Mode": "Default",
@@ -59,12 +59,12 @@
       "OriginalItemSpec": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/scopedcss/bundle/GUI.Shared.styles.css"
     },
     {
-      "Identity": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/compressed/f7aiq7lxn8-d7gu6kvnj4.gz",
+      "Identity": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/compressed/f7aiq7lxn8-4yqvrc1qks.gz",
       "SourceId": "GUI.Shared",
       "SourceType": "Discovered",
       "ContentRoot": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/compressed/",
       "BasePath": "_content/GUI.Shared",
-      "RelativePath": "app#[.{fingerprint=d7gu6kvnj4}]?.css.gz",
+      "RelativePath": "app#[.{fingerprint=4yqvrc1qks}]?.css.gz",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Alternative",
@@ -73,8 +73,8 @@
       "RelatedAsset": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/wwwroot/app.css",
       "AssetTraitName": "Content-Encoding",
       "AssetTraitValue": "gzip",
-      "Fingerprint": "1x84f7a9mi",
-      "Integrity": "JdEyLaeb3SQFwIgTjDg8Wkz6LYTWLPT8udxI+MilVnk=",
+      "Fingerprint": "3iqc61cjrd",
+      "Integrity": "K/tvU7VGnvU6oOpKKeucFwEkHI1p3zuHKGQbxBuFeFg=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/wwwroot/app.css"
@@ -178,8 +178,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "",
       "AssetTraitValue": "",
-      "Fingerprint": "d7gu6kvnj4",
-      "Integrity": "dwze6UY2hi2tAoNbU+K8hK46+rKkkZat1KyYBBAAU6Y=",
+      "Fingerprint": "4yqvrc1qks",
+      "Integrity": "LNWvvMaLZfhvoIAnbsDQSG6UcetvnyhxCnfHGMLOuFs=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot/app.css"
@@ -271,13 +271,13 @@
   ],
   "Endpoints": [
     {
-      "Route": "app.css",
-      "AssetFile": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/compressed/f7aiq7lxn8-d7gu6kvnj4.gz",
+      "Route": "app.4yqvrc1qks.css",
+      "AssetFile": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/compressed/f7aiq7lxn8-4yqvrc1qks.gz",
       "Selectors": [
         {
           "Name": "Content-Encoding",
           "Value": "gzip",
-          "Quality": "0.000511247444"
+          "Quality": "0.000493096647"
         }
       ],
       "ResponseHeaders": [
@@ -287,19 +287,19 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "1955"
+          "Value": "2027"
         },
         {
           "Name": "ETag",
-          "Value": "\"JdEyLaeb3SQFwIgTjDg8Wkz6LYTWLPT8udxI+MilVnk=\""
+          "Value": "\"K/tvU7VGnvU6oOpKKeucFwEkHI1p3zuHKGQbxBuFeFg=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 31 Dec 2024 15:04:47 GMT"
+          "Value": "Sun, 19 Jan 2025 12:13:40 GMT"
         },
         {
           "Name": "Cache-Control",
-          "Value": "no-cache"
+          "Value": "max-age=31536000, immutable"
         },
         {
           "Name": "Content-Encoding",
@@ -315,18 +315,26 @@
         },
         {
           "Name": "ETag",
-          "Value": "W/\"dwze6UY2hi2tAoNbU+K8hK46+rKkkZat1KyYBBAAU6Y=\""
+          "Value": "W/\"LNWvvMaLZfhvoIAnbsDQSG6UcetvnyhxCnfHGMLOuFs=\""
         }
       ],
       "EndpointProperties": [
         {
+          "Name": "fingerprint",
+          "Value": "4yqvrc1qks"
+        },
+        {
+          "Name": "label",
+          "Value": "app.css"
+        },
+        {
           "Name": "integrity",
-          "Value": "sha256-dwze6UY2hi2tAoNbU+K8hK46+rKkkZat1KyYBBAAU6Y="
+          "Value": "sha256-LNWvvMaLZfhvoIAnbsDQSG6UcetvnyhxCnfHGMLOuFs="
         }
       ]
     },
     {
-      "Route": "app.css",
+      "Route": "app.4yqvrc1qks.css",
       "AssetFile": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/wwwroot/app.css",
       "Selectors": [],
       "ResponseHeaders": [
@@ -336,7 +344,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "4467"
+          "Value": "5005"
         },
         {
           "Name": "Content-Type",
@@ -344,121 +352,21 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"dwze6UY2hi2tAoNbU+K8hK46+rKkkZat1KyYBBAAU6Y=\""
+          "Value": "\"LNWvvMaLZfhvoIAnbsDQSG6UcetvnyhxCnfHGMLOuFs=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 31 Dec 2024 15:04:47 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "no-cache"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "integrity",
-          "Value": "sha256-dwze6UY2hi2tAoNbU+K8hK46+rKkkZat1KyYBBAAU6Y="
-        }
-      ]
-    },
-    {
-      "Route": "app.css.gz",
-      "AssetFile": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/compressed/f7aiq7lxn8-d7gu6kvnj4.gz",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "1955"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "text/css"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"JdEyLaeb3SQFwIgTjDg8Wkz6LYTWLPT8udxI+MilVnk=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Tue, 31 Dec 2024 15:04:47 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "no-cache"
-        },
-        {
-          "Name": "Content-Encoding",
-          "Value": "gzip"
-        },
-        {
-          "Name": "Vary",
-          "Value": "Content-Encoding"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "integrity",
-          "Value": "sha256-JdEyLaeb3SQFwIgTjDg8Wkz6LYTWLPT8udxI+MilVnk="
-        }
-      ]
-    },
-    {
-      "Route": "app.d7gu6kvnj4.css",
-      "AssetFile": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/compressed/f7aiq7lxn8-d7gu6kvnj4.gz",
-      "Selectors": [
-        {
-          "Name": "Content-Encoding",
-          "Value": "gzip",
-          "Quality": "0.000511247444"
-        }
-      ],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "1955"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"JdEyLaeb3SQFwIgTjDg8Wkz6LYTWLPT8udxI+MilVnk=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Tue, 31 Dec 2024 15:04:47 GMT"
+          "Value": "Sun, 19 Jan 2025 12:13:40 GMT"
         },
         {
           "Name": "Cache-Control",
           "Value": "max-age=31536000, immutable"
-        },
-        {
-          "Name": "Content-Encoding",
-          "Value": "gzip"
-        },
-        {
-          "Name": "Vary",
-          "Value": "Content-Encoding"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "text/css"
-        },
-        {
-          "Name": "ETag",
-          "Value": "W/\"dwze6UY2hi2tAoNbU+K8hK46+rKkkZat1KyYBBAAU6Y=\""
         }
       ],
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "d7gu6kvnj4"
+          "Value": "4yqvrc1qks"
         },
         {
           "Name": "label",
@@ -466,13 +374,13 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-dwze6UY2hi2tAoNbU+K8hK46+rKkkZat1KyYBBAAU6Y="
+          "Value": "sha256-LNWvvMaLZfhvoIAnbsDQSG6UcetvnyhxCnfHGMLOuFs="
         }
       ]
     },
     {
-      "Route": "app.d7gu6kvnj4.css",
-      "AssetFile": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/wwwroot/app.css",
+      "Route": "app.4yqvrc1qks.css.gz",
+      "AssetFile": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/compressed/f7aiq7lxn8-4yqvrc1qks.gz",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -481,7 +389,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "4467"
+          "Value": "2027"
         },
         {
           "Name": "Content-Type",
@@ -489,56 +397,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"dwze6UY2hi2tAoNbU+K8hK46+rKkkZat1KyYBBAAU6Y=\""
+          "Value": "\"K/tvU7VGnvU6oOpKKeucFwEkHI1p3zuHKGQbxBuFeFg=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 31 Dec 2024 15:04:47 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "max-age=31536000, immutable"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "fingerprint",
-          "Value": "d7gu6kvnj4"
-        },
-        {
-          "Name": "label",
-          "Value": "app.css"
-        },
-        {
-          "Name": "integrity",
-          "Value": "sha256-dwze6UY2hi2tAoNbU+K8hK46+rKkkZat1KyYBBAAU6Y="
-        }
-      ]
-    },
-    {
-      "Route": "app.d7gu6kvnj4.css.gz",
-      "AssetFile": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/compressed/f7aiq7lxn8-d7gu6kvnj4.gz",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "1955"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "text/css"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"JdEyLaeb3SQFwIgTjDg8Wkz6LYTWLPT8udxI+MilVnk=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Tue, 31 Dec 2024 15:04:47 GMT"
+          "Value": "Sun, 19 Jan 2025 12:13:40 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -556,7 +419,7 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "d7gu6kvnj4"
+          "Value": "4yqvrc1qks"
         },
         {
           "Name": "label",
@@ -564,7 +427,144 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-JdEyLaeb3SQFwIgTjDg8Wkz6LYTWLPT8udxI+MilVnk="
+          "Value": "sha256-K/tvU7VGnvU6oOpKKeucFwEkHI1p3zuHKGQbxBuFeFg="
+        }
+      ]
+    },
+    {
+      "Route": "app.css",
+      "AssetFile": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/compressed/f7aiq7lxn8-4yqvrc1qks.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.000493096647"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "2027"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"K/tvU7VGnvU6oOpKKeucFwEkHI1p3zuHKGQbxBuFeFg=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 19 Jan 2025 12:13:40 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"LNWvvMaLZfhvoIAnbsDQSG6UcetvnyhxCnfHGMLOuFs=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-LNWvvMaLZfhvoIAnbsDQSG6UcetvnyhxCnfHGMLOuFs="
+        }
+      ]
+    },
+    {
+      "Route": "app.css",
+      "AssetFile": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/wwwroot/app.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "5005"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"LNWvvMaLZfhvoIAnbsDQSG6UcetvnyhxCnfHGMLOuFs=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 19 Jan 2025 12:13:40 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-LNWvvMaLZfhvoIAnbsDQSG6UcetvnyhxCnfHGMLOuFs="
+        }
+      ]
+    },
+    {
+      "Route": "app.css.gz",
+      "AssetFile": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/compressed/f7aiq7lxn8-4yqvrc1qks.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "2027"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"K/tvU7VGnvU6oOpKKeucFwEkHI1p3zuHKGQbxBuFeFg=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 19 Jan 2025 12:13:40 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-K/tvU7VGnvU6oOpKKeucFwEkHI1p3zuHKGQbxBuFeFg="
         }
       ]
     },
@@ -593,7 +593,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Mon, 30 Dec 2024 22:08:27 GMT"
+          "Value": "Sun, 19 Jan 2025 12:13:40 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -654,7 +654,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Mon, 30 Dec 2024 22:08:27 GMT"
+          "Value": "Sun, 19 Jan 2025 12:13:40 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -699,7 +699,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Mon, 30 Dec 2024 22:08:27 GMT"
+          "Value": "Sun, 19 Jan 2025 12:13:40 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -754,7 +754,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Mon, 30 Dec 2024 22:08:27 GMT"
+          "Value": "Sun, 19 Jan 2025 12:13:40 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -807,7 +807,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Mon, 30 Dec 2024 22:08:27 GMT"
+          "Value": "Sun, 19 Jan 2025 12:13:40 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -846,7 +846,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Mon, 30 Dec 2024 22:08:27 GMT"
+          "Value": "Sun, 19 Jan 2025 12:13:40 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -907,7 +907,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Mon, 30 Dec 2024 22:08:27 GMT"
+          "Value": "Sun, 19 Jan 2025 12:13:40 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -952,7 +952,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Mon, 30 Dec 2024 22:08:27 GMT"
+          "Value": "Sun, 19 Jan 2025 12:13:40 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -1005,7 +1005,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Mon, 30 Dec 2024 22:08:27 GMT"
+          "Value": "Sun, 19 Jan 2025 12:13:40 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -1052,7 +1052,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Mon, 30 Dec 2024 22:08:27 GMT"
+          "Value": "Sun, 19 Jan 2025 12:13:40 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -1105,7 +1105,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Mon, 30 Dec 2024 22:08:27 GMT"
+          "Value": "Sun, 19 Jan 2025 12:13:40 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -1142,7 +1142,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Mon, 30 Dec 2024 22:08:27 GMT"
+          "Value": "Sun, 19 Jan 2025 12:13:40 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -1187,7 +1187,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Mon, 30 Dec 2024 22:08:27 GMT"
+          "Value": "Sun, 19 Jan 2025 12:13:40 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -1232,7 +1232,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Mon, 30 Dec 2024 22:08:27 GMT"
+          "Value": "Sun, 19 Jan 2025 12:13:40 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -1269,7 +1269,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Mon, 30 Dec 2024 22:08:27 GMT"
+          "Value": "Sun, 19 Jan 2025 12:13:40 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -1314,7 +1314,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Mon, 30 Dec 2024 22:08:27 GMT"
+          "Value": "Sun, 19 Jan 2025 12:13:40 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -1353,7 +1353,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Mon, 30 Dec 2024 22:08:27 GMT"
+          "Value": "Sun, 19 Jan 2025 12:13:40 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -1414,7 +1414,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Mon, 30 Dec 2024 22:08:27 GMT"
+          "Value": "Sun, 19 Jan 2025 12:13:40 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -1459,7 +1459,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Mon, 30 Dec 2024 22:08:27 GMT"
+          "Value": "Sun, 19 Jan 2025 12:13:40 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -1514,7 +1514,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Mon, 30 Dec 2024 22:08:27 GMT"
+          "Value": "Sun, 19 Jan 2025 12:13:40 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -1575,7 +1575,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Mon, 30 Dec 2024 22:08:27 GMT"
+          "Value": "Sun, 19 Jan 2025 12:13:40 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -1620,7 +1620,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Mon, 30 Dec 2024 22:08:27 GMT"
+          "Value": "Sun, 19 Jan 2025 12:13:40 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -1675,7 +1675,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Mon, 30 Dec 2024 22:08:27 GMT"
+          "Value": "Sun, 19 Jan 2025 12:13:40 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -1728,7 +1728,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Mon, 30 Dec 2024 22:08:27 GMT"
+          "Value": "Sun, 19 Jan 2025 12:13:40 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -1765,7 +1765,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Mon, 30 Dec 2024 22:08:27 GMT"
+          "Value": "Sun, 19 Jan 2025 12:13:40 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -1812,7 +1812,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Mon, 30 Dec 2024 22:08:27 GMT"
+          "Value": "Sun, 19 Jan 2025 12:13:40 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -1865,7 +1865,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Mon, 30 Dec 2024 22:08:27 GMT"
+          "Value": "Sun, 19 Jan 2025 12:13:40 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -1902,7 +1902,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Mon, 30 Dec 2024 22:08:27 GMT"
+          "Value": "Sun, 19 Jan 2025 12:13:40 GMT"
         },
         {
           "Name": "Cache-Control",
