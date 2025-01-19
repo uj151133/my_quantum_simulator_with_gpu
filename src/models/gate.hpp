@@ -22,6 +22,7 @@ namespace gate {
     QMDDGate S();
     QMDDGate Sdagger();
     QMDDGate V();
+    QMDDGate Vdagger();
     QMDDGate H();
     QMDDGate CX1();
     QMDDGate CX2();
@@ -39,6 +40,7 @@ namespace gate {
     QMDDGate CS();
 
     /* Rotation operator gates */
+    QMDDGate R(double theta, double phi);
     QMDDGate Rx(double theta);
     QMDDGate Ry(double theta);
     QMDDGate Rz(double theta);
@@ -57,6 +59,9 @@ namespace gate {
 
     /* Other named qubit */
     QMDDGate U(double theta, double phi, double lambda);
+    QMDDGate U1(double theta);
+    QMDDGate U2(double phi, double lambda);
+    QMDDGate U3(double theta, double phi, double lamda);
     QMDDGate BARENCO(double alpha, double phi, double theta);
     QMDDGate B();
     QMDDGate CSX();
