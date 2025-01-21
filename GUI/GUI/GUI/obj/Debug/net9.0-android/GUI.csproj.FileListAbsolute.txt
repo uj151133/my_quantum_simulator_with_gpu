@@ -17,7 +17,6 @@
 /Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI/obj/Debug/net9.0-android/scopedcss/bundle/GUI.styles.css
 /Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI/obj/Debug/net9.0-android/compressed/9an2lz0l7z-obgb1x923p.gz
 /Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI/obj/Debug/net9.0-android/compressed/07qz7jcm1e-818f1ebzp4.gz
-/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI/obj/Debug/net9.0-android/compressed/g9guu7w0xy-cyn00vqyic.gz
 /Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI/obj/Debug/net9.0-android/staticwebassets.build.json
 /Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI/obj/Debug/net9.0-android/staticwebassets.development.json
 /Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI/obj/Debug/net9.0-android/staticwebassets.build.endpoints.json
@@ -27,7 +26,6 @@
 /Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI/obj/Debug/net9.0-android/staticwebassets/msbuild.buildMultiTargeting.GUI.props
 /Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI/obj/Debug/net9.0-android/staticwebassets/msbuild.buildTransitive.GUI.props
 /Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI/obj/Debug/net9.0-android/staticwebassets.pack.json
-/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI/obj/Debug/net9.0-android/compressed/publish/g9guu7w0xy-cyn00vqyic.br
 /Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI/obj/Debug/net9.0-android/compressed/publish/9an2lz0l7z-obgb1x923p.br
 /Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI/obj/Debug/net9.0-android/compressed/publish/07qz7jcm1e-818f1ebzp4.br
 /Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI/obj/Debug/net9.0-android/staticwebassets.publish.json
@@ -1366,13 +1364,10 @@
 /Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI/obj/Debug/net9.0-android/assets/AboutAssets.txt
 /Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI/obj/Debug/net9.0-android/assets/wwwroot/_content/GUI.Shared/bootstrap/bootstrap.min.css.gz
 /Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI/obj/Debug/net9.0-android/assets/wwwroot/_content/GUI.Shared/app.css.gz
-/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI/obj/Debug/net9.0-android/assets/wwwroot/_content/GUI.Shared/GUI.Shared.2gvabez2fw.bundle.scp.css.gz
 /Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI/obj/Debug/net9.0-android/assets/wwwroot/_content/GUI.Shared/bootstrap/bootstrap.min.css.br
 /Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI/obj/Debug/net9.0-android/assets/wwwroot/_content/GUI.Shared/app.css.br
-/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI/obj/Debug/net9.0-android/assets/wwwroot/_content/GUI.Shared/GUI.Shared.2gvabez2fw.bundle.scp.css.br
 /Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI/obj/Debug/net9.0-android/assets/wwwroot/_content/GUI.Shared/bootstrap/bootstrap.min.css.map.br
 /Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI/obj/Debug/net9.0-android/assets/wwwroot/_content/GUI.Shared/bootstrap/bootstrap.min.css.map.gz
-/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI/obj/Debug/net9.0-android/assets/wwwroot/_content/GUI.Shared/GUI.Shared.2gvabez2fw.bundle.scp.css
 /Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI/obj/Debug/net9.0-android/assets/wwwroot/_content/GUI.Shared/app.css
 /Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI/obj/Debug/net9.0-android/assets/wwwroot/_content/GUI.Shared/bootstrap/bootstrap.min.css
 /Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI/obj/Debug/net9.0-android/assets/wwwroot/_content/GUI.Shared/bootstrap/bootstrap.min.css.map
@@ -1414,3 +1409,11 @@
 /Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI/obj/Debug/net9.0-android/stamp/_GenerateJavaStubs.stamp
 /Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI/obj/Debug/net9.0-android/stamp/_GeneratePackageManagerJava.stamp
 /Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI/obj/Debug/net9.0-android/stamp/_ResolveLibraryProjectImports.stamp
+/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI/obj/Debug/net9.0-android/assets/wwwroot/_content/GUI.Shared/Pages/Composer.razor.js.gz
+/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI/obj/Debug/net9.0-android/assets/wwwroot/_content/GUI.Shared/Pages/Composer.razor.js.br
+/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI/obj/Debug/net9.0-android/assets/wwwroot/_content/GUI.Shared/Pages/Composer.razor.js
+/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI/obj/Debug/net9.0-android/compressed/g9guu7w0xy-6gkjizxy3s.gz
+/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI/obj/Debug/net9.0-android/compressed/publish/g9guu7w0xy-6gkjizxy3s.br
+/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI/obj/Debug/net9.0-android/assets/wwwroot/_content/GUI.Shared/GUI.Shared.vmpqiylzuy.bundle.scp.css.gz
+/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI/obj/Debug/net9.0-android/assets/wwwroot/_content/GUI.Shared/GUI.Shared.vmpqiylzuy.bundle.scp.css.br
+/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI/obj/Debug/net9.0-android/assets/wwwroot/_content/GUI.Shared/GUI.Shared.vmpqiylzuy.bundle.scp.css

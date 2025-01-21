@@ -1,8 +1,12 @@
 {
   "Files": [
     {
+      "Id": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/Pages/Composer.razor.js",
+      "PackagePath": "staticwebassets/Pages/Composer.razor.js"
+    },
+    {
       "Id": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/scopedcss/projectbundle/GUI.Shared.bundle.scp.css",
-      "PackagePath": "staticwebassets/GUI.Shared.2gvabez2fw.bundle.scp.css"
+      "PackagePath": "staticwebassets/GUI.Shared.vmpqiylzuy.bundle.scp.css"
     },
     {
       "Id": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/wwwroot/app.css",
