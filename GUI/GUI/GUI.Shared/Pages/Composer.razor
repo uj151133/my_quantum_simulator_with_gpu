@@ -5,7 +5,6 @@
 <h1>Composer</h1>
 
 <p role="status">number of qubits: @currentCount</p>
-
 <div class="horizontal-container">
     <div class="stepper">
         <button class="button stepper-button" @onclick="DecrementCount">-</button>
@@ -15,22 +14,60 @@
             @onchange="OnInputChange" />
         <button class="button stepper-button" @onclick="IncrementCount">+</button>
     </div>
-    <div class="h-gate">
-        <p>H</p>
-    </div>
-    <div class="classical-gate">
-        @* <svg viewBox="0 0 20 20">
-            <circle cx="10" cy="10" r="8" stroke="black" stroke-width="1" fill="none"/>
-            <line x1="4.34" y1="10" x2="15.66" y2="10" stroke="black" stroke-width="1"/>
-            <line x1="10" y1="4.34" x2="10" y2="15.66" stroke="black" stroke-width="1"/>
-        </svg> *@
-        <svg class="x-gate" viewBox="0 0 25 25" width="25" height="25">
-            <circle cx="12.5" cy="12.5" r="6.25" stroke="black" stroke-width="1" fill="none"/>
-            <line x1="6.25" y1="12.5" x2="18.75" y2="12.5" stroke="black" stroke-width="1"/>
-            <line x1="12.5" y1="6.25" x2="12.5" y2="18.75" stroke="black" stroke-width="1"/>
-        </svg>
+
+    <div class="vertical-container">
+        <div class="horizontal-container">
+            <div class="h-gate" draggable="true"></div>
+        </div>
+
+        <div class="horizonal-container">
+            <div class="classical-gate">
+                <svg class="x-gate" viewBox="0 0 25 25" width="25" height="25">
+                    <circle cx="12.5" cy="12.5" r="6.25" stroke="black" stroke-width="1" fill="none"/>
+                    <line x1="6.25" y1="12.5" x2="18.75" y2="12.5" stroke="black" stroke-width="1"/>
+                    <line x1="12.5" y1="6.25" x2="12.5" y2="18.75" stroke="black" stroke-width="1"/>
+                </svg>
+            </div>
+
+            <div class="classical-gate" draggable="true">
+                <p>I</p>
+            </div>
+        </div>
+
+        <div class="horizontal-container">
+            <div class="phase-gate" draggable="true">
+                <p>T</p>
+            </div>
+            <div class="phase-gate" draggable="true">
+                <p>T<sup>†</sup></p>
+            </div>
+            <div class="phase-gate" draggable="true">
+                <p>S</p>
+            </div>
+            <div class="phase-gate" draggable="true">
+                <p>S<sup>†</sup></p>
+            </div>
+            <div class="phase-gate" draggable="true">
+                <p>Z</p>
+            </div>
+            <div class="phase-gate" draggable="true">
+                <p>P</p>
+            </div>
+            <div class="phase-gate" draggable="true">
+                <p>RZ</p>
+            </div>
+        </div>
+
+
+        <div class="horizontal-container">
+            <div class="other-gate">
+                <p>|0⟩</p>
+            </div>
+        </div>
     </div>
 </div>
+
+
 
 @code {
     private int currentCount = 0;
@@ -62,3 +99,5 @@
         <div class="qubit-line"></div>
     </div>
 }
+
+<script src="composer.js"></script>

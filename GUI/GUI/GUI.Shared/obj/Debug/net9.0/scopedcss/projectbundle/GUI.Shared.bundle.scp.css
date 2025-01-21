@@ -266,3 +266,189 @@ main[b-lnrd2ucw2v] {
         color: white
     }
 }
+/* _content/GUI.Shared/Pages/Composer.razor.rz.scp.css */
+.button[b-0n2ivchg20] {
+    color: white;
+    background-color: #512BD4;
+    font-family: OpenSansRegular, sans-serif;
+    font-size: 14px;
+    padding: 10px 14px;
+    min-height: 44px;
+    min-width: 44px;
+    border-width: 0px;
+    border-radius: 8px;
+}
+
+.button:disabled[b-0n2ivchg20] {
+    color: #141414;
+    background-color: #C8C8C8;
+}
+
+.h-gate[b-0n2ivchg20] {
+    position: relative;
+    text-align: center;
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    border: none;
+    border-radius: 0px;
+    background-color: #fa4d56;
+    color: black;
+    font-family: OpenSansRegular, sans-serif;
+    font-size: 20px;
+    font-weight: medium;
+    cursor: pointer;
+    user-select: none;
+}
+
+.h-gate p[b-0n2ivchg20] {
+    margin: 0;
+    padding: 0;
+}
+
+.classical-gate[b-0n2ivchg20] {
+    position: relative;
+    text-align: center;
+    width: 39px;
+    height: 39px;
+    line-height: 39px;
+    border: none;
+    border-radius: 0px;
+    background-color: #4588ff;
+    color: black;
+    font-family: OpenSansRegular, sans-serif;
+    font-size: 20px;
+    font-weight: medium;
+    cursor: pointer;
+    user-select: none;
+}
+
+.classical-gate p[b-0n2ivchg20] {
+    margin: 0;
+    padding: 0;
+}
+
+.phase-gate[b-0n2ivchg20] {
+    position: relative;
+    text-align: center;
+    width: 39px;
+    height: 39px;
+    line-height: 39px;
+    border: none;
+    border-radius: 0px;
+    background-color: #bae6fe;
+    color: black;
+    font-family: OpenSansRegular, sans-serif;
+    font-size: 20px;
+    font-weight: medium;
+    cursor: pointer;
+    user-select: none;
+}
+
+.phase-gate p[b-0n2ivchg20] {
+    margin: 0;
+    padding: 0;
+}
+
+
+.other-gate[b-0n2ivchg20] {
+    position: relative;
+    text-align: center;
+    width: 39px;
+    height: 39px;
+    line-height: 39px;
+    border: none;
+    border-radius: 0px;
+    background-color: #a1a9af;
+    color: black;
+    font-family: OpenSansRegular, sans-serif;
+    font-size: 20px;
+    font-weight: medium;
+    cursor: pointer;
+    user-select: none;
+}
+
+.other-gate p[b-0n2ivchg20] {
+    margin: 0;
+    padding: 0;
+}
+
+.x-gate[b-0n2ivchg20] {
+    width: 40px;
+    height: 40px;
+}
+
+.x-gate:hover[b-0n2ivchg20] {
+    filter: brightness(0.9);
+}
+
+.qubit-line[b-0n2ivchg20] {
+    position: relative;
+    flex-grow: 1;
+    height: 1px;
+    background-color: currentColor;
+    border: none;
+    margin: 0;
+}
+
+.stepper[b-0n2ivchg20] {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.stepper-button[b-0n2ivchg20] {
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.stepper-input[b-0n2ivchg20] {
+    width: 80px;
+    height: 44px;
+    text-align: center;
+    font-size: 16px;
+    border: 1px solid #512BD4;
+    border-radius: 8px;
+    padding: 0 8px;
+}
+
+.stepper-input:focus[b-0n2ivchg20] {
+    outline: none;
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+.horizontal-container[b-0n2ivchg20] {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.vertical-container[b-0n2ivchg20] {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+
+@media (prefers-color-scheme: dark) {
+    .button[b-0n2ivchg20] {
+        color: #242424;
+        background-color: #ac99ea;
+    }
+
+    .button:disabled[b-0n2ivchg20] {
+        color: #c8c8c8;
+        background-color: #404040;
+    }
+
+    .stepper-input[b-0n2ivchg20] {
+        background-color: #242424;
+        color: #fff;
+        border-color: #ac99ea;
+    }
+}
+
