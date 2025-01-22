@@ -1,0 +1,185 @@
+.button {
+    color: white;
+    background-color: #512BD4;
+    font-family: OpenSansRegular, sans-serif;
+    font-size: 14px;
+    padding: 10px 14px;
+    min-height: 44px;
+    min-width: 44px;
+    border-width: 0px;
+    border-radius: 8px;
+}
+
+.button:disabled {
+    color: #141414;
+    background-color: #C8C8C8;
+}
+
+.h-gate {
+    position: relative;
+    text-align: center;
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    border: none;
+    border-radius: 0px;
+    background-color: #fa4d56;
+    color: black;
+    font-family: OpenSansRegular, sans-serif;
+    font-size: 20px;
+    font-weight: medium;
+    cursor: pointer;
+    user-select: none;
+}
+
+.h-gate p {
+    margin: 0;
+    padding: 0;
+}
+
+.classical-gate {
+    position: relative;
+    text-align: center;
+    width: 39px;
+    height: 39px;
+    line-height: 39px;
+    border: none;
+    border-radius: 0px;
+    background-color: #4588ff;
+    color: black;
+    font-family: OpenSansRegular, sans-serif;
+    font-size: 20px;
+    font-weight: medium;
+    cursor: pointer;
+    user-select: none;
+}
+
+.classical-gate p {
+    margin: 0;
+    padding: 0;
+}
+
+.phase-gate {
+    position: relative;
+    text-align: center;
+    width: 39px;
+    height: 39px;
+    line-height: 39px;
+    border: none;
+    border-radius: 0px;
+    background-color: #bae6fe;
+    color: black;
+    font-family: OpenSansRegular, sans-serif;
+    font-size: 20px;
+    font-weight: medium;
+    cursor: pointer;
+    user-select: none;
+}
+
+.phase-gate p {
+    margin: 0;
+    padding: 0;
+}
+
+
+.other-gate {
+    position: relative;
+    text-align: center;
+    width: 39px;
+    height: 39px;
+    line-height: 39px;
+    border: none;
+    border-radius: 0px;
+    background-color: #a1a9af;
+    color: black;
+    font-family: OpenSansRegular, sans-serif;
+    font-size: 20px;
+    font-weight: medium;
+    cursor: pointer;
+    user-select: none;
+}
+
+.other-gate p {
+    margin: 0;
+    padding: 0;
+}
+
+.x-gate {
+    width: 40px;
+    height: 40px;
+}
+
+.x-gate:hover {
+    filter: brightness(0.9);
+}
+
+.qubit-line {
+    position: relative;
+    flex-grow: 1;
+    height: 1px;
+    background-color: currentColor;
+    border: none;
+    margin: 0;
+}
+
+.stepper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.stepper-button {
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.stepper-input {
+    width: 80px;
+    height: 44px;
+    text-align: center;
+    font-size: 16px;
+    border: 1px solid #512BD4;
+    border-radius: 8px;
+    padding: 0 8px;
+}
+
+.stepper-input:focus {
+    outline: none;
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+.horizontal-container {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.vertical-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+
+@media (prefers-color-scheme: dark) {
+    .button {
+        color: #242424;
+        background-color: #ac99ea;
+    }
+
+    .button:disabled {
+        color: #c8c8c8;
+        background-color: #404040;
+    }
+
+    .stepper-input {
+        background-color: #242424;
+        color: #fff;
+        border-color: #ac99ea;
+    }
+}
+

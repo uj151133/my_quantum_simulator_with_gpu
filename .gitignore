@@ -5,3 +5,6 @@ qmdd_sim
 __pycache__/
 
 config.yaml
+
+.fake
+GUI/GUI/GUI/obj

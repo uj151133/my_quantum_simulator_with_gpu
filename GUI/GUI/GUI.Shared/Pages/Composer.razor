@@ -1,0 +1,103 @@
+﻿@page "/composer"
+@inject IJSRuntime JSRuntime
+
+<PageTitle>Composer</PageTitle>
+
+<h1>Composer</h1>
+
+<p role="status">number of qubits: @currentCount</p>
+<div class="horizontal-container">
+    <div class="stepper">
+        <button class="button stepper-button" @onclick="DecrementCount">-</button>
+        <input type="number" 
+            class="stepper-input" 
+            value="@currentCount"
+            @onchange="OnInputChange" />
+        <button class="button stepper-button" @onclick="IncrementCount">+</button>
+    </div>
+
+    <div class="vertical-container">
+        <div class="horizontal-container">
+            <div class="h-gate" draggable="true">H</div>
+        </div>
+
+        <div class="horizonal-container">
+            <div class="classical-gate">
+                <svg class="x-gate" viewBox="0 0 25 25" width="25" height="25">
+                    <circle cx="12.5" cy="12.5" r="6.25" stroke="black" stroke-width="1" fill="none"/>
+                    <line x1="6.25" y1="12.5" x2="18.75" y2="12.5" stroke="black" stroke-width="1"/>
+                    <line x1="12.5" y1="6.25" x2="12.5" y2="18.75" stroke="black" stroke-width="1"/>
+                </svg>
+            </div>
+
+            <div class="classical-gate" draggable="true">
+                <p>I</p>
+            </div>
+        </div>
+
+        <div class="horizontal-container">
+            <div class="phase-gate" draggable="true">
+                <p>T</p>
+            </div>
+            <div class="phase-gate" draggable="true">
+                <p>T<sup>†</sup></p>
+            </div>
+            <div class="phase-gate" draggable="true">
+                <p>S</p>
+            </div>
+            <div class="phase-gate" draggable="true">
+                <p>S<sup>†</sup></p>
+            </div>
+            <div class="phase-gate" draggable="true">
+                <p>Z</p>
+            </div>
+            <div class="phase-gate" draggable="true">
+                <p>P</p>
+            </div>
+            <div class="phase-gate" draggable="true">
+                <p>RZ</p>
+            </div>
+        </div>
+
+
+        <div class="horizontal-container">
+            <div class="other-gate">
+                <p>|0⟩</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@code {
+    private int currentCount = 0;
+
+    private void IncrementCount()
+    {
+        currentCount++;
+    }
+
+    private void DecrementCount()
+    {
+        currentCount--;
+    }
+
+    private void OnInputChange(ChangeEventArgs e)
+    {
+        if (int.TryParse(e.Value?.ToString(), out int value))
+        {
+            currentCount = value;
+        }
+    }
+
+}
+
+
+@for (int i = 0; i < currentCount; i++)
+{
+    <div style="display: flex; align-items: center;">
+        <span style="margin-right: 20px; font-size: 20px;">q<sub>@i</sub></span>
+        <div class="qubit-line"></div>
+    </div>
+}

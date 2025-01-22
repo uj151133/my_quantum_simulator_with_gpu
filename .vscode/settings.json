@@ -94,5 +94,6 @@
         "future": "cpp",
         "*.tpp": "cpp",
         "filesystem": "cpp"
-    }
+    },
+    "dotnet.defaultSolution": "GUI.sln"
 }

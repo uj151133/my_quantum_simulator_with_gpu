@@ -26,6 +26,7 @@ using namespace std;
 string getProcessType();
 void sequentialProcessing();
 void fiberProcessing();
+void simdProcessing();
 void printMemoryUsage();
 #ifdef __APPLE__
 void printMemoryUsageOnMac();

@@ -1,12 +1,15 @@
 #ifndef GATE_HPP
 #define GATE_HPP
 
+#include <Eigen/Dense>
+#include <xsimd/xsimd.hpp>
 #include <iostream>
 #include <gsl/gsl_sf_bessel.h>
 #include "qmdd.hpp"
 #include "../common/constant.hpp"
 #include "../common/mathUtils.hpp"
 using namespace std;
+using namespace Eigen;
 namespace gate {
     /* Identity gate and global phase */
     QMDDGate I();

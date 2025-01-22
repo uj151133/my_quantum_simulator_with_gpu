@@ -1,9 +1,8 @@
-qiskit==0.45.0
+# qiskit==0.45.0
+qiskit
 qiskit-aer
 qiskit-ibm-runtime
 qiskit-ibm-provider
-# qiskit-ibmq-provider
-# qiskit[visualization]
 sympy
 pybind11
 python-dotenv
