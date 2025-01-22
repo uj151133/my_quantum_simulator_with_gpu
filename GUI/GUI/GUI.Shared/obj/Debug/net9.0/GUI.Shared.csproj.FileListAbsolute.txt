@@ -30,6 +30,6 @@
 /Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/ref/GUI.Shared.dll
 /Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/scopedcss/Pages/Composer.razor.rz.scp.css
 /Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/compressed/f7aiq7lxn8-xbmd6radfu.gz
-/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/compressed/bngs2h7ca2-287gyd87tw.gz
 /Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/compressed/4out1osacn-vmpqiylzuy.gz
 /Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/compressed/i2t4n931lg-vmpqiylzuy.gz
+/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/compressed/bngs2h7ca2-70v3gt7v4r.gz

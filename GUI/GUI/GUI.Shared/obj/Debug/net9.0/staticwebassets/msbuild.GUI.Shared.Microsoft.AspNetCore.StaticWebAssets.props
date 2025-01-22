@@ -120,8 +120,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>287gyd87tw</Fingerprint>
-      <Integrity>boE5cv+pWdyVazP302qeKFHY6IIbb9SelW46aiUlb2A=</Integrity>
+      <Fingerprint>70v3gt7v4r</Fingerprint>
+      <Integrity>SWzLrklgra7/ZhebirqHmf1rzr+ZgfDQgEBUcLwzZ18=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\Pages\Composer.razor.js'))</OriginalItemSpec>
