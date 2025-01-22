@@ -34,6 +34,9 @@ link_directories(${Python3_LIBRARY_DIRS})
 # 環境変数の設定をCMakeの変数に変換
 
 
+# 環境変数の設定をCMakeの変数に変換
+
+
 find_package(yaml-cpp REQUIRED)
 find_package(Boost ${BOOST_MIN_VERSION} REQUIRED COMPONENTS 
     system

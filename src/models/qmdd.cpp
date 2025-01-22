@@ -201,6 +201,17 @@ ostream& operator<<(ostream& os, const QMDDNode& node) {
     return os;
 }
 
+vector<complex<double>> QMDDNode::getWeights() const {
+    vector<complex<double>> weights;
+        for (const auto& edgeRow : edges) {
+            for (const auto& edge : edgeRow) {
+                weights.push_back(edge.weight);
+            }
+        }
+    return weights;
+}
+
+
 /////////////////////////////////////
 //
 //	QMDDGate

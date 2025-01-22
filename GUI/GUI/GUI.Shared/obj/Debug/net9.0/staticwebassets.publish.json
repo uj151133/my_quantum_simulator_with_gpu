@@ -1,0 +1,3425 @@
+{
+  "Version": 1,
+  "Hash": "pHNU+9C6SU44TLxyoLNliifYUSilswBtphWtuZwBgLg=",
+  "Source": "GUI.Shared",
+  "BasePath": "_content/GUI.Shared",
+  "Mode": "Default",
+  "ManifestType": "Publish",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [
+    {
+      "Name": "GUI.Shared/wwwroot",
+      "Source": "GUI.Shared",
+      "ContentRoot": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/wwwroot/",
+      "BasePath": "_content/GUI.Shared",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": [
+    {
+      "Identity": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/compressed/1ikstd0x0l-6gzpyzhau4.gz",
+      "SourceId": "GUI.Shared",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/compressed/",
+      "BasePath": "_content/GUI.Shared",
+      "RelativePath": "bootstrap/bootstrap.min#[.{fingerprint=6gzpyzhau4}]?.css.gz",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Alternative",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/wwwroot/bootstrap/bootstrap.min.css",
+      "AssetTraitName": "Content-Encoding",
+      "AssetTraitValue": "gzip",
+      "Fingerprint": "cgoy1mia33",
+      "Integrity": "tPYWjXj9L/S5BdHc4ZBRoFSS52tSuxE25ck3Juj3XTc=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/wwwroot/bootstrap/bootstrap.min.css"
+    },
+    {
+      "Identity": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/compressed/4out1osacn-vmpqiylzuy.gz",
+      "SourceId": "GUI.Shared",
+      "SourceType": "Computed",
+      "ContentRoot": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/compressed/",
+      "BasePath": "_content/GUI.Shared",
+      "RelativePath": "GUI.Shared#[.{fingerprint=vmpqiylzuy}]?.styles.css.gz",
+      "AssetKind": "All",
+      "AssetMode": "CurrentProject",
+      "AssetRole": "Alternative",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/scopedcss/bundle/GUI.Shared.styles.css",
+      "AssetTraitName": "Content-Encoding",
+      "AssetTraitValue": "gzip",
+      "Fingerprint": "sbptrlopnj",
+      "Integrity": "iKsG7y+2cLrui5aTw2DElmZABaJM3hVY008CJx5iPaE=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/scopedcss/bundle/GUI.Shared.styles.css"
+    },
+    {
+      "Identity": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/compressed/bngs2h7ca2-70v3gt7v4r.gz",
+      "SourceId": "GUI.Shared",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/compressed/",
+      "BasePath": "_content/GUI.Shared",
+      "RelativePath": "Pages/Composer.razor.js.gz",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Alternative",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/Pages/Composer.razor.js",
+      "AssetTraitName": "Content-Encoding",
+      "AssetTraitValue": "gzip",
+      "Fingerprint": "2700ego52s",
+      "Integrity": "AjFsJ4nmfKWWhCz5mP7TaaMQ00HIOj0Zhc+576+Wtfc=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/Pages/Composer.razor.js"
+    },
+    {
+      "Identity": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/compressed/f7aiq7lxn8-xbmd6radfu.gz",
+      "SourceId": "GUI.Shared",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/compressed/",
+      "BasePath": "_content/GUI.Shared",
+      "RelativePath": "app#[.{fingerprint=xbmd6radfu}]?.css.gz",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Alternative",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/wwwroot/app.css",
+      "AssetTraitName": "Content-Encoding",
+      "AssetTraitValue": "gzip",
+      "Fingerprint": "qebub3p8l4",
+      "Integrity": "vgOBCysnI3eHg4yxnXG4gGyAxfpzUix38x/A89RsMcI=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/wwwroot/app.css"
+    },
+    {
+      "Identity": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/compressed/i2t4n931lg-vmpqiylzuy.gz",
+      "SourceId": "GUI.Shared",
+      "SourceType": "Computed",
+      "ContentRoot": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/compressed/",
+      "BasePath": "_content/GUI.Shared",
+      "RelativePath": "GUI.Shared#[.{fingerprint=vmpqiylzuy}]!.bundle.scp.css.gz",
+      "AssetKind": "All",
+      "AssetMode": "Reference",
+      "AssetRole": "Alternative",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/scopedcss/projectbundle/GUI.Shared.bundle.scp.css",
+      "AssetTraitName": "Content-Encoding",
+      "AssetTraitValue": "gzip",
+      "Fingerprint": "sbptrlopnj",
+      "Integrity": "iKsG7y+2cLrui5aTw2DElmZABaJM3hVY008CJx5iPaE=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/scopedcss/projectbundle/GUI.Shared.bundle.scp.css"
+    },
+    {
+      "Identity": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/compressed/publish/1ikstd0x0l-6gzpyzhau4.br",
+      "SourceId": "GUI.Shared",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/compressed/publish/",
+      "BasePath": "_content/GUI.Shared",
+      "RelativePath": "bootstrap/bootstrap.min#[.{fingerprint=6gzpyzhau4}]?.css.br",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Alternative",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/wwwroot/bootstrap/bootstrap.min.css",
+      "AssetTraitName": "Content-Encoding",
+      "AssetTraitValue": "br",
+      "Fingerprint": "2o883p7o84",
+      "Integrity": "4jR0OWxmfzUr920AK8Yzn3GjSgWqtt7AtQDXrJ9OWmA=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/wwwroot/bootstrap/bootstrap.min.css"
+    },
+    {
+      "Identity": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/compressed/publish/4out1osacn-vmpqiylzuy.br",
+      "SourceId": "GUI.Shared",
+      "SourceType": "Computed",
+      "ContentRoot": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/compressed/publish/",
+      "BasePath": "_content/GUI.Shared",
+      "RelativePath": "GUI.Shared#[.{fingerprint=vmpqiylzuy}]?.styles.css.br",
+      "AssetKind": "All",
+      "AssetMode": "CurrentProject",
+      "AssetRole": "Alternative",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/scopedcss/bundle/GUI.Shared.styles.css",
+      "AssetTraitName": "Content-Encoding",
+      "AssetTraitValue": "br",
+      "Fingerprint": "k0jpppd5a9",
+      "Integrity": "fAYakuEuAMiKc0W2SUHN/FxViv0pgfIV2jciG7n92ek=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/scopedcss/bundle/GUI.Shared.styles.css"
+    },
+    {
+      "Identity": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/compressed/publish/bngs2h7ca2-70v3gt7v4r.br",
+      "SourceId": "GUI.Shared",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/compressed/publish/",
+      "BasePath": "_content/GUI.Shared",
+      "RelativePath": "Pages/Composer.razor.js.br",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Alternative",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/Pages/Composer.razor.js",
+      "AssetTraitName": "Content-Encoding",
+      "AssetTraitValue": "br",
+      "Fingerprint": "rdi8dumh0n",
+      "Integrity": "8euDTlE65LmoEvOpcbGlk8sLYbUgRj9f4mscyUtnHYM=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/Pages/Composer.razor.js"
+    },
+    {
+      "Identity": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/compressed/publish/f7aiq7lxn8-xbmd6radfu.br",
+      "SourceId": "GUI.Shared",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/compressed/publish/",
+      "BasePath": "_content/GUI.Shared",
+      "RelativePath": "app#[.{fingerprint=xbmd6radfu}]?.css.br",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Alternative",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/wwwroot/app.css",
+      "AssetTraitName": "Content-Encoding",
+      "AssetTraitValue": "br",
+      "Fingerprint": "4aw5eqqhb8",
+      "Integrity": "VHfrrf0QPe3fphIAP1KD6DhRN9C/gfkfqvUSVFaN0YQ=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/wwwroot/app.css"
+    },
+    {
+      "Identity": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/compressed/publish/i2t4n931lg-vmpqiylzuy.br",
+      "SourceId": "GUI.Shared",
+      "SourceType": "Computed",
+      "ContentRoot": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/compressed/publish/",
+      "BasePath": "_content/GUI.Shared",
+      "RelativePath": "GUI.Shared#[.{fingerprint=vmpqiylzuy}]!.bundle.scp.css.br",
+      "AssetKind": "All",
+      "AssetMode": "Reference",
+      "AssetRole": "Alternative",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/scopedcss/projectbundle/GUI.Shared.bundle.scp.css",
+      "AssetTraitName": "Content-Encoding",
+      "AssetTraitValue": "br",
+      "Fingerprint": "k0jpppd5a9",
+      "Integrity": "fAYakuEuAMiKc0W2SUHN/FxViv0pgfIV2jciG7n92ek=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/scopedcss/projectbundle/GUI.Shared.bundle.scp.css"
+    },
+    {
+      "Identity": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/compressed/publish/r86b4v553z-8inm30yfxf.br",
+      "SourceId": "GUI.Shared",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/compressed/publish/",
+      "BasePath": "_content/GUI.Shared",
+      "RelativePath": "bootstrap/bootstrap.min.css#[.{fingerprint=8inm30yfxf}]?.map.br",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Alternative",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/wwwroot/bootstrap/bootstrap.min.css.map",
+      "AssetTraitName": "Content-Encoding",
+      "AssetTraitValue": "br",
+      "Fingerprint": "b4a1wrn6r6",
+      "Integrity": "e0W3cltN7F1+gW+ilWd1J4N1PyvYvfyn8Js6/fJEqb0=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/wwwroot/bootstrap/bootstrap.min.css.map"
+    },
+    {
+      "Identity": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/compressed/r86b4v553z-8inm30yfxf.gz",
+      "SourceId": "GUI.Shared",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/compressed/",
+      "BasePath": "_content/GUI.Shared",
+      "RelativePath": "bootstrap/bootstrap.min.css#[.{fingerprint=8inm30yfxf}]?.map.gz",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Alternative",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/wwwroot/bootstrap/bootstrap.min.css.map",
+      "AssetTraitName": "Content-Encoding",
+      "AssetTraitValue": "gzip",
+      "Fingerprint": "a5iolpc9xz",
+      "Integrity": "3qo3UHtt1eBcfATKJXtIrY+ZdPuBA21DhCoR49jAwbE=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/wwwroot/bootstrap/bootstrap.min.css.map"
+    },
+    {
+      "Identity": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/scopedcss/bundle/GUI.Shared.styles.css",
+      "SourceId": "GUI.Shared",
+      "SourceType": "Computed",
+      "ContentRoot": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/scopedcss/bundle/",
+      "BasePath": "_content/GUI.Shared",
+      "RelativePath": "GUI.Shared#[.{fingerprint}]?.styles.css",
+      "AssetKind": "All",
+      "AssetMode": "CurrentProject",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "ScopedCss",
+      "AssetTraitValue": "ApplicationBundle",
+      "Fingerprint": "vmpqiylzuy",
+      "Integrity": "Ry5PvUIQ3z5u+r7iV6UE+FI1Au5HlmKD7PoFQG2/qMY=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/scopedcss/bundle/GUI.Shared.styles.css"
+    },
+    {
+      "Identity": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/scopedcss/projectbundle/GUI.Shared.bundle.scp.css",
+      "SourceId": "GUI.Shared",
+      "SourceType": "Computed",
+      "ContentRoot": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/scopedcss/projectbundle/",
+      "BasePath": "_content/GUI.Shared",
+      "RelativePath": "GUI.Shared#[.{fingerprint}]!.bundle.scp.css",
+      "AssetKind": "All",
+      "AssetMode": "Reference",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "ScopedCss",
+      "AssetTraitValue": "ProjectBundle",
+      "Fingerprint": "vmpqiylzuy",
+      "Integrity": "Ry5PvUIQ3z5u+r7iV6UE+FI1Au5HlmKD7PoFQG2/qMY=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/scopedcss/projectbundle/GUI.Shared.bundle.scp.css"
+    },
+    {
+      "Identity": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/Pages/Composer.razor.js",
+      "SourceId": "GUI.Shared",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/",
+      "BasePath": "_content/GUI.Shared",
+      "RelativePath": "Pages/Composer.razor.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "70v3gt7v4r",
+      "Integrity": "SWzLrklgra7/ZhebirqHmf1rzr+ZgfDQgEBUcLwzZ18=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "Pages/Composer.razor.js"
+    },
+    {
+      "Identity": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/wwwroot/app.css",
+      "SourceId": "GUI.Shared",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/wwwroot/",
+      "BasePath": "_content/GUI.Shared",
+      "RelativePath": "app#[.{fingerprint}]?.css",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "xbmd6radfu",
+      "Integrity": "s1sGs5ir64W1D2sLXTr6NPISK+DYaoZpbpRTu5zBk78=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/app.css"
+    },
+    {
+      "Identity": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/wwwroot/bootstrap/bootstrap.min.css",
+      "SourceId": "GUI.Shared",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/wwwroot/",
+      "BasePath": "_content/GUI.Shared",
+      "RelativePath": "bootstrap/bootstrap.min#[.{fingerprint}]?.css",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "6gzpyzhau4",
+      "Integrity": "SiIVMGgRhdXjKSTIddX7mh9IbOXVcwQWc7/p4nS6D/0=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/bootstrap/bootstrap.min.css"
+    },
+    {
+      "Identity": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/wwwroot/bootstrap/bootstrap.min.css.map",
+      "SourceId": "GUI.Shared",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/wwwroot/",
+      "BasePath": "_content/GUI.Shared",
+      "RelativePath": "bootstrap/bootstrap.min.css#[.{fingerprint}]?.map",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "8inm30yfxf",
+      "Integrity": "gBwg2tmA0Ci2u54gMF1jNCVku6vznarkLS6D76htNNQ=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/bootstrap/bootstrap.min.css.map"
+    },
+    {
+      "Identity": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/wwwroot/dotnet_bot.png",
+      "SourceId": "GUI.Shared",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/wwwroot/",
+      "BasePath": "_content/GUI.Shared",
+      "RelativePath": "dotnet_bot#[.{fingerprint}]?.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "njf7bft9rz",
+      "Integrity": "c+GKN0z9lu5U+Ne3sL9RHZTobi+CyqNrIm/7ITk2MwE=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/dotnet_bot.png"
+    },
+    {
+      "Identity": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/wwwroot/favicon.png",
+      "SourceId": "GUI.Shared",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/wwwroot/",
+      "BasePath": "_content/GUI.Shared",
+      "RelativePath": "favicon#[.{fingerprint}]?.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "ifv42okdf2",
+      "Integrity": "4mWsDy3aHl36ZbGt8zByK7Pvd4kRUoNgTYzRnwmPHwg=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/favicon.png"
+    }
+  ],
+  "Endpoints": [
+    {
+      "Route": "app.css",
+      "AssetFile": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/compressed/f7aiq7lxn8-xbmd6radfu.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.000678886626"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "1472"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"vgOBCysnI3eHg4yxnXG4gGyAxfpzUix38x/A89RsMcI=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 22 Jan 2025 03:08:46 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"s1sGs5ir64W1D2sLXTr6NPISK+DYaoZpbpRTu5zBk78=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-s1sGs5ir64W1D2sLXTr6NPISK+DYaoZpbpRTu5zBk78="
+        }
+      ]
+    },
+    {
+      "Route": "app.css",
+      "AssetFile": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/compressed/publish/f7aiq7lxn8-xbmd6radfu.br",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "br",
+          "Quality": "0.000781860829"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "1278"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"VHfrrf0QPe3fphIAP1KD6DhRN9C/gfkfqvUSVFaN0YQ=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 22 Jan 2025 03:08:46 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "br"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"s1sGs5ir64W1D2sLXTr6NPISK+DYaoZpbpRTu5zBk78=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-s1sGs5ir64W1D2sLXTr6NPISK+DYaoZpbpRTu5zBk78="
+        }
+      ]
+    },
+    {
+      "Route": "app.css",
+      "AssetFile": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/wwwroot/app.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "2577"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"s1sGs5ir64W1D2sLXTr6NPISK+DYaoZpbpRTu5zBk78=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 22 Jan 2025 03:08:46 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-s1sGs5ir64W1D2sLXTr6NPISK+DYaoZpbpRTu5zBk78="
+        }
+      ]
+    },
+    {
+      "Route": "app.css.br",
+      "AssetFile": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/compressed/publish/f7aiq7lxn8-xbmd6radfu.br",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "1278"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"VHfrrf0QPe3fphIAP1KD6DhRN9C/gfkfqvUSVFaN0YQ=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 22 Jan 2025 03:08:46 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "br"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-VHfrrf0QPe3fphIAP1KD6DhRN9C/gfkfqvUSVFaN0YQ="
+        }
+      ]
+    },
+    {
+      "Route": "app.css.gz",
+      "AssetFile": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/compressed/f7aiq7lxn8-xbmd6radfu.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "1472"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"vgOBCysnI3eHg4yxnXG4gGyAxfpzUix38x/A89RsMcI=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 22 Jan 2025 03:08:46 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-vgOBCysnI3eHg4yxnXG4gGyAxfpzUix38x/A89RsMcI="
+        }
+      ]
+    },
+    {
+      "Route": "app.xbmd6radfu.css",
+      "AssetFile": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/compressed/f7aiq7lxn8-xbmd6radfu.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.000678886626"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "1472"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"vgOBCysnI3eHg4yxnXG4gGyAxfpzUix38x/A89RsMcI=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 22 Jan 2025 03:08:46 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"s1sGs5ir64W1D2sLXTr6NPISK+DYaoZpbpRTu5zBk78=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "xbmd6radfu"
+        },
+        {
+          "Name": "label",
+          "Value": "app.css"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-s1sGs5ir64W1D2sLXTr6NPISK+DYaoZpbpRTu5zBk78="
+        }
+      ]
+    },
+    {
+      "Route": "app.xbmd6radfu.css",
+      "AssetFile": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/compressed/publish/f7aiq7lxn8-xbmd6radfu.br",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "br",
+          "Quality": "0.000781860829"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "1278"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"VHfrrf0QPe3fphIAP1KD6DhRN9C/gfkfqvUSVFaN0YQ=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 22 Jan 2025 03:08:46 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "br"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"s1sGs5ir64W1D2sLXTr6NPISK+DYaoZpbpRTu5zBk78=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "xbmd6radfu"
+        },
+        {
+          "Name": "label",
+          "Value": "app.css"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-s1sGs5ir64W1D2sLXTr6NPISK+DYaoZpbpRTu5zBk78="
+        }
+      ]
+    },
+    {
+      "Route": "app.xbmd6radfu.css",
+      "AssetFile": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/wwwroot/app.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "2577"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"s1sGs5ir64W1D2sLXTr6NPISK+DYaoZpbpRTu5zBk78=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 22 Jan 2025 03:08:46 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "xbmd6radfu"
+        },
+        {
+          "Name": "label",
+          "Value": "app.css"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-s1sGs5ir64W1D2sLXTr6NPISK+DYaoZpbpRTu5zBk78="
+        }
+      ]
+    },
+    {
+      "Route": "app.xbmd6radfu.css.br",
+      "AssetFile": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/compressed/publish/f7aiq7lxn8-xbmd6radfu.br",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "1278"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"VHfrrf0QPe3fphIAP1KD6DhRN9C/gfkfqvUSVFaN0YQ=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 22 Jan 2025 03:08:46 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "br"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "xbmd6radfu"
+        },
+        {
+          "Name": "label",
+          "Value": "app.css.br"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-VHfrrf0QPe3fphIAP1KD6DhRN9C/gfkfqvUSVFaN0YQ="
+        }
+      ]
+    },
+    {
+      "Route": "app.xbmd6radfu.css.gz",
+      "AssetFile": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/compressed/f7aiq7lxn8-xbmd6radfu.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "1472"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"vgOBCysnI3eHg4yxnXG4gGyAxfpzUix38x/A89RsMcI=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 22 Jan 2025 03:08:46 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "xbmd6radfu"
+        },
+        {
+          "Name": "label",
+          "Value": "app.css.gz"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-vgOBCysnI3eHg4yxnXG4gGyAxfpzUix38x/A89RsMcI="
+        }
+      ]
+    },
+    {
+      "Route": "bootstrap/bootstrap.min.6gzpyzhau4.css",
+      "AssetFile": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/compressed/1ikstd0x0l-6gzpyzhau4.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.000041912905"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "23858"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"tPYWjXj9L/S5BdHc4ZBRoFSS52tSuxE25ck3Juj3XTc=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 22 Jan 2025 03:08:46 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"SiIVMGgRhdXjKSTIddX7mh9IbOXVcwQWc7/p4nS6D/0=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "6gzpyzhau4"
+        },
+        {
+          "Name": "label",
+          "Value": "bootstrap/bootstrap.min.css"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-SiIVMGgRhdXjKSTIddX7mh9IbOXVcwQWc7/p4nS6D/0="
+        }
+      ]
+    },
+    {
+      "Route": "bootstrap/bootstrap.min.6gzpyzhau4.css",
+      "AssetFile": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/compressed/publish/1ikstd0x0l-6gzpyzhau4.br",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "br",
+          "Quality": "0.000057250816"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "17466"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"4jR0OWxmfzUr920AK8Yzn3GjSgWqtt7AtQDXrJ9OWmA=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 22 Jan 2025 03:08:46 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "br"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"SiIVMGgRhdXjKSTIddX7mh9IbOXVcwQWc7/p4nS6D/0=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "6gzpyzhau4"
+        },
+        {
+          "Name": "label",
+          "Value": "bootstrap/bootstrap.min.css"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-SiIVMGgRhdXjKSTIddX7mh9IbOXVcwQWc7/p4nS6D/0="
+        }
+      ]
+    },
+    {
+      "Route": "bootstrap/bootstrap.min.6gzpyzhau4.css",
+      "AssetFile": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/wwwroot/bootstrap/bootstrap.min.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "162726"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"SiIVMGgRhdXjKSTIddX7mh9IbOXVcwQWc7/p4nS6D/0=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 22 Jan 2025 03:08:46 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "6gzpyzhau4"
+        },
+        {
+          "Name": "label",
+          "Value": "bootstrap/bootstrap.min.css"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-SiIVMGgRhdXjKSTIddX7mh9IbOXVcwQWc7/p4nS6D/0="
+        }
+      ]
+    },
+    {
+      "Route": "bootstrap/bootstrap.min.6gzpyzhau4.css.br",
+      "AssetFile": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/compressed/publish/1ikstd0x0l-6gzpyzhau4.br",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "17466"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"4jR0OWxmfzUr920AK8Yzn3GjSgWqtt7AtQDXrJ9OWmA=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 22 Jan 2025 03:08:46 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "br"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "6gzpyzhau4"
+        },
+        {
+          "Name": "label",
+          "Value": "bootstrap/bootstrap.min.css.br"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-4jR0OWxmfzUr920AK8Yzn3GjSgWqtt7AtQDXrJ9OWmA="
+        }
+      ]
+    },
+    {
+      "Route": "bootstrap/bootstrap.min.6gzpyzhau4.css.gz",
+      "AssetFile": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/compressed/1ikstd0x0l-6gzpyzhau4.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "23858"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"tPYWjXj9L/S5BdHc4ZBRoFSS52tSuxE25ck3Juj3XTc=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 22 Jan 2025 03:08:46 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "6gzpyzhau4"
+        },
+        {
+          "Name": "label",
+          "Value": "bootstrap/bootstrap.min.css.gz"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-tPYWjXj9L/S5BdHc4ZBRoFSS52tSuxE25ck3Juj3XTc="
+        }
+      ]
+    },
+    {
+      "Route": "bootstrap/bootstrap.min.css",
+      "AssetFile": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/compressed/1ikstd0x0l-6gzpyzhau4.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.000041912905"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "23858"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"tPYWjXj9L/S5BdHc4ZBRoFSS52tSuxE25ck3Juj3XTc=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 22 Jan 2025 03:08:46 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"SiIVMGgRhdXjKSTIddX7mh9IbOXVcwQWc7/p4nS6D/0=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-SiIVMGgRhdXjKSTIddX7mh9IbOXVcwQWc7/p4nS6D/0="
+        }
+      ]
+    },
+    {
+      "Route": "bootstrap/bootstrap.min.css",
+      "AssetFile": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/compressed/publish/1ikstd0x0l-6gzpyzhau4.br",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "br",
+          "Quality": "0.000057250816"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "17466"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"4jR0OWxmfzUr920AK8Yzn3GjSgWqtt7AtQDXrJ9OWmA=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 22 Jan 2025 03:08:46 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "br"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"SiIVMGgRhdXjKSTIddX7mh9IbOXVcwQWc7/p4nS6D/0=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-SiIVMGgRhdXjKSTIddX7mh9IbOXVcwQWc7/p4nS6D/0="
+        }
+      ]
+    },
+    {
+      "Route": "bootstrap/bootstrap.min.css",
+      "AssetFile": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/wwwroot/bootstrap/bootstrap.min.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "162726"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"SiIVMGgRhdXjKSTIddX7mh9IbOXVcwQWc7/p4nS6D/0=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 22 Jan 2025 03:08:46 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-SiIVMGgRhdXjKSTIddX7mh9IbOXVcwQWc7/p4nS6D/0="
+        }
+      ]
+    },
+    {
+      "Route": "bootstrap/bootstrap.min.css.8inm30yfxf.map",
+      "AssetFile": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/compressed/publish/r86b4v553z-8inm30yfxf.br",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "br",
+          "Quality": "0.000017661604"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "56619"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"e0W3cltN7F1+gW+ilWd1J4N1PyvYvfyn8Js6/fJEqb0=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 22 Jan 2025 03:08:46 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "br"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/plain"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"gBwg2tmA0Ci2u54gMF1jNCVku6vznarkLS6D76htNNQ=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "8inm30yfxf"
+        },
+        {
+          "Name": "label",
+          "Value": "bootstrap/bootstrap.min.css.map"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-gBwg2tmA0Ci2u54gMF1jNCVku6vznarkLS6D76htNNQ="
+        }
+      ]
+    },
+    {
+      "Route": "bootstrap/bootstrap.min.css.8inm30yfxf.map",
+      "AssetFile": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/compressed/r86b4v553z-8inm30yfxf.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.000013397104"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "74642"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"3qo3UHtt1eBcfATKJXtIrY+ZdPuBA21DhCoR49jAwbE=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 22 Jan 2025 03:08:46 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/plain"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"gBwg2tmA0Ci2u54gMF1jNCVku6vznarkLS6D76htNNQ=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "8inm30yfxf"
+        },
+        {
+          "Name": "label",
+          "Value": "bootstrap/bootstrap.min.css.map"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-gBwg2tmA0Ci2u54gMF1jNCVku6vznarkLS6D76htNNQ="
+        }
+      ]
+    },
+    {
+      "Route": "bootstrap/bootstrap.min.css.8inm30yfxf.map",
+      "AssetFile": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/wwwroot/bootstrap/bootstrap.min.css.map",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "449111"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/plain"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"gBwg2tmA0Ci2u54gMF1jNCVku6vznarkLS6D76htNNQ=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 22 Jan 2025 03:08:46 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "8inm30yfxf"
+        },
+        {
+          "Name": "label",
+          "Value": "bootstrap/bootstrap.min.css.map"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-gBwg2tmA0Ci2u54gMF1jNCVku6vznarkLS6D76htNNQ="
+        }
+      ]
+    },
+    {
+      "Route": "bootstrap/bootstrap.min.css.8inm30yfxf.map.br",
+      "AssetFile": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/compressed/publish/r86b4v553z-8inm30yfxf.br",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "56619"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/plain"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"e0W3cltN7F1+gW+ilWd1J4N1PyvYvfyn8Js6/fJEqb0=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 22 Jan 2025 03:08:46 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "br"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "8inm30yfxf"
+        },
+        {
+          "Name": "label",
+          "Value": "bootstrap/bootstrap.min.css.map.br"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-e0W3cltN7F1+gW+ilWd1J4N1PyvYvfyn8Js6/fJEqb0="
+        }
+      ]
+    },
+    {
+      "Route": "bootstrap/bootstrap.min.css.8inm30yfxf.map.gz",
+      "AssetFile": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/compressed/r86b4v553z-8inm30yfxf.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "74642"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/plain"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"3qo3UHtt1eBcfATKJXtIrY+ZdPuBA21DhCoR49jAwbE=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 22 Jan 2025 03:08:46 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "8inm30yfxf"
+        },
+        {
+          "Name": "label",
+          "Value": "bootstrap/bootstrap.min.css.map.gz"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-3qo3UHtt1eBcfATKJXtIrY+ZdPuBA21DhCoR49jAwbE="
+        }
+      ]
+    },
+    {
+      "Route": "bootstrap/bootstrap.min.css.br",
+      "AssetFile": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/compressed/publish/1ikstd0x0l-6gzpyzhau4.br",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "17466"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"4jR0OWxmfzUr920AK8Yzn3GjSgWqtt7AtQDXrJ9OWmA=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 22 Jan 2025 03:08:46 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "br"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-4jR0OWxmfzUr920AK8Yzn3GjSgWqtt7AtQDXrJ9OWmA="
+        }
+      ]
+    },
+    {
+      "Route": "bootstrap/bootstrap.min.css.gz",
+      "AssetFile": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/compressed/1ikstd0x0l-6gzpyzhau4.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "23858"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"tPYWjXj9L/S5BdHc4ZBRoFSS52tSuxE25ck3Juj3XTc=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 22 Jan 2025 03:08:46 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-tPYWjXj9L/S5BdHc4ZBRoFSS52tSuxE25ck3Juj3XTc="
+        }
+      ]
+    },
+    {
+      "Route": "bootstrap/bootstrap.min.css.map",
+      "AssetFile": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/compressed/publish/r86b4v553z-8inm30yfxf.br",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "br",
+          "Quality": "0.000017661604"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "56619"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"e0W3cltN7F1+gW+ilWd1J4N1PyvYvfyn8Js6/fJEqb0=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 22 Jan 2025 03:08:46 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "br"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/plain"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"gBwg2tmA0Ci2u54gMF1jNCVku6vznarkLS6D76htNNQ=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-gBwg2tmA0Ci2u54gMF1jNCVku6vznarkLS6D76htNNQ="
+        }
+      ]
+    },
+    {
+      "Route": "bootstrap/bootstrap.min.css.map",
+      "AssetFile": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/compressed/r86b4v553z-8inm30yfxf.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.000013397104"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "74642"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"3qo3UHtt1eBcfATKJXtIrY+ZdPuBA21DhCoR49jAwbE=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 22 Jan 2025 03:08:46 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/plain"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"gBwg2tmA0Ci2u54gMF1jNCVku6vznarkLS6D76htNNQ=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-gBwg2tmA0Ci2u54gMF1jNCVku6vznarkLS6D76htNNQ="
+        }
+      ]
+    },
+    {
+      "Route": "bootstrap/bootstrap.min.css.map",
+      "AssetFile": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/wwwroot/bootstrap/bootstrap.min.css.map",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "449111"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/plain"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"gBwg2tmA0Ci2u54gMF1jNCVku6vznarkLS6D76htNNQ=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 22 Jan 2025 03:08:46 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-gBwg2tmA0Ci2u54gMF1jNCVku6vznarkLS6D76htNNQ="
+        }
+      ]
+    },
+    {
+      "Route": "bootstrap/bootstrap.min.css.map.br",
+      "AssetFile": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/compressed/publish/r86b4v553z-8inm30yfxf.br",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "56619"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/plain"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"e0W3cltN7F1+gW+ilWd1J4N1PyvYvfyn8Js6/fJEqb0=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 22 Jan 2025 03:08:46 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "br"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-e0W3cltN7F1+gW+ilWd1J4N1PyvYvfyn8Js6/fJEqb0="
+        }
+      ]
+    },
+    {
+      "Route": "bootstrap/bootstrap.min.css.map.gz",
+      "AssetFile": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/compressed/r86b4v553z-8inm30yfxf.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "74642"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/plain"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"3qo3UHtt1eBcfATKJXtIrY+ZdPuBA21DhCoR49jAwbE=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 22 Jan 2025 03:08:46 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-3qo3UHtt1eBcfATKJXtIrY+ZdPuBA21DhCoR49jAwbE="
+        }
+      ]
+    },
+    {
+      "Route": "dotnet_bot.njf7bft9rz.png",
+      "AssetFile": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/wwwroot/dotnet_bot.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "93437"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"c+GKN0z9lu5U+Ne3sL9RHZTobi+CyqNrIm/7ITk2MwE=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 22 Jan 2025 03:08:46 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "njf7bft9rz"
+        },
+        {
+          "Name": "label",
+          "Value": "dotnet_bot.png"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-c+GKN0z9lu5U+Ne3sL9RHZTobi+CyqNrIm/7ITk2MwE="
+        }
+      ]
+    },
+    {
+      "Route": "dotnet_bot.png",
+      "AssetFile": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/wwwroot/dotnet_bot.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "93437"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"c+GKN0z9lu5U+Ne3sL9RHZTobi+CyqNrIm/7ITk2MwE=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 22 Jan 2025 03:08:46 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-c+GKN0z9lu5U+Ne3sL9RHZTobi+CyqNrIm/7ITk2MwE="
+        }
+      ]
+    },
+    {
+      "Route": "favicon.ifv42okdf2.png",
+      "AssetFile": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/wwwroot/favicon.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "1148"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"4mWsDy3aHl36ZbGt8zByK7Pvd4kRUoNgTYzRnwmPHwg=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 22 Jan 2025 03:08:46 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "ifv42okdf2"
+        },
+        {
+          "Name": "label",
+          "Value": "favicon.png"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-4mWsDy3aHl36ZbGt8zByK7Pvd4kRUoNgTYzRnwmPHwg="
+        }
+      ]
+    },
+    {
+      "Route": "favicon.png",
+      "AssetFile": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/wwwroot/favicon.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "1148"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"4mWsDy3aHl36ZbGt8zByK7Pvd4kRUoNgTYzRnwmPHwg=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 22 Jan 2025 03:08:46 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-4mWsDy3aHl36ZbGt8zByK7Pvd4kRUoNgTYzRnwmPHwg="
+        }
+      ]
+    },
+    {
+      "Route": "GUI.Shared.bundle.scp.css",
+      "AssetFile": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/compressed/i2t4n931lg-vmpqiylzuy.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.000393855849"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "2538"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"iKsG7y+2cLrui5aTw2DElmZABaJM3hVY008CJx5iPaE=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 22 Jan 2025 03:08:46 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"Ry5PvUIQ3z5u+r7iV6UE+FI1Au5HlmKD7PoFQG2/qMY=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-Ry5PvUIQ3z5u+r7iV6UE+FI1Au5HlmKD7PoFQG2/qMY="
+        }
+      ]
+    },
+    {
+      "Route": "GUI.Shared.bundle.scp.css",
+      "AssetFile": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/compressed/publish/i2t4n931lg-vmpqiylzuy.br",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "br",
+          "Quality": "0.000462320851"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "2162"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"fAYakuEuAMiKc0W2SUHN/FxViv0pgfIV2jciG7n92ek=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 22 Jan 2025 03:08:46 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "br"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"Ry5PvUIQ3z5u+r7iV6UE+FI1Au5HlmKD7PoFQG2/qMY=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-Ry5PvUIQ3z5u+r7iV6UE+FI1Au5HlmKD7PoFQG2/qMY="
+        }
+      ]
+    },
+    {
+      "Route": "GUI.Shared.bundle.scp.css",
+      "AssetFile": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/scopedcss/projectbundle/GUI.Shared.bundle.scp.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "10775"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"Ry5PvUIQ3z5u+r7iV6UE+FI1Au5HlmKD7PoFQG2/qMY=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 22 Jan 2025 03:08:46 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-Ry5PvUIQ3z5u+r7iV6UE+FI1Au5HlmKD7PoFQG2/qMY="
+        }
+      ]
+    },
+    {
+      "Route": "GUI.Shared.bundle.scp.css.br",
+      "AssetFile": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/compressed/publish/i2t4n931lg-vmpqiylzuy.br",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "2162"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"fAYakuEuAMiKc0W2SUHN/FxViv0pgfIV2jciG7n92ek=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 22 Jan 2025 03:08:46 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "br"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-fAYakuEuAMiKc0W2SUHN/FxViv0pgfIV2jciG7n92ek="
+        }
+      ]
+    },
+    {
+      "Route": "GUI.Shared.bundle.scp.css.gz",
+      "AssetFile": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/compressed/i2t4n931lg-vmpqiylzuy.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "2538"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"iKsG7y+2cLrui5aTw2DElmZABaJM3hVY008CJx5iPaE=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 22 Jan 2025 03:08:46 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-iKsG7y+2cLrui5aTw2DElmZABaJM3hVY008CJx5iPaE="
+        }
+      ]
+    },
+    {
+      "Route": "GUI.Shared.styles.css",
+      "AssetFile": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/compressed/4out1osacn-vmpqiylzuy.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.000393855849"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "2538"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"iKsG7y+2cLrui5aTw2DElmZABaJM3hVY008CJx5iPaE=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 22 Jan 2025 03:08:46 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"Ry5PvUIQ3z5u+r7iV6UE+FI1Au5HlmKD7PoFQG2/qMY=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-Ry5PvUIQ3z5u+r7iV6UE+FI1Au5HlmKD7PoFQG2/qMY="
+        }
+      ]
+    },
+    {
+      "Route": "GUI.Shared.styles.css",
+      "AssetFile": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/compressed/publish/4out1osacn-vmpqiylzuy.br",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "br",
+          "Quality": "0.000462320851"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "2162"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"fAYakuEuAMiKc0W2SUHN/FxViv0pgfIV2jciG7n92ek=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 22 Jan 2025 03:08:46 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "br"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"Ry5PvUIQ3z5u+r7iV6UE+FI1Au5HlmKD7PoFQG2/qMY=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-Ry5PvUIQ3z5u+r7iV6UE+FI1Au5HlmKD7PoFQG2/qMY="
+        }
+      ]
+    },
+    {
+      "Route": "GUI.Shared.styles.css",
+      "AssetFile": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/scopedcss/bundle/GUI.Shared.styles.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "10775"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"Ry5PvUIQ3z5u+r7iV6UE+FI1Au5HlmKD7PoFQG2/qMY=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 22 Jan 2025 03:08:46 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-Ry5PvUIQ3z5u+r7iV6UE+FI1Au5HlmKD7PoFQG2/qMY="
+        }
+      ]
+    },
+    {
+      "Route": "GUI.Shared.styles.css.br",
+      "AssetFile": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/compressed/publish/4out1osacn-vmpqiylzuy.br",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "2162"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"fAYakuEuAMiKc0W2SUHN/FxViv0pgfIV2jciG7n92ek=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 22 Jan 2025 03:08:46 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "br"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-fAYakuEuAMiKc0W2SUHN/FxViv0pgfIV2jciG7n92ek="
+        }
+      ]
+    },
+    {
+      "Route": "GUI.Shared.styles.css.gz",
+      "AssetFile": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/compressed/4out1osacn-vmpqiylzuy.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "2538"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"iKsG7y+2cLrui5aTw2DElmZABaJM3hVY008CJx5iPaE=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 22 Jan 2025 03:08:46 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-iKsG7y+2cLrui5aTw2DElmZABaJM3hVY008CJx5iPaE="
+        }
+      ]
+    },
+    {
+      "Route": "GUI.Shared.vmpqiylzuy.bundle.scp.css",
+      "AssetFile": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/compressed/i2t4n931lg-vmpqiylzuy.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.000393855849"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "2538"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"iKsG7y+2cLrui5aTw2DElmZABaJM3hVY008CJx5iPaE=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 22 Jan 2025 03:08:46 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"Ry5PvUIQ3z5u+r7iV6UE+FI1Au5HlmKD7PoFQG2/qMY=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "vmpqiylzuy"
+        },
+        {
+          "Name": "label",
+          "Value": "GUI.Shared.bundle.scp.css"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-Ry5PvUIQ3z5u+r7iV6UE+FI1Au5HlmKD7PoFQG2/qMY="
+        }
+      ]
+    },
+    {
+      "Route": "GUI.Shared.vmpqiylzuy.bundle.scp.css",
+      "AssetFile": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/compressed/publish/i2t4n931lg-vmpqiylzuy.br",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "br",
+          "Quality": "0.000462320851"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "2162"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"fAYakuEuAMiKc0W2SUHN/FxViv0pgfIV2jciG7n92ek=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 22 Jan 2025 03:08:46 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "br"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"Ry5PvUIQ3z5u+r7iV6UE+FI1Au5HlmKD7PoFQG2/qMY=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "vmpqiylzuy"
+        },
+        {
+          "Name": "label",
+          "Value": "GUI.Shared.bundle.scp.css"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-Ry5PvUIQ3z5u+r7iV6UE+FI1Au5HlmKD7PoFQG2/qMY="
+        }
+      ]
+    },
+    {
+      "Route": "GUI.Shared.vmpqiylzuy.bundle.scp.css",
+      "AssetFile": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/scopedcss/projectbundle/GUI.Shared.bundle.scp.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "10775"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"Ry5PvUIQ3z5u+r7iV6UE+FI1Au5HlmKD7PoFQG2/qMY=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 22 Jan 2025 03:08:46 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "vmpqiylzuy"
+        },
+        {
+          "Name": "label",
+          "Value": "GUI.Shared.bundle.scp.css"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-Ry5PvUIQ3z5u+r7iV6UE+FI1Au5HlmKD7PoFQG2/qMY="
+        }
+      ]
+    },
+    {
+      "Route": "GUI.Shared.vmpqiylzuy.bundle.scp.css.br",
+      "AssetFile": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/compressed/publish/i2t4n931lg-vmpqiylzuy.br",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "2162"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"fAYakuEuAMiKc0W2SUHN/FxViv0pgfIV2jciG7n92ek=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 22 Jan 2025 03:08:46 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "br"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "vmpqiylzuy"
+        },
+        {
+          "Name": "label",
+          "Value": "GUI.Shared.bundle.scp.css.br"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-fAYakuEuAMiKc0W2SUHN/FxViv0pgfIV2jciG7n92ek="
+        }
+      ]
+    },
+    {
+      "Route": "GUI.Shared.vmpqiylzuy.bundle.scp.css.gz",
+      "AssetFile": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/compressed/i2t4n931lg-vmpqiylzuy.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "2538"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"iKsG7y+2cLrui5aTw2DElmZABaJM3hVY008CJx5iPaE=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 22 Jan 2025 03:08:46 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "vmpqiylzuy"
+        },
+        {
+          "Name": "label",
+          "Value": "GUI.Shared.bundle.scp.css.gz"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-iKsG7y+2cLrui5aTw2DElmZABaJM3hVY008CJx5iPaE="
+        }
+      ]
+    },
+    {
+      "Route": "GUI.Shared.vmpqiylzuy.styles.css",
+      "AssetFile": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/compressed/4out1osacn-vmpqiylzuy.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.000393855849"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "2538"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"iKsG7y+2cLrui5aTw2DElmZABaJM3hVY008CJx5iPaE=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 22 Jan 2025 03:08:46 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"Ry5PvUIQ3z5u+r7iV6UE+FI1Au5HlmKD7PoFQG2/qMY=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "vmpqiylzuy"
+        },
+        {
+          "Name": "label",
+          "Value": "GUI.Shared.styles.css"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-Ry5PvUIQ3z5u+r7iV6UE+FI1Au5HlmKD7PoFQG2/qMY="
+        }
+      ]
+    },
+    {
+      "Route": "GUI.Shared.vmpqiylzuy.styles.css",
+      "AssetFile": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/compressed/publish/4out1osacn-vmpqiylzuy.br",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "br",
+          "Quality": "0.000462320851"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "2162"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"fAYakuEuAMiKc0W2SUHN/FxViv0pgfIV2jciG7n92ek=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 22 Jan 2025 03:08:46 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "br"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"Ry5PvUIQ3z5u+r7iV6UE+FI1Au5HlmKD7PoFQG2/qMY=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "vmpqiylzuy"
+        },
+        {
+          "Name": "label",
+          "Value": "GUI.Shared.styles.css"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-Ry5PvUIQ3z5u+r7iV6UE+FI1Au5HlmKD7PoFQG2/qMY="
+        }
+      ]
+    },
+    {
+      "Route": "GUI.Shared.vmpqiylzuy.styles.css",
+      "AssetFile": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/scopedcss/bundle/GUI.Shared.styles.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "10775"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"Ry5PvUIQ3z5u+r7iV6UE+FI1Au5HlmKD7PoFQG2/qMY=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 22 Jan 2025 03:08:46 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "vmpqiylzuy"
+        },
+        {
+          "Name": "label",
+          "Value": "GUI.Shared.styles.css"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-Ry5PvUIQ3z5u+r7iV6UE+FI1Au5HlmKD7PoFQG2/qMY="
+        }
+      ]
+    },
+    {
+      "Route": "GUI.Shared.vmpqiylzuy.styles.css.br",
+      "AssetFile": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/compressed/publish/4out1osacn-vmpqiylzuy.br",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "2162"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"fAYakuEuAMiKc0W2SUHN/FxViv0pgfIV2jciG7n92ek=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 22 Jan 2025 03:08:46 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "br"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "vmpqiylzuy"
+        },
+        {
+          "Name": "label",
+          "Value": "GUI.Shared.styles.css.br"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-fAYakuEuAMiKc0W2SUHN/FxViv0pgfIV2jciG7n92ek="
+        }
+      ]
+    },
+    {
+      "Route": "GUI.Shared.vmpqiylzuy.styles.css.gz",
+      "AssetFile": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/compressed/4out1osacn-vmpqiylzuy.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "2538"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"iKsG7y+2cLrui5aTw2DElmZABaJM3hVY008CJx5iPaE=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 22 Jan 2025 03:08:46 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "vmpqiylzuy"
+        },
+        {
+          "Name": "label",
+          "Value": "GUI.Shared.styles.css.gz"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-iKsG7y+2cLrui5aTw2DElmZABaJM3hVY008CJx5iPaE="
+        }
+      ]
+    },
+    {
+      "Route": "Pages/Composer.razor.js",
+      "AssetFile": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/compressed/bngs2h7ca2-70v3gt7v4r.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.003144654088"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "317"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"AjFsJ4nmfKWWhCz5mP7TaaMQ00HIOj0Zhc+576+Wtfc=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 22 Jan 2025 04:52:23 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"SWzLrklgra7/ZhebirqHmf1rzr+ZgfDQgEBUcLwzZ18=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-SWzLrklgra7/ZhebirqHmf1rzr+ZgfDQgEBUcLwzZ18="
+        },
+        {
+          "Name": "script-type",
+          "Value": "module"
+        }
+      ]
+    },
+    {
+      "Route": "Pages/Composer.razor.js",
+      "AssetFile": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/compressed/publish/bngs2h7ca2-70v3gt7v4r.br",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "br",
+          "Quality": "0.003584229391"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "278"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"8euDTlE65LmoEvOpcbGlk8sLYbUgRj9f4mscyUtnHYM=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 22 Jan 2025 04:52:23 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "br"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"SWzLrklgra7/ZhebirqHmf1rzr+ZgfDQgEBUcLwzZ18=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-SWzLrklgra7/ZhebirqHmf1rzr+ZgfDQgEBUcLwzZ18="
+        },
+        {
+          "Name": "script-type",
+          "Value": "module"
+        }
+      ]
+    },
+    {
+      "Route": "Pages/Composer.razor.js",
+      "AssetFile": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/Pages/Composer.razor.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "509"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"SWzLrklgra7/ZhebirqHmf1rzr+ZgfDQgEBUcLwzZ18=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 22 Jan 2025 04:52:23 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-SWzLrklgra7/ZhebirqHmf1rzr+ZgfDQgEBUcLwzZ18="
+        },
+        {
+          "Name": "script-type",
+          "Value": "module"
+        }
+      ]
+    },
+    {
+      "Route": "Pages/Composer.razor.js.br",
+      "AssetFile": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/compressed/publish/bngs2h7ca2-70v3gt7v4r.br",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "278"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"8euDTlE65LmoEvOpcbGlk8sLYbUgRj9f4mscyUtnHYM=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 22 Jan 2025 04:52:23 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "br"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-8euDTlE65LmoEvOpcbGlk8sLYbUgRj9f4mscyUtnHYM="
+        }
+      ]
+    },
+    {
+      "Route": "Pages/Composer.razor.js.gz",
+      "AssetFile": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/compressed/bngs2h7ca2-70v3gt7v4r.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "317"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"AjFsJ4nmfKWWhCz5mP7TaaMQ00HIOj0Zhc+576+Wtfc=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 22 Jan 2025 04:52:23 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-AjFsJ4nmfKWWhCz5mP7TaaMQ00HIOj0Zhc+576+Wtfc="
+        }
+      ]
+    }
+  ]
+}

@@ -75,6 +75,8 @@ struct QMDDNode {
     bool operator==(const QMDDNode& other) const;
     bool operator!=(const QMDDNode& other) const;
     friend ostream& operator<<(ostream& os, const QMDDNode& node);
+
+    vector<complex<double>> getWeights() const;
 };
 
 class QMDDGate{
