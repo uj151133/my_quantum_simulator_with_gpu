@@ -1,4 +1,5 @@
 ﻿@page "/composer"
+@inject IJSRuntime JSRuntime
 
 <PageTitle>Composer</PageTitle>
 
@@ -17,7 +18,7 @@
 
     <div class="vertical-container">
         <div class="horizontal-container">
-            <div class="h-gate" draggable="true"></div>
+            <div class="h-gate" draggable="true">H</div>
         </div>
 
         <div class="horizonal-container">
@@ -89,6 +90,7 @@
             currentCount = value;
         }
     }
+
 }
 
 
@@ -99,5 +101,3 @@
         <div class="qubit-line"></div>
     </div>
 }
-
-<script src="composer.js"></script>
