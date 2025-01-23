@@ -18,7 +18,7 @@
 
     <div class="vertical-container">
         <div class="horizontal-container">
-            <div class="h-gate" draggable="true">H</div>
+            <div class="h-gate" draggable="true" @ondragstart="OnDragStart">H</div>
         </div>
 
         <div class="horizonal-container">
@@ -89,6 +89,12 @@
         {
             currentCount = value;
         }
+    }
+
+    private void OnDragStart(DragEventArgs e)
+    {
+        draggedItem = e.DataTransfer?.GetData("text/plain") ?? "H";
+        e.DataTransfer?.SetData("text/plain", draggedItem);
     }
 
 }

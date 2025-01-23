@@ -28,13 +28,17 @@
     font-family: OpenSansRegular, sans-serif;
     font-size: 20px;
     font-weight: medium;
-    cursor: pointer;
+    cursor: grab;
     user-select: none;
 }
 
 .h-gate p {
     margin: 0;
     padding: 0;
+}
+
+.h-gate :active {
+    cursor: grabbing;
 }
 
 .classical-gate {
