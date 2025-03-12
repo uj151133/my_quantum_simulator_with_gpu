@@ -174,3 +174,13 @@ help:
 	@echo "  install       - システムにインストール"
 	@echo "  start-emulator- Androidエミュレータを起動"
 	@echo "  kill-emulator - エミュレータを終了"
+
+.PHONY: metal-build
+metal-build:
+	xcrun -sdk macosx metal -c -I /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/macOS/macOS/ \
+    /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/macOS/macOS/gate.metal -o gate.air
+xcrun -sdk macosx metallib gate.air -o /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/macOS/macOS/gate.metallib
+
+.PHONY: metal-run
+metal-run:
+	swift /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/macOS/macOS/test.swift
