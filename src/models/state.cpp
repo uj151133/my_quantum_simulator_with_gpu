@@ -68,7 +68,6 @@ QMDDState state::Bra0() {
     })));
 };
 
-
 QMDDState state::Bra1() {
     call_once(initEdgeFlag, initEdge);
     return QMDDState(QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{

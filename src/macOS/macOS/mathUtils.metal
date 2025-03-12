@@ -1,11 +1,14 @@
+#pragma clang diagnostic ignored "-Wdouble-promotion"
+
 #include <metal_stdlib>
-#include "base.metal"
+#include "complex.metal"
 using namespace metal;
 
 inline Complex complexExp(Complex z) {
-    float realPart = exp(z.real) * cos(z.imag);
-    float imagPart = exp(z.real) * sin(z.imag);
-    return Complex(realPart, imagPart);
+    return Complex(exp(z.value.x) * cos(z.value.y), exp(z.value.x) * sin(z.value.y));
 }
 
+inline float complexAbs(Complex z) {
+    return sqrt(pow(z.value.x, 2) + pow(z.value.y, 2));
+}
 

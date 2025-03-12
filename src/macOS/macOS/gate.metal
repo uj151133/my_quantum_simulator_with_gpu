@@ -1,9 +1,11 @@
+#pragma clang diagnostic ignored "-Wdouble-promotion"
+
 #include <metal_stdlib>
-#include "base.metal"
+#include "complex.metal"
 #include "mathUtils.metal"
 using namespace metal;
 
-kernel void makeZEROMatrix(device ComplexMatrix& matrix [[buffer(0)]],
+kernel void ZEROMatrix(device ComplexMatrix& matrix [[buffer(0)]],
                            uint2 position [[thread_position_in_grid]],
                            uint2 threads [[threads_per_grid]]) {
     matrix.cols = 2;
@@ -14,7 +16,7 @@ kernel void makeZEROMatrix(device ComplexMatrix& matrix [[buffer(0)]],
     }
 }
 
-kernel void makeIdentityMatrix(device ComplexMatrix& matrix [[buffer(0)]],
+kernel void IdentityMatrix(device ComplexMatrix& matrix [[buffer(0)]],
                                uint2 position [[thread_position_in_grid]],
                                uint2 threads [[threads_per_grid]]) {
     matrix.cols = 2;
@@ -25,7 +27,7 @@ kernel void makeIdentityMatrix(device ComplexMatrix& matrix [[buffer(0)]],
     }
 }
 
-kernel void makePhMatrix(device ComplexMatrix& matrix [[buffer(0)]],
+kernel void PhMatrix(device ComplexMatrix& matrix [[buffer(0)]],
                          constant float* delta [[buffer(1)]],
                          uint2 position [[thread_position_in_grid]],
                          uint2 threads [[threads_per_grid]]) {
@@ -37,7 +39,7 @@ kernel void makePhMatrix(device ComplexMatrix& matrix [[buffer(0)]],
     }
 }
 
-kernel void makeXMatrix(device ComplexMatrix& matrix [[buffer(0)]],
+kernel void XMatrix(device ComplexMatrix& matrix [[buffer(0)]],
                                uint2 position [[thread_position_in_grid]],
                                uint2 threads [[threads_per_grid]]) {
     matrix.cols = 2;
@@ -48,7 +50,7 @@ kernel void makeXMatrix(device ComplexMatrix& matrix [[buffer(0)]],
     }
 }
 
-kernel void makeYMatrix(device ComplexMatrix& matrix [[buffer(0)]],
+kernel void YMatrix(device ComplexMatrix& matrix [[buffer(0)]],
                        uint2 position [[thread_position_in_grid]],
                        uint2 threads [[threads_per_grid]]) {
     matrix.cols = 2;
@@ -63,7 +65,7 @@ kernel void makeYMatrix(device ComplexMatrix& matrix [[buffer(0)]],
     }
 }
 
-kernel void makeZMatrix(device ComplexMatrix& matrix [[buffer(0)]],
+kernel void ZMatrix(device ComplexMatrix& matrix [[buffer(0)]],
                        uint2 position [[thread_position_in_grid]],
                        uint2 threads [[threads_per_grid]]) {
     matrix.cols = 2;
@@ -78,7 +80,7 @@ kernel void makeZMatrix(device ComplexMatrix& matrix [[buffer(0)]],
     }
 }
 
-kernel void makeSMatrix(device ComplexMatrix& matrix [[buffer(0)]],
+kernel void SMatrix(device ComplexMatrix& matrix [[buffer(0)]],
                        uint2 position [[thread_position_in_grid]],
                        uint2 threads [[threads_per_grid]]) {
     matrix.cols = 2;
@@ -93,7 +95,7 @@ kernel void makeSMatrix(device ComplexMatrix& matrix [[buffer(0)]],
     }
 }
 
-kernel void makeSDaggerMatrix(device ComplexMatrix& matrix [[buffer(0)]],
+kernel void SDaggerMatrix(device ComplexMatrix& matrix [[buffer(0)]],
                        uint2 position [[thread_position_in_grid]],
                        uint2 threads [[threads_per_grid]]) {
     matrix.cols = 2;
@@ -108,7 +110,7 @@ kernel void makeSDaggerMatrix(device ComplexMatrix& matrix [[buffer(0)]],
     }
 }
 
-kernel void makeVMatrix(device ComplexMatrix& matrix [[buffer(0)]],
+kernel void VMatrix(device ComplexMatrix& matrix [[buffer(0)]],
                                uint2 position [[thread_position_in_grid]],
                                uint2 threads [[threads_per_grid]]) {
     matrix.cols = 2;
@@ -120,7 +122,7 @@ kernel void makeVMatrix(device ComplexMatrix& matrix [[buffer(0)]],
     }
 }
 
-kernel void makeVDaggerMatrix(device ComplexMatrix& matrix [[buffer(0)]],
+kernel void VDaggerMatrix(device ComplexMatrix& matrix [[buffer(0)]],
                                uint2 position [[thread_position_in_grid]],
                                uint2 threads [[threads_per_grid]]) {
     matrix.cols = 2;
@@ -132,7 +134,7 @@ kernel void makeVDaggerMatrix(device ComplexMatrix& matrix [[buffer(0)]],
     }
 }
 
-kernel void makeHMatrix(device ComplexMatrix& matrix [[buffer(0)]],
+kernel void HMatrix(device ComplexMatrix& matrix [[buffer(0)]],
                        uint2 position [[thread_position_in_grid]],
                        uint2 threads [[threads_per_grid]]) {
     matrix.cols = 2;
@@ -144,7 +146,7 @@ kernel void makeHMatrix(device ComplexMatrix& matrix [[buffer(0)]],
     }
 }
 
-kernel void makeCXMatrix(device ComplexMatrix& matrix [[buffer(0)]],
+kernel void CX1Matrix(device ComplexMatrix& matrix [[buffer(0)]],
                         uint2 position [[thread_position_in_grid]],
                         uint2 threads [[threads_per_grid]]) {
     matrix.cols = 4;
@@ -163,7 +165,123 @@ kernel void makeCXMatrix(device ComplexMatrix& matrix [[buffer(0)]],
     }
 }
 
-kernel void makePMatrix(device ComplexMatrix& matrix [[buffer(0)]],
+kernel void CX2Matrix(device ComplexMatrix& matrix [[buffer(0)]],
+                        uint2 position [[thread_position_in_grid]],
+                        uint2 threads [[threads_per_grid]]) {
+    matrix.cols = 4;
+    matrix.rows = 4;
+    uint index = position.y * matrix.cols + position.x;
+    
+    if (position.x < 4 && position.y < 4) {
+        if ((position.y == 0 && position.x == 0) ||
+            (position.y == 1 && position.x == 3) ||
+            (position.y == 2 && position.x == 2) ||
+            (position.y == 3 && position.x == 1)) {
+            matrix.data[index] = ONE;
+        } else {
+            matrix.data[index] = ZERO;
+        }
+    }
+}
+
+kernel void varCXMatrix(device ComplexMatrix& matrix [[buffer(0)]],
+                        uint2 position [[thread_position_in_grid]],
+                        uint2 threads [[threads_per_grid]]) {
+    matrix.cols = 4;
+    matrix.rows = 4;
+    uint index = position.y * matrix.cols + position.x;
+    
+    if (position.x < 4 && position.y < 4) {
+        if ((position.y == 0 && position.x == 1) ||
+            (position.y == 1 && position.x == 0) ||
+            (position.y == 2 && position.x == 2) ||
+            (position.y == 3 && position.x == 3)) {
+            matrix.data[index] = ONE;
+        } else {
+            matrix.data[index] = ZERO;
+        }
+    }
+}
+
+kernel void CZMatrix(device ComplexMatrix& matrix [[buffer(0)]],
+                        uint2 position [[thread_position_in_grid]],
+                        uint2 threads [[threads_per_grid]]) {
+    matrix.cols = 4;
+    matrix.rows = 4;
+    uint index = position.y * matrix.cols + position.x;
+    
+    if (position.x < 4 && position.y < 4) {
+        if ((position.y == 0 && position.x == 0) ||
+            (position.y == 1 && position.x == 1) ||
+            (position.y == 2 && position.x == 2)) {
+            matrix.data[index] = ONE;
+        }else if (position.y == 3 && position.x == 3) {
+            matrix.data[index] = -ONE;
+        }else {
+            matrix.data[index] = ZERO;
+        }
+    }
+}
+
+kernel void DCNOTMatrix(device ComplexMatrix& matrix [[buffer(0)]],
+                        uint2 position [[thread_position_in_grid]],
+                        uint2 threads [[threads_per_grid]]) {
+    matrix.cols = 4;
+    matrix.rows = 4;
+    uint index = position.y * matrix.cols + position.x;
+    
+    if (position.x < 4 && position.y < 4) {
+        if ((position.y == 0 && position.x == 0) ||
+            (position.y == 1 && position.x == 2) ||
+            (position.y == 2 && position.x == 3) ||
+            (position.y == 3 && position.x == 1)) {
+            matrix.data[index] = ONE;
+        }else {
+            matrix.data[index] = ZERO;
+        }
+    }
+}
+
+kernel void SWAPMatrix(device ComplexMatrix& matrix [[buffer(0)]],
+                        uint2 position [[thread_position_in_grid]],
+                        uint2 threads [[threads_per_grid]]) {
+    matrix.cols = 4;
+    matrix.rows = 4;
+    uint index = position.y * matrix.cols + position.x;
+    
+    if (position.x < 4 && position.y < 4) {
+        if ((position.y == 0 && position.x == 0) ||
+            (position.y == 1 && position.x == 2) ||
+            (position.y == 2 && position.x == 1) ||
+            (position.y == 3 && position.x == 3)) {
+            matrix.data[index] = ONE;
+        }else {
+            matrix.data[index] = ZERO;
+        }
+    }
+}
+
+kernel void iSWAPMatrix(device ComplexMatrix& matrix [[buffer(0)]],
+                        uint2 position [[thread_position_in_grid]],
+                        uint2 threads [[threads_per_grid]]) {
+    matrix.cols = 4;
+    matrix.rows = 4;
+    uint index = position.y * matrix.cols + position.x;
+    
+    if (position.x < 4 && position.y < 4) {
+        if ((position.y == 0 && position.x == 0) ||
+            (position.y == 3 && position.x == 3)) {
+            matrix.data[index] = ONE;
+        }else if ((position.y == 1 && position.x == 2) ||
+                  (position.y == 2 && position.x == 1)){
+            matrix.data[index] = i;
+        }else {
+            matrix.data[index] = ZERO;
+        }
+    }
+}
+
+kernel void PMatrix(device ComplexMatrix& matrix [[buffer(0)]],
                         constant float* phi [[buffer(1)]],
                         uint2 position [[thread_position_in_grid]],
                         uint2 threads [[threads_per_grid]]) {
@@ -179,7 +297,7 @@ kernel void makePMatrix(device ComplexMatrix& matrix [[buffer(0)]],
     }
 }
 
-kernel void makeTMatrix(device ComplexMatrix& matrix [[buffer(0)]],
+kernel void TMatrix(device ComplexMatrix& matrix [[buffer(0)]],
                        uint2 position [[thread_position_in_grid]],
                        uint2 threads [[threads_per_grid]]) {
     matrix.cols = 2;
@@ -187,14 +305,14 @@ kernel void makeTMatrix(device ComplexMatrix& matrix [[buffer(0)]],
     uint index = position.y * matrix.cols + position.x;
     if (position.x < 2 && position.y < 2) {
         if (position.x == position.y) {
-            matrix.data[index] = (position.x == 0) ? ONE : complexExp(i * PI / 4.0f);
+            matrix.data[index] = (position.x == 0) ? ONE : complexExp(i * M_PI_F / 4.0f);
         } else {
             matrix.data[index] = ZERO;
         }
     }
 }
 
-kernel void makeTDaggerMatrix(device ComplexMatrix& matrix [[buffer(0)]],
+kernel void TDaggerMatrix(device ComplexMatrix& matrix [[buffer(0)]],
                        uint2 position [[thread_position_in_grid]],
                        uint2 threads [[threads_per_grid]]) {
     matrix.cols = 2;
@@ -202,14 +320,55 @@ kernel void makeTDaggerMatrix(device ComplexMatrix& matrix [[buffer(0)]],
     uint index = position.y * matrix.cols + position.x;
     if (position.x < 2 && position.y < 2) {
         if (position.x == position.y) {
-            matrix.data[index] = (position.x == 0) ? ONE : complexExp(-i * PI / 4.0f);
+            matrix.data[index] = (position.x == 0) ? ONE : complexExp(-i * M_PI_F / 4.0f);
         } else {
             matrix.data[index] = ZERO;
         }
     }
 }
 
-kernel void makeRxMatrix(device ComplexMatrix& matrix [[buffer(0)]],
+kernel void CPMatrix(device ComplexMatrix& matrix [[buffer(0)]],
+                        constant float* phi [[buffer(1)]],
+                        uint2 position [[thread_position_in_grid]],
+                        uint2 threads [[threads_per_grid]]) {
+    matrix.cols = 4;
+    matrix.rows = 4;
+    uint index = position.y * matrix.cols + position.x;
+    
+    if (position.x < 4 && position.y < 4) {
+        if ((position.y == 0 && position.x == 0) ||
+            (position.y == 1 && position.x == 1) ||
+            (position.y == 2 && position.x == 2)) {
+            matrix.data[index] = ONE;
+        }else if (position.y == 3 && position.x == 3) {
+            matrix.data[index] = complexExp(i * *phi);
+        }else {
+            matrix.data[index] = ZERO;
+        }
+    }
+}
+
+kernel void CSMatrix(device ComplexMatrix& matrix [[buffer(0)]],
+                        uint2 position [[thread_position_in_grid]],
+                        uint2 threads [[threads_per_grid]]) {
+    matrix.cols = 4;
+    matrix.rows = 4;
+    uint index = position.y * matrix.cols + position.x;
+    
+    if (position.x < 4 && position.y < 4) {
+        if ((position.y == 0 && position.x == 0) ||
+            (position.y == 1 && position.x == 1) ||
+            (position.y == 2 && position.x == 2)) {
+            matrix.data[index] = ONE;
+        }else if (position.y == 3 && position.x == 3) {
+            matrix.data[index] = i;
+        }else {
+            matrix.data[index] = ZERO;
+        }
+    }
+}
+
+kernel void RxMatrix(device ComplexMatrix& matrix [[buffer(0)]],
                          constant float* theta [[buffer(1)]],
                          uint2 position [[thread_position_in_grid]],
                          uint2 threads [[threads_per_grid]]) {
@@ -222,7 +381,7 @@ kernel void makeRxMatrix(device ComplexMatrix& matrix [[buffer(0)]],
     }
 }
 
-kernel void makeRyMatrix(device ComplexMatrix& matrix [[buffer(0)]],
+kernel void RyMatrix(device ComplexMatrix& matrix [[buffer(0)]],
                          constant float* theta [[buffer(1)]],
                          uint2 position [[thread_position_in_grid]],
                          uint2 threads [[threads_per_grid]]) {
@@ -239,10 +398,10 @@ kernel void makeRyMatrix(device ComplexMatrix& matrix [[buffer(0)]],
     }
 }
 
-kernel void makeRzMatrix(device ComplexMatrix& matrix [[buffer(0)]],
+kernel void RzMatrix(device ComplexMatrix& matrix [[buffer(0)]],
                          constant float* theta [[buffer(1)]],
-                       uint2 position [[thread_position_in_grid]],
-                       uint2 threads [[threads_per_grid]]) {
+                         uint2 position [[thread_position_in_grid]],
+                         uint2 threads [[threads_per_grid]]) {
     matrix.cols = 2;
     matrix.rows = 2;
     uint index = position.y * matrix.cols + position.x;
@@ -251,6 +410,244 @@ kernel void makeRzMatrix(device ComplexMatrix& matrix [[buffer(0)]],
         if (position.x == position.y) {
             matrix.data[index] = (position.x == 0) ? complexExp(-i * thetaHalf) : complexExp(i * thetaHalf);
         } else {
+            matrix.data[index] = ZERO;
+        }
+    }
+}
+
+kernel void RxxMatrix(device ComplexMatrix& matrix [[buffer(0)]],
+                        constant float* theta [[buffer(1)]],
+                        uint2 position [[thread_position_in_grid]],
+                        uint2 threads [[threads_per_grid]]) {
+    matrix.cols = 4;
+    matrix.rows = 4;
+    uint index = position.y * matrix.cols + position.x;
+    
+    if (position.x < 4 && position.y < 4) {
+        float thetaHalf = *theta / 2.0f;
+        if (position.y == position.x) {
+            matrix.data[index] = cos(thetaHalf);
+        }else if (position.y + position.x == 3){
+            matrix.data[index] = -i * sin(thetaHalf);
+        }else {
+            matrix.data[index] = ZERO;
+        }
+    }
+}
+
+kernel void RyyMatrix(device ComplexMatrix& matrix [[buffer(0)]],
+                        constant float* theta [[buffer(1)]],
+                        uint2 position [[thread_position_in_grid]],
+                        uint2 threads [[threads_per_grid]]) {
+    matrix.cols = 4;
+    matrix.rows = 4;
+    uint index = position.y * matrix.cols + position.x;
+    
+    if (position.x < 4 && position.y < 4) {
+        float thetaHalf = *theta / 2.0f;
+        if (position.y == position.x) {
+            matrix.data[index] = cos(thetaHalf);
+        }else if((position.y == 0 && position.x == 3) ||
+                 (position.y == 3 && position.x == 0)){
+            matrix.data[index] = i * sin(thetaHalf);
+        }else if ((position.y == 1 && position.x == 2) ||
+                  (position.y == 2 && position.x == 1)){
+            matrix.data[index] = -i * sin(thetaHalf);
+        }else {
+            matrix.data[index] = ZERO;
+        }
+    }
+}
+
+kernel void RzzMatrix(device ComplexMatrix& matrix [[buffer(0)]],
+                        constant float* theta [[buffer(1)]],
+                        uint2 position [[thread_position_in_grid]],
+                        uint2 threads [[threads_per_grid]]) {
+    matrix.cols = 4;
+    matrix.rows = 4;
+    uint index = position.y * matrix.cols + position.x;
+    
+    if (position.x < 4 && position.y < 4) {
+        float thetaHalf = *theta / 2.0f;
+        if((position.y == 1 && position.x == 1) ||
+           (position.y == 2 && position.x == 2)){
+            matrix.data[index] = complexExp(i * thetaHalf);
+        }else if ((position.y == 0 && position.x == 0) ||
+                  (position.y == 3 && position.x == 3)){
+            matrix.data[index] = complexExp(-i * thetaHalf);
+        }else {
+            matrix.data[index] = ZERO;
+        }
+    }
+}
+
+kernel void RxyMatrix(device ComplexMatrix& matrix [[buffer(0)]],
+                        constant float* theta [[buffer(1)]],
+                        uint2 position [[thread_position_in_grid]],
+                        uint2 threads [[threads_per_grid]]) {
+    matrix.cols = 4;
+    matrix.rows = 4;
+    uint index = position.y * matrix.cols + position.x;
+    
+    if (position.x < 4 && position.y < 4) {
+        float thetaHalf = *theta / 2.0f;
+        if((position.y == 1 && position.x == 1) ||
+           (position.y == 2 && position.x == 2)){
+            matrix.data[index] = cos(thetaHalf);
+        }else if ((position.y == 1 && position.x == 2) ||
+                  (position.y == 2 && position.x == 1)){
+            matrix.data[index] = -i * sin(thetaHalf);
+        }else if ((position.y == 0 && position.x == 0) ||
+                  (position.y == 3 && position.x == 3)){
+            matrix.data[index] = ONE;
+        }else {
+            matrix.data[index] = ZERO;
+        }
+    }
+}
+
+kernel void SqureSWAPMatrix(device ComplexMatrix& matrix [[buffer(0)]],
+                        uint2 position [[thread_position_in_grid]],
+                        uint2 threads [[threads_per_grid]]) {
+    matrix.cols = 4;
+    matrix.rows = 4;
+    uint index = position.y * matrix.cols + position.x;
+    
+    if (position.x < 4 && position.y < 4) {
+    
+        if((position.y == 1 && position.x == 1) ||
+           (position.y == 2 && position.x == 2)){
+            matrix.data[index] = Complex(1.0f / 2.0f, 1.0f / 2.0f);
+        }else if ((position.y == 1 && position.x == 2) ||
+                  (position.y == 2 && position.x == 1)){
+            matrix.data[index] = Complex(1.0f / 2.0f, -1.0f / 2.0f);
+        }else if ((position.y == 0 && position.x == 0) ||
+                  (position.y == 3 && position.x == 3)){
+            matrix.data[index] = ONE;
+        }else {
+            matrix.data[index] = ZERO;
+        }
+    }
+}
+
+kernel void SqureiSWAPMatrix(device ComplexMatrix& matrix [[buffer(0)]],
+                        uint2 position [[thread_position_in_grid]],
+                        uint2 threads [[threads_per_grid]]) {
+    matrix.cols = 4;
+    matrix.rows = 4;
+    uint index = position.y * matrix.cols + position.x;
+    
+    if (position.x < 4 && position.y < 4) {
+    
+        if((position.y == 1 && position.x == 1) ||
+           (position.y == 2 && position.x == 2)){
+            matrix.data[index] = Complex(1.0f / sqrt(2.0f));
+        }else if ((position.y == 1 && position.x == 2) ||
+                  (position.y == 2 && position.x == 1)){
+            matrix.data[index] = i / sqrt(2.0f);
+        }else if ((position.y == 0 && position.x == 0) ||
+                  (position.y == 3 && position.x == 3)){
+            matrix.data[index] = ONE;
+        }else {
+            matrix.data[index] = ZERO;
+        }
+    }
+}
+
+kernel void SWAPAlphaMatrix(device ComplexMatrix& matrix [[buffer(0)]],
+                                 constant float* alpha [[buffer(1)]],
+                                 uint2 position [[thread_position_in_grid]],
+                                 uint2 threads [[threads_per_grid]]) {
+    matrix.cols = 4;
+    matrix.rows = 4;
+    uint index = position.y * matrix.cols + position.x;
+    
+    if (position.x < 4 && position.y < 4) {
+    
+        if((position.y == 1 && position.x == 1) ||
+           (position.y == 2 && position.x == 2)){
+            matrix.data[index] = (1.0f + complexExp(i * M_PI_F * *alpha)) / 2.0f;
+        }else if ((position.y == 1 && position.x == 2) ||
+                  (position.y == 2 && position.x == 1)){
+            matrix.data[index] = (1.0f - complexExp(i * M_PI_F * *alpha)) / 2.0f;
+        }else if ((position.y == 0 && position.x == 0) ||
+                  (position.y == 3 && position.x == 3)){
+            matrix.data[index] = ONE;
+        }else {
+            matrix.data[index] = ZERO;
+        }
+    }
+}
+
+kernel void FREDKINMatrix(device ComplexMatrix& matrix [[buffer(0)]],
+                          uint2 position [[thread_position_in_grid]],
+                          uint2 threads [[threads_per_grid]]) {
+    matrix.cols = 8;
+    matrix.rows = 8;
+    uint index = position.y * matrix.cols + position.x;
+    
+    if (position.x < 8 && position.y < 8) {
+    
+        if ((position.y == 0 && position.x == 0) ||
+            (position.y == 1 && position.x == 1) ||
+            (position.y == 2 && position.x == 2) ||
+            (position.y == 3 && position.x == 3) ||
+            (position.y == 4 && position.x == 4) ||
+            (position.y == 5 && position.x == 6) ||
+            (position.y == 6 && position.x == 5) ||
+            (position.y == 7 && position.x == 7)) {
+            matrix.data[index] = ONE;
+        }else {
+            matrix.data[index] = ZERO;
+        }
+    }
+}
+
+kernel void UMatrix(device ComplexMatrix& matrix [[buffer(0)]],
+                    constant float* theta [[buffer(1)]],
+                    constant float* phi [[buffer(2)]],
+                    constant float* lamda [[buffer(3)]],
+                    uint2 position [[thread_position_in_grid]],
+                    uint2 threads [[threads_per_grid]]) {
+    matrix.cols = 2;
+    matrix.rows = 2;
+    uint index = position.y * matrix.cols + position.x;
+    
+    if (position.x < 2 && position.y < 2) {
+        if (position.y == 0 && position.x == 0) {
+            matrix.data[index] = cos(*theta / 2.0f);
+        }else if(position.y == 0 && position.x == 1) {
+            matrix.data[index] = -complexExp(i * *lamda) * sin(*theta / 2.0f);
+        }else if(position.y == 1 && position.y == 0) {
+            matrix.data[index] = complexExp(i * *phi) * sin(*theta / 2.0f);
+        }else {
+            matrix.data[index] = complexExp(i * (*lamda + *phi)) * cos(*theta / 2.0f);
+        }
+    }
+}
+
+kernel void BARENCOMatrix(device ComplexMatrix& matrix [[buffer(0)]],
+                    constant float* alpha [[buffer(1)]],
+                    constant float* phi [[buffer(2)]],
+                    constant float* theta [[buffer(3)]],
+                    uint2 position [[thread_position_in_grid]],
+                    uint2 threads [[threads_per_grid]]) {
+    matrix.cols = 4;
+    matrix.rows = 4;
+    uint index = position.y * matrix.cols + position.x;
+    
+    if (position.x < 4 && position.y < 4) {
+        if ((position.y == 2 && position.x == 2) ||
+            (position.y == 3 && position.x == 3)) {
+            matrix.data[index] = complexExp(i * *alpha) * cos(*theta);
+        }else if(position.y == 3 && position.x == 2) {
+            matrix.data[index] = -i * complexExp(i * (*alpha + *phi)) * sin(*theta);
+        }else if(position.y == 2 && position.y == 3) {
+            matrix.data[index] = -i * complexExp(i * (*alpha - *phi)) * sin(*theta);
+        }else if((position.y == 0 && position.x == 0) ||
+                 (position.y == 1 && position.x == 1)) {
+            matrix.data[index] = ONE;
+        }else {
             matrix.data[index] = ZERO;
         }
     }
