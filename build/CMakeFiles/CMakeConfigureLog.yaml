@@ -514,3 +514,35 @@ events:
       stdout: |
       exitCode: 1
 ...
+
+---
+events:
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/opt/homebrew/share/cmake/Modules/CheckLibraryExists.cmake:78 (try_compile)"
+      - "/opt/homebrew/share/cmake/Modules/FindThreads.cmake:112 (CHECK_LIBRARY_EXISTS)"
+      - "/opt/homebrew/share/cmake/Modules/FindThreads.cmake:175 (_threads_check_lib)"
+      - "/opt/homebrew/share/cmake/Modules/CMakeFindDependencyMacro.cmake:76 (find_package)"
+      - "/opt/homebrew/lib/cmake/boost_thread-1.87.0/boost_thread-config.cmake:118 (find_dependency)"
+      - "/opt/homebrew/lib/cmake/Boost-1.87.0/BoostConfig.cmake:141 (find_package)"
+      - "/opt/homebrew/lib/cmake/Boost-1.87.0/BoostConfig.cmake:262 (boost_find_component)"
+      - "CMakeLists.txt:41 (find_package)"
+    checks:
+      - "Looking for pthread_create in pthreads"
+    directories:
+      source: "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/build/CMakeFiles/CMakeScratch/TryCompile-OxDPZP"
+      binary: "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/build/CMakeFiles/CMakeScratch/TryCompile-OxDPZP"
+    cmakeVariables:
+      CMAKE_C_FLAGS: " -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk"
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_OSX_ARCHITECTURES: "arm64"
+      CMAKE_OSX_DEPLOYMENT_TARGET: "15.0"
+      CMAKE_OSX_SYSROOT: "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk"
+    buildResult:
+      variable: "CMAKE_HAVE_PTHREADS_CREATE"
+      cached: true
+      stdout: |
+      exitCode: 1
+...
