@@ -1417,3 +1417,6 @@
 /Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI/obj/Debug/net9.0-android/assets/wwwroot/_content/GUI.Shared/GUI.Shared.vmpqiylzuy.bundle.scp.css.gz
 /Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI/obj/Debug/net9.0-android/assets/wwwroot/_content/GUI.Shared/GUI.Shared.vmpqiylzuy.bundle.scp.css.br
 /Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI/obj/Debug/net9.0-android/assets/wwwroot/_content/GUI.Shared/GUI.Shared.vmpqiylzuy.bundle.scp.css
+/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI/obj/Debug/net9.0-android/assets/wwwroot/_content/GUI.Shared/blackhole.blend
+/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI/obj/Debug/net9.0-android/assets/wwwroot/_content/GUI.Shared/blackhole.mtl
+/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI/obj/Debug/net9.0-android/assets/wwwroot/_content/GUI.Shared/blackhole.obj

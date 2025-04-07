@@ -43,7 +43,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 22 Jan 2025 03:08:46 GMT"
+          "Value": "Sat, 22 Mar 2025 09:52:11 GMT"
         },
         {
           "Name": "Vary",
@@ -84,7 +84,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 22 Jan 2025 03:08:46 GMT"
+          "Value": "Sat, 22 Mar 2025 09:52:11 GMT"
         }
       ],
       "EndpointProperties": [
@@ -125,7 +125,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 22 Jan 2025 03:08:46 GMT"
+          "Value": "Sat, 22 Mar 2025 09:52:11 GMT"
         },
         {
           "Name": "Vary",
@@ -180,7 +180,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 22 Jan 2025 03:08:46 GMT"
+          "Value": "Sat, 22 Mar 2025 09:52:11 GMT"
         },
         {
           "Name": "Vary",
@@ -229,7 +229,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 22 Jan 2025 03:08:46 GMT"
+          "Value": "Sat, 22 Mar 2025 09:52:11 GMT"
         }
       ],
       "EndpointProperties": [
@@ -278,7 +278,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 22 Jan 2025 03:08:46 GMT"
+          "Value": "Sat, 22 Mar 2025 09:52:11 GMT"
         },
         {
           "Name": "Vary",
@@ -327,7 +327,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 22 Jan 2025 04:52:23 GMT"
+          "Value": "Sat, 22 Mar 2025 09:52:11 GMT"
         }
       ],
       "EndpointProperties": [
@@ -382,7 +382,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 22 Jan 2025 04:52:23 GMT"
+          "Value": "Sat, 22 Mar 2025 09:52:11 GMT"
         },
         {
           "Name": "Vary",
@@ -431,7 +431,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 22 Jan 2025 04:52:23 GMT"
+          "Value": "Sat, 22 Mar 2025 09:52:11 GMT"
         },
         {
           "Name": "Vary",
@@ -486,7 +486,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 22 Jan 2025 03:08:46 GMT"
+          "Value": "Sat, 22 Mar 2025 09:52:11 GMT"
         },
         {
           "Name": "Vary",
@@ -527,7 +527,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 22 Jan 2025 03:08:46 GMT"
+          "Value": "Sat, 22 Mar 2025 09:52:11 GMT"
         }
       ],
       "EndpointProperties": [
@@ -568,7 +568,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 22 Jan 2025 03:08:46 GMT"
+          "Value": "Sat, 22 Mar 2025 09:52:11 GMT"
         },
         {
           "Name": "Vary",
@@ -623,7 +623,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 22 Jan 2025 03:08:46 GMT"
+          "Value": "Sat, 22 Mar 2025 09:52:11 GMT"
         },
         {
           "Name": "Vary",
@@ -672,7 +672,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 22 Jan 2025 03:08:46 GMT"
+          "Value": "Sat, 22 Mar 2025 09:52:11 GMT"
         }
       ],
       "EndpointProperties": [
@@ -721,7 +721,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 22 Jan 2025 03:08:46 GMT"
+          "Value": "Sat, 22 Mar 2025 09:52:11 GMT"
         },
         {
           "Name": "Vary",
@@ -740,6 +740,252 @@
         {
           "Name": "label",
           "Value": "app.css.gz"
+        }
+      ]
+    },
+    {
+      "Route": "blackhole.blend",
+      "AssetFile": "blackhole.blend",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "1186952"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/octet-stream"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"1wboTCN4wt2fVuvqxo1SIurK+KiTlK9WXaf986Qkpmw=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 22 Mar 2025 09:52:14 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-1wboTCN4wt2fVuvqxo1SIurK+KiTlK9WXaf986Qkpmw="
+        }
+      ]
+    },
+    {
+      "Route": "blackhole.hizt2ymctg.obj",
+      "AssetFile": "blackhole.obj",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "423666"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/octet-stream"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"CcMF3rOv6QgmNNDScVZ91WKxKcmAE7X5riV9r4yUgHE=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 22 Mar 2025 09:52:14 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "hizt2ymctg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-CcMF3rOv6QgmNNDScVZ91WKxKcmAE7X5riV9r4yUgHE="
+        },
+        {
+          "Name": "label",
+          "Value": "blackhole.obj"
+        }
+      ]
+    },
+    {
+      "Route": "blackhole.lx3xbn4qj8.blend",
+      "AssetFile": "blackhole.blend",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "1186952"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/octet-stream"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"1wboTCN4wt2fVuvqxo1SIurK+KiTlK9WXaf986Qkpmw=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 22 Mar 2025 09:52:14 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "lx3xbn4qj8"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-1wboTCN4wt2fVuvqxo1SIurK+KiTlK9WXaf986Qkpmw="
+        },
+        {
+          "Name": "label",
+          "Value": "blackhole.blend"
+        }
+      ]
+    },
+    {
+      "Route": "blackhole.mtl",
+      "AssetFile": "blackhole.mtl",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "448"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/octet-stream"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"KTUxFndxuL4nKy+4q3SMqDY4VkpblYyk4Kz15u4oRNE=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 22 Mar 2025 09:52:14 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-KTUxFndxuL4nKy+4q3SMqDY4VkpblYyk4Kz15u4oRNE="
+        }
+      ]
+    },
+    {
+      "Route": "blackhole.obj",
+      "AssetFile": "blackhole.obj",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "423666"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/octet-stream"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"CcMF3rOv6QgmNNDScVZ91WKxKcmAE7X5riV9r4yUgHE=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 22 Mar 2025 09:52:14 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-CcMF3rOv6QgmNNDScVZ91WKxKcmAE7X5riV9r4yUgHE="
+        }
+      ]
+    },
+    {
+      "Route": "blackhole.xmbpqt83t0.mtl",
+      "AssetFile": "blackhole.mtl",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "448"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/octet-stream"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"KTUxFndxuL4nKy+4q3SMqDY4VkpblYyk4Kz15u4oRNE=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 22 Mar 2025 09:52:14 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "xmbpqt83t0"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-KTUxFndxuL4nKy+4q3SMqDY4VkpblYyk4Kz15u4oRNE="
+        },
+        {
+          "Name": "label",
+          "Value": "blackhole.mtl"
         }
       ]
     },
@@ -784,7 +1030,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 22 Jan 2025 03:08:46 GMT"
+          "Value": "Sat, 22 Mar 2025 09:52:11 GMT"
         },
         {
           "Name": "Vary",
@@ -833,7 +1079,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 22 Jan 2025 03:08:46 GMT"
+          "Value": "Sat, 22 Mar 2025 09:52:11 GMT"
         }
       ],
       "EndpointProperties": [
@@ -882,7 +1128,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 22 Jan 2025 03:08:46 GMT"
+          "Value": "Sat, 22 Mar 2025 09:52:11 GMT"
         },
         {
           "Name": "Vary",
@@ -945,7 +1191,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 22 Jan 2025 03:08:46 GMT"
+          "Value": "Sat, 22 Mar 2025 09:52:11 GMT"
         },
         {
           "Name": "Vary",
@@ -986,7 +1232,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 22 Jan 2025 03:08:46 GMT"
+          "Value": "Sat, 22 Mar 2025 09:52:11 GMT"
         }
       ],
       "EndpointProperties": [
@@ -1037,7 +1283,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 22 Jan 2025 03:08:46 GMT"
+          "Value": "Sat, 22 Mar 2025 09:52:11 GMT"
         },
         {
           "Name": "Vary",
@@ -1086,7 +1332,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 22 Jan 2025 03:08:46 GMT"
+          "Value": "Sat, 22 Mar 2025 09:52:11 GMT"
         }
       ],
       "EndpointProperties": [
@@ -1135,7 +1381,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 22 Jan 2025 03:08:46 GMT"
+          "Value": "Sat, 22 Mar 2025 09:52:11 GMT"
         },
         {
           "Name": "Vary",
@@ -1188,7 +1434,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 22 Jan 2025 03:08:46 GMT"
+          "Value": "Sat, 22 Mar 2025 09:52:11 GMT"
         },
         {
           "Name": "Vary",
@@ -1243,7 +1489,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 22 Jan 2025 03:08:46 GMT"
+          "Value": "Sat, 22 Mar 2025 09:52:11 GMT"
         },
         {
           "Name": "Vary",
@@ -1284,7 +1530,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 22 Jan 2025 03:08:46 GMT"
+          "Value": "Sat, 22 Mar 2025 09:52:11 GMT"
         }
       ],
       "EndpointProperties": [
@@ -1325,7 +1571,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 22 Jan 2025 03:08:46 GMT"
+          "Value": "Sat, 22 Mar 2025 09:52:11 GMT"
         },
         {
           "Name": "Vary",
@@ -1366,7 +1612,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 22 Jan 2025 03:08:46 GMT"
+          "Value": "Sat, 22 Mar 2025 09:52:11 GMT"
         }
       ],
       "EndpointProperties": [
@@ -1411,7 +1657,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 22 Jan 2025 03:08:46 GMT"
+          "Value": "Sat, 22 Mar 2025 09:52:11 GMT"
         }
       ],
       "EndpointProperties": [
@@ -1448,7 +1694,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 22 Jan 2025 03:08:46 GMT"
+          "Value": "Sat, 22 Mar 2025 09:52:11 GMT"
         }
       ],
       "EndpointProperties": [
@@ -1493,7 +1739,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 22 Jan 2025 03:08:46 GMT"
+          "Value": "Sat, 22 Mar 2025 09:52:11 GMT"
         }
       ],
       "EndpointProperties": [

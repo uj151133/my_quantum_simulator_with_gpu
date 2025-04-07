@@ -13,6 +13,18 @@
       "PackagePath": "staticwebassets/app.css"
     },
     {
+      "Id": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/wwwroot/blackhole.blend",
+      "PackagePath": "staticwebassets/blackhole.blend"
+    },
+    {
+      "Id": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/wwwroot/blackhole.mtl",
+      "PackagePath": "staticwebassets/blackhole.mtl"
+    },
+    {
+      "Id": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/wwwroot/blackhole.obj",
+      "PackagePath": "staticwebassets/blackhole.obj"
+    },
+    {
       "Id": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/wwwroot/bootstrap/bootstrap.min.css",
       "PackagePath": "staticwebassets/bootstrap/bootstrap.min.css"
     },

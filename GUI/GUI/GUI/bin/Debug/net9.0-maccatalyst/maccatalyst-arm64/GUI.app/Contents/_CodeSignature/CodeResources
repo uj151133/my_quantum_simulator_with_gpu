@@ -134,15 +134,15 @@
 		</data>
 		<key>Resources/wwwroot/_content/GUI.Shared/Pages/Composer.razor.js</key>
 		<data>
-		51YrqF28WQu/hUXmqvRPFJmkYeo=
+		CAQDu3t88KQjUgsiEx79mB3xfXQ=
 		</data>
 		<key>Resources/wwwroot/_content/GUI.Shared/Pages/Composer.razor.js.br</key>
 		<data>
-		FrXdeePvPr1YCNHAbn/aBLZUCdY=
+		4FeTdtFqZQ0Q2lDgQz8Ekc9vqME=
 		</data>
 		<key>Resources/wwwroot/_content/GUI.Shared/Pages/Composer.razor.js.gz</key>
 		<data>
-		xiRG8mog6pscV9QhZrYTnbXR1M8=
+		Wce5PneLCZce05p/Km+t16PWAy8=
 		</data>
 		<key>Resources/wwwroot/_content/GUI.Shared/app.css</key>
 		<data>
@@ -155,6 +155,18 @@
 		<key>Resources/wwwroot/_content/GUI.Shared/app.css.gz</key>
 		<data>
 		ETjS4AiWVf8hgLEV7R+QjaVFSzw=
+		</data>
+		<key>Resources/wwwroot/_content/GUI.Shared/blackhole.blend</key>
+		<data>
+		h1Vdst1AIxdvLuE5D7Kua+KyUlk=
+		</data>
+		<key>Resources/wwwroot/_content/GUI.Shared/blackhole.mtl</key>
+		<data>
+		pIuVMvU26HF5NaEhC264Ejxl/M0=
+		</data>
+		<key>Resources/wwwroot/_content/GUI.Shared/blackhole.obj</key>
+		<data>
+		1rzlM/dy0zEACxKpnRtGUaNpfWo=
 		</data>
 		<key>Resources/wwwroot/_content/GUI.Shared/bootstrap/bootstrap.min.css</key>
 		<data>
@@ -219,28 +231,28 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			aPVGS66t3nGGBp81aj9pu9vAANXLVV8OtPafh8AumIw=
+			oMVwYjUDfLB93dFvVKcrsrfDOePt5MIijdGTIA7Ai3Y=
 			</data>
 		</dict>
 		<key>MonoBundle/GUI.Shared.pdb</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			V7sI65SKnuQS11ch+hVNm7k5FUSidwY9rMMi7cElxDk=
+			Qt4xZywpgrd2Du5qnPcCDNwLbJ2zz1ppINwAqeGzB58=
 			</data>
 		</dict>
 		<key>MonoBundle/GUI.dll</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			ZP0gkfLGNCbX9PcBjovwIiPLNeFuRRnoKwkxcfxNqQw=
+			6uYnPBAuXl8nfMGwQBaF6weBgzPvpGqMr0EYKLO3U9c=
 			</data>
 		</dict>
 		<key>MonoBundle/GUI.pdb</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			56ofN9axPhaDP4ub9E+airtOyBJRo64mXiFRC7cbDLs=
+			VXegJvd0VzSp6iIvSWrDmiiid8PUbytJjNjhKTyJ0Bk=
 			</data>
 		</dict>
 		<key>MonoBundle/Microsoft.AspNetCore.Authorization.dll</key>
@@ -2137,21 +2149,21 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			SWzLrklgra7/ZhebirqHmf1rzr+ZgfDQgEBUcLwzZ18=
+			gLz2KdligelXL1G0IOQ/lkngSWOloQbJGfeWpf7AHa4=
 			</data>
 		</dict>
 		<key>Resources/wwwroot/_content/GUI.Shared/Pages/Composer.razor.js.br</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			8euDTlE65LmoEvOpcbGlk8sLYbUgRj9f4mscyUtnHYM=
+			gd268vUefJQIMwiZDk3PaGa9hRVbE1if8/oplWC+yuM=
 			</data>
 		</dict>
 		<key>Resources/wwwroot/_content/GUI.Shared/Pages/Composer.razor.js.gz</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			AjFsJ4nmfKWWhCz5mP7TaaMQ00HIOj0Zhc+576+Wtfc=
+			wSBCaHPLt0417HXNKVo9KZLezQmX7LJVImk1+w93JiM=
 			</data>
 		</dict>
 		<key>Resources/wwwroot/_content/GUI.Shared/app.css</key>
@@ -2173,6 +2185,27 @@
 			<key>hash2</key>
 			<data>
 			vgOBCysnI3eHg4yxnXG4gGyAxfpzUix38x/A89RsMcI=
+			</data>
+		</dict>
+		<key>Resources/wwwroot/_content/GUI.Shared/blackhole.blend</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			1wboTCN4wt2fVuvqxo1SIurK+KiTlK9WXaf986Qkpmw=
+			</data>
+		</dict>
+		<key>Resources/wwwroot/_content/GUI.Shared/blackhole.mtl</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			KTUxFndxuL4nKy+4q3SMqDY4VkpblYyk4Kz15u4oRNE=
+			</data>
+		</dict>
+		<key>Resources/wwwroot/_content/GUI.Shared/blackhole.obj</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			CcMF3rOv6QgmNNDScVZ91WKxKcmAE7X5riV9r4yUgHE=
 			</data>
 		</dict>
 		<key>Resources/wwwroot/_content/GUI.Shared/bootstrap/bootstrap.min.css</key>
