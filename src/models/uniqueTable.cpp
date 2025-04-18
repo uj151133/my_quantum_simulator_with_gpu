@@ -50,12 +50,9 @@ UniqueTable& UniqueTable::getInstance() {
 
 void UniqueTable::insert(size_t hashKey, shared_ptr<QMDDNode> node) {
     while (true) {
-        auto waitStart = chrono::high_resolution_clock::now();
         bool locked = tableMutex.try_lock();
-        auto waitEnd = chrono::high_resolution_clock::now();
         
         if (locked) {
-            totalWaitTime += chrono::duration(waitEnd - waitStart);
             unique_lock<shared_mutex> lock(tableMutex, adopt_lock);
             size_t index = hash(hashKey);
             auto it = table.find(index);
@@ -72,7 +69,6 @@ void UniqueTable::insert(size_t hashKey, shared_ptr<QMDDNode> node) {
             }
             table[index].push_back(Entry(hashKey, weak_ptr<QMDDNode>(node)));
             return;
-            // break;
         }
         boost::this_fiber::yield();
     }
@@ -101,12 +97,9 @@ void UniqueTable::insert(size_t hashKey, shared_ptr<QMDDNode> node) {
 
 shared_ptr<QMDDNode> UniqueTable::find(size_t hashKey) const {
     while (true) {
-        auto waitStart = chrono::high_resolution_clock::now();
         bool locked = tableMutex.try_lock_shared();
-        auto waitEnd = chrono::high_resolution_clock::now();
         
         if (locked) {
-            totalWaitTime += chrono::duration(waitEnd - waitStart);
             shared_lock<shared_mutex> lock(tableMutex, adopt_lock);
             size_t index = hash(hashKey);
             auto it = table.find(index);
@@ -118,7 +111,6 @@ shared_ptr<QMDDNode> UniqueTable::find(size_t hashKey) const {
                 }
             }
             return nullptr;
-            // break;
         }
         boost::this_fiber::yield();
     }
@@ -154,9 +146,3 @@ void UniqueTable::printAllEntries() const {
     cout << "Table bucket count: " << table.bucket_count() << endl;
 }
 
-// pair<chrono::microseconds, size_t> UniqueTable::getWaitMetrics() const {
-//     return make_pair(totalWaitTime, totalWaitCount.load());
-// }
-chrono::nanoseconds UniqueTable::getWaitMetrics() const {
-    return totalWaitTime;
-}

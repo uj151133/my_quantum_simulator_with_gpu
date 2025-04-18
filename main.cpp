@@ -27,7 +27,7 @@ void execute() {
     UniqueTable& table = UniqueTable::getInstance();
     // OperationCache& cache = OperationCache::getInstance();
 
-    int numQubits = 15;
+    int numQubits = 10;
     int numGates = 200;
 
     randomRotate(numQubits, numGates);
@@ -36,7 +36,7 @@ void execute() {
     // grover(numQubits, omega);
 
 
-    cout << table.getWaitMetrics() << endl;
+    // cout << table.getWaitMetrics() << endl;
 }
 
 

@@ -29,14 +29,15 @@ QMDDEdge::QMDDEdge(complex<double> w, shared_ptr<QMDDNode> n)
     // auto existingNode = table.find(uniqueTableKey);
     // if (existingNode == nullptr && n) table.insert(uniqueTableKey, n);
     if (n) {
-        auto existingNode = table.find(uniqueTableKey);
+        shared_ptr<QMDDNode> existingNode = table.find(uniqueTableKey);
         if (existingNode == nullptr) {
             table.insert(uniqueTableKey, n);
-            node = n;
+            this->node = n;
         } else {
-            node = existingNode;
+            this->node = existingNode;
         }
     }
+    this->depth = calculateDepth();
     // cout << "Edge created with weight: " << weight << " and uniqueTableKey: " << uniqueTableKey << " and isTerminal: " << isTerminal << endl;
 }
 
@@ -56,11 +57,12 @@ QMDDEdge::QMDDEdge(double w, shared_ptr<QMDDNode> n)
         auto existingNode = table.find(uniqueTableKey);
         if (existingNode == nullptr) {
             table.insert(uniqueTableKey, n);
-            node = n;
+            this->node = n;
         } else {
-            node = existingNode;
+            this->node = existingNode;
         }
     }
+    this->depth = calculateDepth();
     // cout << "Edge created with weight: " << weight << " and uniqueTableKey: " << uniqueTableKey << " and isTerminal: " << isTerminal << endl;
 }
 
@@ -73,8 +75,8 @@ QMDDEdge::QMDDEdge(complex<double> w, size_t key)
     #else
         #error "Unsupported operating system"
     #endif
-    UniqueTable& table = UniqueTable::getInstance();
-    node = table.find(uniqueTableKey);
+    this->node = UniqueTable::getInstance().find(uniqueTableKey);
+    this->depth = calculateDepth();
     // cout << "Edge created with weight: " << weight << " and uniqueTableKey: " << uniqueTableKey << " and isTerminal: " << isTerminal << endl;
 }
 
@@ -87,14 +89,13 @@ QMDDEdge::QMDDEdge(double w, size_t key)
     #else
         #error "Unsupported operating system"
     #endif
-    UniqueTable& table = UniqueTable::getInstance();
-    node = table.find(uniqueTableKey);
+    this->node = UniqueTable::getInstance().find(uniqueTableKey);
+    this->depth = calculateDepth();
     // cout << "Edge created with weight: " << weight << " and uniqueTableKey: " << uniqueTableKey << " and isTerminal: " << isTerminal << endl;
 }
 
 shared_ptr<QMDDNode> QMDDEdge::getStartNode() const {
-    UniqueTable& table = UniqueTable::getInstance();
-    return table.find(uniqueTableKey);
+    return this->node;
 }
 
 vector<complex<double>> QMDDEdge::getAllElementsForKet() {
@@ -153,6 +154,14 @@ ostream& operator<<(ostream& os, const QMDDEdge& edge) {
     return os;
 }
 
+int QMDDEdge::calculateDepth() const {
+    if (this->isTerminal || this->uniqueTableKey ==  0 || this->node == nullptr) {
+        return 0;
+    } else {
+        return 1 + this->node->edges[0][0].depth;
+    }
+}
+
 /////////////////////////////////////
 //
 //	QMDDNode
@@ -160,9 +169,6 @@ ostream& operator<<(ostream& os, const QMDDEdge& edge) {
 /////////////////////////////////////
 
 QMDDNode::QMDDNode(const vector<vector<QMDDEdge>>& edges) : edges(edges) {
-    // cout << endl;
-    // cout << "Node created with " << edges.size() << " edges" << endl;
-    // cout << endl;
 }
 
 QMDDNode& QMDDNode::operator=(QMDDNode&& other) noexcept {
@@ -176,7 +182,6 @@ QMDDNode& QMDDNode::operator=(QMDDNode&& other) noexcept {
 
 bool QMDDNode::operator==(const QMDDNode& other) const {
     if (edges.size() != other.edges.size()) return false;
-    UniqueTable& table = UniqueTable::getInstance();
     for (size_t i = 0; i < edges.size(); ++i) {
         if (edges[i].size() != other.edges[i].size()) return false;
         for (size_t j = 0; j < edges[i].size(); ++j) {
@@ -223,12 +228,11 @@ QMDDGate::QMDDGate(QMDDEdge edge, size_t numEdge)
 
 
 shared_ptr<QMDDNode> QMDDGate::getStartNode() const {
-    UniqueTable& table = UniqueTable::getInstance();
-    return table.find(initialEdge.uniqueTableKey);
+    return this->initialEdge.getStartNode();
 }
 
 QMDDEdge QMDDGate::getInitialEdge() const {
-    return initialEdge;
+    return this->initialEdge;
 }
 
 bool QMDDGate::operator==(const QMDDGate& other) const {
@@ -254,12 +258,11 @@ QMDDState::QMDDState(QMDDEdge edge)
     : initialEdge(std::move(edge)) {}
 
 shared_ptr<QMDDNode> QMDDState::getStartNode() const {
-    UniqueTable& table = UniqueTable::getInstance();
-    return table.find(initialEdge.uniqueTableKey);
+    return this->initialEdge.getStartNode();
 }
 
 QMDDEdge QMDDState::getInitialEdge() const {
-    return initialEdge;
+    return this->initialEdge;
 }
 
 bool QMDDState::operator==(const QMDDState& other) const {

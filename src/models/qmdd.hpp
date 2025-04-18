@@ -46,6 +46,7 @@ struct QMDDEdge{
     size_t uniqueTableKey;
     shared_ptr<QMDDNode> node;
     bool isTerminal;
+    int depth;
 
     QMDDEdge(complex<double> w = {0.0, 0.0}, shared_ptr<QMDDNode> n = nullptr);
     QMDDEdge(double w, shared_ptr<QMDDNode> n = nullptr);
@@ -59,6 +60,7 @@ struct QMDDEdge{
     bool operator==(const QMDDEdge& other) const;
     bool operator!=(const QMDDEdge& other) const;
     friend ostream& operator<<(ostream& os, const QMDDEdge& edge);
+    int calculateDepth() const;
 };
 
 struct QMDDNode {

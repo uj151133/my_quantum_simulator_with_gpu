@@ -29,7 +29,6 @@ find_package(Python3 REQUIRED COMPONENTS Interpreter Development)
 
 # インクルードディレクトリとリンクディレクトリの設定
 include_directories(${Python3_INCLUDE_DIRS})
-link_directories(${Python3_LIBRARY_DIRS})
 
 # 環境変数の設定をCMakeの変数に変換
 
@@ -99,8 +98,10 @@ include_directories(SYSTEM
 )
 
 link_directories(
-    ${YAML_CPP_LIB_DIR} 
+    ${Python3_LIBRARY_DIRS}
+    ${YAML_CPP_LIB_DIR}
     /opt/homebrew/lib
+    /opt/homebrew/Cellar/openjdk@17/17.0.14/libexec/openjdk.jdk/Contents/Home/lib/server
 )
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -I${BOOST_ROOT}/include")
@@ -117,14 +118,15 @@ file(GLOB SOURCES "src/models/*.cpp" "src/common/*.cpp" "src/test/*/*.cpp")
 # 通常のC++実行ファイルを追加
 add_executable(qmdd_sim main.cpp ${SOURCES})
 target_include_directories(qmdd_sim PRIVATE ${GSL_INCLUDE_DIRS})
-target_link_libraries(qmdd_sim PRIVATE 
-    pthread 
-    yaml-cpp::yaml-cpp 
-    Python3::Python 
+target_link_libraries(qmdd_sim PRIVATE
+    pthread
+    yaml-cpp::yaml-cpp
+    Python3::Python
     ${Boost_LIBRARIES}
-    GSL::gsl 
-    ${GMP_LIB} 
+    GSL::gsl
+    ${GMP_LIB}
     Threads::Threads
+    jvm
 )
 
 # make run ターゲットの追加

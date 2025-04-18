@@ -76,281 +76,281 @@ CMakeFiles/qmdd_sim.dir/main.cpp.o: CMakeFiles/qmdd_sim.dir/flags.make
 CMakeFiles/qmdd_sim.dir/main.cpp.o: /Users/mitsuishikaito/my_quantum_simulator_with_gpu/main.cpp
 CMakeFiles/qmdd_sim.dir/main.cpp.o: CMakeFiles/qmdd_sim.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/mitsuishikaito/my_quantum_simulator_with_gpu/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/qmdd_sim.dir/main.cpp.o"
-	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/qmdd_sim.dir/main.cpp.o -MF CMakeFiles/qmdd_sim.dir/main.cpp.o.d -o CMakeFiles/qmdd_sim.dir/main.cpp.o -c /Users/mitsuishikaito/my_quantum_simulator_with_gpu/main.cpp
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/qmdd_sim.dir/main.cpp.o -MF CMakeFiles/qmdd_sim.dir/main.cpp.o.d -o CMakeFiles/qmdd_sim.dir/main.cpp.o -c /Users/mitsuishikaito/my_quantum_simulator_with_gpu/main.cpp
 
 CMakeFiles/qmdd_sim.dir/main.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/qmdd_sim.dir/main.cpp.i"
-	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/mitsuishikaito/my_quantum_simulator_with_gpu/main.cpp > CMakeFiles/qmdd_sim.dir/main.cpp.i
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/mitsuishikaito/my_quantum_simulator_with_gpu/main.cpp > CMakeFiles/qmdd_sim.dir/main.cpp.i
 
 CMakeFiles/qmdd_sim.dir/main.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/qmdd_sim.dir/main.cpp.s"
-	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/mitsuishikaito/my_quantum_simulator_with_gpu/main.cpp -o CMakeFiles/qmdd_sim.dir/main.cpp.s
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/mitsuishikaito/my_quantum_simulator_with_gpu/main.cpp -o CMakeFiles/qmdd_sim.dir/main.cpp.s
 
 CMakeFiles/qmdd_sim.dir/src/common/calculation.cpp.o: CMakeFiles/qmdd_sim.dir/flags.make
 CMakeFiles/qmdd_sim.dir/src/common/calculation.cpp.o: /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/common/calculation.cpp
 CMakeFiles/qmdd_sim.dir/src/common/calculation.cpp.o: CMakeFiles/qmdd_sim.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/mitsuishikaito/my_quantum_simulator_with_gpu/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/qmdd_sim.dir/src/common/calculation.cpp.o"
-	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/qmdd_sim.dir/src/common/calculation.cpp.o -MF CMakeFiles/qmdd_sim.dir/src/common/calculation.cpp.o.d -o CMakeFiles/qmdd_sim.dir/src/common/calculation.cpp.o -c /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/common/calculation.cpp
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/qmdd_sim.dir/src/common/calculation.cpp.o -MF CMakeFiles/qmdd_sim.dir/src/common/calculation.cpp.o.d -o CMakeFiles/qmdd_sim.dir/src/common/calculation.cpp.o -c /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/common/calculation.cpp
 
 CMakeFiles/qmdd_sim.dir/src/common/calculation.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/qmdd_sim.dir/src/common/calculation.cpp.i"
-	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/common/calculation.cpp > CMakeFiles/qmdd_sim.dir/src/common/calculation.cpp.i
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/common/calculation.cpp > CMakeFiles/qmdd_sim.dir/src/common/calculation.cpp.i
 
 CMakeFiles/qmdd_sim.dir/src/common/calculation.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/qmdd_sim.dir/src/common/calculation.cpp.s"
-	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/common/calculation.cpp -o CMakeFiles/qmdd_sim.dir/src/common/calculation.cpp.s
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/common/calculation.cpp -o CMakeFiles/qmdd_sim.dir/src/common/calculation.cpp.s
 
 CMakeFiles/qmdd_sim.dir/src/common/config.cpp.o: CMakeFiles/qmdd_sim.dir/flags.make
 CMakeFiles/qmdd_sim.dir/src/common/config.cpp.o: /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/common/config.cpp
 CMakeFiles/qmdd_sim.dir/src/common/config.cpp.o: CMakeFiles/qmdd_sim.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/mitsuishikaito/my_quantum_simulator_with_gpu/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/qmdd_sim.dir/src/common/config.cpp.o"
-	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/qmdd_sim.dir/src/common/config.cpp.o -MF CMakeFiles/qmdd_sim.dir/src/common/config.cpp.o.d -o CMakeFiles/qmdd_sim.dir/src/common/config.cpp.o -c /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/common/config.cpp
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/qmdd_sim.dir/src/common/config.cpp.o -MF CMakeFiles/qmdd_sim.dir/src/common/config.cpp.o.d -o CMakeFiles/qmdd_sim.dir/src/common/config.cpp.o -c /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/common/config.cpp
 
 CMakeFiles/qmdd_sim.dir/src/common/config.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/qmdd_sim.dir/src/common/config.cpp.i"
-	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/common/config.cpp > CMakeFiles/qmdd_sim.dir/src/common/config.cpp.i
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/common/config.cpp > CMakeFiles/qmdd_sim.dir/src/common/config.cpp.i
 
 CMakeFiles/qmdd_sim.dir/src/common/config.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/qmdd_sim.dir/src/common/config.cpp.s"
-	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/common/config.cpp -o CMakeFiles/qmdd_sim.dir/src/common/config.cpp.s
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/common/config.cpp -o CMakeFiles/qmdd_sim.dir/src/common/config.cpp.s
 
 CMakeFiles/qmdd_sim.dir/src/common/constant.cpp.o: CMakeFiles/qmdd_sim.dir/flags.make
 CMakeFiles/qmdd_sim.dir/src/common/constant.cpp.o: /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/common/constant.cpp
 CMakeFiles/qmdd_sim.dir/src/common/constant.cpp.o: CMakeFiles/qmdd_sim.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/mitsuishikaito/my_quantum_simulator_with_gpu/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/qmdd_sim.dir/src/common/constant.cpp.o"
-	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/qmdd_sim.dir/src/common/constant.cpp.o -MF CMakeFiles/qmdd_sim.dir/src/common/constant.cpp.o.d -o CMakeFiles/qmdd_sim.dir/src/common/constant.cpp.o -c /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/common/constant.cpp
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/qmdd_sim.dir/src/common/constant.cpp.o -MF CMakeFiles/qmdd_sim.dir/src/common/constant.cpp.o.d -o CMakeFiles/qmdd_sim.dir/src/common/constant.cpp.o -c /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/common/constant.cpp
 
 CMakeFiles/qmdd_sim.dir/src/common/constant.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/qmdd_sim.dir/src/common/constant.cpp.i"
-	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/common/constant.cpp > CMakeFiles/qmdd_sim.dir/src/common/constant.cpp.i
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/common/constant.cpp > CMakeFiles/qmdd_sim.dir/src/common/constant.cpp.i
 
 CMakeFiles/qmdd_sim.dir/src/common/constant.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/qmdd_sim.dir/src/common/constant.cpp.s"
-	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/common/constant.cpp -o CMakeFiles/qmdd_sim.dir/src/common/constant.cpp.s
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/common/constant.cpp -o CMakeFiles/qmdd_sim.dir/src/common/constant.cpp.s
 
 CMakeFiles/qmdd_sim.dir/src/common/mathUtils.cpp.o: CMakeFiles/qmdd_sim.dir/flags.make
 CMakeFiles/qmdd_sim.dir/src/common/mathUtils.cpp.o: /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/common/mathUtils.cpp
 CMakeFiles/qmdd_sim.dir/src/common/mathUtils.cpp.o: CMakeFiles/qmdd_sim.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/mitsuishikaito/my_quantum_simulator_with_gpu/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/qmdd_sim.dir/src/common/mathUtils.cpp.o"
-	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/qmdd_sim.dir/src/common/mathUtils.cpp.o -MF CMakeFiles/qmdd_sim.dir/src/common/mathUtils.cpp.o.d -o CMakeFiles/qmdd_sim.dir/src/common/mathUtils.cpp.o -c /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/common/mathUtils.cpp
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/qmdd_sim.dir/src/common/mathUtils.cpp.o -MF CMakeFiles/qmdd_sim.dir/src/common/mathUtils.cpp.o.d -o CMakeFiles/qmdd_sim.dir/src/common/mathUtils.cpp.o -c /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/common/mathUtils.cpp
 
 CMakeFiles/qmdd_sim.dir/src/common/mathUtils.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/qmdd_sim.dir/src/common/mathUtils.cpp.i"
-	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/common/mathUtils.cpp > CMakeFiles/qmdd_sim.dir/src/common/mathUtils.cpp.i
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/common/mathUtils.cpp > CMakeFiles/qmdd_sim.dir/src/common/mathUtils.cpp.i
 
 CMakeFiles/qmdd_sim.dir/src/common/mathUtils.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/qmdd_sim.dir/src/common/mathUtils.cpp.s"
-	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/common/mathUtils.cpp -o CMakeFiles/qmdd_sim.dir/src/common/mathUtils.cpp.s
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/common/mathUtils.cpp -o CMakeFiles/qmdd_sim.dir/src/common/mathUtils.cpp.s
 
 CMakeFiles/qmdd_sim.dir/src/common/monitor.cpp.o: CMakeFiles/qmdd_sim.dir/flags.make
 CMakeFiles/qmdd_sim.dir/src/common/monitor.cpp.o: /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/common/monitor.cpp
 CMakeFiles/qmdd_sim.dir/src/common/monitor.cpp.o: CMakeFiles/qmdd_sim.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/mitsuishikaito/my_quantum_simulator_with_gpu/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/qmdd_sim.dir/src/common/monitor.cpp.o"
-	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/qmdd_sim.dir/src/common/monitor.cpp.o -MF CMakeFiles/qmdd_sim.dir/src/common/monitor.cpp.o.d -o CMakeFiles/qmdd_sim.dir/src/common/monitor.cpp.o -c /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/common/monitor.cpp
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/qmdd_sim.dir/src/common/monitor.cpp.o -MF CMakeFiles/qmdd_sim.dir/src/common/monitor.cpp.o.d -o CMakeFiles/qmdd_sim.dir/src/common/monitor.cpp.o -c /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/common/monitor.cpp
 
 CMakeFiles/qmdd_sim.dir/src/common/monitor.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/qmdd_sim.dir/src/common/monitor.cpp.i"
-	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/common/monitor.cpp > CMakeFiles/qmdd_sim.dir/src/common/monitor.cpp.i
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/common/monitor.cpp > CMakeFiles/qmdd_sim.dir/src/common/monitor.cpp.i
 
 CMakeFiles/qmdd_sim.dir/src/common/monitor.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/qmdd_sim.dir/src/common/monitor.cpp.s"
-	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/common/monitor.cpp -o CMakeFiles/qmdd_sim.dir/src/common/monitor.cpp.s
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/common/monitor.cpp -o CMakeFiles/qmdd_sim.dir/src/common/monitor.cpp.s
 
 CMakeFiles/qmdd_sim.dir/src/models/circuit.cpp.o: CMakeFiles/qmdd_sim.dir/flags.make
 CMakeFiles/qmdd_sim.dir/src/models/circuit.cpp.o: /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/models/circuit.cpp
 CMakeFiles/qmdd_sim.dir/src/models/circuit.cpp.o: CMakeFiles/qmdd_sim.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/mitsuishikaito/my_quantum_simulator_with_gpu/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/qmdd_sim.dir/src/models/circuit.cpp.o"
-	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/qmdd_sim.dir/src/models/circuit.cpp.o -MF CMakeFiles/qmdd_sim.dir/src/models/circuit.cpp.o.d -o CMakeFiles/qmdd_sim.dir/src/models/circuit.cpp.o -c /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/models/circuit.cpp
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/qmdd_sim.dir/src/models/circuit.cpp.o -MF CMakeFiles/qmdd_sim.dir/src/models/circuit.cpp.o.d -o CMakeFiles/qmdd_sim.dir/src/models/circuit.cpp.o -c /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/models/circuit.cpp
 
 CMakeFiles/qmdd_sim.dir/src/models/circuit.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/qmdd_sim.dir/src/models/circuit.cpp.i"
-	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/models/circuit.cpp > CMakeFiles/qmdd_sim.dir/src/models/circuit.cpp.i
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/models/circuit.cpp > CMakeFiles/qmdd_sim.dir/src/models/circuit.cpp.i
 
 CMakeFiles/qmdd_sim.dir/src/models/circuit.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/qmdd_sim.dir/src/models/circuit.cpp.s"
-	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/models/circuit.cpp -o CMakeFiles/qmdd_sim.dir/src/models/circuit.cpp.s
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/models/circuit.cpp -o CMakeFiles/qmdd_sim.dir/src/models/circuit.cpp.s
 
 CMakeFiles/qmdd_sim.dir/src/models/gate.cpp.o: CMakeFiles/qmdd_sim.dir/flags.make
 CMakeFiles/qmdd_sim.dir/src/models/gate.cpp.o: /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/models/gate.cpp
 CMakeFiles/qmdd_sim.dir/src/models/gate.cpp.o: CMakeFiles/qmdd_sim.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/mitsuishikaito/my_quantum_simulator_with_gpu/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/qmdd_sim.dir/src/models/gate.cpp.o"
-	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/qmdd_sim.dir/src/models/gate.cpp.o -MF CMakeFiles/qmdd_sim.dir/src/models/gate.cpp.o.d -o CMakeFiles/qmdd_sim.dir/src/models/gate.cpp.o -c /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/models/gate.cpp
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/qmdd_sim.dir/src/models/gate.cpp.o -MF CMakeFiles/qmdd_sim.dir/src/models/gate.cpp.o.d -o CMakeFiles/qmdd_sim.dir/src/models/gate.cpp.o -c /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/models/gate.cpp
 
 CMakeFiles/qmdd_sim.dir/src/models/gate.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/qmdd_sim.dir/src/models/gate.cpp.i"
-	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/models/gate.cpp > CMakeFiles/qmdd_sim.dir/src/models/gate.cpp.i
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/models/gate.cpp > CMakeFiles/qmdd_sim.dir/src/models/gate.cpp.i
 
 CMakeFiles/qmdd_sim.dir/src/models/gate.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/qmdd_sim.dir/src/models/gate.cpp.s"
-	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/models/gate.cpp -o CMakeFiles/qmdd_sim.dir/src/models/gate.cpp.s
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/models/gate.cpp -o CMakeFiles/qmdd_sim.dir/src/models/gate.cpp.s
 
 CMakeFiles/qmdd_sim.dir/src/models/operationCache.cpp.o: CMakeFiles/qmdd_sim.dir/flags.make
 CMakeFiles/qmdd_sim.dir/src/models/operationCache.cpp.o: /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/models/operationCache.cpp
 CMakeFiles/qmdd_sim.dir/src/models/operationCache.cpp.o: CMakeFiles/qmdd_sim.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/mitsuishikaito/my_quantum_simulator_with_gpu/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/qmdd_sim.dir/src/models/operationCache.cpp.o"
-	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/qmdd_sim.dir/src/models/operationCache.cpp.o -MF CMakeFiles/qmdd_sim.dir/src/models/operationCache.cpp.o.d -o CMakeFiles/qmdd_sim.dir/src/models/operationCache.cpp.o -c /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/models/operationCache.cpp
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/qmdd_sim.dir/src/models/operationCache.cpp.o -MF CMakeFiles/qmdd_sim.dir/src/models/operationCache.cpp.o.d -o CMakeFiles/qmdd_sim.dir/src/models/operationCache.cpp.o -c /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/models/operationCache.cpp
 
 CMakeFiles/qmdd_sim.dir/src/models/operationCache.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/qmdd_sim.dir/src/models/operationCache.cpp.i"
-	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/models/operationCache.cpp > CMakeFiles/qmdd_sim.dir/src/models/operationCache.cpp.i
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/models/operationCache.cpp > CMakeFiles/qmdd_sim.dir/src/models/operationCache.cpp.i
 
 CMakeFiles/qmdd_sim.dir/src/models/operationCache.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/qmdd_sim.dir/src/models/operationCache.cpp.s"
-	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/models/operationCache.cpp -o CMakeFiles/qmdd_sim.dir/src/models/operationCache.cpp.s
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/models/operationCache.cpp -o CMakeFiles/qmdd_sim.dir/src/models/operationCache.cpp.s
 
 CMakeFiles/qmdd_sim.dir/src/models/qmdd.cpp.o: CMakeFiles/qmdd_sim.dir/flags.make
 CMakeFiles/qmdd_sim.dir/src/models/qmdd.cpp.o: /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/models/qmdd.cpp
 CMakeFiles/qmdd_sim.dir/src/models/qmdd.cpp.o: CMakeFiles/qmdd_sim.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/mitsuishikaito/my_quantum_simulator_with_gpu/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/qmdd_sim.dir/src/models/qmdd.cpp.o"
-	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/qmdd_sim.dir/src/models/qmdd.cpp.o -MF CMakeFiles/qmdd_sim.dir/src/models/qmdd.cpp.o.d -o CMakeFiles/qmdd_sim.dir/src/models/qmdd.cpp.o -c /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/models/qmdd.cpp
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/qmdd_sim.dir/src/models/qmdd.cpp.o -MF CMakeFiles/qmdd_sim.dir/src/models/qmdd.cpp.o.d -o CMakeFiles/qmdd_sim.dir/src/models/qmdd.cpp.o -c /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/models/qmdd.cpp
 
 CMakeFiles/qmdd_sim.dir/src/models/qmdd.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/qmdd_sim.dir/src/models/qmdd.cpp.i"
-	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/models/qmdd.cpp > CMakeFiles/qmdd_sim.dir/src/models/qmdd.cpp.i
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/models/qmdd.cpp > CMakeFiles/qmdd_sim.dir/src/models/qmdd.cpp.i
 
 CMakeFiles/qmdd_sim.dir/src/models/qmdd.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/qmdd_sim.dir/src/models/qmdd.cpp.s"
-	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/models/qmdd.cpp -o CMakeFiles/qmdd_sim.dir/src/models/qmdd.cpp.s
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/models/qmdd.cpp -o CMakeFiles/qmdd_sim.dir/src/models/qmdd.cpp.s
 
 CMakeFiles/qmdd_sim.dir/src/models/state.cpp.o: CMakeFiles/qmdd_sim.dir/flags.make
 CMakeFiles/qmdd_sim.dir/src/models/state.cpp.o: /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/models/state.cpp
 CMakeFiles/qmdd_sim.dir/src/models/state.cpp.o: CMakeFiles/qmdd_sim.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/mitsuishikaito/my_quantum_simulator_with_gpu/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object CMakeFiles/qmdd_sim.dir/src/models/state.cpp.o"
-	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/qmdd_sim.dir/src/models/state.cpp.o -MF CMakeFiles/qmdd_sim.dir/src/models/state.cpp.o.d -o CMakeFiles/qmdd_sim.dir/src/models/state.cpp.o -c /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/models/state.cpp
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/qmdd_sim.dir/src/models/state.cpp.o -MF CMakeFiles/qmdd_sim.dir/src/models/state.cpp.o.d -o CMakeFiles/qmdd_sim.dir/src/models/state.cpp.o -c /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/models/state.cpp
 
 CMakeFiles/qmdd_sim.dir/src/models/state.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/qmdd_sim.dir/src/models/state.cpp.i"
-	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/models/state.cpp > CMakeFiles/qmdd_sim.dir/src/models/state.cpp.i
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/models/state.cpp > CMakeFiles/qmdd_sim.dir/src/models/state.cpp.i
 
 CMakeFiles/qmdd_sim.dir/src/models/state.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/qmdd_sim.dir/src/models/state.cpp.s"
-	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/models/state.cpp -o CMakeFiles/qmdd_sim.dir/src/models/state.cpp.s
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/models/state.cpp -o CMakeFiles/qmdd_sim.dir/src/models/state.cpp.s
 
 CMakeFiles/qmdd_sim.dir/src/models/uniqueTable.cpp.o: CMakeFiles/qmdd_sim.dir/flags.make
 CMakeFiles/qmdd_sim.dir/src/models/uniqueTable.cpp.o: /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/models/uniqueTable.cpp
 CMakeFiles/qmdd_sim.dir/src/models/uniqueTable.cpp.o: CMakeFiles/qmdd_sim.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/mitsuishikaito/my_quantum_simulator_with_gpu/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object CMakeFiles/qmdd_sim.dir/src/models/uniqueTable.cpp.o"
-	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/qmdd_sim.dir/src/models/uniqueTable.cpp.o -MF CMakeFiles/qmdd_sim.dir/src/models/uniqueTable.cpp.o.d -o CMakeFiles/qmdd_sim.dir/src/models/uniqueTable.cpp.o -c /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/models/uniqueTable.cpp
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/qmdd_sim.dir/src/models/uniqueTable.cpp.o -MF CMakeFiles/qmdd_sim.dir/src/models/uniqueTable.cpp.o.d -o CMakeFiles/qmdd_sim.dir/src/models/uniqueTable.cpp.o -c /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/models/uniqueTable.cpp
 
 CMakeFiles/qmdd_sim.dir/src/models/uniqueTable.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/qmdd_sim.dir/src/models/uniqueTable.cpp.i"
-	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/models/uniqueTable.cpp > CMakeFiles/qmdd_sim.dir/src/models/uniqueTable.cpp.i
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/models/uniqueTable.cpp > CMakeFiles/qmdd_sim.dir/src/models/uniqueTable.cpp.i
 
 CMakeFiles/qmdd_sim.dir/src/models/uniqueTable.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/qmdd_sim.dir/src/models/uniqueTable.cpp.s"
-	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/models/uniqueTable.cpp -o CMakeFiles/qmdd_sim.dir/src/models/uniqueTable.cpp.s
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/models/uniqueTable.cpp -o CMakeFiles/qmdd_sim.dir/src/models/uniqueTable.cpp.s
 
 CMakeFiles/qmdd_sim.dir/src/test/3_17tc/bench317tc.cpp.o: CMakeFiles/qmdd_sim.dir/flags.make
 CMakeFiles/qmdd_sim.dir/src/test/3_17tc/bench317tc.cpp.o: /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/test/3_17tc/bench317tc.cpp
 CMakeFiles/qmdd_sim.dir/src/test/3_17tc/bench317tc.cpp.o: CMakeFiles/qmdd_sim.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/mitsuishikaito/my_quantum_simulator_with_gpu/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Building CXX object CMakeFiles/qmdd_sim.dir/src/test/3_17tc/bench317tc.cpp.o"
-	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/qmdd_sim.dir/src/test/3_17tc/bench317tc.cpp.o -MF CMakeFiles/qmdd_sim.dir/src/test/3_17tc/bench317tc.cpp.o.d -o CMakeFiles/qmdd_sim.dir/src/test/3_17tc/bench317tc.cpp.o -c /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/test/3_17tc/bench317tc.cpp
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/qmdd_sim.dir/src/test/3_17tc/bench317tc.cpp.o -MF CMakeFiles/qmdd_sim.dir/src/test/3_17tc/bench317tc.cpp.o.d -o CMakeFiles/qmdd_sim.dir/src/test/3_17tc/bench317tc.cpp.o -c /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/test/3_17tc/bench317tc.cpp
 
 CMakeFiles/qmdd_sim.dir/src/test/3_17tc/bench317tc.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/qmdd_sim.dir/src/test/3_17tc/bench317tc.cpp.i"
-	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/test/3_17tc/bench317tc.cpp > CMakeFiles/qmdd_sim.dir/src/test/3_17tc/bench317tc.cpp.i
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/test/3_17tc/bench317tc.cpp > CMakeFiles/qmdd_sim.dir/src/test/3_17tc/bench317tc.cpp.i
 
 CMakeFiles/qmdd_sim.dir/src/test/3_17tc/bench317tc.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/qmdd_sim.dir/src/test/3_17tc/bench317tc.cpp.s"
-	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/test/3_17tc/bench317tc.cpp -o CMakeFiles/qmdd_sim.dir/src/test/3_17tc/bench317tc.cpp.s
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/test/3_17tc/bench317tc.cpp -o CMakeFiles/qmdd_sim.dir/src/test/3_17tc/bench317tc.cpp.s
 
 CMakeFiles/qmdd_sim.dir/src/test/5mod5tc/bench5mod5tc.cpp.o: CMakeFiles/qmdd_sim.dir/flags.make
 CMakeFiles/qmdd_sim.dir/src/test/5mod5tc/bench5mod5tc.cpp.o: /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/test/5mod5tc/bench5mod5tc.cpp
 CMakeFiles/qmdd_sim.dir/src/test/5mod5tc/bench5mod5tc.cpp.o: CMakeFiles/qmdd_sim.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/mitsuishikaito/my_quantum_simulator_with_gpu/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Building CXX object CMakeFiles/qmdd_sim.dir/src/test/5mod5tc/bench5mod5tc.cpp.o"
-	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/qmdd_sim.dir/src/test/5mod5tc/bench5mod5tc.cpp.o -MF CMakeFiles/qmdd_sim.dir/src/test/5mod5tc/bench5mod5tc.cpp.o.d -o CMakeFiles/qmdd_sim.dir/src/test/5mod5tc/bench5mod5tc.cpp.o -c /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/test/5mod5tc/bench5mod5tc.cpp
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/qmdd_sim.dir/src/test/5mod5tc/bench5mod5tc.cpp.o -MF CMakeFiles/qmdd_sim.dir/src/test/5mod5tc/bench5mod5tc.cpp.o.d -o CMakeFiles/qmdd_sim.dir/src/test/5mod5tc/bench5mod5tc.cpp.o -c /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/test/5mod5tc/bench5mod5tc.cpp
 
 CMakeFiles/qmdd_sim.dir/src/test/5mod5tc/bench5mod5tc.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/qmdd_sim.dir/src/test/5mod5tc/bench5mod5tc.cpp.i"
-	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/test/5mod5tc/bench5mod5tc.cpp > CMakeFiles/qmdd_sim.dir/src/test/5mod5tc/bench5mod5tc.cpp.i
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/test/5mod5tc/bench5mod5tc.cpp > CMakeFiles/qmdd_sim.dir/src/test/5mod5tc/bench5mod5tc.cpp.i
 
 CMakeFiles/qmdd_sim.dir/src/test/5mod5tc/bench5mod5tc.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/qmdd_sim.dir/src/test/5mod5tc/bench5mod5tc.cpp.s"
-	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/test/5mod5tc/bench5mod5tc.cpp -o CMakeFiles/qmdd_sim.dir/src/test/5mod5tc/bench5mod5tc.cpp.s
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/test/5mod5tc/bench5mod5tc.cpp -o CMakeFiles/qmdd_sim.dir/src/test/5mod5tc/bench5mod5tc.cpp.s
 
 CMakeFiles/qmdd_sim.dir/src/test/Grover/grover.cpp.o: CMakeFiles/qmdd_sim.dir/flags.make
 CMakeFiles/qmdd_sim.dir/src/test/Grover/grover.cpp.o: /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/test/Grover/grover.cpp
 CMakeFiles/qmdd_sim.dir/src/test/Grover/grover.cpp.o: CMakeFiles/qmdd_sim.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/mitsuishikaito/my_quantum_simulator_with_gpu/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_15) "Building CXX object CMakeFiles/qmdd_sim.dir/src/test/Grover/grover.cpp.o"
-	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/qmdd_sim.dir/src/test/Grover/grover.cpp.o -MF CMakeFiles/qmdd_sim.dir/src/test/Grover/grover.cpp.o.d -o CMakeFiles/qmdd_sim.dir/src/test/Grover/grover.cpp.o -c /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/test/Grover/grover.cpp
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/qmdd_sim.dir/src/test/Grover/grover.cpp.o -MF CMakeFiles/qmdd_sim.dir/src/test/Grover/grover.cpp.o.d -o CMakeFiles/qmdd_sim.dir/src/test/Grover/grover.cpp.o -c /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/test/Grover/grover.cpp
 
 CMakeFiles/qmdd_sim.dir/src/test/Grover/grover.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/qmdd_sim.dir/src/test/Grover/grover.cpp.i"
-	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/test/Grover/grover.cpp > CMakeFiles/qmdd_sim.dir/src/test/Grover/grover.cpp.i
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/test/Grover/grover.cpp > CMakeFiles/qmdd_sim.dir/src/test/Grover/grover.cpp.i
 
 CMakeFiles/qmdd_sim.dir/src/test/Grover/grover.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/qmdd_sim.dir/src/test/Grover/grover.cpp.s"
-	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/test/Grover/grover.cpp -o CMakeFiles/qmdd_sim.dir/src/test/Grover/grover.cpp.s
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/test/Grover/grover.cpp -o CMakeFiles/qmdd_sim.dir/src/test/Grover/grover.cpp.s
 
 CMakeFiles/qmdd_sim.dir/src/test/ham3tc/benchHam3tc.cpp.o: CMakeFiles/qmdd_sim.dir/flags.make
 CMakeFiles/qmdd_sim.dir/src/test/ham3tc/benchHam3tc.cpp.o: /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/test/ham3tc/benchHam3tc.cpp
 CMakeFiles/qmdd_sim.dir/src/test/ham3tc/benchHam3tc.cpp.o: CMakeFiles/qmdd_sim.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/mitsuishikaito/my_quantum_simulator_with_gpu/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_16) "Building CXX object CMakeFiles/qmdd_sim.dir/src/test/ham3tc/benchHam3tc.cpp.o"
-	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/qmdd_sim.dir/src/test/ham3tc/benchHam3tc.cpp.o -MF CMakeFiles/qmdd_sim.dir/src/test/ham3tc/benchHam3tc.cpp.o.d -o CMakeFiles/qmdd_sim.dir/src/test/ham3tc/benchHam3tc.cpp.o -c /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/test/ham3tc/benchHam3tc.cpp
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/qmdd_sim.dir/src/test/ham3tc/benchHam3tc.cpp.o -MF CMakeFiles/qmdd_sim.dir/src/test/ham3tc/benchHam3tc.cpp.o.d -o CMakeFiles/qmdd_sim.dir/src/test/ham3tc/benchHam3tc.cpp.o -c /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/test/ham3tc/benchHam3tc.cpp
 
 CMakeFiles/qmdd_sim.dir/src/test/ham3tc/benchHam3tc.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/qmdd_sim.dir/src/test/ham3tc/benchHam3tc.cpp.i"
-	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/test/ham3tc/benchHam3tc.cpp > CMakeFiles/qmdd_sim.dir/src/test/ham3tc/benchHam3tc.cpp.i
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/test/ham3tc/benchHam3tc.cpp > CMakeFiles/qmdd_sim.dir/src/test/ham3tc/benchHam3tc.cpp.i
 
 CMakeFiles/qmdd_sim.dir/src/test/ham3tc/benchHam3tc.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/qmdd_sim.dir/src/test/ham3tc/benchHam3tc.cpp.s"
-	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/test/ham3tc/benchHam3tc.cpp -o CMakeFiles/qmdd_sim.dir/src/test/ham3tc/benchHam3tc.cpp.s
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/test/ham3tc/benchHam3tc.cpp -o CMakeFiles/qmdd_sim.dir/src/test/ham3tc/benchHam3tc.cpp.s
 
 CMakeFiles/qmdd_sim.dir/src/test/hwb4tc/benchHwb4tc.cpp.o: CMakeFiles/qmdd_sim.dir/flags.make
 CMakeFiles/qmdd_sim.dir/src/test/hwb4tc/benchHwb4tc.cpp.o: /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/test/hwb4tc/benchHwb4tc.cpp
 CMakeFiles/qmdd_sim.dir/src/test/hwb4tc/benchHwb4tc.cpp.o: CMakeFiles/qmdd_sim.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/mitsuishikaito/my_quantum_simulator_with_gpu/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_17) "Building CXX object CMakeFiles/qmdd_sim.dir/src/test/hwb4tc/benchHwb4tc.cpp.o"
-	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/qmdd_sim.dir/src/test/hwb4tc/benchHwb4tc.cpp.o -MF CMakeFiles/qmdd_sim.dir/src/test/hwb4tc/benchHwb4tc.cpp.o.d -o CMakeFiles/qmdd_sim.dir/src/test/hwb4tc/benchHwb4tc.cpp.o -c /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/test/hwb4tc/benchHwb4tc.cpp
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/qmdd_sim.dir/src/test/hwb4tc/benchHwb4tc.cpp.o -MF CMakeFiles/qmdd_sim.dir/src/test/hwb4tc/benchHwb4tc.cpp.o.d -o CMakeFiles/qmdd_sim.dir/src/test/hwb4tc/benchHwb4tc.cpp.o -c /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/test/hwb4tc/benchHwb4tc.cpp
 
 CMakeFiles/qmdd_sim.dir/src/test/hwb4tc/benchHwb4tc.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/qmdd_sim.dir/src/test/hwb4tc/benchHwb4tc.cpp.i"
-	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/test/hwb4tc/benchHwb4tc.cpp > CMakeFiles/qmdd_sim.dir/src/test/hwb4tc/benchHwb4tc.cpp.i
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/test/hwb4tc/benchHwb4tc.cpp > CMakeFiles/qmdd_sim.dir/src/test/hwb4tc/benchHwb4tc.cpp.i
 
 CMakeFiles/qmdd_sim.dir/src/test/hwb4tc/benchHwb4tc.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/qmdd_sim.dir/src/test/hwb4tc/benchHwb4tc.cpp.s"
-	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/test/hwb4tc/benchHwb4tc.cpp -o CMakeFiles/qmdd_sim.dir/src/test/hwb4tc/benchHwb4tc.cpp.s
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/test/hwb4tc/benchHwb4tc.cpp -o CMakeFiles/qmdd_sim.dir/src/test/hwb4tc/benchHwb4tc.cpp.s
 
 CMakeFiles/qmdd_sim.dir/src/test/hwb5tc/benchHwb5tc.cpp.o: CMakeFiles/qmdd_sim.dir/flags.make
 CMakeFiles/qmdd_sim.dir/src/test/hwb5tc/benchHwb5tc.cpp.o: /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/test/hwb5tc/benchHwb5tc.cpp
 CMakeFiles/qmdd_sim.dir/src/test/hwb5tc/benchHwb5tc.cpp.o: CMakeFiles/qmdd_sim.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/mitsuishikaito/my_quantum_simulator_with_gpu/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_18) "Building CXX object CMakeFiles/qmdd_sim.dir/src/test/hwb5tc/benchHwb5tc.cpp.o"
-	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/qmdd_sim.dir/src/test/hwb5tc/benchHwb5tc.cpp.o -MF CMakeFiles/qmdd_sim.dir/src/test/hwb5tc/benchHwb5tc.cpp.o.d -o CMakeFiles/qmdd_sim.dir/src/test/hwb5tc/benchHwb5tc.cpp.o -c /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/test/hwb5tc/benchHwb5tc.cpp
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/qmdd_sim.dir/src/test/hwb5tc/benchHwb5tc.cpp.o -MF CMakeFiles/qmdd_sim.dir/src/test/hwb5tc/benchHwb5tc.cpp.o.d -o CMakeFiles/qmdd_sim.dir/src/test/hwb5tc/benchHwb5tc.cpp.o -c /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/test/hwb5tc/benchHwb5tc.cpp
 
 CMakeFiles/qmdd_sim.dir/src/test/hwb5tc/benchHwb5tc.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/qmdd_sim.dir/src/test/hwb5tc/benchHwb5tc.cpp.i"
-	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/test/hwb5tc/benchHwb5tc.cpp > CMakeFiles/qmdd_sim.dir/src/test/hwb5tc/benchHwb5tc.cpp.i
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/test/hwb5tc/benchHwb5tc.cpp > CMakeFiles/qmdd_sim.dir/src/test/hwb5tc/benchHwb5tc.cpp.i
 
 CMakeFiles/qmdd_sim.dir/src/test/hwb5tc/benchHwb5tc.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/qmdd_sim.dir/src/test/hwb5tc/benchHwb5tc.cpp.s"
-	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/test/hwb5tc/benchHwb5tc.cpp -o CMakeFiles/qmdd_sim.dir/src/test/hwb5tc/benchHwb5tc.cpp.s
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/test/hwb5tc/benchHwb5tc.cpp -o CMakeFiles/qmdd_sim.dir/src/test/hwb5tc/benchHwb5tc.cpp.s
 
 CMakeFiles/qmdd_sim.dir/src/test/random/randomRotate.cpp.o: CMakeFiles/qmdd_sim.dir/flags.make
 CMakeFiles/qmdd_sim.dir/src/test/random/randomRotate.cpp.o: /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/test/random/randomRotate.cpp
 CMakeFiles/qmdd_sim.dir/src/test/random/randomRotate.cpp.o: CMakeFiles/qmdd_sim.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/mitsuishikaito/my_quantum_simulator_with_gpu/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_19) "Building CXX object CMakeFiles/qmdd_sim.dir/src/test/random/randomRotate.cpp.o"
-	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/qmdd_sim.dir/src/test/random/randomRotate.cpp.o -MF CMakeFiles/qmdd_sim.dir/src/test/random/randomRotate.cpp.o.d -o CMakeFiles/qmdd_sim.dir/src/test/random/randomRotate.cpp.o -c /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/test/random/randomRotate.cpp
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/qmdd_sim.dir/src/test/random/randomRotate.cpp.o -MF CMakeFiles/qmdd_sim.dir/src/test/random/randomRotate.cpp.o.d -o CMakeFiles/qmdd_sim.dir/src/test/random/randomRotate.cpp.o -c /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/test/random/randomRotate.cpp
 
 CMakeFiles/qmdd_sim.dir/src/test/random/randomRotate.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/qmdd_sim.dir/src/test/random/randomRotate.cpp.i"
-	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/test/random/randomRotate.cpp > CMakeFiles/qmdd_sim.dir/src/test/random/randomRotate.cpp.i
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/test/random/randomRotate.cpp > CMakeFiles/qmdd_sim.dir/src/test/random/randomRotate.cpp.i
 
 CMakeFiles/qmdd_sim.dir/src/test/random/randomRotate.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/qmdd_sim.dir/src/test/random/randomRotate.cpp.s"
-	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/test/random/randomRotate.cpp -o CMakeFiles/qmdd_sim.dir/src/test/random/randomRotate.cpp.s
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/test/random/randomRotate.cpp -o CMakeFiles/qmdd_sim.dir/src/test/random/randomRotate.cpp.s
 
 CMakeFiles/qmdd_sim.dir/src/test/xor5d1/benchXor5d1.cpp.o: CMakeFiles/qmdd_sim.dir/flags.make
 CMakeFiles/qmdd_sim.dir/src/test/xor5d1/benchXor5d1.cpp.o: /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/test/xor5d1/benchXor5d1.cpp
 CMakeFiles/qmdd_sim.dir/src/test/xor5d1/benchXor5d1.cpp.o: CMakeFiles/qmdd_sim.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/mitsuishikaito/my_quantum_simulator_with_gpu/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_20) "Building CXX object CMakeFiles/qmdd_sim.dir/src/test/xor5d1/benchXor5d1.cpp.o"
-	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/qmdd_sim.dir/src/test/xor5d1/benchXor5d1.cpp.o -MF CMakeFiles/qmdd_sim.dir/src/test/xor5d1/benchXor5d1.cpp.o.d -o CMakeFiles/qmdd_sim.dir/src/test/xor5d1/benchXor5d1.cpp.o -c /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/test/xor5d1/benchXor5d1.cpp
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/qmdd_sim.dir/src/test/xor5d1/benchXor5d1.cpp.o -MF CMakeFiles/qmdd_sim.dir/src/test/xor5d1/benchXor5d1.cpp.o.d -o CMakeFiles/qmdd_sim.dir/src/test/xor5d1/benchXor5d1.cpp.o -c /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/test/xor5d1/benchXor5d1.cpp
 
 CMakeFiles/qmdd_sim.dir/src/test/xor5d1/benchXor5d1.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/qmdd_sim.dir/src/test/xor5d1/benchXor5d1.cpp.i"
-	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/test/xor5d1/benchXor5d1.cpp > CMakeFiles/qmdd_sim.dir/src/test/xor5d1/benchXor5d1.cpp.i
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/test/xor5d1/benchXor5d1.cpp > CMakeFiles/qmdd_sim.dir/src/test/xor5d1/benchXor5d1.cpp.i
 
 CMakeFiles/qmdd_sim.dir/src/test/xor5d1/benchXor5d1.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/qmdd_sim.dir/src/test/xor5d1/benchXor5d1.cpp.s"
-	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/test/xor5d1/benchXor5d1.cpp -o CMakeFiles/qmdd_sim.dir/src/test/xor5d1/benchXor5d1.cpp.s
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/test/xor5d1/benchXor5d1.cpp -o CMakeFiles/qmdd_sim.dir/src/test/xor5d1/benchXor5d1.cpp.s
 
 # Object files for target qmdd_sim
 qmdd_sim_OBJECTS = \
