@@ -17,6 +17,7 @@
 #include "../models/operationCache.hpp"
 #include "config.hpp"
 #include "calculation.hpp"
+#include "../modules/threadPool.hpp"
 
 using namespace std;
 // using namespace Eigen;
