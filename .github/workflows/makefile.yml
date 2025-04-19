@@ -13,6 +13,9 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    - name: Install Dependencies
+      run: make install
+
     - name: Create build directory
       run: mkdir build
 

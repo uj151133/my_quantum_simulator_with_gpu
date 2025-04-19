@@ -18,26 +18,37 @@ build:
 
 .PHONY: install
 install:
-	# pyenv install 3.12.7 || true
-	# pyenv global 3.12.7
-	# python -m ensurepip --upgrade
-	# python -m pip install --upgrade pip setuptools wheel
-
-	# LDFLAGS="-L/opt/homebrew/opt/llvm/lib" \
-    # CPPFLAGS="-I/opt/homebrew/opt/llvm/include" \
-	# pip install --use-pep517 --no-binary symengine symengine==0.9.2
-
 	pip install -r requirements.txt --use-pep517
 ifeq ($(shell uname), Darwin)
-	xcode-select --install || (sudo xcode-select --switch /Applications/Xcode.app/Contents/Developer && \
-	sudo xcodebuild -runFirstLaunch)
+	xcode-select --install || (sudo xcode-select --switch /Applications/Xcode.app/Contents/Developer && sudo xcodebuild -runFirstLaunch)
 	xcrun simctl create "iOS17.2" "iPhone 15" "iOS17.2" 2>/dev/null || true
+	brew update
+	brew install mpfr libmpc gh git libomp yaml-cpp gmp gsl cmake boost openjdk@17 git-lfs
+	# $(MAKE) android-setup-mac
+else ifeq ($(shell uname), Linux)
+    if [ -f /etc/fedora-release ]; then \
+        sudo dnf install -y libomp yaml-cpp gmp-devel gsl-devel cmake boost-devel; \
+    else \
+        sudo apt-get install -y make build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev; \
+        git clone https://github.com/pyenv/pyenv.git ~/.pyenv; \
+        echo 'export PYENV_ROOT="$$HOME/.pyenv"' >> ~/.bashrc; \
+        echo 'command -v pyenv >/dev/null || export PATH="$$PYENV_ROOT/bin:$$PATH"' >> ~/.bashrc; \
+        echo 'eval "$$(pyenv init -)"' >> ~/.bashrc; \
+        source ~/.bashrc; \
+        pyenv install 3.12.7; \
+        pyenv global 3.12.7; \
+        sudo snap install cmake --classic; \
+        export PATH=$$PATH:/snap/bin; \
+        sudo apt-get update; \
+        sudo apt-get install -y libomp-dev libyaml-cpp-dev libgmp-dev libgsl-dev cmake libboost-all-dev; \
+    fi
+    # $(MAKE) android-setup-linux
+endif
 
+.PHONY: for-gui
+for-gui:
 	# rm -rf GUI/obj GUI/bin || true
 	# sudo dotnet workload update
-
-	brew update
-	brew install mpfr libmpc gh git libomp yaml-cpp gmp gsl cmake boost android-commandlinetools openjdk@17 git-lfs
 
 	sudo ln -sfn /opt/homebrew/opt/openjdk@17/libexec/openjdk.jdk /Library/Java/JavaVirtualMachines/openjdk-17.jdk
 
@@ -75,25 +86,6 @@ ifeq ($(shell uname), Darwin)
 	# sudo dotnet build GUI/GUI.csproj -f net9.0-android /p:JavaSdkDirectory="/Library/Java/JavaVirtualMachines/openjdk-17.jdk/Contents/Home"
 	# # sudo dotnet build -t:CheckDotNetMAUIWorkloads
 
-else ifeq ($(shell uname), Linux)
-	if [ -f /etc/fedora-release ]; then \
-		sudo dnf install -y libomp yaml-cpp gmp-devel gsl-devel cmake boost-devel; \
-	else \
-		sudo apt-get install -y make build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev; \
-
-		git clone https://github.com/pyenv/pyenv.git ~/.pyenv; \
-		echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.bashrc; \
-		echo 'command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.bashrc; \
-		echo 'eval "$(pyenv init -)"' >> ~/.bashrc; \
-		source ~/.bashrc; \
-		pyenv install 3.12.7; \
-		pyenv global 3.12.7; \
-		sudo snap install cmake --classic; \
-		export PATH=$PATH:/snap/bin; \
-		sudo apt-get update; \
-		sudo apt-get install -y libomp-dev libyaml-cpp-dev libgmp-dev libgsl-dev cmake libboost-all-dev; \
-	fi
-endif
 
 .PHONY: start-emulator
 start-emulator:
@@ -178,8 +170,8 @@ help:
 .PHONY: metal-build
 metal-build:
 	xcrun -sdk macosx metal -c -I /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/macOS/macOS/ \
-    /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/macOS/macOS/gate.metal -o gate.air
-xcrun -sdk macosx metallib gate.air -o /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/macOS/macOS/gate.metallib
+	/Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/macOS/macOS/gate.metal -o gate.air
+	xcrun -sdk macosx metallib gate.air -o /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/macOS/macOS/gate.metallib
 
 .PHONY: metal-run
 metal-run:
