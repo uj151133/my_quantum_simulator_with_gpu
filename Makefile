@@ -29,7 +29,7 @@ else ifeq ($(shell uname), Linux)
 	if [ -f /etc/fedora-release ]; then \
 		sudo dnf install -y libomp yaml-cpp gmp-devel gsl-devel cmake boost-devel; \
 	else \
-		sudo apt-get install -y make build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev; \
+		sudo apt-get install -y make build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev openjdk-11-jdk; \
 		git clone https://github.com/pyenv/pyenv.git ~/.pyenv; \
 		echo 'export PYENV_ROOT="$$HOME/.pyenv"' >> ~/.bashrc; \
 		echo 'command -v pyenv >/dev/null || export PATH="$$PYENV_ROOT/bin:$$PATH"' >> ~/.bashrc; \
