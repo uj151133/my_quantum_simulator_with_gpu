@@ -1,65 +1,64 @@
 #include "calculation.hpp"
 #include "../models/uniqueTable.hpp"
 
-size_t calculation::generateUniqueTableKey(const shared_ptr<QMDDNode>& node, size_t row, size_t col, size_t rowStride, size_t colStride, const complex<double>& parentWeight) {
+size_t calculation::generateUniqueTableKey(const shared_ptr<QMDDNode>& node) {
+    std::vector<uint8_t> buffer;
+
+    for (const auto& edgeRow : node->edges) {
+        for (const auto& edge : edgeRow) {
+            double real = edge.weight.real();
+            double imag = edge.weight.imag();
+            const uint8_t* real_bytes = reinterpret_cast<const uint8_t*>(&real);
+            const uint8_t* imag_bytes = reinterpret_cast<const uint8_t*>(&imag);
+
+            buffer.insert(buffer.end(), real_bytes, real_bytes + sizeof(double));
+            buffer.insert(buffer.end(), imag_bytes, imag_bytes + sizeof(double));
+
+            const uint8_t* key_bytes = reinterpret_cast<const uint8_t*>(&edge.uniqueTableKey);
+            buffer.insert(buffer.end(), key_bytes, key_bytes + sizeof(size_t));
+        }
+    }
+    
+    return static_cast<size_t>(XXH3_64bits(buffer.data(), buffer.size()));
+}
+
+size_t calculation::generateOperationCacheKey(const OperationKey& key) {
     auto customHash = [](const complex<double>& c) {
         size_t realHash = hash<double>()(c.real());
         size_t imagHash = hash<double>()(c.imag());
         return realHash ^ (imagHash << 1);
     };
 
-    auto hashMatrixElement = [&](const complex<double>& value, size_t row, size_t col) {
-        size_t valueHash = customHash(value);
-        size_t elementHash = valueHash ^ ((row << 16) | (col & 0xFFFF)) ^ 0x9e3779b9 + (valueHash << 6) + (valueHash >> 2);
-        return elementHash;
+    auto hash_combine = [](size_t& seed, size_t hash) {
+        seed ^= hash + 0x9e3779b9 + (seed << 6) + (seed >> 2);
     };
 
-    size_t hashValue = 0;
-    UniqueTable& table = UniqueTable::getInstance();
+    auto edgeHash = [&](const QMDDEdge& edge) {
+        size_t h = 0;
+        hash_combine(h, customHash(edge.weight));
+        hash_combine(h, hash<size_t>()(edge.uniqueTableKey));
+        return h;
+    };
 
-    for (size_t i = 0; i < node->edges.size(); i++) {
-        for (size_t j = 0; j < node->edges[i].size(); j++) {
-            size_t newRow = row + i * rowStride;
-            size_t newCol = col + j * colStride;
+    size_t seed = 0;
 
-            complex<double> combinedWeight = parentWeight * node->edges[i][j].weight;
-
-            size_t elementHash;
-            if (node->edges[i][j].isTerminal || node->edges[i][j].uniqueTableKey == 0) {
-                elementHash = hashMatrixElement(combinedWeight, newRow, newCol);
-            } else {
-                shared_ptr<QMDDNode> foundNode = table.find(node->edges[i][j].uniqueTableKey);
-                if (foundNode) {
-                    elementHash = calculation::generateUniqueTableKey(foundNode, newRow, newCol, rowStride * 2, colStride * 2, combinedWeight);
-                } else {
-                    elementHash = 0;
-                }
-            }
-
-            hashValue ^= (elementHash + 0x9e3779b9 + (hashValue << 6) + (hashValue >> 2));
+    if (get<1>(key) == OperationType::ADD) {
+        size_t h1 = edgeHash(get<0>(key));
+        size_t h2 = edgeHash(get<2>(key));
+        if (h1 < h2) {
+            hash_combine(seed, h1);
+            hash_combine(seed, hash<OperationType>()(get<1>(key)));
+            hash_combine(seed, h2);
+        } else {
+            hash_combine(seed, h2);
+            hash_combine(seed, hash<OperationType>()(get<1>(key)));
+            hash_combine(seed, h1);
         }
-    }
-
-    return hashValue;
-}
-
-size_t calculation::generateOperationCacheKey(const OperationKey& key) {
-        auto customHash = [](const complex<double>& c) {
-            size_t realHash = hash<double>()(c.real());
-            size_t imagHash = hash<double>()(c.imag());
-            return realHash ^ (imagHash << 1);
-        };
-
-        auto hash_combine = [](size_t& seed, size_t hash) {
-            seed ^= hash + 0x9e3779b9 + (seed << 6) + (seed >> 2);
-        };
-
-        size_t seed = 0;
-        hash_combine(seed, customHash(get<0>(key).weight));
-        hash_combine(seed, hash<size_t>()(get<0>(key).uniqueTableKey));
+    } else {
+        hash_combine(seed, edgeHash(get<0>(key)));
         hash_combine(seed, hash<OperationType>()(get<1>(key)));
-        hash_combine(seed, customHash(get<2>(key).weight));
-        hash_combine(seed, hash<size_t>()(get<2>(key).uniqueTableKey));
-
-        return seed;
+        hash_combine(seed, edgeHash(get<2>(key)));
     }
+
+    return seed;
+}
