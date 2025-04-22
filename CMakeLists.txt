@@ -35,7 +35,6 @@ include_directories(${Python3_INCLUDE_DIRS})
 
 # 環境変数の設定をCMakeの変数に変換
 
-
 find_package(yaml-cpp REQUIRED)
 find_package(Boost ${BOOST_MIN_VERSION} REQUIRED COMPONENTS 
     system
@@ -94,6 +93,8 @@ include_directories(SYSTEM
     ${Python3_INCLUDE_DIRS}
     ${YAML_CPP_INCLUDE_DIR}
     /opt/homebrew/include
+    /opt/homebrew/opt/openjdk/include
+    /opt/homebrew/opt/openjdk/include/darwin
     ${CMAKE_SOURCE_DIR}/src
 )
 
@@ -127,6 +128,7 @@ target_link_libraries(qmdd_sim PRIVATE
     ${GMP_LIB}
     Threads::Threads
     jvm
+    xxhash
 )
 
 # make run ターゲットの追加

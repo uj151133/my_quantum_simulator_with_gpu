@@ -68,16 +68,13 @@ struct QMDDNode {
 
     QMDDNode(const vector<vector<QMDDEdge>>& edges);
     ~QMDDNode() = default;
-    // コピーコンストラクタとコピー代入演算子
     QMDDNode(const QMDDNode& other) = default;
     QMDDNode& operator=(const QMDDNode& other) = default;
-    // ムーブコンストラクタとムーブ代入演算子
     QMDDNode(QMDDNode&& other) noexcept = default;
     QMDDNode& operator=(QMDDNode&& other) noexcept;
     bool operator==(const QMDDNode& other) const;
     bool operator!=(const QMDDNode& other) const;
     friend ostream& operator<<(ostream& os, const QMDDNode& node);
-
     vector<complex<double>> getWeights() const;
 };
 
