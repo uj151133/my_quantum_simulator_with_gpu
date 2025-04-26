@@ -5,6 +5,10 @@
 #include <shared_mutex>
 #include "../common/config.hpp"
 #include "qmdd.hpp"
+#include <junction/ConcurrentMap_Leapfrog.h>
+#include <junction/Core.h>
+#include <turf/Util.h>
+#include <memory>
 
 using namespace std;
 
@@ -21,8 +25,6 @@ private:
     const size_t tableSize ;
     UniqueTable();
     size_t hash(size_t hashKey) const;
-
-
 
 public:
     UniqueTable(const UniqueTable&) = delete;
