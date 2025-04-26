@@ -96,7 +96,6 @@ include_directories(SYSTEM
     /opt/homebrew/opt/openjdk/include
     /opt/homebrew/opt/openjdk/include/darwin
     ${CMAKE_SOURCE_DIR}/src
-    ${PROJECT_SOURCE_DIR}/../junction
 )
 
 link_directories(
@@ -116,17 +115,12 @@ include_directories(src)
 
 file(GLOB SOURCES "src/models/*.cpp" "src/common/*.cpp" "src/modules/*.cpp" "src/test/*/*.cpp" )
 
-add_subdirectory(../junction ${CMAKE_BINARY_DIR}/junction-build)
 
 # 通常のC++実行ファイルを追加
 add_executable(qmdd_sim main.cpp ${SOURCES})
-target_include_directories(
-    qmdd_sim PRIVATE ${GSL_INCLUDE_DIRS}
-    ${CMAKE_BINARY_DIR}/junction-build/include
-    ${CMAKE_BINARY_DIR}/junction-build/turf/include
-    ${PROJECT_SOURCE_DIR}/../junction/turf
-    ${PROJECT_SOURCE_DIR}/../junction/junction
-    ${PROJECT_SOURCE_DIR}/../turf
+target_include_directories(qmdd_sim PRIVATE
+    ${GSL_INCLUDE_DIRS}
+    ../junction-install/include
 )
 target_link_libraries(qmdd_sim PRIVATE
     pthread
@@ -138,8 +132,8 @@ target_link_libraries(qmdd_sim PRIVATE
     Threads::Threads
     jvm
     xxhash
-    junction
-    turf
+    ${CMAKE_SOURCE_DIR}/../junction-install/lib/libjunction.a
+    ${CMAKE_SOURCE_DIR}/../junction-install/lib/libturf.a
 )
 
 # make run ターゲットの追加
