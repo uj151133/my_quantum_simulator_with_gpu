@@ -58,16 +58,10 @@ void UniqueTable::insert(size_t hashKey, shared_ptr<QMDDNode> node) {
             auto it = table.find(index);
             if (it != table.end()) {
                 for (auto& existingEntry : it->second) {
-                    if (existingEntry.key == hashKey) {
-                        if (existingEntry.value.lock() == node) return;
-                        else if (existingEntry.value.expired()) {
-                            existingEntry.value = weak_ptr<QMDDNode>(node);
-                            return;
-                        }
-                    }
+                    if (existingEntry.key == hashKey and existingEntry.value == node) return
                 }
             }
-            table[index].push_back(Entry(hashKey, weak_ptr<QMDDNode>(node)));
+            table[index].push_back(Entry(hashKey, node));
             return;
         }
         boost::this_fiber::yield();
@@ -106,7 +100,7 @@ shared_ptr<QMDDNode> UniqueTable::find(size_t hashKey) const {
             if (it != table.end()) {
                 for (const auto& entry : it->second) {
                     if (entry.key == hashKey) {
-                        return entry.value.lock();
+                        return entry.value;
                     }
                 }
             }
@@ -128,8 +122,9 @@ void UniqueTable::printAllEntries() const {
         for (const auto& entry : entries) {
             cout << "  Key: " << entry.key << endl;
             cout << "  Nodes: " << endl;
-            if (!entry.value.expired()) {
-                const QMDDNode& node = *entry.value.lock();
+            if (entry.value) {
+                // const QMDDNode& node = *entry.value.lock();
+                const QMDDNode& node = *entry.value;
                 cout << "    " << node << endl;
                 validEntries++;
             } else {
