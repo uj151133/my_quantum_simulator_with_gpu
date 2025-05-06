@@ -6,12 +6,13 @@
 #include <utility>
 #include <typeinfo>
 #include <xxhash.h>
+#include <cstdlib>
 #include "../models/qmdd.hpp"
 
 using namespace std;
 
 namespace calculation {
-    size_t generateUniqueTableKey(const shared_ptr<QMDDNode>& node);
-    size_t generateOperationCacheKey(const OperationKey& key);
+    long long generateUniqueTableKey(const shared_ptr<QMDDNode>& node);
+    long long generateOperationCacheKey(const OperationKey& key);
 }
 #endif

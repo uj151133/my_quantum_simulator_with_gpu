@@ -1,11 +1,11 @@
 public class OperationResult {
-    public double real;
-    public double imag;
-    public long index;
+    public final double real;
+    public final double imag;
+    public final long size;
 
-    public OperationResult(double real, double imag, long index) {
+    public OperationResult(double real, double imag, long size) {
         this.real = real;
         this.imag = imag;
-        this.index = index;
+        this.size = size;
     }
 }
