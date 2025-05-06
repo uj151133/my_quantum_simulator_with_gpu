@@ -611,8 +611,8 @@ void QuantumCircuit::addIAM() {
 
 void QuantumCircuit::execute() {
 
-    OperationCache& cache = OperationCache::getInstance();
-    cache.clearAllCaches();
+    // OperationCache& cache = OperationCache::getInstance();
+    // cache.clearAllCaches();
     int i = 0;
     while (!gateQueue.empty()) {
         cout << "number of gates: " << i++ << endl;

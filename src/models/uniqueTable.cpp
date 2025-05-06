@@ -13,7 +13,7 @@ UniqueTable::UniqueTable() : tableSize(1000000) {
     table.reserve(tableSize);
 }
 
-size_t UniqueTable::hash(size_t hashKey) const {
+long long UniqueTable::hash(long long hashKey) const {
     return hashKey % tableSize;
 }
 
@@ -48,17 +48,17 @@ UniqueTable& UniqueTable::getInstance() {
 //     return;
 // }
 
-void UniqueTable::insert(size_t hashKey, shared_ptr<QMDDNode> node) {
+void UniqueTable::insert(long long hashKey, shared_ptr<QMDDNode> node) {
     while (true) {
         bool locked = tableMutex.try_lock();
         
         if (locked) {
             unique_lock<shared_mutex> lock(tableMutex, adopt_lock);
-            size_t index = hash(hashKey);
+            long long index = hash(hashKey);
             auto it = table.find(index);
             if (it != table.end()) {
                 for (auto& existingEntry : it->second) {
-                    if (existingEntry.key == hashKey and existingEntry.value == node) return
+                    if (existingEntry.key == hashKey and existingEntry.value == node) return;
                 }
             }
             table[index].push_back(Entry(hashKey, node));
@@ -89,7 +89,7 @@ void UniqueTable::insert(size_t hashKey, shared_ptr<QMDDNode> node) {
 //     return nullptr;
 // }
 
-shared_ptr<QMDDNode> UniqueTable::find(size_t hashKey) const {
+shared_ptr<QMDDNode> UniqueTable::find(long long hashKey) const {
     while (true) {
         bool locked = tableMutex.try_lock_shared();
         
