@@ -58,7 +58,7 @@ void UniqueTable::insert(size_t hashKey, shared_ptr<QMDDNode> node) {
             auto it = table.find(index);
             if (it != table.end()) {
                 for (auto& existingEntry : it->second) {
-                    if (existingEntry.key == hashKey and existingEntry.value == node) return
+                    if (existingEntry.key == hashKey and existingEntry.value == node) return;
                 }
             }
             table[index].push_back(Entry(hashKey, node));

@@ -49,6 +49,7 @@ if(NOT Boost_FOUND)
     message(FATAL_ERROR "Boost not found")
 endif()
 find_package(Threads REQUIRED)
+find_package(TBB REQUIRED)
 
 # GNUライブラリのインクルードとリンク
 find_package(GSL REQUIRED)
@@ -102,8 +103,10 @@ link_directories(
     ${Python3_LIBRARY_DIRS}
     ${YAML_CPP_LIB_DIR}
     /opt/homebrew/lib
-    /opt/homebrew/Cellar/openjdk@17/17.0.14/libexec/openjdk.jdk/Contents/Home/lib/server
+    # /opt/homebrew/Cellar/openjdk@17/17.0.14/libexec/openjdk.jdk/Contents/Home/lib/server
 )
+
+set(JVM_LIB_PATH "/opt/homebrew/Cellar/openjdk@17/17.0.15/libexec/openjdk.jdk/Contents/Home/lib/server/libjvm.dylib")
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -I${BOOST_ROOT}/include")
 
@@ -127,13 +130,14 @@ target_link_libraries(qmdd_sim PRIVATE
     GSL::gsl
     ${GMP_LIB}
     Threads::Threads
-    jvm
+    ${JVM_LIB_PATH}
     xxhash
+    TBB::tbb
 )
 
 # make run ターゲットの追加
 add_custom_target(run
-    COMMAND ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qmdd_sim
+    COMMAND DYLD_LIBRARY_PATH=/opt/homebrew/Cellar/openjdk@17/17.0.15/libexec/openjdk.jdk/Contents/Home/lib/server:$ENV{DYLD_LIBRARY_PATH} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qmdd_sim
     DEPENDS qmdd_sim
     WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
     COMMENT "Running the application ..."
