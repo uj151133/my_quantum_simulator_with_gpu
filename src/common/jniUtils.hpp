@@ -17,10 +17,5 @@ bool initJvm(const std::string& class_path, const std::string& caffeine_jar, JNI
 void attachJni();
 void detachJni();
 
-// プール全スレッドでattach/detach
-void attachJniForAllThreads();
-void detachJniForAllThreads();
-
-// Javaキャッシュinsert/find
 void jniInsert(long long key, const std::complex<double>& value, long long size);
 OperationResult jniFind(long long key);

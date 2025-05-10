@@ -54,28 +54,32 @@ int main() {
     #endif
 
 
-    int n_threads = std::thread::hardware_concurrency();
+    // int n_threads = std::thread::hardware_concurrency();
 
     JNIEnv* env = nullptr;
     if (!initJvm("./src/java", "./src/java/caffeine-3.2.0.jar", &env)) {
         std::cerr << "JVM起動失敗" << std::endl;
         return 1;
     }
+    // std::cout << "Main thread ID: " << std::this_thread::get_id() << std::endl;
 
-    // （すでにinitJvmでグローバル参照も設定済み）
 
-    // プール全スレッドでattach
-    attachJniForAllThreads();
+
+    // std::cout << "Total unique threads used: " << threadIds.size() << std::endl;
+
 
     measureExecutionTime(execute);
 
-    threadPool.join();
-    detachJniForAllThreads();
+    // threadPool.join();
 
-    if (env && g_OperationCache_cls) {
-        env->DeleteGlobalRef(g_OperationCache_cls);
-        g_OperationCache_cls = nullptr;
-    }
+    // detachJni();
+
+    // detachJniForAllThreads();
+
+    // if (env && g_OperationCache_cls) {
+    //     env->DeleteGlobalRef(g_OperationCache_cls);
+    //     g_OperationCache_cls = nullptr;
+    // }
 
     return 0;
 }

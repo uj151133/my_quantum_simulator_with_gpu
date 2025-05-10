@@ -1,19 +1,15 @@
 #include "threadPool.hpp"
+ThreadPool threadPool;
 
-// boost::asio::thread_pool threadPool(std::thread::hardware_concurrency());
+// コンストラクタ：指定されたスレッド数でタスクアリーナを初期化
+ThreadPool::ThreadPool(size_t numThreads) : arena(numThreads) {}
 
-
-tbb::global_control* global_tbb_control = nullptr;
-
-void initialize_tbb_thread_pool(int num_threads) {
-    if (!global_tbb_control) {
-        global_tbb_control = new tbb::global_control(
-            tbb::global_control::max_allowed_parallelism, num_threads
-        );
-    }
+// デストラクタ：タスクの完了を待機
+ThreadPool::~ThreadPool() {
+    wait(); // すべてのタスクの終了を待機
 }
 
-void finalize_tbb_thread_pool() {
-    delete global_tbb_control;
-    global_tbb_control = nullptr;
+// タスクの完了を待機
+void ThreadPool::wait() {
+    arena.execute([this]() { group.wait(); });
 }
