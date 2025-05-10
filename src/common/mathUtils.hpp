@@ -7,6 +7,7 @@
 #include <cmath>
 #include <numeric>
 #include <queue>
+#include <stack>
 #include <functional>
 #include <thread>
 // #include <boost/asio/io_service.hpp>
