@@ -36,7 +36,6 @@ using OperationKey = tuple<QMDDEdge, OperationType, QMDDEdge>;
 
 using OperationResult = pair<complex<double>, long long>;
 
-
 using QMDDVariant = variant<QMDDGate, QMDDState>;
 ostream& operator<<(ostream& os, const QMDDVariant& variant);
 

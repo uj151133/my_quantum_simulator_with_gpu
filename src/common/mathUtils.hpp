@@ -18,7 +18,10 @@
 #include "config.hpp"
 #include "calculation.hpp"
 #include "../modules/threadPool.hpp"
+#include <tbb/task_group.h>
 #include "jniUtils.hpp"
+#include "constant.hpp"
+
 
 using namespace std;
 // using namespace Eigen;
