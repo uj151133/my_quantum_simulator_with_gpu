@@ -1,9 +1,9 @@
 #include "mathUtils.hpp"
 
 QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
-    // jniUtils& cache = jniUtils::getInstance();
+    jniUtils& cache = jniUtils::getInstance();
     long long operationCacheKey = calculation::generateOperationCacheKey(OperationKey(e0, OperationType::MUL, e1));
-    OperationResult existingAnswer = jniFind(operationCacheKey);
+    OperationResult existingAnswer = cache.jniFind(operationCacheKey);
     if (existingAnswer != OperationResult{.0, 0}) {
         // cout << "\033[1;36mCache hit!\033[0m" << endl;
         QMDDEdge answer = QMDDEdge(existingAnswer.first, existingAnswer.second);
@@ -142,16 +142,16 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
     } else {
         result = QMDDEdge(tmpWeight, make_shared<QMDDNode>(z));
     }
-    jniInsert(operationCacheKey, result.weight, result.uniqueTableKey);
+    cache.jniInsert(operationCacheKey, result.weight, result.uniqueTableKey);
     // cache.insert(operationCacheKey, OperationResult(result.weight, result.uniqueTableKey));
     return result;
 }
 
 // QMDDEdge mathUtils::mulForDiagonal(const QMDDEdge& e0, const QMDDEdge& e1) {
-//     // jniUtils& cache = jniUtils::getInstance();
+//     jniUtils& cache = jniUtils::getInstance();
 //     long long operationCacheKey = calculation::generateOperationCacheKey(OperationKey(e0, OperationType::MUL, e1));
 //     // cout << "Operation cache key: " << operationCacheKey << endl;
-//     OperationResult existingAnswer = jniFind(operationCacheKey);
+//     OperationResult existingAnswer = cache.jniFind(operationCacheKey);
 //     if (existingAnswer != OperationResult{.0, 0}) {
 //         QMDDEdge answer = QMDDEdge(existingAnswer.first, existingAnswer.second);
 //         if (answer.getStartNode() != nullptr) {
@@ -202,19 +202,19 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
 //     } else {
 //         result = QMDDEdge(tmpWeight, make_shared<QMDDNode>(z));
 //     }
-//     jniInsert(operationCacheKey, result.weight, result.uniqueTableKey);
+//     cache.jniInsert(operationCacheKey, result.weight, result.uniqueTableKey);
 //     return result;
 // }
 
 QMDDEdge mathUtils::mulForDiagonal(const QMDDEdge& e0, const QMDDEdge& e1) {
 
-    // jniUtils& cache = jniUtils::getInstance();
+    jniUtils& cache = jniUtils::getInstance();
     long long operationCacheKey = calculation::generateOperationCacheKey(
         OperationKey(e0, OperationType::MUL, e1)
     );
 
-    auto cacheFuture = threadPool.enqueue([operationCacheKey]() -> QMDDEdge {
-        OperationResult existing = jniFind(operationCacheKey);
+    auto cacheFuture = threadPool.enqueue([&cache, operationCacheKey]() -> QMDDEdge {
+        OperationResult existing = cache.jniFind(operationCacheKey);
         if (existing != OperationResult{.0, 0}) {
             QMDDEdge answer{ existing.first, existing.second };
             if (answer.getStartNode() != nullptr) {
@@ -271,16 +271,16 @@ QMDDEdge mathUtils::mulForDiagonal(const QMDDEdge& e0, const QMDDEdge& e1) {
 
             QMDDEdge computed = computeFuture.get();
 
-            threadPool.enqueue([operationCacheKey, computed]() {
-                jniInsert(operationCacheKey, computed.weight, computed.uniqueTableKey);
+            threadPool.enqueue([&cache, operationCacheKey, computed]() {
+                cache.jniInsert(operationCacheKey, computed.weight, computed.uniqueTableKey);
             });
             return computed;
         }
 
         if (computeFuture.wait_for(std::chrono::milliseconds(0)) == std::future_status::ready) {
             QMDDEdge computed = computeFuture.get();
-            threadPool.enqueue([operationCacheKey, computed]() {
-                jniInsert(operationCacheKey, computed.weight, computed.uniqueTableKey);
+            threadPool.enqueue([&cache, operationCacheKey, computed]() {
+                cache.jniInsert(operationCacheKey, computed.weight, computed.uniqueTableKey);
             });
             return computed;
         }
@@ -288,11 +288,11 @@ QMDDEdge mathUtils::mulForDiagonal(const QMDDEdge& e0, const QMDDEdge& e1) {
 }
 
 QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
-    // jniUtils& cache = jniUtils::getInstance();
+    jniUtils& cache = jniUtils::getInstance();
     long long operationCacheKey = calculation::generateOperationCacheKey(OperationKey(e0, OperationType::ADD, e1));
     // cout << "Operation cache key: " << operationCacheKey << endl;
     // auto existingAnswer = cache.find(operationCacheKey);
-    OperationResult existingAnswer = jniFind(operationCacheKey);
+    OperationResult existingAnswer = cache.jniFind(operationCacheKey);
     if (existingAnswer != OperationResult{.0, 0}) {
         // cout << "\033[1;36mCache hit!\033[0m" << endl;
         QMDDEdge answer = QMDDEdge(existingAnswer.first, existingAnswer.second);
@@ -464,17 +464,250 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
     } else {
         result = QMDDEdge(tmpWeight, make_shared<QMDDNode>(z));
     }
-    jniInsert(operationCacheKey, result.weight, result.uniqueTableKey);
-    // cache.insert(operationCacheKey, OperationResult(result.weight, result.uniqueTableKey));
+    cache.jniInsert(operationCacheKey, result.weight, result.uniqueTableKey);
     return result;
 }
 
+// QMDDEdge mathUtils::add(const QMDDEdge& _e0, const QMDDEdge& _e1, int depth) {
+//     struct StackFrame {
+//         QMDDEdge e0, e1;
+//         int depth;
+//         int i = 0, j = 0;
+//         bool started = false;
+//         vector<vector<QMDDEdge>> z;
+//         shared_ptr<QMDDNode> n0, n1;
+//         complex<double> tmpWeight = .0;
+//         bool allWeightsAreZero = true;
+//         vector<vector<future<QMDDEdge>>> threadFutures;
+//         vector<vector<boost::fibers::future<QMDDEdge>>> fiberFutures;
+//         enum { SEQ, THREAD, FIBER } execType = SEQ;
+//     };
+
+//     jniUtils& cache = jniUtils::getInstance();
+//     std::stack<StackFrame> st;
+//     st.push({ _e0, _e1, depth });
+
+//     QMDDEdge finalResult;
+
+//     while (!st.empty()) {
+//         auto& frame = st.top();
+
+//         if (!frame.started) {
+//             frame.started = true;
+
+//             long long operationCacheKey = calculation::generateOperationCacheKey(OperationKey(frame.e0, OperationType::ADD, frame.e1));
+//             OperationResult existingAnswer = cache.jniFind(operationCacheKey);
+//             if (existingAnswer != OperationResult{.0, 0}) {
+//                 QMDDEdge answer(existingAnswer.first, existingAnswer.second);
+//                 if (answer.getStartNode() != nullptr) {
+//                     finalResult = answer;
+//                     st.pop();
+//                     continue;
+//                 }
+//             }
+
+//             QMDDEdge e0 = frame.e0;
+//             QMDDEdge e1 = frame.e1;
+//             if (e1.isTerminal) std::swap(e0, e1);
+//             frame.e0 = e0;
+//             frame.e1 = e1;
+
+//             if (e0.isTerminal) {
+//                 if (e0.weight == .0) {
+//                     finalResult = e1;
+//                     st.pop();
+//                     continue;
+//                 } else if (e1.isTerminal) {
+//                     finalResult = QMDDEdge(e0.weight + e1.weight, nullptr);
+//                     st.pop();
+//                     continue;
+//                 }
+//             }
+
+//             frame.n0 = e0.getStartNode();
+//             frame.n1 = e1.getStartNode();
+
+//             frame.z = std::vector<std::vector<QMDDEdge>>(frame.n0->edges.size(), std::vector<QMDDEdge>(frame.n0->edges[0].size()));
+//             frame.tmpWeight = .0;
+//             frame.allWeightsAreZero = true;
+
+//             if (frame.depth < CONFIG.process.parallelism) {
+//                 frame.execType = StackFrame::THREAD;
+//                 frame.threadFutures.resize(frame.n0->edges.size());
+//                 for (auto& row : frame.threadFutures) {
+//                     row.resize(frame.n0->edges[0].size());
+//                 }
+//                 for (size_t i = 0; i < frame.n0->edges.size(); i++) {
+//                     for (size_t j = 0; j < frame.n0->edges[i].size(); j++) {
+//                         QMDDEdge p(frame.e0.weight * frame.n0->edges[i][j].weight, frame.n0->edges[i][j].uniqueTableKey);
+//                         QMDDEdge q(frame.e1.weight * frame.n1->edges[i][j].weight, frame.n1->edges[i][j].uniqueTableKey);
+
+//                         frame.threadFutures[i][j] = threadPool.enqueue([p, q, d = frame.depth + 1]() mutable {
+//                             QMDDEdge pp = p, qq = q;
+//                             if (qq.isTerminal) std::swap(pp, qq);
+//                             if (pp.isTerminal) {
+//                                 if (pp.weight == .0) {
+//                                     return qq;
+//                                 } else if (qq.isTerminal) {
+//                                     return QMDDEdge(pp.weight + qq.weight, nullptr);
+//                                 }
+//                             }
+//                             if (pp.uniqueTableKey == qq.uniqueTableKey) {
+//                                 return QMDDEdge(pp.weight + qq.weight, pp.uniqueTableKey);
+//                             } else {
+//                                 return mathUtils::add(pp, qq, d);
+//                             }
+//                         });
+//                     }
+//                 }
+//             } else if (frame.depth < CONFIG.process.parallelism + CONFIG.process.concurrency) {
+//                 frame.execType = StackFrame::FIBER;
+//                 frame.fiberFutures.resize(frame.n0->edges.size());
+//                 for (auto& row : frame.fiberFutures) {
+//                     row.resize(frame.n0->edges[0].size());
+//                 }
+//                 for (size_t i = 0; i < frame.n0->edges.size(); i++) {
+//                     for (size_t j = 0; j < frame.n0->edges[i].size(); j++) {
+//                         QMDDEdge p(frame.e0.weight * frame.n0->edges[i][j].weight, frame.n0->edges[i][j].uniqueTableKey);
+//                         QMDDEdge q(frame.e1.weight * frame.n1->edges[i][j].weight, frame.n1->edges[i][j].uniqueTableKey);
+
+//                         frame.fiberFutures[i][j] = boost::fibers::async([p, q, d = frame.depth + 1]() mutable {
+//                             QMDDEdge pp = p, qq = q;
+//                             if (qq.isTerminal) std::swap(pp, qq);
+//                             if (pp.isTerminal) {
+//                                 if (pp.weight == .0) {
+//                                     return qq;
+//                                 } else if (qq.isTerminal) {
+//                                     return QMDDEdge(pp.weight + qq.weight, nullptr);
+//                                 }
+//                             }
+//                             if (pp.uniqueTableKey == qq.uniqueTableKey) {
+//                                 return QMDDEdge(pp.weight + qq.weight, pp.uniqueTableKey);
+//                             } else {
+//                                 return mathUtils::add(pp, qq, d);
+//                             }
+//                         });
+//                     }
+//                 }
+//             } else {
+//                 frame.execType = StackFrame::SEQ;
+//             }
+//         }
+
+//         if (frame.execType == StackFrame::THREAD) {
+//             for (size_t i = 0; i < frame.n0->edges.size(); i++) {
+//                 for (size_t j = 0; j < frame.n0->edges[i].size(); j++) {
+//                     frame.z[i][j] = frame.threadFutures[i][j].get();
+//                     if (frame.z[i][j].weight != .0) {
+//                         frame.allWeightsAreZero = false;
+//                         if (frame.tmpWeight == .0) {
+//                             frame.tmpWeight = frame.z[i][j].weight;
+//                             frame.z[i][j].weight = 1.0;
+//                         } else {
+//                             frame.z[i][j].weight /= frame.tmpWeight;
+//                         }
+//                     }
+//                 }
+//             }
+//         } else if (frame.execType == StackFrame::FIBER) {
+//             for (size_t i = 0; i < frame.n0->edges.size(); i++) {
+//                 for (size_t j = 0; j < frame.n0->edges[i].size(); j++) {
+//                     frame.z[i][j] = frame.fiberFutures[i][j].get();
+//                     if (frame.z[i][j].weight != .0) {
+//                         frame.allWeightsAreZero = false;
+//                         if (frame.tmpWeight == .0) {
+//                             frame.tmpWeight = frame.z[i][j].weight;
+//                             frame.z[i][j].weight = 1.0;
+//                         } else {
+//                             frame.z[i][j].weight /= frame.tmpWeight;
+//                         }
+//                     }
+//                 }
+//             }
+//         } else { // SEQ
+//             bool needNext = false;
+//             for (; frame.i < frame.n0->edges.size(); ++frame.i) {
+//                 for (; frame.j < frame.n0->edges[frame.i].size(); ++frame.j) {
+//                     QMDDEdge p(frame.e0.weight * frame.n0->edges[frame.i][frame.j].weight, frame.n0->edges[frame.i][frame.j].uniqueTableKey);
+//                     QMDDEdge q(frame.e1.weight * frame.n1->edges[frame.i][frame.j].weight, frame.n1->edges[frame.i][frame.j].uniqueTableKey);
+//                     if (q.isTerminal) std::swap(p, q);
+//                     if (p.isTerminal) {
+//                         if (p.weight == .0) {
+//                             frame.z[frame.i][frame.j] = q;
+//                         } else if (q.isTerminal) {
+//                             frame.z[frame.i][frame.j] = QMDDEdge(p.weight + q.weight, nullptr);
+//                         }
+//                     }
+//                     if (frame.z[frame.i][frame.j].weight == .0) { // not handled above
+//                         if (p.uniqueTableKey == q.uniqueTableKey) {
+//                             frame.z[frame.i][frame.j] = QMDDEdge(p.weight + q.weight, p.uniqueTableKey);
+//                         } else {
+//                             st.push({p, q, frame.depth + 1});
+//                             needNext = true;
+//                             goto break_loops;
+//                         }
+//                     }
+//                     if (frame.z[frame.i][frame.j].weight != .0) {
+//                         frame.allWeightsAreZero = false;
+//                         if (frame.tmpWeight == .0) {
+//                             frame.tmpWeight = frame.z[frame.i][frame.j].weight;
+//                             frame.z[frame.i][frame.j].weight = 1.0;
+//                         } else {
+//                             frame.z[frame.i][frame.j].weight /= frame.tmpWeight;
+//                         }
+//                     }
+//                 }
+//                 frame.j = 0;
+//             }
+//             break_loops:;
+
+//             if (needNext) continue; // Continue processing newly pushed frame
+
+//         }
+
+//         // After all sub-edges processed
+//         QMDDEdge result;
+//         if (frame.allWeightsAreZero) {
+//             result = QMDDEdge(.0, nullptr);
+//         } else {
+//             result = QMDDEdge(frame.tmpWeight, std::make_shared<QMDDNode>(frame.z));
+//         }
+//         long long operationCacheKey = calculation::generateOperationCacheKey(OperationKey(frame.e0, OperationType::ADD, frame.e1));
+//         cache.jniInsert(operationCacheKey, result.weight, result.uniqueTableKey);
+
+//         finalResult = result;
+//         st.pop();
+//         if (!st.empty() && st.top().execType == StackFrame::SEQ) {
+//             // Set result in parent frame.z
+//             auto& parent = st.top();
+//             parent.z[parent.i][parent.j] = finalResult;
+//             if (finalResult.weight != .0) {
+//                 parent.allWeightsAreZero = false;
+//                 if (parent.tmpWeight == .0) {
+//                     parent.tmpWeight = finalResult.weight;
+//                     parent.z[parent.i][parent.j].weight = 1.0;
+//                 } else {
+//                     parent.z[parent.i][parent.j].weight /= parent.tmpWeight;
+//                 }
+//             }
+//             ++parent.j;
+//             if (parent.j >= parent.n0->edges[parent.i].size()) {
+//                 parent.j = 0;
+//                 ++parent.i;
+//             }
+//         }
+//     }
+
+//     return finalResult;
+// }
+
+
 // QMDDEdge mathUtils::addForDiagonal(const QMDDEdge& e0, const QMDDEdge& e1) {
-//     // jniUtils& cache = jniUtils::getInstance();
+//     jniUtils& cache = jniUtils::getInstance();
 //     long long operationCacheKey = calculation::generateOperationCacheKey(OperationKey(e0, OperationType::ADD, e1));
 //     // cout << "Operation cache key: " << operationCacheKey << endl;
 //     // auto existingAnswer = cache.find(operationCacheKey);
-//     OperationResult existingAnswer = jniFind(operationCacheKey);
+//     OperationResult existingAnswer = cache.jniFind(operationCacheKey);
 //     if (existingAnswer != OperationResult{.0, 0}) {
 //         QMDDEdge answer = QMDDEdge(existingAnswer.first, existingAnswer.second);
 //         if (answer.getStartNode() != nullptr) {
@@ -527,13 +760,13 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
 // }
 
 QMDDEdge mathUtils::addForDiagonal(const QMDDEdge& e0, const QMDDEdge& e1) {
-    // jniUtils& cache = jniUtils::getInstance();
+    jniUtils& cache = jniUtils::getInstance();
     long long operationCacheKey = calculation::generateOperationCacheKey(
         OperationKey(e0, OperationType::ADD, e1)
     );
 
-    auto cacheFuture = threadPool.enqueue([operationCacheKey]() -> QMDDEdge {
-        OperationResult existing = jniFind(operationCacheKey);
+    auto cacheFuture = threadPool.enqueue([&cache, operationCacheKey]() -> QMDDEdge {
+        OperationResult existing = cache.jniFind(operationCacheKey);
         if (existing != OperationResult{.0, 0}) {
             QMDDEdge answer{ existing.first, existing.second };
             if (answer.getStartNode() != nullptr) {
@@ -589,16 +822,16 @@ QMDDEdge mathUtils::addForDiagonal(const QMDDEdge& e0, const QMDDEdge& e1) {
 
             QMDDEdge computed = computeFuture.get();
 
-            threadPool.enqueue([operationCacheKey, computed]() {
-                jniInsert(operationCacheKey, computed.weight, computed.uniqueTableKey);
+            threadPool.enqueue([&cache, operationCacheKey, computed]() {
+                cache.jniInsert(operationCacheKey, computed.weight, computed.uniqueTableKey);
             });
             return computed;
         }
 
         if (computeFuture.wait_for(std::chrono::milliseconds(0)) == std::future_status::ready) {
             QMDDEdge computed = computeFuture.get();
-            threadPool.enqueue([operationCacheKey, computed]() {
-                jniInsert(operationCacheKey, computed.weight, computed.uniqueTableKey);
+            threadPool.enqueue([&cache, operationCacheKey, computed]() {
+                cache.jniInsert(operationCacheKey, computed.weight, computed.uniqueTableKey);
             });
             return computed;
         }
@@ -606,10 +839,11 @@ QMDDEdge mathUtils::addForDiagonal(const QMDDEdge& e0, const QMDDEdge& e1) {
 }
 
 
+
 QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
-    // jniUtils& cache = jniUtils::getInstance();
+    jniUtils& cache = jniUtils::getInstance();
     long long operationCacheKey = calculation::generateOperationCacheKey(OperationKey(e0, OperationType::KRONECKER, e1));
-    OperationResult existingAnswer = jniFind(operationCacheKey);
+    OperationResult existingAnswer = cache.jniFind(operationCacheKey);
     if (existingAnswer != OperationResult{.0, 0}) {
         // cout << "\033[1;36mCache hit!\033[0m" << endl;
         QMDDEdge answer = QMDDEdge(existingAnswer.first, existingAnswer.second);
@@ -717,19 +951,19 @@ QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
     } else {
         result = QMDDEdge(e0.weight * tmpWeight, make_shared<QMDDNode>(z));
     }
-    jniInsert(operationCacheKey, result.weight, result.uniqueTableKey);
+    cache.jniInsert(operationCacheKey, result.weight, result.uniqueTableKey);
     return result;
 }
 
+//async
+
 // QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
-//     // jniUtils& cache = jniUtils::getInstance();
 //     long long operationCacheKey =
 //         calculation::generateOperationCacheKey(
 //             OperationKey(e0, OperationType::KRONECKER, e1));
 
-//     // 1) キャッシュ参照タスク
-//     auto cacheFuture = threadPool.enqueue([operationCacheKey]() -> QMDDEdge {
-//         OperationResult existing = jniFind(operationCacheKey);
+//     auto cacheFuture = threadPool.enqueue([&cache, operationCacheKey]() -> QMDDEdge {
+//         OperationResult existing = cache.jniFind(operationCacheKey);
 //         if (existing != OperationResult{ .0, 0 }) {
 //             QMDDEdge answer{ existing.first, existing.second };
 //             if (answer.getStartNode() != nullptr) {
@@ -739,7 +973,6 @@ QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
 //         return edgeZero;   // キャッシュミス
 //     });
 
-//     // 2) 本体再帰計算タスク（元の分岐ロジックをそのまま移植）
 //     auto computeFuture = threadPool.enqueue([=]() -> QMDDEdge {
 //         if (e0.isTerminal) {
 //             if      (e0.weight == .0)   return e0;
@@ -830,42 +1063,53 @@ QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
 //         return result;
 //     });
 
-//     // 3) どちらが先に終わったか非ブロッキングで待ち合わせ
-//     while (true) {
-//         // キャッシュ参照が ready?
-//         if (cacheFuture.wait_for(std::chrono::milliseconds(0)) == std::future_status::ready) {
-//             QMDDEdge cached = cacheFuture.get();
-//             if (cached != edgeZero) {
-//                 return cached;
-//             }
+//     // while (true) {
 
-//             QMDDEdge computed = computeFuture.get();
-//             threadPool.enqueue([operationCacheKey, computed]() {
-//                 jniInsert(operationCacheKey, computed.weight, computed.uniqueTableKey);
-//             });
-//             return computed;
-//         }
+//     //     if (cacheFuture.wait_for(std::chrono::milliseconds(0)) == std::future_status::ready) {
+//     //         QMDDEdge cached = cacheFuture.get();
+//     //         if (cached != edgeZero) {
+//     //             return cached;
+//     //         }
 
-//         // 計算が ready?
-//         if (computeFuture.wait_for(std::chrono::milliseconds(0)) == std::future_status::ready) {
-//             QMDDEdge computed = computeFuture.get();
-//             threadPool.enqueue([operationCacheKey, computed]() {
-//                 jniInsert(operationCacheKey, computed.weight, computed.uniqueTableKey);
-//             });
-//             return computed;
-//         }
+//     //         QMDDEdge computed = computeFuture.get();
+//     //         threadPool.enqueue([&cache, operationCacheKey, computed]() {
+//     //             cache.jniInsert(operationCacheKey, computed.weight, computed.uniqueTableKey);
+//     //         });
+//     //         return computed;
+//     //     }
 
-//         // どちらもまだ完了していなければ他スレッドに譲る
-//         std::this_thread::yield();
+//     //     if (computeFuture.wait_for(std::chrono::milliseconds(0)) == std::future_status::ready) {
+//     //         QMDDEdge computed = computeFuture.get();
+//     //         threadPool.enqueue([&cache, operationCacheKey, computed]() {
+//     //             cache.jniInsert(operationCacheKey, computed.weight, computed.uniqueTableKey);
+//     //         });
+//     //         return computed;
+//     //     }
+
+//     //     // どちらもまだ完了していなければ他スレッドに譲る
+//     //     // std::this_thread::yield();
+//     // }
+
+//     QMDDEdge cached = cacheFuture.get();
+//     if (cached != edgeZero) {
+//         return cached;
 //     }
+
+//     QMDDEdge result = computeFuture.get();
+
+//     threadPool.enqueue([operationCacheKey,result]() {
+//         cache.jniInsert(operationCacheKey, result.weight, result.uniqueTableKey);
+//     });
+
+//     return result;
 // }
 
 
 
 // QMDDEdge mathUtils::kronForDiagonal(const QMDDEdge& e0, const QMDDEdge& e1) {
-//     // jniUtils& cache = jniUtils::getInstance();
+//     jniUtils& cache = jniUtils::getInstance();
 //     long long operationCacheKey = calculation::generateOperationCacheKey(OperationKey(e0, OperationType::KRONECKER, e1));
-//     OperationResult existingAnswer = jniFind(operationCacheKey);
+//     OperationResult existingAnswer = cache.jniFind(operationCacheKey);
 //     if (existingAnswer != OperationResult{.0, 0}) {
 //         // cout << "\033[1;36mCache hit!\033[0m" << endl;
 //         QMDDEdge answer = QMDDEdge(existingAnswer.first, existingAnswer.second);
@@ -912,19 +1156,19 @@ QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
 //     } else {
 //         result = QMDDEdge(e0.weight * tmpWeight, make_shared<QMDDNode>(z));
 //     }
-//     jniInsert(operationCacheKey, result.weight, result.uniqueTableKey);
+//     cache.jniInsert(operationCacheKey, result.weight, result.uniqueTableKey);
 //     return result;
 // }
 
 QMDDEdge mathUtils::kronForDiagonal(const QMDDEdge& e0, const QMDDEdge& e1) {
 
-    // jniUtils& cache = jniUtils::getInstance();
+    jniUtils& cache = jniUtils::getInstance();
     long long operationCacheKey = calculation::generateOperationCacheKey(
         OperationKey(e0, OperationType::KRONECKER, e1)
     );
 
-    auto cacheFuture = threadPool.enqueue([operationCacheKey]() -> QMDDEdge {
-        OperationResult existing = jniFind(operationCacheKey);
+    auto cacheFuture = threadPool.enqueue([&cache, operationCacheKey]() -> QMDDEdge {
+        OperationResult existing = cache.jniFind(operationCacheKey);
         if (existing != OperationResult{.0, 0}) {
             QMDDEdge answer{ existing.first, existing.second };
             if (answer.getStartNode() != nullptr) {
@@ -978,16 +1222,16 @@ QMDDEdge mathUtils::kronForDiagonal(const QMDDEdge& e0, const QMDDEdge& e1) {
 
             QMDDEdge computed = computeFuture.get();
 
-            threadPool.enqueue([operationCacheKey, computed]() {
-                jniInsert(operationCacheKey, computed.weight, computed.uniqueTableKey);
+            threadPool.enqueue([&cache, operationCacheKey, computed]() {
+                cache.jniInsert(operationCacheKey, computed.weight, computed.uniqueTableKey);
             });
             return computed;
         }
 
         if (computeFuture.wait_for(std::chrono::milliseconds(0)) == std::future_status::ready) {
             QMDDEdge computed = computeFuture.get();
-            threadPool.enqueue([operationCacheKey, computed]() {
-                jniInsert(operationCacheKey, computed.weight, computed.uniqueTableKey);
+            threadPool.enqueue([&cache, operationCacheKey, computed]() {
+                cache.jniInsert(operationCacheKey, computed.weight, computed.uniqueTableKey);
             });
             return computed;
         }

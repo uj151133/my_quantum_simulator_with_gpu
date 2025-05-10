@@ -56,11 +56,11 @@ int main() {
 
     // int n_threads = std::thread::hardware_concurrency();
 
-    JNIEnv* env = nullptr;
-    if (!initJvm("./src/java", "./src/java/caffeine-3.2.0.jar", &env)) {
-        std::cerr << "JVM起動失敗" << std::endl;
-        return 1;
-    }
+    // JNIEnv* env = nullptr;
+    // if (!initJvm("./src/java", "./src/java/caffeine-3.2.0.jar", &env)) {
+    //     std::cerr << "JVM起動失敗" << std::endl;
+    //     return 1;
+    // }
     // std::cout << "Main thread ID: " << std::this_thread::get_id() << std::endl;
 
 
