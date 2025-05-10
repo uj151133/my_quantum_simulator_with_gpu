@@ -66,43 +66,43 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
             }
         }
 
-    } else if (depth < CONFIG.process.parallelism + CONFIG.process.concurrency){
-        // cout << "\033[1;34mmulti fiber mul\033[0m" << endl;
+    // } else if (depth < CONFIG.process.parallelism + CONFIG.process.concurrency){
+    //     // cout << "\033[1;34mmulti fiber mul\033[0m" << endl;
 
-        vector<boost::fibers::future<QMDDEdge>> futures;
+    //     vector<boost::fibers::future<QMDDEdge>> futures;
 
-        for (int i = 0; i < n0->edges.size(); i++) {
-            for (int j = 0; j < n1->edges[0].size(); j++) {
-                futures.emplace_back(
-                    boost::fibers::async([&, i, j]() {
-                        QMDDEdge answer = QMDDEdge(.0, nullptr);
-                        for (size_t k = 0; k < n0->edges[0].size(); k++) {
-                            QMDDEdge p(e0.weight * n0->edges[i][k].weight, n0->edges[i][k].uniqueTableKey);
-                            QMDDEdge q(e1.weight * n1->edges[k][j].weight, n1->edges[k][j].uniqueTableKey);
-                            answer = mathUtils::add(answer, mathUtils::mul(p, q, depth + 1), depth + 1);
-                        }
-                        return answer;
-                }));
-            }
-        }
+    //     for (int i = 0; i < n0->edges.size(); i++) {
+    //         for (int j = 0; j < n1->edges[0].size(); j++) {
+    //             futures.emplace_back(
+    //                 boost::fibers::async([&, i, j]() {
+    //                     QMDDEdge answer = QMDDEdge(.0, nullptr);
+    //                     for (size_t k = 0; k < n0->edges[0].size(); k++) {
+    //                         QMDDEdge p(e0.weight * n0->edges[i][k].weight, n0->edges[i][k].uniqueTableKey);
+    //                         QMDDEdge q(e1.weight * n1->edges[k][j].weight, n1->edges[k][j].uniqueTableKey);
+    //                         answer = mathUtils::add(answer, mathUtils::mul(p, q, depth + 1), depth + 1);
+    //                     }
+    //                     return answer;
+    //             }));
+    //         }
+    //     }
 
-        size_t futureIdx = 0;
-        for (size_t i = 0; i < z.size(); i++) {
-            for (size_t j = 0; j < z[i].size(); j++) {
-                z[i][j] = futures[futureIdx++].get();
-                if (z[i][j].weight != .0) {
-                    allWeightsAreZero = false;
-                    if (tmpWeight == .0) {
-                        tmpWeight = z[i][j].weight;
-                        z[i][j].weight = 1.0;
-                    }else if (tmpWeight != .0) {
-                        z[i][j].weight /= tmpWeight;
-                    } else {
-                        cout << "⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️" << endl;
-                    }
-                }
-            }
-        }
+    //     size_t futureIdx = 0;
+    //     for (size_t i = 0; i < z.size(); i++) {
+    //         for (size_t j = 0; j < z[i].size(); j++) {
+    //             z[i][j] = futures[futureIdx++].get();
+    //             if (z[i][j].weight != .0) {
+    //                 allWeightsAreZero = false;
+    //                 if (tmpWeight == .0) {
+    //                     tmpWeight = z[i][j].weight;
+    //                     z[i][j].weight = 1.0;
+    //                 }else if (tmpWeight != .0) {
+    //                     z[i][j].weight /= tmpWeight;
+    //                 } else {
+    //                     cout << "⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️" << endl;
+    //                 }
+    //             }
+    //         }
+    //     }
 
     } else{
         // cout << "sequential mul" << endl;
@@ -290,53 +290,53 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
                 }
             }
         }
-    } else if (depth < CONFIG.process.parallelism + CONFIG.process.concurrency){
-        // cout << "\033[1;34mmulti fiber add\033[0m" << endl;
+    // } else if (depth < CONFIG.process.parallelism + CONFIG.process.concurrency){
+    //     // cout << "\033[1;34mmulti fiber add\033[0m" << endl;
 
-        vector<boost::fibers::future<QMDDEdge>> futures;
+    //     vector<boost::fibers::future<QMDDEdge>> futures;
 
-        for (int i = 0; i < n0->edges.size(); i++) {
-            for (int j = 0; j < n0->edges[i].size(); j++) {
-                futures.emplace_back(
-                    boost::fibers::async([&, i, j]() {
-                        QMDDEdge p(e0.weight * n0->edges[i][j].weight, n0->edges[i][j].uniqueTableKey);
-                        QMDDEdge q(e1.weight * n1->edges[i][j].weight, n1->edges[i][j].uniqueTableKey);
-                        if (q.isTerminal) {
-                            std::swap(p, q);
-                        }
-                        if (p.isTerminal) {
-                            if (p.weight == .0) {
-                                return q;
-                            } else if (q.isTerminal) {
-                                return QMDDEdge(p.weight + q.weight, nullptr);
-                            }
-                        }
-                        if (p.uniqueTableKey == q.uniqueTableKey) {
-                            return QMDDEdge(p.weight + q.weight, p.uniqueTableKey);
-                        }else {
-                            return mathUtils::add(p, q, depth + 1);
-                        }
-                }));
-            }
-        }
+    //     for (int i = 0; i < n0->edges.size(); i++) {
+    //         for (int j = 0; j < n0->edges[i].size(); j++) {
+    //             futures.emplace_back(
+    //                 boost::fibers::async([&, i, j]() {
+    //                     QMDDEdge p(e0.weight * n0->edges[i][j].weight, n0->edges[i][j].uniqueTableKey);
+    //                     QMDDEdge q(e1.weight * n1->edges[i][j].weight, n1->edges[i][j].uniqueTableKey);
+    //                     if (q.isTerminal) {
+    //                         std::swap(p, q);
+    //                     }
+    //                     if (p.isTerminal) {
+    //                         if (p.weight == .0) {
+    //                             return q;
+    //                         } else if (q.isTerminal) {
+    //                             return QMDDEdge(p.weight + q.weight, nullptr);
+    //                         }
+    //                     }
+    //                     if (p.uniqueTableKey == q.uniqueTableKey) {
+    //                         return QMDDEdge(p.weight + q.weight, p.uniqueTableKey);
+    //                     }else {
+    //                         return mathUtils::add(p, q, depth + 1);
+    //                     }
+    //             }));
+    //         }
+    //     }
 
-        size_t futureIdx = 0;
-        for (size_t i = 0; i < z.size(); i++) {
-            for (size_t j = 0; j < z[i].size(); j++) {
-                z[i][j] = futures[futureIdx++].get();
-                if (z[i][j].weight != .0) {
-                    allWeightsAreZero = false;
-                    if (tmpWeight == .0) {
-                        tmpWeight = z[i][j].weight;
-                        z[i][j].weight = 1.0;
-                    }else if (tmpWeight != .0) {
-                        z[i][j].weight /= tmpWeight;
-                    } else {
-                        cout << "⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️" << endl;
-                    }
-                }
-            }
-        }
+    //     size_t futureIdx = 0;
+    //     for (size_t i = 0; i < z.size(); i++) {
+    //         for (size_t j = 0; j < z[i].size(); j++) {
+    //             z[i][j] = futures[futureIdx++].get();
+    //             if (z[i][j].weight != .0) {
+    //                 allWeightsAreZero = false;
+    //                 if (tmpWeight == .0) {
+    //                     tmpWeight = z[i][j].weight;
+    //                     z[i][j].weight = 1.0;
+    //                 }else if (tmpWeight != .0) {
+    //                     z[i][j].weight /= tmpWeight;
+    //                 } else {
+    //                     cout << "⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️" << endl;
+    //                 }
+    //             }
+    //         }
+    //     }
 
     } else{
         // cout << "sequential add" << endl;
@@ -519,35 +519,35 @@ QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
                 }
             }
         }
-    } else if (depth < CONFIG.process.parallelism + CONFIG.process.concurrency){
-        // cout << "\033[1;34mmulti fiber kron\033[0m" << endl;
-        vector<boost::fibers::future<QMDDEdge>> futures;
-        for (int i = 0; i < n0->edges.size(); i++) {
-            for (int j = 0; j < n0->edges[i].size(); j++) {
-                futures.emplace_back(
-                    boost::fibers::async([&, i, j]() {
-                        return mathUtils::kron(n0->edges[i][j], e1, depth + 1);
-                }));
-            }
-        }
+    // } else if (depth < CONFIG.process.parallelism + CONFIG.process.concurrency){
+    //     // cout << "\033[1;34mmulti fiber kron\033[0m" << endl;
+    //     vector<boost::fibers::future<QMDDEdge>> futures;
+    //     for (int i = 0; i < n0->edges.size(); i++) {
+    //         for (int j = 0; j < n0->edges[i].size(); j++) {
+    //             futures.emplace_back(
+    //                 boost::fibers::async([&, i, j]() {
+    //                     return mathUtils::kron(n0->edges[i][j], e1, depth + 1);
+    //             }));
+    //         }
+    //     }
 
-        size_t futureIdx = 0;
-        for (size_t i = 0; i < z.size(); i++) {
-            for (size_t j = 0; j < z[i].size(); j++) {
-                z[i][j] = futures[futureIdx++].get();
-                if (z[i][j].weight != .0) {
-                    allWeightsAreZero = false;
-                    if (tmpWeight == .0) {
-                        tmpWeight = z[i][j].weight;
-                        z[i][j].weight = 1.0;
-                    }else if (tmpWeight != .0) {
-                        z[i][j].weight /= tmpWeight;
-                    } else {
-                        cout << "⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️" << endl;
-                    }
-                }
-            }
-        }
+    //     size_t futureIdx = 0;
+    //     for (size_t i = 0; i < z.size(); i++) {
+    //         for (size_t j = 0; j < z[i].size(); j++) {
+    //             z[i][j] = futures[futureIdx++].get();
+    //             if (z[i][j].weight != .0) {
+    //                 allWeightsAreZero = false;
+    //                 if (tmpWeight == .0) {
+    //                     tmpWeight = z[i][j].weight;
+    //                     z[i][j].weight = 1.0;
+    //                 }else if (tmpWeight != .0) {
+    //                     z[i][j].weight /= tmpWeight;
+    //                 } else {
+    //                     cout << "⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️" << endl;
+    //                 }
+    //             }
+    //         }
+    //     }
 
     } else{
         // cout << "sequential kron" << endl;

@@ -2,7 +2,7 @@
 #include "../models/uniqueTable.hpp"
 
 long long calculation::generateUniqueTableKey(const shared_ptr<QMDDNode>& node) {
-    std::vector<uint8_t> buffer;
+    vector<uint8_t> buffer;
 
     for (const auto& edgeRow : node->edges) {
         for (const auto& edge : edgeRow) {
@@ -18,12 +18,12 @@ long long calculation::generateUniqueTableKey(const shared_ptr<QMDDNode>& node) 
             buffer.insert(buffer.end(), key_bytes, key_bytes + sizeof(size_t));
         }
     }
-    
+
     return XXH3_64bits(buffer.data(), buffer.size());
 }
 
 long long calculation::generateOperationCacheKey(const OperationKey& key) {
-    auto customHash = [](const std::complex<double>& c) {
+    auto customHash = [](const complex<double>& c) {
         size_t realHash = std::hash<double>()(c.real());
         size_t imagHash = std::hash<double>()(c.imag());
         return realHash ^ (imagHash << 1);
