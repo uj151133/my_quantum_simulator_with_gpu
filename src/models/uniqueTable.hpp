@@ -11,12 +11,6 @@
 
 using namespace std;
 
-// struct Entry {
-//     long long key;
-//     shared_ptr<QMDDNode> value;
-//     Entry(long long k, shared_ptr<QMDDNode> v) : key(k), value(v) {}
-// };
-
 struct Entry {
     long long key;
     shared_ptr<QMDDNode> value;
