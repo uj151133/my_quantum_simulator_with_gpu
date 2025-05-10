@@ -1,24 +1,33 @@
 #ifndef UNIQUETABLE_HPP
 #define UNIQUETABLE_HPP
 
-#include <mutex>
-#include <shared_mutex>
+#include <atomic>
+#include <vector>
+#include <memory>
+#include <iostream>
+// #include <shared_mutex>
 #include "../common/config.hpp"
 #include "qmdd.hpp"
 
 using namespace std;
 
+// struct Entry {
+//     long long key;
+//     shared_ptr<QMDDNode> value;
+//     Entry(long long k, shared_ptr<QMDDNode> v) : key(k), value(v) {}
+// };
+
 struct Entry {
     long long key;
     shared_ptr<QMDDNode> value;
-    Entry(long long k, shared_ptr<QMDDNode> v) : key(k), value(v) {}
+    Entry* next;
+    Entry(long long k, shared_ptr<QMDDNode> v, Entry* n=nullptr) : key(k), value(v), next(n) {}
 };
 
 class UniqueTable {
 private:
-    unordered_map<long long, vector<Entry>> table;
-    mutable shared_mutex tableMutex;
-    const size_t tableSize ;
+    vector<atomic<Entry*>> table;
+    static constexpr long long tableSize=1048576;
     UniqueTable();
     long long hash(long long hashKey) const;
 

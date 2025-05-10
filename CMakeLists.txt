@@ -5,6 +5,8 @@ endif()
 
 project(Qmdd_Sim VERSION 0.1.0)
 
+# set(CMAKE_BUILD_TYPE Release)
+# set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3")
 
 if(APPLE)
     set(CMAKE_OSX_SYSROOT "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk")
@@ -116,11 +118,13 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
 
 include_directories(src)
 
+enable_language(C)
+file(GLOB C_SRC "src/atomic/arm64/*.c")
 file(GLOB SOURCES "src/models/*.cpp" "src/common/*.cpp" "src/modules/*.cpp" "src/test/*/*.cpp" )
 
 
 # 通常のC++実行ファイルを追加
-add_executable(qmdd_sim main.cpp ${SOURCES})
+add_executable(qmdd_sim main.cpp ${SOURCES} ${C_SRC})
 target_include_directories(qmdd_sim PRIVATE ${GSL_INCLUDE_DIRS})
 target_link_libraries(qmdd_sim PRIVATE
     pthread
