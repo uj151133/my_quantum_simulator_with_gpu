@@ -9,18 +9,18 @@ extern "C" {
 #endif
 /*
  * Class:     OperationCache
- * Method:    putFromCpp
+ * Method:    nativeInsert
  * Signature: (JDDJ)V
  */
-JNIEXPORT void JNICALL Java_OperationCache_putFromCpp
+JNIEXPORT void JNICALL Java_OperationCache_nativeInsert
   (JNIEnv *, jclass, jlong, jdouble, jdouble, jlong);
 
 /*
  * Class:     OperationCache
- * Method:    getFromCpp
- * Signature: (J)LOperationResult;
+ * Method:    nativeFind
+ * Signature: (J)[D
  */
-JNIEXPORT jobject JNICALL Java_OperationCache_getFromCpp
+JNIEXPORT jdoubleArray JNICALL Java_OperationCache_nativeFind
   (JNIEnv *, jclass, jlong);
 
 #ifdef __cplusplus

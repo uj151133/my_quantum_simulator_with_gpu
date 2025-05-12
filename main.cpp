@@ -6,6 +6,7 @@
 
 
 #include "src/common/config.hpp"
+#include "src/common/jniUtils.hpp"
 #include "src/models/qmdd.hpp"
 #include "src/common/constant.hpp"
 #include "src/models/gate.hpp"
@@ -26,7 +27,7 @@ void execute() {
 
     // OperationCache& cache = OperationCache::getInstance();
 
-    int numQubits = 10;
+    int numQubits = 1;
     int numGates = 200;
 
     randomRotate(numQubits, numGates);
@@ -51,34 +52,35 @@ int main() {
     #else
         #error "Unsupported operating system"
     #endif
-    // string processType = getProcessType();
-    // if (processType == "sequential") {
-    //     cout << "逐次処理を実行します。" << endl;
-    //     sequentialProcessing();
-    // } else if (processType == "multi-thread") {
-    //     cout << "マルチスレッド処理を実行します。" << endl;
-    //     parallelProcessing();
-    // } else if (processType == "multi-fiber") {
-    //     cout << "マルチファイバー処理を実行します。" << endl;
-        // fiberProcessing();
-    // } else {
-    //     cerr << "不明な処理タイプ: " << processType << endl;
-    // }
-    // printMemoryUsage();
-    // printMemoryUsageOnMac();
 
-    // bool isGuiEnabled = isExecuteGui();
 
-    // if (isGuiEnabled) {
-    //     cout << "GUI is enabled." << endl;
-    // } else {
-    //     cout << "GUI is disabled." << endl;
+    // int n_threads = std::thread::hardware_concurrency();
+
+    // JNIEnv* env = nullptr;
+    // if (!initJvm("./src/java", "./src/java/caffeine-3.2.0.jar", &env)) {
+    //     std::cerr << "JVM起動失敗" << std::endl;
+    //     return 1;
     // }
+    // std::cout << "Main thread ID: " << std::this_thread::get_id() << std::endl;
+
+
+
+    // std::cout << "Total unique threads used: " << threadIds.size() << std::endl;
+
+
     measureExecutionTime(execute);
-    // execute();
 
-    // printMemoryUsage();
-    // printMemoryUsageOnMac();
+    // threadPool.join();
+
+    // detachJni();
+
+    // detachJniForAllThreads();
+
+    // if (env && g_OperationCache_cls) {
+    //     env->DeleteGlobalRef(g_OperationCache_cls);
+    //     g_OperationCache_cls = nullptr;
+    // }
+
     return 0;
 }
 

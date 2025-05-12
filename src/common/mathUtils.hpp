@@ -7,6 +7,7 @@
 #include <cmath>
 #include <numeric>
 #include <queue>
+#include <stack>
 #include <functional>
 #include <thread>
 // #include <boost/asio/io_service.hpp>
@@ -14,10 +15,14 @@
 #include <boost/thread/thread.hpp>
 #include "../models/qmdd.hpp"
 #include "../models/uniqueTable.hpp"
-#include "../models/operationCache.hpp"
+// #include "../models/operationCache.hpp"
 #include "config.hpp"
 #include "calculation.hpp"
 #include "../modules/threadPool.hpp"
+#include <tbb/task_group.h>
+#include "jniUtils.hpp"
+#include "constant.hpp"
+
 
 using namespace std;
 // using namespace Eigen;
