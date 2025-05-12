@@ -19,7 +19,7 @@ long long calculation::generateUniqueTableKey(const shared_ptr<QMDDNode>& node) 
         }
     }
 
-    return XXH3_64bits(buffer.data(), buffer.size());
+    return llabs(XXH3_64bits(buffer.data(), buffer.size()));
 }
 
 long long calculation::generateOperationCacheKey(const OperationKey& key) {
