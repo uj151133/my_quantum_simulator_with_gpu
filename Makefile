@@ -23,7 +23,7 @@ ifeq ($(shell uname), Darwin)
 	xcode-select --install || (sudo xcode-select --switch /Applications/Xcode.app/Contents/Developer && sudo xcodebuild -runFirstLaunch)
 	xcrun simctl create "iOS17.2" "iPhone 15" "iOS17.2" 2>/dev/null || true
 	brew update
-	brew install mpfr libmpc gh git libomp yaml-cpp gmp gsl cmake boost openjdk@17 git-lfs xxhash
+	brew install mpfr libmpc gh git libomp yaml-cpp gmp gsl cmake boost openjdk@17 git-lfs xxhash tbb
 	# $(MAKE) android-setup-mac
 else ifeq ($(shell uname), Linux)
 	if [ -f /etc/fedora-release ]; then \

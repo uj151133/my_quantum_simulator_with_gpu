@@ -4,11 +4,11 @@ gui:
 
 process:
   # type: "sequential"  # "sequential", "multi-thread", "multi-fiber"のいずれか
-  concurrency: 1 #並行性
+  concurrency: 0 #並行性
   parallelism: 1 #並列性
 
 table:
-  size: 1000000
+  size: 1048576
 
 cache:
-  size: 1000000
+  size: 1048576
