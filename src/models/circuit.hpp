@@ -38,6 +38,7 @@ public:
     void addY(int qubitIndex);
     void addZ(int qubitIndex);
     void addS(int qubitIndex);
+    void addSdg(int qubitIndex);
     void addV(int qubitIndex);
     void addH(int qubitIndex);
     void addAllH();
@@ -49,6 +50,7 @@ public:
     void addiSWAP(int qubitIndex1, int qubitIndex2);
     void addP(int qubitIndex, double phi);
     void addT(int qubitIndex);
+    void addTdg(int qubitIndex);
     void addCP(int controlIndex, int targetIndex, double phi);
     void addCS(int controlIndex, int targetIndex);
     void addRx(int qubitIndex, double theta);
@@ -63,6 +65,7 @@ public:
     void addSWAPalpha(int qubitIndex1, int qubitIndex2, double alpha);
     void addFREDKIN(int controlIndex, int targetIndex1, int targetIndex2);
     void addU(int qubitIndex, double theta, double phi, double lambda);
+    void addU3(int qubitIndex, double theta, double phi, double lambda);
     void addBARENCO(int qubitIndex, double alpha, double phi, double theta);
     void addB(int qubitIndex);
     void addCSX(int controlIndex, int targetIndex);
@@ -86,7 +89,7 @@ public:
     void addIAM();
 
     void execute();
-    QMDDState read(int qubitIndex);
+    int read(int qubitIndex);
     // コンストラクタやその他のメンバ関数はここに追加できます
 };
 

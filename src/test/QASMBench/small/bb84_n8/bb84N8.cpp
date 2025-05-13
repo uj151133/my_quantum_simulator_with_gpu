@@ -1,0 +1,57 @@
+#include "bb84N8.hpp"
+
+void bb84N8() {
+    QuantumCircuit q(8);
+    vector<int> m6(1);
+    vector<int> m0(1);
+    vector<int> m3(1);
+    vector<int> m1(1);
+    vector<int> m2(1);
+    vector<int> m4(1);
+    vector<int> m5(1);
+    vector<int> m7(1);
+    q.addX(0);
+    q.addH(1);
+    q.addX(2);
+    q.addX(3);
+    q.addX(4);
+    q.addX(5);
+    q.addH(7);
+    m6[0] = q.read(6);
+    q.addH(5);
+    q.addH(1);
+    q.addH(2);
+    q.addH(4);
+    q.addH(7);
+    m0[0] = q.read(0);
+    m3[0] = q.read(3);
+    m1[0] = q.read(1);
+    m2[0] = q.read(2);
+    m4[0] = q.read(4);
+    m5[0] = q.read(5);
+    m7[0] = q.read(7);
+    q.addX(0);
+    q.addH(1);
+    q.addX(2);
+    q.addX(3);
+    q.addX(4);
+    q.addH(7);
+    q.addH(5);
+    q.addH(6);
+    q.addH(2);
+    q.addH(4);
+    q.addH(1);
+    q.addH(3);
+    q.addH(7);
+    m0[0] = q.read(0);
+    m5[0] = q.read(5);
+    m6[0] = q.read(6);
+    q.addH(2);
+    q.addH(4);
+    m1[0] = q.read(1);
+    m3[0] = q.read(3);
+    m7[0] = q.read(7);
+    m2[0] = q.read(2);
+    m4[0] = q.read(4);
+    return;
+}
