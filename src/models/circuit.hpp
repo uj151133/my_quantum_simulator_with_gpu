@@ -33,7 +33,7 @@ public:
 
     void addI(int qubitIndex);
     void addPh(int qubitIndex, double delta);
-    void addX(int qubitIndex);
+    void addX(vector<int> qubitIndices);
     void addAllX();
     void addY(int qubitIndex);
     void addZ(int qubitIndex);

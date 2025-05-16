@@ -49,13 +49,16 @@ void QuantumCircuit::addPh(int qubitIndex, double delta) {
     return;
 }
 
-void QuantumCircuit::addX(int qubitIndex) {
+void QuantumCircuit::addX(vector<int> qubitIndices) {
     if (numQubits == 1) {
         gateQueue.push(gate::X());
     } else {
-        vector<QMDDEdge> edges(qubitIndex, identityEdge);
-        edges.push_back(gate::X().getInitialEdge());
-        // edges.insert(edges.end(), numQubits - qubitIndex - 1, identityEdge);
+        sort(qubitIndices.begin(), qubitIndices.end());
+        vector<QMDDEdge> edges;
+        for (int qubitIndex : qubitIndices) {
+            edges.insert(edges.end(), qubitIndex - edges.size(), identityEdge);
+            edges.push_back(gate::X().getInitialEdge());
+        }
         QMDDGate result = accumulate(edges.begin() + 1, edges.end(), edges[0], mathUtils::kronWrapper);
         gateQueue.push(result);
     }

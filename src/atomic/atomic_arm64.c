@@ -44,7 +44,7 @@
 // }
 // #endif
 
-#include "../atomic.h"
+#include "atomic.h"
 
 // ARM64/AArch64専用
 bool cas_arm64(void **ptr, void *expected, void *desired) {
@@ -61,5 +61,6 @@ bool cas_arm64(void **ptr, void *expected, void *desired) {
         : "r"(ptr), "r"(expected), "r"(desired)
         : "memory"
     );
+    return __sync_bool_compare_and_swap(ptr, old, desired);
     return (old == expected) && (success == 0);
 }

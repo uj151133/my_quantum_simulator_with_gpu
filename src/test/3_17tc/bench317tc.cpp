@@ -5,7 +5,7 @@ void bench317tc() {
     QMDDEdge firstEdge = mathUtils::kron(ket_0.getInitialEdge(), ket_0.getInitialEdge());
     firstEdge = mathUtils::kron(firstEdge, ket_0.getInitialEdge());
     QuantumCircuit circuit(3, QMDDState(firstEdge));
-    circuit.addX(2);
+    circuit.addX({2});
     circuit.addCX(0, 2);
     circuit.addCX(2, 1);
     vector<int> controlIndexes = {1, 2};
