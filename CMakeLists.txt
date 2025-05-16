@@ -105,10 +105,9 @@ link_directories(
     ${Python3_LIBRARY_DIRS}
     ${YAML_CPP_LIB_DIR}
     /opt/homebrew/lib
-    # /opt/homebrew/Cellar/openjdk@17/17.0.14/libexec/openjdk.jdk/Contents/Home/lib/server
 )
 
-set(JVM_LIB_PATH "/opt/homebrew/Cellar/openjdk@17/17.0.15/libexec/openjdk.jdk/Contents/Home/lib/server/libjvm.dylib")
+set(JVM_LIB_PATH "/opt/homebrew/Cellar/openjdk@21/21.0.7/libexec/openjdk.jdk/Contents/Home/lib/server/libjvm.dylib")
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -I${BOOST_ROOT}/include")
 
@@ -141,7 +140,7 @@ target_link_libraries(qmdd_sim PRIVATE
 
 # make run ターゲットの追加
 add_custom_target(run
-    COMMAND DYLD_LIBRARY_PATH=/opt/homebrew/Cellar/openjdk@17/17.0.15/libexec/openjdk.jdk/Contents/Home/lib/server:$ENV{DYLD_LIBRARY_PATH} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qmdd_sim
+    COMMAND DYLD_LIBRARY_PATH=/opt/homebrew/Cellar/openjdk@21/21.0.7/libexec/openjdk.jdk/Contents/Home/lib/server:$ENV{DYLD_LIBRARY_PATH} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qmdd_sim
     DEPENDS qmdd_sim
     WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
     COMMENT "Running the application ..."
