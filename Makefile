@@ -23,13 +23,13 @@ ifeq ($(shell uname), Darwin)
 	xcode-select --install || (sudo xcode-select --switch /Applications/Xcode.app/Contents/Developer && sudo xcodebuild -runFirstLaunch)
 	xcrun simctl create "iOS17.2" "iPhone 15" "iOS17.2" 2>/dev/null || true
 	brew update
-	brew install mpfr libmpc gh git libomp yaml-cpp gmp gsl cmake boost openjdk@17 git-lfs xxhash tbb
+	brew install mpfr libmpc gh git libomp yaml-cpp gmp gsl cmake boost openjdk@17 git-lfs xxhash tbb 
 	# $(MAKE) android-setup-mac
 else ifeq ($(shell uname), Linux)
 	if [ -f /etc/fedora-release ]; then \
 		sudo dnf install -y libomp yaml-cpp gmp-devel gsl-devel cmake boost-devel; \
 	else \
-		sudo apt-get install -y make build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev openjdk-11-jdk libxxhash-dev; \
+		sudo apt-get install -y make build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev openjdk-21-jdk libxxhash-dev; \
 		git clone https://github.com/pyenv/pyenv.git ~/.pyenv; \
 		echo 'export PYENV_ROOT="$$HOME/.pyenv"' >> ~/.bashrc; \
 		echo 'command -v pyenv >/dev/null || export PATH="$$PYENV_ROOT/bin:$$PATH"' >> ~/.bashrc; \
