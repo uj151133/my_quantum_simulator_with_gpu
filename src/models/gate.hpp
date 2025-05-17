@@ -9,7 +9,36 @@
 #include "../common/constant.hpp"
 #include "../common/mathUtils.hpp"
 using namespace std;
-// using namespace Eigen;
+
+enum class GateType {
+    I,
+    X,
+    Y,
+    Z,
+    S,
+    Sdagger,
+    V,
+    Vdagger,
+    H,
+    CNOT,
+    CZ,
+    SWAP,
+    P,
+    T,
+    Tdagger,
+    CP,
+    CS,
+    R,
+    Rx,
+    Ry,
+    Rz,
+    Rxx,
+    Ryy,
+    Rzz,
+    Rxy,
+    Other,
+    Void
+};
 namespace gate {
     /* Identity gate and global phase */
     QMDDGate I();

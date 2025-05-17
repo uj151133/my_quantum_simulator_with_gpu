@@ -118,12 +118,28 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
 include_directories(src)
 
 enable_language(C)
-file(GLOB C_SRC "src/atomic/arm64/*.c")
+enable_language(ASM)
+if(CMAKE_SYSTEM_PROCESSOR MATCHES "x86_64")
+    message(STATUS "Building for x86_64 architecture")
+    file(GLOB C_SRC "src/atomic/x86_64/atomic_x86_64.c")
+    file(GLOB ASM_SRC "src/atomic/x86_64/atomic_x86_64.s")
+elseif(CMAKE_SYSTEM_PROCESSOR MATCHES "i386")
+    message(STATUS "Building for x86 (32-bit) architecture")
+    file(GLOB C_SRC "src/atomic/x86/atomic_x86.c")
+    file(GLOB ASM_SRC "src/atomic/x86/atomic_x86.s")
+elseif(CMAKE_SYSTEM_PROCESSOR MATCHES "aarch64")
+    message(STATUS "Building for ARM64 architecture")
+    file(GLOB C_SRC "src/atomic/arm64/atomic_arm64.c")
+    file(GLOB ASM_SRC "src/atomic/arm64/atomic_arm64.s")
+else()
+    message(FATAL_ERROR "Unsupported architecture: ${CMAKE_SYSTEM_PROCESSOR}")
+endif()
+# file(GLOB C_SRC "src/atomic/atomic.c")
 file(GLOB SOURCES "src/models/*.cpp" "src/common/*.cpp" "src/modules/*.cpp" "src/test/*/*.cpp" )
 
 
 # 通常のC++実行ファイルを追加
-add_executable(qmdd_sim main.cpp ${SOURCES} ${C_SRC})
+add_executable(qmdd_sim main.cpp ${SOURCES} ${C_SRC} ${ASM_SRC})
 target_include_directories(qmdd_sim PRIVATE ${GSL_INCLUDE_DIRS})
 target_link_libraries(qmdd_sim PRIVATE
     pthread

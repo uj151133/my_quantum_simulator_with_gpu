@@ -35,12 +35,12 @@ public:
     void addPh(int qubitIndex, double delta);
     void addX(vector<int> qubitIndices);
     void addAllX();
-    void addY(int qubitIndex);
-    void addZ(int qubitIndex);
-    void addS(int qubitIndex);
-    void addSdg(int qubitIndex);
-    void addV(int qubitIndex);
-    void addH(int qubitIndex);
+    void addY(vector<int> qubitIndices);
+    void addZ(vector<int> qubitIndices);
+    void addS(vector<int> qubitIndices);
+    void addSdg(vector<int> qubitIndices);
+    void addV(vector<int> qubitIndices);
+    void addH(vector<int> qubitIndices);
     void addAllH();
     void addCX(int controlIndex, int targetIndex);
     void addVarCX(int controlIndex, int targetIndex);

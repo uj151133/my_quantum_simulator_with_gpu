@@ -8,7 +8,7 @@
 extern "C" {
 #endif
 
-bool cas_arm64(void **ptr, void *expected, void *desired);
+bool cas(void **ptr, void *expected, void *desired);
 
 // // x86_64用CAS
 // bool cas_x86_64(int *ptr, int expected, int desired);
