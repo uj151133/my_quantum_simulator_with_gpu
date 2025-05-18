@@ -14,11 +14,19 @@
 
 using namespace std;
 
+struct Part {
+    Type type;
+    QMDDGate gate;
+};
+
 class QuantumCircuit {
 private:
-    queue<QMDDGate> gateQueue;
+    vector<vector<Part>> wires;
+    queue<QMDDGate> layer;
     QMDDState finalState;
     int numQubits;
+    int getMaxDepth() const;
+    void normalizeLayer();
 
 public:
     QuantumCircuit(int numQubitits, QMDDState initialState);
@@ -32,15 +40,15 @@ public:
     QuantumCircuit& operator=(QuantumCircuit&& other) = default;
 
     void addI(int qubitIndex);
-    void addPh(int qubitIndex, double delta);
-    void addX(vector<int> qubitIndices);
+    void addPh(const vector<pair<int, double>>& targets);
+    void addX(const vector<int>& qubitIndices);
     void addAllX();
-    void addY(vector<int> qubitIndices);
-    void addZ(vector<int> qubitIndices);
-    void addS(vector<int> qubitIndices);
-    void addSdg(vector<int> qubitIndices);
-    void addV(vector<int> qubitIndices);
-    void addH(vector<int> qubitIndices);
+    void addY(const vector<int>& qubitIndices);
+    void addZ(const vector<int>& qubitIndices);
+    void addS(const vector<int>& qubitIndices);
+    void addSdg(const vector<int>& qubitIndices);
+    void addV(const vector<int>& qubitIndices);
+    void addH(const vector<int>& qubitIndices);
     void addAllH();
     void addCX(int controlIndex, int targetIndex);
     void addVarCX(int controlIndex, int targetIndex);
@@ -49,8 +57,8 @@ public:
     void addSWAP(int qubitIndex1, int qubitIndex2);
     void addiSWAP(int qubitIndex1, int qubitIndex2);
     void addP(int qubitIndex, double phi);
-    void addT(int qubitIndex);
-    void addTdg(int qubitIndex);
+    void addT(const vector<int>& qubitIndices);
+    void addTdg(const vector<int>& qubitIndices);
     void addCP(int controlIndex, int targetIndex, double phi);
     void addCS(int controlIndex, int targetIndex);
     void addRx(int qubitIndex, double theta);
@@ -88,7 +96,7 @@ public:
     void addOracle(int omega);
     void addIAM();
 
-    void execute();
+    void simulate();
     int read(int qubitIndex);
     // コンストラクタやその他のメンバ関数はここに追加できます
 };

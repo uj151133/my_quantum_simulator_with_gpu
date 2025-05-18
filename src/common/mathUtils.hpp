@@ -55,6 +55,8 @@ namespace mathUtils {
     complex<double> cot(complex<double> theta);
 
     double sumOfSquares(const vector<complex<double>>& vec);
+
+    vector<int> createRange(int start, int end);
 }
 
 #endif // MATH_UTILS_HPP

@@ -35,7 +35,7 @@ void execute() {
 
     QuantumCircuit circuit(6);
     circuit.addX({1, 4});
-    circuit.execute();
+    circuit.simulate();
 
     UniqueTable::getInstance().printAllEntries();
 
