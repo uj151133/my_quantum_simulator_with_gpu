@@ -21,7 +21,8 @@ enum class Type {
     V,
     Vdg,
     H,
-    CNOT,
+    CX,
+    varCX,
     CZ,
     SWAP,
     P,
@@ -37,6 +38,10 @@ enum class Type {
     Ryy,
     Rzz,
     Rxy,
+    U,
+    U1,
+    U2,
+    U3,
     Other,
     Void
 };
