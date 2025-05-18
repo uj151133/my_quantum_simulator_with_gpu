@@ -101,9 +101,9 @@ void basisTestN4() {
     q.addSWAP(3, 2);
     q.addSWAP(1, 0);
     q.addSWAP(2, 1);
-    c[0] = q.read(0);
-    c[1] = q.read(1);
-    c[2] = q.read(2);
-    c[3] = q.read(3);
+    c[0] = q.measure(0);
+    c[1] = q.measure(1);
+    c[2] = q.measure(2);
+    c[3] = q.measure(3);
     return;
 }

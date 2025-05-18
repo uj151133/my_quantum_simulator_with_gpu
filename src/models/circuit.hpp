@@ -25,7 +25,7 @@ private:
     queue<QMDDGate> layer;
     QMDDState finalState;
     int numQubits;
-    int getMaxDepth() const;
+    int getMaxDepth(optional<int> start, optional<int> end) const;
     void normalizeLayer();
 
 public:
@@ -56,14 +56,14 @@ public:
     void addDCNOT(int controlIndex, int targetIndex);
     void addSWAP(int qubitIndex1, int qubitIndex2);
     void addiSWAP(int qubitIndex1, int qubitIndex2);
-    void addP(int qubitIndex, double phi);
+    void addP(const vector<pair<int, double>>& targets);
     void addT(const vector<int>& qubitIndices);
     void addTdg(const vector<int>& qubitIndices);
     void addCP(int controlIndex, int targetIndex, double phi);
     void addCS(int controlIndex, int targetIndex);
-    void addRx(int qubitIndex, double theta);
-    void addRy(int qubitIndex, double theta);
-    void addRz(int qubitIndex, double theta);
+    void addRx(const vector<pair<int, double>>& targets);
+    void addRy(const vector<pair<int, double>>& targets);
+    void addRz(const vector<pair<int, double>>& targets);
     void addRxx(int controlIndex, int targetIndex, double phi);
     void addRyy(int controlIndex, int targetIndex, double phi);
     void addRzz(int controlIndex, int targetIndex, double phi);
@@ -96,9 +96,10 @@ public:
     void addOracle(int omega);
     void addIAM();
 
+    void addBarrier();
+
     void simulate();
-    int read(int qubitIndex);
-    // コンストラクタやその他のメンバ関数はここに追加できます
+    int measure(int qubitIndex);
 };
 
 #endif

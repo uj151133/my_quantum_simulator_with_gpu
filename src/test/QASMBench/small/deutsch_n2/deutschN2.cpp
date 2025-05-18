@@ -8,7 +8,7 @@ void deutschN2() {
     q.addH(1);
     q.addCX(0, 1);
     q.addH(0);
-    c[0] = q.read(0);
-    c[1] = q.read(1);
+    c[0] = q.measure(0);
+    c[1] = q.measure(1);
     return;
 }

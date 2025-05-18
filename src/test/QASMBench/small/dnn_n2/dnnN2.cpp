@@ -139,7 +139,7 @@ void dnnN2() {
     q.addU3(0, M_PI * 0.5, M_PI * 0.5, M_PI * 1.5);
     q.addRz(1, M_PI * 0.3501408748);
     q.addRz(0, M_PI * 0.3501408748);
-    ans[0] = q.read(0);
-    ans[1] = q.read(1);
+    ans[0] = q.measure(0);
+    ans[1] = q.measure(1);
     return;
 }
