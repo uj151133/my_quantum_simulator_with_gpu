@@ -32,7 +32,7 @@ public:
     QuantumCircuit(int numQubitits, QMDDState initialState);
     QuantumCircuit(int numQubitits);
     ~QuantumCircuit() = default;
-    queue<QMDDGate> getGateQueue() const;
+    queue<QMDDGate> getLayer() const;
     QMDDState getFinalState() const;
     QuantumCircuit(const QuantumCircuit& other) = default;
     QuantumCircuit& operator=(const QuantumCircuit& other) = default;
@@ -40,7 +40,7 @@ public:
     QuantumCircuit& operator=(QuantumCircuit&& other) = default;
 
     void addI(int qubitIndex);
-    void addPh(const vector<pair<int, double>>& targets);
+    void addPh(const vector<pair<int, double>>& qubitParams);
     void addX(const vector<int>& qubitIndices);
     void addAllX();
     void addY(const vector<int>& qubitIndices);
@@ -56,14 +56,15 @@ public:
     void addDCNOT(int controlIndex, int targetIndex);
     void addSWAP(int qubitIndex1, int qubitIndex2);
     void addiSWAP(int qubitIndex1, int qubitIndex2);
-    void addP(const vector<pair<int, double>>& targets);
+    void addP(const vector<pair<int, double>>& qubitParams);
     void addT(const vector<int>& qubitIndices);
     void addTdg(const vector<int>& qubitIndices);
     void addCP(int controlIndex, int targetIndex, double phi);
     void addCS(int controlIndex, int targetIndex);
-    void addRx(const vector<pair<int, double>>& targets);
-    void addRy(const vector<pair<int, double>>& targets);
-    void addRz(const vector<pair<int, double>>& targets);
+    void addR(const vector<pair<int, pair<double, double>>>& qubitParams);
+    void addRx(const vector<pair<int, double>>& qubitParams);
+    void addRy(const vector<pair<int, double>>& qubitParams);
+    void addRz(const vector<pair<int, double>>& qubitParams);
     void addRxx(int controlIndex, int targetIndex, double phi);
     void addRyy(int controlIndex, int targetIndex, double phi);
     void addRzz(int controlIndex, int targetIndex, double phi);
@@ -72,8 +73,10 @@ public:
     void addSquareiSWAP(int qubitIndex1, int qubitIndex2);
     void addSWAPalpha(int qubitIndex1, int qubitIndex2, double alpha);
     void addFREDKIN(int controlIndex, int targetIndex1, int targetIndex2);
-    void addU(int qubitIndex, double theta, double phi, double lambda);
-    void addU3(int qubitIndex, double theta, double phi, double lambda);
+    void addU(const vector<pair<int, tuple<double, double, double>>>& qubitParams);
+    void addU1(const vector<pair<int, double>>& qubitParams);
+    void addU2(const vector<pair<int, pair<double, double>>>& qubitParams);
+    void addU3(const vector<pair<int, tuple<double, double, double>>>& qubitParams);
     void addBARENCO(int qubitIndex, double alpha, double phi, double theta);
     void addB(int qubitIndex);
     void addCSX(int controlIndex, int targetIndex);
