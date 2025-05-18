@@ -13,5 +13,5 @@ void bench317tc() {
     controlIndexes = {0, 1};
     circuit.addToff(controlIndexes, 2);
     circuit.addCX(1, 2);
-    circuit.execute();
+    circuit.simulate();
 }

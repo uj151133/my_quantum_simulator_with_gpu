@@ -12,5 +12,5 @@ void grover(size_t numQubits, size_t omega) {
         circuit.addIAM();
     }
 
-    circuit.execute();
+    circuit.simulate();
 }

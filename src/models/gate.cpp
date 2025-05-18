@@ -100,7 +100,7 @@ QMDDGate gate::S() {
     })));
 }
 
-QMDDGate gate::Sdagger() {
+QMDDGate gate::Sdg() {
     call_once(initEdgeFlag, initEdge);
     return QMDDGate(QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
         {edgeOne, edgeZero},
@@ -118,13 +118,13 @@ QMDDGate gate::V() {
     })));
 }
 
-QMDDGate gate::Vdagger() {
+QMDDGate gate::Vdg() {
     call_once(initEdgeFlag, initEdge);
-    QMDDEdge vdaggerEdge = QMDDEdge(i, nullptr);
+    QMDDEdge vdgEdge = QMDDEdge(i, nullptr);
 
     return QMDDGate(QMDDEdge(1.0 / 2.0 - i / 2.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
-        {edgeOne, vdaggerEdge},
-        {vdaggerEdge, edgeOne}
+        {edgeOne, vdgEdge},
+        {vdgEdge, edgeOne}
     })));
 }
 
@@ -278,7 +278,7 @@ QMDDGate gate::T() {
     })));
 }
 
-QMDDGate gate::Tdagger() {
+QMDDGate gate::Tdg() {
     call_once(initEdgeFlag, initEdge);
     return QMDDGate(QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
         {edgeOne, edgeZero},

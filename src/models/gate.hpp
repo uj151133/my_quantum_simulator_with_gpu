@@ -10,22 +10,23 @@
 #include "../common/mathUtils.hpp"
 using namespace std;
 
-enum class GateType {
+enum class Type {
     I,
+    Ph,
     X,
     Y,
     Z,
     S,
-    Sdagger,
+    Sdg,
     V,
-    Vdagger,
+    Vdg,
     H,
     CNOT,
     CZ,
     SWAP,
     P,
     T,
-    Tdagger,
+    Tdg,
     CP,
     CS,
     R,
@@ -49,9 +50,9 @@ namespace gate {
     QMDDGate Y();
     QMDDGate Z();
     QMDDGate S();
-    QMDDGate Sdagger();
+    QMDDGate Sdg();
     QMDDGate V();
-    QMDDGate Vdagger();
+    QMDDGate Vdg();
     QMDDGate H();
     QMDDGate CX1();
     QMDDGate CX2();
@@ -64,7 +65,7 @@ namespace gate {
     /* Non-Clifford qubit gates */
     QMDDGate P(double phi);
     QMDDGate T();
-    QMDDGate Tdagger();
+    QMDDGate Tdg();
     QMDDGate CP(double phi);
     QMDDGate CS();
 
@@ -113,8 +114,8 @@ namespace gate {
 
 // QMDDGate createPlusYGate();
 // QMDDGate createMinusYGate();
-// QMDDGate createSDaggerGate();
-// QMDDGate createTDaggerGate();
+// QMDDGate createSdgGate();
+// QMDDGate createTdgGate();
 
 
 // matrix Rotate(const ex &k);
