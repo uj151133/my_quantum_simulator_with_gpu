@@ -1,11 +1,11 @@
 #include "circuit.hpp"
 
-int QuantumCircuit::getMaxDepth() const {
+int QuantumCircuit::getMaxDepth(optional<int> start, optional<int> end) const {
     int maxDepth = 0;
-    for (const auto& wire : wires) {
-        if (wire.size() > maxDepth) {
-            maxDepth = wire.size();
-        }
+    int rangeStart = start.value_or(0);
+    int rangeEnd = end.value_or(this->numQubits - 1);
+    for (int i = rangeStart; i <= rangeEnd; ++i) {
+        maxDepth = max(maxDepth, static_cast<int>(this->wires[i].size()));
     }
     return maxDepth;
 }
@@ -136,15 +136,15 @@ void QuantumCircuit::addAllH() {
 }
 
 void QuantumCircuit::addCX(int controlIndex, int targetIndex) {
-    vector<int> range = mathUtils::createRange(controlIndex, targetIndex);
-    int maxDepth = this->getMaxDepth();
-    for (int index : range) {
+    
+    int minIndex = min(controlIndex, targetIndex);
+    int maxIndex = max(controlIndex, targetIndex);
+    int maxDepth = this->getMaxDepth(minIndex, maxIndex);
+    for (int index = minIndex; index <= maxIndex; index++) {
         while (this->wires[index].size() < maxDepth) {
             this->wires[index].push_back({Type::I, gate::I()});
         }
     }
-    int minIndex = min(controlIndex, targetIndex);
-    int maxIndex = max(controlIndex, targetIndex);
     QMDDEdge customCX;
     vector<QMDDEdge> edges;
     if (maxIndex - minIndex == 1) {
@@ -181,10 +181,8 @@ void QuantumCircuit::addCX(int controlIndex, int targetIndex) {
     QMDDGate result = accumulate(edges.begin() + 1, edges.end(), edges[0], mathUtils::kronWrapper);
 
     wires[minIndex].push_back({Type::CNOT, result});
-    for (int index : range) {
-        if (index != minIndex) {
-            wires[index].push_back({Type::Void, QMDDGate()});
-        }
+    for (int index = minIndex + 1; index <= maxIndex; index++) {
+        wires[index].push_back({Type::Void, QMDDGate()});
     }
     return;
 }
@@ -336,8 +334,10 @@ void QuantumCircuit::addSWAP(int qubitIndex1, int qubitIndex2) {
     return;
 }
 
-void QuantumCircuit::addP(int qubitIndex, double phi) {
-    this->wires[qubitIndex].push_back({Type::P, gate::P(phi)});
+void QuantumCircuit::addP(const vector<pair<int, double>>& targets) {
+    for (const auto& [qubitIndex, phi] : targets) {
+        this->wires[qubitIndex].push_back({Type::Ph, gate::P(phi)});
+    }
     return;
 }
 
@@ -436,41 +436,23 @@ void QuantumCircuit::addCS(int controlIndex, int targetIndex) {
 }
 
 
-void QuantumCircuit::addRx(int qubitIndex, double theta) {
-    if (numQubits == 1) {
-        gateQueue.push(gate::Rx(theta));
-    } else {
-        vector<QMDDEdge> edges(qubitIndex, identityEdge);
-        edges.push_back(gate::Rx(theta).getInitialEdge());
-        // edges.insert(edges.end(), numQubits - qubitIndex - 1, identityEdge);
-        QMDDGate result = accumulate(edges.begin() + 1, edges.end(), edges[0], mathUtils::kronWrapper);
-        gateQueue.push(result);
+void QuantumCircuit::addRx(const vector<pair<int, double>>& targets) {
+    for (const auto& [qubitIndex, theta] : targets) {
+        this->wires[qubitIndex].push_back({Type::Rx, gate::Rx(theta)});
     }
     return;
 }
 
-void QuantumCircuit::addRy(int qubitIndex, double theta) {
-    if (numQubits == 1) {
-        gateQueue.push(gate::Ry(theta));
-    } else {
-        vector<QMDDEdge> edges(qubitIndex, identityEdge);
-        edges.push_back(gate::Ry(theta).getInitialEdge());
-        // edges.insert(edges.end(), numQubits - qubitIndex - 1, identityEdge);
-        QMDDGate result = accumulate(edges.begin() + 1, edges.end(), edges[0], mathUtils::kronWrapper);
-        gateQueue.push(result);
+void QuantumCircuit::addRy(const vector<pair<int, double>>& targets) {
+    for (const auto& [qubitIndex, theta] : targets) {
+        this->wires[qubitIndex].push_back({Type::Ry, gate::Ry(theta)});
     }
     return;
 }
 
-void QuantumCircuit::addRz(int qubitIndex, double theta) {
-    if (numQubits == 1) {
-        gateQueue.push(gate::Rz(theta));
-    } else {
-        vector<QMDDEdge> edges(qubitIndex, identityEdge);
-        edges.push_back(gate::Rz(theta).getInitialEdge());
-        // edges.insert(edges.end(), numQubits - qubitIndex - 1, identityEdge);
-        QMDDGate result = accumulate(edges.begin() + 1, edges.end(), edges[0], mathUtils::kronWrapper);
-        gateQueue.push(result);
+void QuantumCircuit::addRz(const vector<pair<int, double>>& targets) {
+    for (const auto& [qubitIndex, theta] : targets) {
+        this->wires[qubitIndex].push_back({Type::Rz, gate::Rz(theta)});
     }
     return;
 }
@@ -481,7 +463,6 @@ void QuantumCircuit::addU(int qubitIndex, double theta, double phi, double lambd
     } else {
         vector<QMDDEdge> edges(qubitIndex, identityEdge);
         edges.push_back(gate::U(theta, phi, lambda).getInitialEdge());
-        // edges.insert(edges.end(), numQubits - qubitIndex - 1, identityEdge);
         QMDDGate result = accumulate(edges.begin() + 1, edges.end(), edges[0], mathUtils::kronWrapper);
         gateQueue.push(result);
     }
@@ -494,7 +475,6 @@ void QuantumCircuit::addU3(int qubitIndex, double theta, double phi, double lamb
     } else {
         vector<QMDDEdge> edges(qubitIndex, identityEdge);
         edges.push_back(gate::U3(theta, phi, lambda).getInitialEdge());
-        // edges.insert(edges.end(), numQubits - qubitIndex - 1, identityEdge);
         QMDDGate result = accumulate(edges.begin() + 1, edges.end(), edges[0], mathUtils::kronWrapper);
         gateQueue.push(result);
     }
@@ -557,14 +537,7 @@ void QuantumCircuit::addToff(vector<int>& controlIndexes, int targetIndex) {
 }
 
 void QuantumCircuit::addGate(int qubitIndex, const QMDDGate& gate) {
-    if (numQubits == 1) {
-        gateQueue.push(gate);
-    } else {
-        vector<QMDDEdge> edges(qubitIndex, identityEdge);
-        edges.push_back(gate.getInitialEdge());
-        QMDDGate result = accumulate(edges.begin() + 1, edges.end(), edges[0], mathUtils::kronWrapper);
-        gateQueue.push(result);
-    }
+    this->wires[qubitIndex].push_back({Type::Other, gate});
     return;
 }
 
@@ -608,6 +581,13 @@ void QuantumCircuit::addIAM() {
     return;
 }
 
+void QuantumCircuit::addBarrier() {
+    for (int i = 0; i < numQubits; i++) {
+        this->wires[i].push_back({Type::Barrier, gate::Barrier()});
+    }
+    return;
+}
+
 void QuantumCircuit::simulate() {
     this->normalizeLayer();
     int i = 0;
@@ -625,7 +605,7 @@ void QuantumCircuit::simulate() {
     return;
 }
 
-int QuantumCircuit::read(int qubitIndex) {
+int QuantumCircuit::measure(int qubitIndex) {
     this->simulate();
     vector<QMDDEdge> edges0(qubitIndex, identityEdge);
     vector<QMDDEdge> edges1(qubitIndex, identityEdge);

@@ -36,8 +36,8 @@ void basisChangeN3() {
     q.addCZ(1, 2);
     q.addU3(2, M_PI * 0.5, M_PI * 1.3937948052, 0);
     q.addU3(1, M_PI * 0.5, M_PI * 1.1556453697, M_PI * 0.5);
-    c[0] = q.read(0);
-    c[1] = q.read(1);
-    c[2] = q.read(2);
+    c[0] = q.measure(0);
+    c[1] = q.measure(1);
+    c[2] = q.measure(2);
     return;
 }
