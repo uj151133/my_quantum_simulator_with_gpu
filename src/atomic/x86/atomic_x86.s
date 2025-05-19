@@ -1,10 +1,8 @@
-    .globl cas_x86
-cas_x86:
+    .globl _cas_x86_32
+_cas_x86_32:
     movl    8(%esp), %eax
     xorl    %ecx, %ecx
-    movl    4(%esp), %edx
-    movl    12(%esp), %ebx
-    lock cmpxchgl %ebx, (%edx)
+    lock cmpxchgl 12(%esp), (%esp)
     sete    %cl
     movl    %ecx, %eax
     ret

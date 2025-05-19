@@ -33,9 +33,6 @@ void execute() {
     randomRotate(numQubits, numGates);
     // int omega = std::pow(2, numQubits) - 1;
 
-    // QuantumCircuit circuit(6);
-    // circuit.addX({1, 4});
-    // circuit.simulate();
 
     // grover(numQubits, omega);
 
