@@ -10,5 +10,5 @@ void benchXor5d1() {
     circuit.addCX(1, 2);
     circuit.addCX(2, 3);
     circuit.addCX(3, 4);
-    circuit.execute();
+    circuit.simulate();
 }

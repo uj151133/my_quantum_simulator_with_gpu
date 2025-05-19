@@ -36,5 +36,5 @@ void bench5mod5tc() {
     circuit.addToff(controlIndexes, 5);
     controlIndexes = {0, 1};
     circuit.addToff(controlIndexes, 5);
-    circuit.execute();
+    circuit.simulate();
 }

@@ -7,9 +7,9 @@ void catStateN4() {
     bits.addCX(0, 1);
     bits.addCX(1, 2);
     bits.addCX(2, 3);
-    c[0] = bits.read(0);
-    c[1] = bits.read(1);
-    c[2] = bits.read(2);
-    c[3] = bits.read(3);
+    c[0] = bits.measure(0);
+    c[1] = bits.measure(1);
+    c[2] = bits.measure(2);
+    c[3] = bits.measure(3);
     return;
 }

@@ -26,9 +26,9 @@ void bellN4() {
     q.addCX(1, 0);
     q.addU3(1, M_PI * 0.5, M_PI * 0.5, M_PI * 1.0);
     q.addU3(0, M_PI * 0.5, M_PI * 1.0, M_PI * 1.0);
-    m_b[0] = q.read(2);
-    m_y[0] = q.read(3);
-    m_a[0] = q.read(0);
-    m_x[0] = q.read(1);
+    m_b[0] = q.measure(2);
+    m_y[0] = q.measure(3);
+    m_a[0] = q.measure(0);
+    m_x[0] = q.measure(1);
     return;
 }

@@ -47,7 +47,7 @@ struct QMDDEdge{
     bool isTerminal;
     int depth;
 
-    QMDDEdge(complex<double> w = {0.0, 0.0}, shared_ptr<QMDDNode> n = nullptr);
+    QMDDEdge(complex<double> w = {.0, .0}, shared_ptr<QMDDNode> n = nullptr);
     QMDDEdge(double w, shared_ptr<QMDDNode> n = nullptr);
     QMDDEdge(complex<double> w, long long key);
     QMDDEdge(double w, long long key);
@@ -81,7 +81,7 @@ class QMDDGate{
 private:
     QMDDEdge initialEdge;
 public:
-    QMDDGate(QMDDEdge edge, size_t numEdge = 4);
+    QMDDGate(QMDDEdge edge);
     QMDDGate(const QMDDGate& other) = default;
     ~QMDDGate() = default;
     shared_ptr<QMDDNode> getStartNode() const;
