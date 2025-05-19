@@ -17,13 +17,13 @@ void randomRotate(size_t numQubits, size_t numGates = 200) {
 
         switch (gateType) {
             case 0:
-                circuit.addRx(qubit, phase);
+                circuit.addRx({{qubit, phase}});
                 break;
             case 1:
-                circuit.addRy(qubit, phase);
+                circuit.addRy({{qubit, phase}});
                 break;
             case 2:
-                circuit.addRz(qubit, phase);
+                circuit.addRz({{qubit, phase}});
                 break;
         }
     }

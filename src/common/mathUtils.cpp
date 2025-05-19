@@ -707,8 +707,8 @@ double mathUtils::sumOfSquares(const vector<complex<double>>& vec) {
 }
 
 vector<int> mathUtils::createRange(int start, int end) {
-    int min = min(start, end);
-    int max = max(start, end);
+    int min = std::min(start, end);
+    int max = std::max(start, end);
     vector<int> range;
 
     for (int i = min; i <= max; ++i) {
