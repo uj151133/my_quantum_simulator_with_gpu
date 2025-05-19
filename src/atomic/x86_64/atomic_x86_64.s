@@ -7,3 +7,5 @@ cas_x86_64:
     sete    %cl
     movl    %ecx, %eax
     retq
+
+.section .note.GNU-stack,"",@progbits
