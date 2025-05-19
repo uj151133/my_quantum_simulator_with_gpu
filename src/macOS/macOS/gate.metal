@@ -95,7 +95,7 @@ kernel void SMatrix(device ComplexMatrix& matrix [[buffer(0)]],
     }
 }
 
-kernel void SDaggerMatrix(device ComplexMatrix& matrix [[buffer(0)]],
+kernel void SdgMatrix(device ComplexMatrix& matrix [[buffer(0)]],
                        uint2 position [[thread_position_in_grid]],
                        uint2 threads [[threads_per_grid]]) {
     matrix.cols = 2;
@@ -122,7 +122,7 @@ kernel void VMatrix(device ComplexMatrix& matrix [[buffer(0)]],
     }
 }
 
-kernel void VDaggerMatrix(device ComplexMatrix& matrix [[buffer(0)]],
+kernel void VdgMatrix(device ComplexMatrix& matrix [[buffer(0)]],
                                uint2 position [[thread_position_in_grid]],
                                uint2 threads [[threads_per_grid]]) {
     matrix.cols = 2;
@@ -312,7 +312,7 @@ kernel void TMatrix(device ComplexMatrix& matrix [[buffer(0)]],
     }
 }
 
-kernel void TDaggerMatrix(device ComplexMatrix& matrix [[buffer(0)]],
+kernel void TdgMatrix(device ComplexMatrix& matrix [[buffer(0)]],
                        uint2 position [[thread_position_in_grid]],
                        uint2 threads [[threads_per_grid]]) {
     matrix.cols = 2;

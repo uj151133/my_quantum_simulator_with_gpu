@@ -117,13 +117,13 @@ void QuantumCircuit::addS(vector<int> qubitIndices) {
 
 void QuantumCircuit::addSdg(vector<int> qubitIndices) {
     if (numQubits == 1) {
-        gateQueue.push(gate::Sdagger());
+        gateQueue.push(gate::Sdg());
     } else {
         sort(qubitIndices.begin(), qubitIndices.end());
         vector<QMDDEdge> edges;
         for (int qubitIndex : qubitIndices) {
             edges.insert(edges.end(), qubitIndex - edges.size(), identityEdge);
-            edges.push_back(gate::Sdagger().getInitialEdge());
+            edges.push_back(gate::Sdg().getInitialEdge());
         }
         QMDDGate result = accumulate(edges.begin() + 1, edges.end(), edges[0], mathUtils::kronForDiagonal);
         gateQueue.push(result);
@@ -401,7 +401,7 @@ void QuantumCircuit::addTdg(int qubitIndex) {
         gateQueue.push(gate::T());
     } else {
         vector<QMDDEdge> edges(qubitIndex, identityEdge);
-        edges.push_back(gate::Tdagger().getInitialEdge());
+        edges.push_back(gate::Tdg().getInitialEdge());
         // edges.insert(edges.end(), numQubits - qubitIndex - 1, identityEdge);
         QMDDGate result = accumulate(edges.begin() + 1, edges.end(), edges[0], mathUtils::kronForDiagonal);
         gateQueue.push(result);
@@ -663,10 +663,9 @@ void QuantumCircuit::addIAM() {
     return;
 }
 
-void QuantumCircuit::execute() {
+void QuantumCircuit::simulate() {
 
-    // OperationCache& cache = OperationCache::getInstance();
-    // cache.clearAllCaches();
+    // OperationCache::getInstance().clearAllCaches();
     int i = 0;
     while (!gateQueue.empty()) {
         cout << "number of gates: " << i++ << endl;
@@ -682,8 +681,8 @@ void QuantumCircuit::execute() {
     return;
 }
 
-int QuantumCircuit::read(int qubitIndex) {
-    QuantumCircuit::execute();
+int QuantumCircuit::measure(int qubitIndex) {
+    this->simulate();
     vector<QMDDEdge> edges0(qubitIndex, identityEdge);
     vector<QMDDEdge> edges1(qubitIndex, identityEdge);
     edges0.push_back(braketZero);

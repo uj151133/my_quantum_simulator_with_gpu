@@ -30,5 +30,5 @@ void benchHwb4tc() {
     circuit.addCX(2, 1);
     circuit.addCX(0, 1);
     circuit.addCX(1, 0);
-    circuit.execute();
+    circuit.simulate();
 }

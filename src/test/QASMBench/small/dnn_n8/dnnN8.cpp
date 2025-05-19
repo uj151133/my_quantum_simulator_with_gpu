@@ -611,13 +611,13 @@ void dnnN8() {
     q.addU3(0, M_PI * 0.5, M_PI * 0.5, M_PI * 1.5);
     q.addRz(7, M_PI * 0.3501408748);
     q.addRz(0, M_PI * 0.3501408748);
-    ans[0] = q.read(0);
-    ans[1] = q.read(1);
-    ans[2] = q.read(2);
-    ans[3] = q.read(3);
-    ans[4] = q.read(4);
-    ans[5] = q.read(5);
-    ans[6] = q.read(6);
-    ans[7] = q.read(7);
+    ans[0] = q.measure(0);
+    ans[1] = q.measure(1);
+    ans[2] = q.measure(2);
+    ans[3] = q.measure(3);
+    ans[4] = q.measure(4);
+    ans[5] = q.measure(5);
+    ans[6] = q.measure(6);
+    ans[7] = q.measure(7);
     return;
 }

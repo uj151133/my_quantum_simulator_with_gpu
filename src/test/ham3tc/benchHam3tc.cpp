@@ -11,5 +11,5 @@ void benchHam3tc() {
     circuit.addCX(1, 2);
     circuit.addCX(0, 2);
     circuit.addCX(2, 1);
-    circuit.execute();
+    circuit.simulate();
 }

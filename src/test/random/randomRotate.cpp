@@ -28,5 +28,5 @@ void randomRotate(size_t numQubits, size_t numGates = 200) {
         }
     }
 
-    circuit.execute();
+    circuit.simulate();
 }

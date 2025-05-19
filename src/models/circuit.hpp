@@ -88,8 +88,8 @@ public:
     void addOracle(int omega);
     void addIAM();
 
-    void execute();
-    int read(int qubitIndex);
+    void simulate();
+    int measure(int qubitIndex);
     // コンストラクタやその他のメンバ関数はここに追加できます
 };
 
