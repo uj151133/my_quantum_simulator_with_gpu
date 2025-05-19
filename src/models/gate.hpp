@@ -4,6 +4,7 @@
 // #include <Eigen/Dense>
 // #include <xsimd/xsimd.hpp>
 #include <iostream>
+#include <ostream>
 #include <gsl/gsl_sf_bessel.h>
 #include "qmdd.hpp"
 #include "../common/constant.hpp"
@@ -45,6 +46,8 @@ enum class Type {
     Other,
     Void
 };
+
+ostream& operator<<(ostream& os, Type type);
 namespace gate {
     /* Identity gate and global phase */
     QMDDGate I();

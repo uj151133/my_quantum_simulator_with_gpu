@@ -11,7 +11,7 @@ int QuantumCircuit::getMaxDepth(optional<int> start, optional<int> end) const {
 }
 
 void QuantumCircuit::normalizeLayer() {
-    int maxDepth = this->getMaxDepth();
+    int maxDepth = this->getMaxDepth(optional<int>(), optional<int>());
     for (int q = 0; q < numQubits; q++) {
         while (this->wires[q].size() < maxDepth) {
             this->wires[q].push_back({Type::I, gate::I()});
@@ -20,13 +20,19 @@ void QuantumCircuit::normalizeLayer() {
     for (int depth = 0; depth < maxDepth; depth++) {
         vector<Part> parts;
         for (int q = 0; q < numQubits; q++) {
+            cout << "depth: " << depth << ", q: " << q << ", type: " << this->wires[q][depth].type << endl;
             parts.push_back(this->wires[q][depth]);
         }
         while (!parts.empty() && parts.back().type == Type::I || parts.back().type == Type::Void) {
             parts.pop_back();
         }
-        if (!parts.empty()) {
-            QMDDGate result = accumulate(parts.begin(), parts.end(), parts[0].gate, mathUtils::kronWrapper);
+        vector<QMDDEdge> edges;
+        while (!parts.empty()) {
+            edges.push_back(parts.front().gate.getInitialEdge());
+            parts.erase(parts.begin());
+        }
+        if (!edges.empty()) {
+            QMDDGate result = accumulate(edges.begin(), edges.end(), edges[0], mathUtils::kronWrapper);
             this->layer.push(result);
         }
     }
@@ -547,7 +553,7 @@ void QuantumCircuit::addToff(vector<int>& controlIndexes, int targetIndex) {
         QMDDEdge customToff = accumulate(partialToff.begin() + 1, partialToff.end(), partialToff[0], mathUtils::addWrapper);
         edges.push_back(customToff);
         QMDDGate result = accumulate(edges.begin() + 1, edges.end(), edges[0], mathUtils::kronWrapper);
-        gateQueue.push(result);
+        // gateQueue.push(result);
         return;
     }
 }
@@ -579,7 +585,7 @@ void QuantumCircuit::addOracle(int omega) {
 
     QMDDEdge partialOracle2 = QMDDEdge(-2.0, accumulate(customCZ.begin() + 1, customCZ.end(), customCZ[0], mathUtils::kronWrapper).uniqueTableKey);
     QMDDEdge customOracle = mathUtils::add(partialOracle1, partialOracle2);
-    gateQueue.push(QMDDGate(customOracle));
+    // gateQueue.push(QMDDGate(customOracle));
     return;
 }
 
@@ -591,14 +597,14 @@ void QuantumCircuit::addIAM() {
     vector<QMDDEdge> customI(numQubits, identityEdge);
     QMDDEdge partialIAM2 = QMDDEdge(-1.0, accumulate(customI.begin() + 1, customI.end(), customI[0], mathUtils::kronWrapper).uniqueTableKey);
     QMDDEdge customIAM = mathUtils::add(partialIAM1, partialIAM2);
-    gateQueue.push(QMDDGate(customIAM));
+    // gateQueue.push(QMDDGate(customIAM));
 
     this->addAllH();
     return;
 }
 
 void QuantumCircuit::addBarrier() {
-    int maxDepth = this->getMaxDepth();
+    int maxDepth = this->getMaxDepth(optional<int>(), optional<int>());
     for (int q = 0; q < numQubits; q++) {
         while (this->wires[q].size() < maxDepth) {
             this->wires[q].push_back({Type::I, gate::I()});

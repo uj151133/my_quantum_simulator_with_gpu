@@ -81,7 +81,7 @@ class QMDDGate{
 private:
     QMDDEdge initialEdge;
 public:
-    QMDDGate(QMDDEdge edge, size_t numEdge = 4);
+    QMDDGate(QMDDEdge edge = QMDDEdge(), size_t numEdge = 4);
     QMDDGate(const QMDDGate& other) = default;
     ~QMDDGate() = default;
     shared_ptr<QMDDNode> getStartNode() const;
