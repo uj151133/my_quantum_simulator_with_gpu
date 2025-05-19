@@ -94,7 +94,8 @@
         "future": "cpp",
         "*.tpp": "cpp",
         "filesystem": "cpp",
-        "atomic.h": "c"
+        "atomic.h": "c",
+        "stdio.h": "c"
     },
     "dotnet.defaultSolution": "GUI.sln"
 }
