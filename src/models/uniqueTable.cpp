@@ -20,6 +20,7 @@ void UniqueTable::insert(long long hashKey, shared_ptr<QMDDNode> node) {
     while (true) {
         oldHead = table[idx].load(memory_order_acquire);
         std::cout << "Debug: oldHead = " << oldHead << std::endl;
+        cout << "hashKey: " << hashKey << endl;
         if (oldHead == nullptr) {
             this->printAllEntries();
             // boost::this_fiber::yield();
