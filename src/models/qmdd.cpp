@@ -223,7 +223,7 @@ vector<complex<double>> QMDDNode::getWeights() const {
 //
 /////////////////////////////////////
 
-QMDDGate::QMDDGate(QMDDEdge edge, size_t numEdge)
+QMDDGate::QMDDGate(QMDDEdge edge)
     : initialEdge(std::move(edge)){}
 
 shared_ptr<QMDDNode> QMDDGate::getStartNode() const {
