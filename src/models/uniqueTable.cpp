@@ -20,6 +20,10 @@ void UniqueTable::insert(long long hashKey, shared_ptr<QMDDNode> node) {
     while (true) {
         oldHead = table[idx].load(memory_order_acquire);
         std::cout << "Debug: oldHead = " << oldHead << std::endl;
+        if (oldHead == nullptr) {
+            this->printAllEntries();
+            // boost::this_fiber::yield();
+        }
         for (Entry* p = oldHead; p != nullptr; p = p->next) {
             if (p->key == hashKey && p->value == node) {
                 delete newEntry;
