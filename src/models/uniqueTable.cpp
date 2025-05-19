@@ -25,14 +25,21 @@ void UniqueTable::insert(long long hashKey, shared_ptr<QMDDNode> node) {
             this->printAllEntries();
             // boost::this_fiber::yield();
         }
-        for (Entry* p = oldHead; p != nullptr; p = p->next) {
-            if (p->key == hashKey && p->value == node) {
-                delete newEntry;
-                return;
+        if (oldHead == nullptr) {
+            if (cas((void**)&table[idx], nullptr, newEntry)) {
+                std::cout << "Inserted new entry at empty bucket." << std::endl;
+                break;
             }
+        } else {
+            for (Entry* p = oldHead; p != nullptr; p = p->next) {
+                if (p->key == hashKey && p->value == node) {
+                    delete newEntry;
+                    return;
+                }
+            }
+            newEntry->next = oldHead;
+            if (cas((void**)&table[idx], oldHead, newEntry)) break;
         }
-        newEntry->next = oldHead;
-        if (cas((void**)&table[idx], oldHead, newEntry)) break;
         boost::this_fiber::yield();
     }
 }
