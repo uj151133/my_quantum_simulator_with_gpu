@@ -1,3 +1,4 @@
+    .section .note.GNU-stack,"",@progbits
     .globl cas_x86_64
 cas_x86_64:
     movq    %rsi, %rax
