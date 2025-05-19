@@ -19,17 +19,10 @@ void UniqueTable::insert(long long hashKey, shared_ptr<QMDDNode> node) {
     Entry* oldHead;
     while (true) {
         oldHead = table[idx].load(memory_order_acquire);
-        std::cout << "Debug: oldHead = " << oldHead << std::endl;
-        cout << "hashKey: " << hashKey << endl;
+        // std::cout << "Debug: oldHead = " << oldHead << std::endl;
+        // cout << "hashKey: " << hashKey << endl;
         if (oldHead == nullptr) {
-            this->printAllEntries();
-            // boost::this_fiber::yield();
-        }
-        if (oldHead == nullptr) {
-            if (cas((void**)&table[idx], nullptr, newEntry)) {
-                std::cout << "Inserted new entry at empty bucket." << std::endl;
-                break;
-            }
+            if (cas((void**)&table[idx], nullptr, newEntry)) break;
         } else {
             for (Entry* p = oldHead; p != nullptr; p = p->next) {
                 if (p->key == hashKey && p->value == node) {
