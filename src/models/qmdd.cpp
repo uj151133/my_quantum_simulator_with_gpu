@@ -35,7 +35,7 @@ QMDDEdge::QMDDEdge(complex<double> w, shared_ptr<QMDDNode> n)
             this->node = existingNode;
         }
     }
-    this->depth = calculateDepth();
+    this->depth = this->calculateDepth();
     // cout << "Edge created with weight: " << weight << " and uniqueTableKey: " << uniqueTableKey << " and isTerminal: " << isTerminal << endl;
 }
 
@@ -58,7 +58,7 @@ QMDDEdge::QMDDEdge(double w, shared_ptr<QMDDNode> n)
             this->node = existingNode;
         }
     }
-    this->depth = calculateDepth();
+    this->depth = this->calculateDepth();
     // cout << "Edge created with weight: " << weight << " and uniqueTableKey: " << uniqueTableKey << " and isTerminal: " << isTerminal << endl;
 }
 
@@ -71,8 +71,8 @@ QMDDEdge::QMDDEdge(complex<double> w, long long key)
     #else
         #error "Unsupported operating system"
     #endif
-    this->node = UniqueTable::getInstance().find(uniqueTableKey);
-    this->depth = calculateDepth();
+    this->node = UniqueTable::getInstance().find(this->uniqueTableKey);
+    this->depth = this->calculateDepth();
     // cout << "Edge created with weight: " << weight << " and uniqueTableKey: " << uniqueTableKey << " and isTerminal: " << isTerminal << endl;
 }
 
@@ -85,8 +85,8 @@ QMDDEdge::QMDDEdge(double w, long long key)
     #else
         #error "Unsupported operating system"
     #endif
-    this->node = UniqueTable::getInstance().find(uniqueTableKey);
-    this->depth = calculateDepth();
+    this->node = UniqueTable::getInstance().find(this->uniqueTableKey);
+    this->depth = this->calculateDepth();
     // cout << "Edge created with weight: " << weight << " and uniqueTableKey: " << uniqueTableKey << " and isTerminal: " << isTerminal << endl;
 }
 
@@ -169,8 +169,7 @@ QMDDNode::QMDDNode(const vector<vector<QMDDEdge>>& edges) : edges(edges) {
 
 QMDDNode& QMDDNode::operator=(QMDDNode&& other) noexcept {
     if (this != &other) {
-        edges = std::move(other.edges);
-        // ムーブされた後のオブジェクトが安全に破棄されるようにする
+        this->edges = std::move(other.edges);
         other.edges.clear();
     }
     return *this;
@@ -204,7 +203,7 @@ ostream& operator<<(ostream& os, const QMDDNode& node) {
 
 vector<complex<double>> QMDDNode::getWeights() const {
     vector<complex<double>> weights;
-        for (const auto& edgeRow : edges) {
+        for (const auto& edgeRow : this->edges) {
             for (const auto& edge : edgeRow) {
                 weights.push_back(edge.weight);
             }
