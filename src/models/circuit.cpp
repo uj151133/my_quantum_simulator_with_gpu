@@ -633,7 +633,7 @@ void QuantumCircuit::addOracle(int omega) {
     }
 
     bitset<64> bits(omega);
-    vector<int> xIndicies
+    vector<int> xIndicies;
     for (int i = 0; i < numIndex; ++i) {
         if (bits[i] == 0)xIndicies.push_back(i);
     }
