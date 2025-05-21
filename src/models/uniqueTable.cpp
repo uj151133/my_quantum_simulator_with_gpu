@@ -28,7 +28,7 @@ void UniqueTable::insert(long long hashKey, shared_ptr<QMDDNode> node) {
         newEntry->next = oldHead;
         if (cas((void**)&table[idx], oldHead, newEntry)) break;
         // if(table[idx].compare_exchange_strong(oldHead, newEntry, memory_order_release, memory_order_relaxed)) break;
-        // boost::this_fiber::yield();
+        boost::this_fiber::yield();
     }
 }
 
