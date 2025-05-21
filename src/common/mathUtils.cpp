@@ -657,25 +657,16 @@ QMDDEdge mathUtils::kronForDiagonal(const QMDDEdge& e0, const QMDDEdge& e1) {
 QMDDEdge mathUtils::dyad(const QMDDEdge& e0, const QMDDEdge& e1) {
     shared_ptr<QMDDNode> n0 = e0.getStartNode();
     shared_ptr<QMDDNode> n1 = e1.getStartNode();
-    cout << "n0->edges.size() = " << n0->edges.size() << endl;
-    cout << "n0->edges[0].size() = " << n0->edges[0].size() << endl;
-    cout << "n1->edges.size() = " << n1->edges.size() << endl;
-    cout << "n1->edges[0].size() = " << n1->edges[0].size() << endl;
     // bool allWeightsAreZero = true;
     vector<vector<QMDDEdge>> z(n0->edges.size(), vector<QMDDEdge>(n1->edges[0].size()));
     // complex<double> tmpWeight = .0;
     for (size_t i = 0; i < n0->edges.size(); i++) {
         for (size_t j = 0; j < n1->edges[0].size(); j++) {
             z[i][j] = QMDDEdge(n0->edges[i][0].weight * n1->edges[0][j].weight, nullptr);
-            cout << "z[" << i << "][" << j << "] = " << z[i][j].weight << endl;
         }
     }
     QMDDEdge result;
-    cout << "finish dyad" << endl;
-    cout << "z.size() = " << z.size() << endl;
-    cout << "z[0].size() = " << z[0].size() << endl;
     result = QMDDEdge(1.0, make_shared<QMDDNode>(z));
-    cout << "result = " << result << endl;
     return result;
 }
 
