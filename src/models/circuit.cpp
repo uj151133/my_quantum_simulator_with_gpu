@@ -632,44 +632,39 @@ void QuantumCircuit::addOracle(int omega) {
         numIndex = static_cast<size_t>(log2(omega)) + 1;
     }
 
-    vector<QMDDEdge> customI(numIndex, identityEdge);
-    QMDDEdge partialOracle1 = accumulate(customI.begin() + 1, customI.end(), customI[0], mathUtils::kronWrapper);
-    vector<QMDDEdge> edges;
-    for (int bitPosition = 0; bitPosition < numIndex; ++bitPosition) {
-        int bitValue = (omega >> bitPosition) & 1;
-        if (bitValue == 0) {
-            edges.push_back(braketZero);
-        } else {
-            edges.push_back(braketOne);
-        }
+    bitset<64> bits(omega);
+    vector<int> xIndicies
+    for (int i = 0; i < numIndex; ++i) {
+        if (bits[i] == 0)xIndicies.push_back(i);
     }
-    QMDDEdge customCZ = accumulate(edges.begin() + 1, edges.end(), edges[0], mathUtils::kronWrapper);
-    QMDDEdge partialOracle2 = QMDDEdge(-2.0 * customCZ.weight, customCZ.node);
-    cout << "1st partial oracle: " << partialOracle1.depth << endl;
-    cout << "2nd partial oracle: " << partialOracle2.depth << endl;
-    QMDDEdge customOracle = mathUtils::add(partialOracle1, partialOracle2);
-    this->gateQueue.push(QMDDGate(customOracle));
+    if (!xIndicies.empty()) {
+        this->addX(xIndicies);
+    }
+
+    vector<QMDDEdge> customI(numIndex, identityEdge);
+    QMDDEdge partialCZ1 = accumulate(customI.begin() + 1, customI.end(), customI[0], mathUtils::kronWrapper);
+    vector<QMDDEdge> customBrkt(numIndex, braketZero);
+    QMDDEdge partialCZ2 = QMDDEdge(-2.0, accumulate(customBrkt.begin() + 1, customBrkt.end(), customBrkt[0], mathUtils::kronWrapper).uniqueTableKey);
+    QMDDEdge customCZ = mathUtils::add(partialCZ1, partialCZ2);
+    this->gateQueue.push(QMDDGate(customCZ));
+
+    if (!xIndicies.empty()) {
+        this->addX(xIndicies);
+    }
+
     return;
 }
 
 void QuantumCircuit::addIAM() {
     this->addAllH();
     this->addAllX();
-    cout << "braketZero: " << braketZero.weight << braketZero.uniqueTableKey << endl;
-    cout << "braketOne: " << braketOne.weight << braketOne.uniqueTableKey << endl;
 
-    vector<QMDDEdge> customCZ(this->numQubits, braketZero);
-    QMDDEdge partialIAM1 = QMDDEdge(-2.0, accumulate(customCZ.begin() + 1, customCZ.end(), customCZ[0], mathUtils::kronWrapper).uniqueTableKey);
     vector<QMDDEdge> customI(this->numQubits, identityEdge);
-    QMDDEdge partialIAM2 = QMDDEdge(1.0, accumulate(customI.begin() + 1, customI.end(), customI[0], mathUtils::kronWrapper).uniqueTableKey);
-    cout << "1st partial IAM: " << partialIAM1.depth << endl;
-    cout << "2nd partial IAM: " << partialIAM2.depth << endl;
-    QMDDEdge customIAM = mathUtils::add(partialIAM1, partialIAM2);
-
-    cout << "custom IAM: " << customIAM.uniqueTableKey << endl;
-
-
-    this->gateQueue.push(QMDDGate(customIAM));
+    QMDDEdge partialCZ1 = accumulate(customI.begin() + 1, customI.end(), customI[0], mathUtils::kronWrapper);
+    vector<QMDDEdge> customBrkt(this->numQubits, braketZero);
+    QMDDEdge partialCZ2 = QMDDEdge(-2.0, accumulate(customBrkt.begin() + 1, customBrkt.end(), customBrkt[0], mathUtils::kronWrapper).uniqueTableKey);
+    QMDDEdge customCZ = mathUtils::add(partialCZ1, partialCZ2);
+    this->gateQueue.push(QMDDGate(customCZ));
 
     this->addAllX();
     this->addAllH();

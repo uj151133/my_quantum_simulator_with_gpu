@@ -6,6 +6,7 @@
 #include <array>
 #include <random>
 #include <iostream>
+#include <bitset>
 #include "qmdd.hpp"
 #include "gate.hpp"
 #include "state.hpp"
