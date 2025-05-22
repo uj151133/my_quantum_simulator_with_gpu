@@ -624,6 +624,21 @@ void QuantumCircuit::addGate(int qubitIndex, const QMDDGate& gate) {
     return;
 }
 
+void QuantumCircuit::addQFT(int numQubits) {
+    for (int i = numQubits - 1; i >= 0; i--) {
+        this->addH(i);
+        for (int j = i - 1; j >= 0; j--) {
+            this->addCP(i, j, M_PI / pow(2, j - i));
+        }
+    }
+
+    for (int i = 0; i < numQubits / 2; i++) {
+        this->addSWAP(i, numQubits - i - 1);
+    }
+
+    return;
+}
+
 void QuantumCircuit::addOracle(int omega) {
     size_t numIndex;
     if (omega == 0) {

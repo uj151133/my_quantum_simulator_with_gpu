@@ -86,6 +86,8 @@ public:
 
     void addGate(int qubitIndex, const QMDDGate& gate);
 
+    void addQFT(int numQubits = this->numQubits);
+
     void addOracle(int omega);
     void addIAM();
 
