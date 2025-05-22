@@ -343,6 +343,15 @@ QMDDGate gate::Rz(double theta) {
     })));
 }
 
+QMDDGate gate::Rk(int k) {
+    call_once(initEdgeFlag, initEdge);
+    complex<double> theta = 2 * M_PI * i / pow(2, k);
+    return QMDDGate(QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+        {edgeOne, edgeZero},
+        {edgeZero, QMDDEdge(exp(theta), nullptr)}
+    })));
+}
+
 QMDDGate gate::Rxx(double phi) {
     call_once(initEdgeFlag, initEdge);
     double phiHalf = phi / 2.0;
