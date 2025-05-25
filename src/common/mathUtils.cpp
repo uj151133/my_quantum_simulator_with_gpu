@@ -7,7 +7,7 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
     if (existingAnswer != OperationResult{.0, 0}) {
         // cout << "\033[1;36mCache hit!\033[0m" << endl;
         QMDDEdge answer = QMDDEdge(existingAnswer.first, existingAnswer.second);
-        if (answer.getStartNode() != nullptr) {
+        if (answer.uniqueTableKey != 0) {
             // cout << "\033[1;36mCache hit!\033[0m" << endl;
             return answer;
         }
@@ -29,7 +29,7 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
     shared_ptr<QMDDNode> n0 = e0.getStartNode();
     shared_ptr<QMDDNode> n1 = e1.getStartNode();
 
-    vector<vector<QMDDEdge>> z(n0->edges.size(), vector<QMDDEdge>(n1->edges[0].size(), QMDDEdge(.0, nullptr)));
+    vector<vector<QMDDEdge>> z(n0->edges.size(), vector<QMDDEdge>(n1->edges[0].size(), edgeZero));
     complex<double> tmpWeight = .0;
     bool allWeightsAreZero = true;
     if (depth < CONFIG.process.parallelism){
@@ -39,7 +39,7 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
         for (size_t i = 0; i < n0->edges.size(); i++) {
             for (size_t j = 0; j < n1->edges[i].size(); j++) {
                 futures.push_back(threadPool.enqueue([&, i, j]() {
-                    QMDDEdge answer = QMDDEdge(.0, nullptr);
+                    QMDDEdge answer = QMDDEdge(.0, 0);
                     for (size_t k = 0; k < n0->edges[0].size(); k++) {
                         QMDDEdge p(e0.weight * n0->edges[i][k].weight, n0->edges[i][k].uniqueTableKey);
                         QMDDEdge q(e1.weight * n1->edges[k][j].weight, n1->edges[k][j].uniqueTableKey);
@@ -75,7 +75,7 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
             for (int j = 0; j < n1->edges[0].size(); j++) {
                 futures.emplace_back(
                     boost::fibers::async([&, i, j]() {
-                        QMDDEdge answer = QMDDEdge(.0, nullptr);
+                        QMDDEdge answer = QMDDEdge(.0, 0);
                         for (size_t k = 0; k < n0->edges[0].size(); k++) {
                             QMDDEdge p(e0.weight * n0->edges[i][k].weight, n0->edges[i][k].uniqueTableKey);
                             QMDDEdge q(e1.weight * n1->edges[k][j].weight, n1->edges[k][j].uniqueTableKey);
@@ -129,7 +129,7 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
     }
     QMDDEdge result;
     if (allWeightsAreZero) {
-        result = QMDDEdge(.0, nullptr);
+        result = edgeZero;
     } else {
         result = QMDDEdge(tmpWeight, make_shared<QMDDNode>(z));
     }
@@ -148,7 +148,7 @@ QMDDEdge mathUtils::mulForDiagonal(const QMDDEdge& e0, const QMDDEdge& e1) {
         OperationResult existing = cache.jniFind(operationCacheKey);
         if (existing != OperationResult{.0, 0}) {
             QMDDEdge answer{ existing.first, existing.second };
-            if (answer.getStartNode() != nullptr) {
+            if (answer.uniqueTableKey!= 0) {
                 return answer;
             }
         }
@@ -225,7 +225,7 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
     if (existingAnswer != OperationResult{.0, 0}) {
         // cout << "\033[1;36mCache hit!\033[0m" << endl;
         QMDDEdge answer = QMDDEdge(existingAnswer.first, existingAnswer.second);
-        if (answer.getStartNode() != nullptr) {
+        if (answer.uniqueTableKey != 0) {
             // cout << "\033[1;36mCache hit!\033[0m" << endl;
             return answer;
         }
@@ -239,13 +239,13 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
         if (e0.weight == .0) {
             return e1;
         } else if (e1.isTerminal) {
-            return QMDDEdge(e0.weight + e1.weight, nullptr);
+            return QMDDEdge(e0.weight + e1.weight, 0);
         }
     }
     shared_ptr<QMDDNode> n0 = e0.getStartNode();
     shared_ptr<QMDDNode> n1 = e1.getStartNode();
     bool allWeightsAreZero = true;
-    vector<vector<QMDDEdge>> z(n0->edges.size(), vector<QMDDEdge>(n0->edges[0].size()));
+    vector<vector<QMDDEdge>> z(n0->edges.size(), vector<QMDDEdge>(n0->edges[0].size(), edgeZero));
     complex<double> tmpWeight = .0;
     if (depth < CONFIG.process.parallelism){
         // cout << "\033[1;31mmulti thread add\033[0m" << endl;
@@ -263,7 +263,7 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
                         if (p.weight == .0) {
                             return q;
                         } else if (q.isTerminal) {
-                            return QMDDEdge(p.weight + q.weight, nullptr);
+                            return QMDDEdge(p.weight + q.weight, 0);
                         }
                     }
                     if (p.uniqueTableKey == q.uniqueTableKey) {
@@ -308,7 +308,7 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
                             if (p.weight == .0) {
                                 return q;
                             } else if (q.isTerminal) {
-                                return QMDDEdge(p.weight + q.weight, nullptr);
+                                return QMDDEdge(p.weight + q.weight, 0);
                             }
                         }
                         if (p.uniqueTableKey == q.uniqueTableKey) {
@@ -351,7 +351,7 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
                     if (p.weight == .0) {
                         z[i][j] = q;
                     } else if (q.isTerminal) {
-                        z[i][j] = QMDDEdge(p.weight + q.weight, nullptr);
+                        z[i][j] = QMDDEdge(p.weight + q.weight, 0);
                     }
                 }
                 if (p.uniqueTableKey == q.uniqueTableKey) {
@@ -375,7 +375,7 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
     }
     QMDDEdge result;
     if (allWeightsAreZero) {
-        result = QMDDEdge(.0, nullptr);
+        result = edgeZero;
     } else {
         result = QMDDEdge(tmpWeight, make_shared<QMDDNode>(z));
     }
@@ -393,7 +393,7 @@ QMDDEdge mathUtils::addForDiagonal(const QMDDEdge& e0, const QMDDEdge& e1) {
         OperationResult existing = cache.jniFind(operationCacheKey);
         if (existing != OperationResult{.0, 0}) {
             QMDDEdge answer{ existing.first, existing.second };
-            if (answer.getStartNode() != nullptr) {
+            if (answer.uniqueTableKey != 0) {
                 return answer;
             }
         }
@@ -404,7 +404,7 @@ QMDDEdge mathUtils::addForDiagonal(const QMDDEdge& e0, const QMDDEdge& e1) {
         if (e1.isTerminal) std::swap(const_cast<QMDDEdge&>(e0), const_cast<QMDDEdge&>(e1));
         if (e0.isTerminal) {
             if (e0.weight == .0)         return e1;
-            else if (e1.isTerminal)      return QMDDEdge(e0.weight + e1.weight, nullptr);
+            else if (e1.isTerminal)      return QMDDEdge(e0.weight + e1.weight, 0);
         }
         auto n0 = e0.getStartNode();
         auto n1 = e1.getStartNode();
@@ -469,7 +469,7 @@ QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
     if (existingAnswer != OperationResult{.0, 0}) {
         // cout << "\033[1;36mCache hit!\033[0m" << endl;
         QMDDEdge answer = QMDDEdge(existingAnswer.first, existingAnswer.second);
-        if (answer.getStartNode() != nullptr) {
+        if (answer.uniqueTableKey != 0) {
             // cout << "\033[1;36mCache hit!\033[0m" << endl;
             return answer;
         }
@@ -568,7 +568,7 @@ QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
     }
     QMDDEdge result;
     if (allWeightsAreZero) {
-        result = QMDDEdge(.0, nullptr);
+        result = edgeZero;
     } else {
         result = QMDDEdge(e0.weight * tmpWeight, make_shared<QMDDNode>(z));
     }
@@ -587,7 +587,7 @@ QMDDEdge mathUtils::kronForDiagonal(const QMDDEdge& e0, const QMDDEdge& e1) {
         OperationResult existing = cache.jniFind(operationCacheKey);
         if (existing != OperationResult{.0, 0}) {
             QMDDEdge answer{ existing.first, existing.second };
-            if (answer.getStartNode() != nullptr) {
+            if (answer.uniqueTableKey != 0) {
                 return answer;
             }
         }
@@ -662,7 +662,7 @@ QMDDEdge mathUtils::dyad(const QMDDEdge& e0, const QMDDEdge& e1) {
     // complex<double> tmpWeight = .0;
     for (size_t i = 0; i < n0->edges.size(); i++) {
         for (size_t j = 0; j < n1->edges[0].size(); j++) {
-            z[i][j] = QMDDEdge(n0->edges[i][0].weight * n1->edges[0][j].weight, nullptr);
+            z[i][j] = QMDDEdge(n0->edges[i][0].weight * n1->edges[0][j].weight, 0);
         }
     }
     QMDDEdge result;
