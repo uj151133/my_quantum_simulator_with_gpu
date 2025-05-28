@@ -6,9 +6,9 @@ AVD_NAME = pixel_7_api_35
 BUILD_DIR = build
 INSTALL_DIR = $(HOME)/.local/bin
 
-.PHONY: clean
-clean:
-	rm -rf $(BUILD_DIR) *.cpython-310-darwin.so GUI
+# .PHONY: clean
+# clean:
+# 	rm -rf $(BUILD_DIR) *.cpython-310-darwin.so
 
 .PHONY: build
 build:
