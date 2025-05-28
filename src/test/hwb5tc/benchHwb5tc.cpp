@@ -1,11 +1,7 @@
 #include "benchHwb5tc.hpp"
 
 void benchHwb5tc() {
-    QMDDState ket_0 = state::Ket0();
-    QMDDEdge firstEdge = mathUtils::kron(ket_0.getInitialEdge(), ket_0.getInitialEdge());
-    firstEdge = mathUtils::kron(firstEdge, firstEdge);
-    firstEdge = mathUtils::kron(firstEdge, ket_0.getInitialEdge());
-    QuantumCircuit circuit(5, QMDDState(firstEdge));
+    QuantumCircuit circuit(5);
     circuit.addCX(3, 1);
     circuit.addCX(4, 3);
     vector<int> controlIndexes = {2, 3};
