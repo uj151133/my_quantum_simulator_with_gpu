@@ -638,17 +638,17 @@ QMDDEdge mathUtils::kronForDiagonal(const QMDDEdge& e0, const QMDDEdge& e1) {
 
             QMDDEdge computed = computeFuture.get();
 
-            threadPool.enqueue([&cache, operationCacheKey, computed]() {
-                cache.jniInsert(operationCacheKey, computed.weight, computed.uniqueTableKey);
-            });
+            // threadPool.enqueue([&cache, operationCacheKey, computed]() {
+            //     cache.jniInsert(operationCacheKey, computed.weight, computed.uniqueTableKey);
+            // });
             return computed;
         }
 
         if (computeFuture.wait_for(std::chrono::milliseconds(0)) == std::future_status::ready) {
             QMDDEdge computed = computeFuture.get();
-            threadPool.enqueue([&cache, operationCacheKey, computed]() {
-                cache.jniInsert(operationCacheKey, computed.weight, computed.uniqueTableKey);
-            });
+            // threadPool.enqueue([&cache, operationCacheKey, computed]() {
+            //     cache.jniInsert(operationCacheKey, computed.weight, computed.uniqueTableKey);
+            // });
             return computed;
         }
     }

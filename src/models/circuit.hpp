@@ -7,6 +7,7 @@
 #include <random>
 #include <iostream>
 #include <bitset>
+#include <ranges>
 #include "qmdd.hpp"
 #include "gate.hpp"
 #include "state.hpp"
@@ -15,6 +16,12 @@
 
 using namespace std;
 
+template<typename T>
+vector<T> sorted(const std::vector<T>& vec) {
+    vector<T> result = vec;
+    sort(result.begin(), result.end());
+    return result;
+}
 class QuantumCircuit {
 private:
     queue<QMDDGate> gateQueue;
@@ -80,13 +87,14 @@ public:
     void addD(int qubitIndex);
     void addRCCX(int controlIndex1, int controlIndex2, int targetIndex);
     void addPG(int controlIndex1, int controlIndex2, int targetIndex);
-    void addToff(vector<int>& controlIndexes, int targetIndex);
+    void addToff(const vector<int>& controlIndexes, int targetIndex);
     void addToff2(array<int, 2>& controlIndexes, int targetIndex);
     void addfFredkin(int controlIndex1, int controlIndex2, int targetIndex);
 
     void addGate(int qubitIndex, const QMDDGate& gate);
 
-    void addQFT(int numQubits = this->numQubits);
+    void addQFT(int numQubits);
+    void addQFT();
 
     void addOracle(int omega);
     void addIAM();

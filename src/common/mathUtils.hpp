@@ -37,18 +37,6 @@ namespace mathUtils {
 
     QMDDEdge dyad(const QMDDEdge& e0, const QMDDEdge& e1);
 
-    inline QMDDEdge mulWrapper(const QMDDEdge& a, const QMDDEdge& b) {
-        return mul(a, b, 0);
-    }
-
-    inline QMDDEdge addWrapper(const QMDDEdge& a, const QMDDEdge& b) {
-        return add(a, b, 0);
-    }
-
-    inline QMDDEdge kronWrapper(const QMDDEdge& a, const QMDDEdge& b) {
-        return kron(a, b, 0);
-    }
-
     double csc(double theta);
     complex<double> csc(complex<double> theta);
     double sec(double theta);

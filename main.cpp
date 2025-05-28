@@ -28,15 +28,18 @@ void execute() {
     // OperationCache& cache = OperationCache::getInstance();
 
     int numQubits = 5;
-    // int numGates = 200;
+    int numGates = 200;
+
+    QuantumCircuit circuit(5);
+    circuit.addToff({0, 1}, 3);
+    circuit.simulate();
 
     // randomRotate(numQubits, numGates);
-    int omega = std::pow(2, numQubits) - 1;
+    // int omega = std::pow(2, numQubits) - 1;
 
-    grover(numQubits, omega);
-
+    // grover(numQubits, omega);
     
-    // UniqueTable::getInstance().printAllEntries();
+    UniqueTable::getInstance().printAllEntries();
 
 }
 

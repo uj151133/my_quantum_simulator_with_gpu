@@ -1,10 +1,7 @@
 #include "benchHam3tc.hpp"
 
 void benchHam3tc() {
-    QMDDState ket_0 = state::Ket0();
-    QMDDEdge firstEdge = mathUtils::kron(ket_0.getInitialEdge(), ket_0.getInitialEdge());
-    firstEdge = mathUtils::kron(firstEdge, ket_0.getInitialEdge());
-    QuantumCircuit circuit(3, QMDDState(firstEdge));
+    QuantumCircuit circuit(3);
     vector<int> controlIndexes = {1, 2};
     circuit.addToff(controlIndexes, 0);
     circuit.addCX(2, 1);
