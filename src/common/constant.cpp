@@ -17,8 +17,8 @@ once_flag initExtendedEdgeFlag;
 
 void initEdge() {
     i = complex<double>(.0, 1.0);
-    edgeZero = QMDDEdge(.0, nullptr);
-    edgeOne = QMDDEdge(1.0, nullptr);
+    edgeZero = QMDDEdge(.0, 0);
+    edgeOne = QMDDEdge(1.0, 0);
 }
 
 void initExtendedEdge() {
