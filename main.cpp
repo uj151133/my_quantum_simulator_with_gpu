@@ -27,19 +27,22 @@ void execute() {
 
     // OperationCache& cache = OperationCache::getInstance();
 
-    int numQubits = 5;
+    int numQubits = 3;
     int numGates = 200;
 
-    QuantumCircuit circuit(5);
-    circuit.addToff({0, 1}, 3);
-    circuit.simulate();
+    QuantumCircuit circuit(numQubits);
+    for ([[maybe_unused]] int _ = 0; _ < numGates; ++_) {
+        circuit.addAllH();
+    }
+    // circuit.addToff({0, 1}, 3);
+    // circuit.simulate();
 
     // randomRotate(numQubits, numGates);
     // int omega = std::pow(2, numQubits) - 1;
 
     // grover(numQubits, omega);
     
-    UniqueTable::getInstance().printAllEntries();
+    // UniqueTable::getInstance().printAllEntries();
 
 }
 

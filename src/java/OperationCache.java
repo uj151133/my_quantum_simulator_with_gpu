@@ -22,11 +22,11 @@ public class OperationCache {
         return cache.getIfPresent(key);
     }
 
-    public static native void nativeInsert(long key, double real, double imag, long size);
+    public static native void nativeInsert(long key, double real, double imag, long uniqueTableKey);
     public static native double[] nativeFind(long key);
 
-    public static void doNativeInsert(long key, double real, double imag, long size) {
-        OperationResult result = new OperationResult(real, imag, size);
+    public static void doNativeInsert(long key, double real, double imag, long uniqueTableKey) {
+        OperationResult result = new OperationResult(real, imag, uniqueTableKey);
         getInstance().insert(key, result);
     }
 
