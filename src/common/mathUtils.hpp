@@ -15,7 +15,6 @@
 #include <boost/thread/thread.hpp>
 #include "../models/qmdd.hpp"
 #include "../models/uniqueTable.hpp"
-// #include "../models/operationCache.hpp"
 #include "config.hpp"
 #include "calculation.hpp"
 #include "../modules/threadPool.hpp"

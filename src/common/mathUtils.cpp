@@ -470,7 +470,7 @@ QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
         // cout << "\033[1;36mCache hit!\033[0m" << endl;
         QMDDEdge answer = QMDDEdge(existingAnswer.first, existingAnswer.second);
         if (answer.uniqueTableKey != 0) {
-            // cout << "\033[1;36mCache hit!\033[0m" << endl;
+        //     // cout << "\033[1;36mCache hit!\033[0m" << endl;
             return answer;
         }
     }

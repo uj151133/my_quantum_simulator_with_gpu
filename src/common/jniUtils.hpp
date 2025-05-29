@@ -6,13 +6,16 @@
 #include <complex>
 #include <string>
 #include <iostream>
+#include <mutex>
+
+using namespace std;
 
 // jniUtilsクラス
 class jniUtils {
 public:
     static jniUtils& getInstance();
 
-    void jniInsert(long long key, const std::complex<double>& value, long long size);
+    void jniInsert(long long key, const complex<double>& value, long long uniqueTableKey);
     OperationResult jniFind(long long key);
 
 private:
@@ -21,14 +24,21 @@ private:
     jniUtils(const jniUtils&) = delete;
     jniUtils& operator=(const jniUtils&) = delete;
 
-    // JNI環境
-    JNIEnv* t_env = nullptr;
+    JNIEnv* getThreadEnv();
+
     static JavaVM* g_jvm;
     static jclass g_OperationCache_cls;
     static jclass g_OperationResult_cls;
+    static mutex g_mutex;
+    static bool g_initialized;
 
-    // JVMの初期化（必要なら呼び出す）
-    static bool initJvm(const std::string& class_path, const std::string& caffeine_jar);
+    static jmethodID g_doNativeInsert_mid;
+    static jmethodID g_doNativeFind_mid;
+    static jfieldID g_real_fid;
+    static jfieldID g_imag_fid;
+    static jfieldID g_uniqueTableKey_fid;
+
+    static bool initJvm();
 };
 
 #endif
