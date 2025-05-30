@@ -70,6 +70,7 @@ void QuantumCircuit::addAllX() {
     vector<QMDDEdge> edges(this->numQubits, gate::X().getInitialEdge());
     QMDDGate result = accumulate(edges.rbegin() + 1, edges.rend(), edges.back(), [](const QMDDEdge& accumulated, const QMDDEdge& current) {
         return mathUtils::kron(current, accumulated, 0);
+        // return mathUtils::kronForDiagonal(current, accumulated);
     });
     this->gateQueue.push(result);
     return;
@@ -610,7 +611,75 @@ void QuantumCircuit::addU3(int qubitIndex, double theta, double phi, double lamb
     return;
 }
 
-void QuantumCircuit::addToff(const vector<int>& controlIndexes, int targetIndex) {
+void QuantumCircuit::addToff(const array<int, 2>& controlIndexes, int targetIndex) {
+    if (controlIndexes.size() == 0) {
+        throw invalid_argument("Control indexes must not be empty.");
+    }else if (numQubits < controlIndexes.size() + 1) {
+        throw invalid_argument("Number of control indexes must be at most number of qubits - 1.");
+    }else if (controlIndexes.size() == 1) {
+        addCX(controlIndexes[0], targetIndex);
+    }else {
+        array<int, 2> sortedControlIndexes = sorted(controlIndexes);
+        int minIndex = min(*min_element(sortedControlIndexes.begin(), sortedControlIndexes.end()), targetIndex);
+        int maxIndex = max(*max_element(sortedControlIndexes.begin(), sortedControlIndexes.end()), targetIndex);
+        vector<QMDDEdge> edges(minIndex, identityEdge);
+        vector<QMDDEdge> partialToff(sortedControlIndexes.size() + 1, identityEdge);
+        for (int i = maxIndex; i >= minIndex; i--) {
+            if (i == targetIndex) {
+                if (i == maxIndex) {
+                    partialToff[partialToff.size() - 1] = gate::X().getInitialEdge();
+                }else {
+                    for (int j = 0; j < partialToff.size() - 1; j++) {
+                        partialToff[j] = mathUtils::kron(identityEdge, partialToff[j]);
+                    }
+                    partialToff[partialToff.size() - 1] = mathUtils::kron(gate::X().getInitialEdge(), partialToff[partialToff.size() - 1]);
+                }
+            } else {
+                auto idx = ranges::find(sortedControlIndexes, i);
+                if (idx != sortedControlIndexes.end()) {
+                    int j = static_cast<int>(distance(sortedControlIndexes.begin(), idx));
+                            for (int k = 0; k < partialToff.size(); k++) {
+                                if (i == maxIndex) {
+                                    if (k == j) {
+                                        partialToff[k] = braketZero;
+                                    } else if (k > j) {
+                                        partialToff[k] = braketOne;
+                                    } else if (k < j) {
+                                        partialToff[k] = identityEdge;
+                                    }
+                                } else {
+                                    if (k == j) {
+                                        partialToff[k] = mathUtils::kron(braketZero, partialToff[k]);
+                                    } else if (k > j) {
+                                        partialToff[k] = mathUtils::kron(braketOne, partialToff[k]);
+                                    } else if (k < j) {
+                                        partialToff[k] = mathUtils::kron(identityEdge, partialToff[k]);
+                                    }
+                                }
+                            }
+                } else {
+                    if (i != maxIndex) {
+                        for (int j = 0; j < partialToff.size(); j++) {
+                            partialToff[j] = mathUtils::kron(identityEdge, partialToff[j]);
+                        }
+                    }
+                }
+            }
+        }
+        QMDDEdge customToff = accumulate(partialToff.begin() + 1, partialToff.end(), partialToff[0], [](const QMDDEdge& accumulated, const QMDDEdge& current) {
+            return mathUtils::add(accumulated, current);
+        });
+        edges.push_back(customToff);
+        QMDDGate result = accumulate(edges.rbegin() + 1, edges.rend(), edges.back(), [](const QMDDEdge& accumulated, const QMDDEdge& current) {
+            return mathUtils::kron(current, accumulated, 0);
+        });
+        this->gateQueue.push(result);
+
+        return;
+    }
+}
+
+void QuantumCircuit::addMCT(const vector<int>& controlIndexes, int targetIndex) {
     if (controlIndexes.size() == 0) {
         throw invalid_argument("Control indexes must not be empty.");
     }else if (numQubits < controlIndexes.size() + 1) {
