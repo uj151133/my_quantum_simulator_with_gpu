@@ -139,12 +139,15 @@ elseif(CMAKE_SYSTEM_PROCESSOR MATCHES "aarch64|arm64")
 else()
     message(FATAL_ERROR "Unsupported architecture: ${CMAKE_SYSTEM_PROCESSOR}")
 endif()
-# file(GLOB C_SRC "src/atomic/atomic.c")
+
+configure_file(${CMAKE_SOURCE_DIR}/config.yaml ${CMAKE_BINARY_DIR}/config.yaml COPYONLY)
+
 file(GLOB SOURCES "src/models/*.cpp" "src/common/*.cpp" "src/modules/*.cpp" "src/test/*/*.cpp" )
 
 
 # 通常のC++実行ファイルを追加
 add_executable(qmdd_sim main.cpp ${SOURCES} ${C_SRC} ${ASM_SRC})
+add_dependencies(qmdd_sim copy_config)
 target_include_directories(qmdd_sim PRIVATE ${GSL_INCLUDE_DIRS})
 target_link_libraries(qmdd_sim PRIVATE
     pthread
@@ -173,4 +176,12 @@ add_custom_target(debug
     DEPENDS qmdd_sim
     WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
     COMMENT "Debugging the application with lldb ..."
+)
+
+add_custom_target(copy_config
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        ${CMAKE_SOURCE_DIR}/config.yaml
+        ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/config.yaml
+    DEPENDS ${CMAKE_SOURCE_DIR}/config.yaml
+    COMMENT "Copying config.yaml if it has changed"
 )

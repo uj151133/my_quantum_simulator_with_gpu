@@ -96,6 +96,8 @@
         "filesystem": "cpp",
         "atomic.h": "c",
         "stdio.h": "c"
+        "source_location": "cpp",
+        "span": "cpp"
     },
     "dotnet.defaultSolution": "GUI.sln"
 }

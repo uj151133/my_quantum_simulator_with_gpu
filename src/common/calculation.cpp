@@ -3,9 +3,14 @@
 
 long long calculation::generateUniqueTableKey(const shared_ptr<QMDDNode>& node) {
     vector<uint8_t> buffer;
-
+    size_t rowIdx = 0;
     for (const auto& edgeRow : node->edges) {
+        size_t colIdx = 0;
         for (const auto& edge : edgeRow) {
+            const uint8_t* rowIdx_bytes = reinterpret_cast<const uint8_t*>(&rowIdx);
+            buffer.insert(buffer.end(), rowIdx_bytes, rowIdx_bytes + sizeof(size_t));
+            const uint8_t* colIdx_bytes = reinterpret_cast<const uint8_t*>(&colIdx);
+            buffer.insert(buffer.end(), colIdx_bytes, colIdx_bytes + sizeof(size_t));
             double real = edge.weight.real();
             double imag = edge.weight.imag();
             const uint8_t* real_bytes = reinterpret_cast<const uint8_t*>(&real);
@@ -16,9 +21,10 @@ long long calculation::generateUniqueTableKey(const shared_ptr<QMDDNode>& node) 
 
             const uint8_t* key_bytes = reinterpret_cast<const uint8_t*>(&edge.uniqueTableKey);
             buffer.insert(buffer.end(), key_bytes, key_bytes + sizeof(size_t));
+            colIdx++;
         }
+        rowIdx++;
     }
-
     return llabs(XXH3_64bits(buffer.data(), buffer.size()));
 }
 
