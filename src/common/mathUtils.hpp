@@ -15,7 +15,6 @@
 #include <boost/thread/thread.hpp>
 #include "../models/qmdd.hpp"
 #include "../models/uniqueTable.hpp"
-// #include "../models/operationCache.hpp"
 #include "config.hpp"
 #include "calculation.hpp"
 #include "../modules/threadPool.hpp"
@@ -35,17 +34,7 @@ namespace mathUtils {
     QMDDEdge kron(const QMDDEdge& e0, const QMDDEdge& e1, int depth = 0);
     QMDDEdge kronForDiagonal(const QMDDEdge& e0, const QMDDEdge& e1);
 
-    inline QMDDEdge mulWrapper(const QMDDEdge& a, const QMDDEdge& b) {
-        return mul(a, b, 0);
-    }
-
-    inline QMDDEdge addWrapper(const QMDDEdge& a, const QMDDEdge& b) {
-        return add(a, b, 0);
-    }
-
-    inline QMDDEdge kronWrapper(const QMDDEdge& a, const QMDDEdge& b) {
-        return kron(a, b, 0);
-    }
+    QMDDEdge dyad(const QMDDEdge& e0, const QMDDEdge& e1);
 
     double csc(double theta);
     complex<double> csc(complex<double> theta);

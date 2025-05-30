@@ -1,4 +1,6 @@
 # my_quantum_simulator_wiθ_gpu
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/uj151133/my_quantum_simulator_with_gpu)
+
 investigation
 
 ## Requirements

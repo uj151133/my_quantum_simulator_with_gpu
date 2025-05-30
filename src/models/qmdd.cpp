@@ -17,7 +17,7 @@ ostream& operator<<(ostream& os, const QMDDVariant& variant) {
 /////////////////////////////////////
 
 QMDDEdge::QMDDEdge(complex<double> w, shared_ptr<QMDDNode> n)
-    : weight(w), uniqueTableKey(n ? calculation::generateUniqueTableKey(n) : 0), node(n), isTerminal(!n) {
+    : weight(w), uniqueTableKey(n ? calculation::generateUniqueTableKey(n) : 0), isTerminal(!n) {
     #ifdef __APPLE__
         CONFIG.loadFromFile("/Users/mitsuishikaito/my_quantum_simulator_with_gpu/config.yaml");
     #elif __linux__
@@ -25,24 +25,13 @@ QMDDEdge::QMDDEdge(complex<double> w, shared_ptr<QMDDNode> n)
     #else
         #error "Unsupported operating system"
     #endif
-    UniqueTable& table = UniqueTable::getInstance();
-    // auto existingNode = table.find(uniqueTableKey);
-    // if (existingNode == nullptr && n) table.insert(uniqueTableKey, n);
-    if (n) {
-        shared_ptr<QMDDNode> existingNode = table.find(uniqueTableKey);
-        if (existingNode == nullptr) {
-            table.insert(uniqueTableKey, n);
-            this->node = n;
-        } else {
-            this->node = existingNode;
-        }
-    }
-    this->depth = calculateDepth();
+    if (n) UniqueTable::getInstance().insert(this->uniqueTableKey, n);
+    this->depth = this->calculateDepth();
     // cout << "Edge created with weight: " << weight << " and uniqueTableKey: " << uniqueTableKey << " and isTerminal: " << isTerminal << endl;
 }
 
 QMDDEdge::QMDDEdge(double w, shared_ptr<QMDDNode> n)
-    : weight(complex<double>(w, .0)), uniqueTableKey(n ? calculation::generateUniqueTableKey(n) : 0), node(n), isTerminal(!n) {
+    : weight(complex<double>(w, .0)), uniqueTableKey(n ? calculation::generateUniqueTableKey(n) : 0), isTerminal(!n) {
     #ifdef __APPLE__
         CONFIG.loadFromFile("/Users/mitsuishikaito/my_quantum_simulator_with_gpu/config.yaml");
     #elif __linux__
@@ -50,19 +39,8 @@ QMDDEdge::QMDDEdge(double w, shared_ptr<QMDDNode> n)
     #else
         #error "Unsupported operating system"
     #endif
-    UniqueTable& table = UniqueTable::getInstance();
-    // auto existingNode = table.find(uniqueTableKey);
-    // if (existingNode == nullptr && n) table.insert(uniqueTableKey, n);
-    if (n) {
-        auto existingNode = table.find(uniqueTableKey);
-        if (existingNode == nullptr) {
-            table.insert(uniqueTableKey, n);
-            this->node = n;
-        } else {
-            this->node = existingNode;
-        }
-    }
-    this->depth = calculateDepth();
+    if (n) UniqueTable::getInstance().insert(this->uniqueTableKey, n);
+    this->depth = this->calculateDepth();
     // cout << "Edge created with weight: " << weight << " and uniqueTableKey: " << uniqueTableKey << " and isTerminal: " << isTerminal << endl;
 }
 
@@ -75,8 +53,7 @@ QMDDEdge::QMDDEdge(complex<double> w, long long key)
     #else
         #error "Unsupported operating system"
     #endif
-    this->node = UniqueTable::getInstance().find(uniqueTableKey);
-    this->depth = calculateDepth();
+    this->depth = this->calculateDepth();
     // cout << "Edge created with weight: " << weight << " and uniqueTableKey: " << uniqueTableKey << " and isTerminal: " << isTerminal << endl;
 }
 
@@ -89,18 +66,19 @@ QMDDEdge::QMDDEdge(double w, long long key)
     #else
         #error "Unsupported operating system"
     #endif
-    this->node = UniqueTable::getInstance().find(uniqueTableKey);
-    this->depth = calculateDepth();
+    this->depth = this->calculateDepth();
     // cout << "Edge created with weight: " << weight << " and uniqueTableKey: " << uniqueTableKey << " and isTerminal: " << isTerminal << endl;
 }
 
 shared_ptr<QMDDNode> QMDDEdge::getStartNode() const {
-    return this->node;
+    return (uniqueTableKey == 0) ? nullptr : UniqueTable::getInstance().find(uniqueTableKey);
 }
 
 vector<complex<double>> QMDDEdge::getAllElementsForKet() {
     vector<complex<double>> result;
     stack<pair<shared_ptr<QMDDNode>, size_t>> nodeStack;
+
+    shared_ptr<QMDDNode> node = this->getStartNode();
 
     if (isTerminal) {
         result.push_back(weight);
@@ -155,10 +133,10 @@ ostream& operator<<(ostream& os, const QMDDEdge& edge) {
 }
 
 int QMDDEdge::calculateDepth() const {
-    if (this->isTerminal || this->uniqueTableKey ==  0 || this->node == nullptr) {
+    if (this->isTerminal || this->uniqueTableKey ==  0) {
         return 0;
     } else {
-        return 1 + this->node->edges[0][0].depth;
+        return 1 + this->getStartNode()->edges[0][0].depth;
     }
 }
 
@@ -173,8 +151,7 @@ QMDDNode::QMDDNode(const vector<vector<QMDDEdge>>& edges) : edges(edges) {
 
 QMDDNode& QMDDNode::operator=(QMDDNode&& other) noexcept {
     if (this != &other) {
-        edges = std::move(other.edges);
-        // ムーブされた後のオブジェクトが安全に破棄されるようにする
+        this->edges = std::move(other.edges);
         other.edges.clear();
     }
     return *this;
@@ -208,7 +185,7 @@ ostream& operator<<(ostream& os, const QMDDNode& node) {
 
 vector<complex<double>> QMDDNode::getWeights() const {
     vector<complex<double>> weights;
-        for (const auto& edgeRow : edges) {
+        for (const auto& edgeRow : this->edges) {
             for (const auto& edge : edgeRow) {
                 weights.push_back(edge.weight);
             }

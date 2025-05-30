@@ -82,6 +82,7 @@ namespace gate {
     QMDDGate Rx(double theta);
     QMDDGate Ry(double theta);
     QMDDGate Rz(double theta);
+    QMDDGate Rk(int k);
 
     /* Two-qubit interaction gates */
     QMDDGate Rxx(double phi);

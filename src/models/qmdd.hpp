@@ -43,11 +43,10 @@ ostream& operator<<(ostream& os, const QMDDVariant& variant);
 struct QMDDEdge{
     complex<double> weight;
     long long uniqueTableKey;
-    shared_ptr<QMDDNode> node;
     bool isTerminal;
     int depth;
 
-    QMDDEdge(complex<double> w = {0.0, 0.0}, shared_ptr<QMDDNode> n = nullptr);
+    QMDDEdge(complex<double> w = {.0, .0}, shared_ptr<QMDDNode> n = nullptr);
     QMDDEdge(double w, shared_ptr<QMDDNode> n = nullptr);
     QMDDEdge(complex<double> w, long long key);
     QMDDEdge(double w, long long key);
