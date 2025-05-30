@@ -47,10 +47,10 @@ void randomRotateDeep(size_t numQubits, size_t numGates = 200) {
 
         switch (gateType) {
             case 0:
-                circuit.addRx(numQubits - 1, phase);
+                circuit.addRx({{numQubits - 1, phase}});
                 break;
             case 1:
-                circuit.addRy(numQubits - 1, phase);
+                circuit.addRy({{numQubits - 1, phase}});
                 break;
         }
     }
