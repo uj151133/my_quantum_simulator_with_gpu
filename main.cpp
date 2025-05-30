@@ -32,7 +32,7 @@ void execute() {
 
     QuantumCircuit circuit(numQubits);
     for ([[maybe_unused]] int _ = 0; _ < numGates; ++_) {
-        circuit.addAllH();
+        circuit.addAllX();
     }
     // circuit.addToff({0, 1}, 3);
     // circuit.simulate();
