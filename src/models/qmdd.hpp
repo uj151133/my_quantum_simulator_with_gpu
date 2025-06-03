@@ -58,7 +58,7 @@ struct QMDDEdge{
     bool operator==(const QMDDEdge& other) const;
     bool operator!=(const QMDDEdge& other) const;
     friend ostream& operator<<(ostream& os, const QMDDEdge& edge);
-    int calculateDepth() const;
+    void calculateDepth();
 };
 
 struct QMDDNode {

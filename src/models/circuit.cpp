@@ -69,8 +69,7 @@ void QuantumCircuit::addX(vector<int> qubitIndices) {
 void QuantumCircuit::addAllX() {
     vector<QMDDEdge> edges(this->numQubits, gate::X().getInitialEdge());
     QMDDGate result = accumulate(edges.rbegin() + 1, edges.rend(), edges.back(), [](const QMDDEdge& accumulated, const QMDDEdge& current) {
-        return mathUtils::kron(current, accumulated, 0);
-        // return mathUtils::kronForDiagonal(current, accumulated);
+        return mathUtils::kron(current, accumulated);
     });
     this->gateQueue.push(result);
     return;
@@ -691,53 +690,53 @@ void QuantumCircuit::addMCT(const vector<int>& controlIndexes, int targetIndex) 
         int minIndex = min(*min_element(sortedControlIndexes.begin(), sortedControlIndexes.end()), targetIndex);
         int maxIndex = max(*max_element(sortedControlIndexes.begin(), sortedControlIndexes.end()), targetIndex);
         vector<QMDDEdge> edges(minIndex, identityEdge);
-        vector<QMDDEdge> partialToff(sortedControlIndexes.size() + 1, identityEdge);
+        vector<QMDDEdge> partialMCT(sortedControlIndexes.size() + 1, identityEdge);
         for (int i = maxIndex; i >= minIndex; i--) {
             if (i == targetIndex) {
                 if (i == maxIndex) {
-                    partialToff[partialToff.size() - 1] = gate::X().getInitialEdge();
+                    partialMCT[partialMCT.size() - 1] = gate::X().getInitialEdge();
                 }else {
-                    for (int j = 0; j < partialToff.size() - 1; j++) {
-                        partialToff[j] = mathUtils::kron(identityEdge, partialToff[j]);
+                    for (int j = 0; j < partialMCT.size() - 1; j++) {
+                        partialMCT[j] = mathUtils::kron(identityEdge, partialMCT[j]);
                     }
-                    partialToff[partialToff.size() - 1] = mathUtils::kron(gate::X().getInitialEdge(), partialToff[partialToff.size() - 1]);
+                    partialMCT[partialMCT.size() - 1] = mathUtils::kron(gate::X().getInitialEdge(), partialMCT[partialMCT.size() - 1]);
                 }
             } else {
                 auto idx = ranges::find(sortedControlIndexes, i);
                 if (idx != sortedControlIndexes.end()) {
                     int j = static_cast<int>(distance(sortedControlIndexes.begin(), idx));
-                            for (int k = 0; k < partialToff.size(); k++) {
+                            for (int k = 0; k < partialMCT.size(); k++) {
                                 if (i == maxIndex) {
                                     if (k == j) {
-                                        partialToff[k] = braketZero;
+                                        partialMCT[k] = braketZero;
                                     } else if (k > j) {
-                                        partialToff[k] = braketOne;
+                                        partialMCT[k] = braketOne;
                                     } else if (k < j) {
-                                        partialToff[k] = identityEdge;
+                                        partialMCT[k] = identityEdge;
                                     }
                                 } else {
                                     if (k == j) {
-                                        partialToff[k] = mathUtils::kron(braketZero, partialToff[k]);
+                                        partialMCT[k] = mathUtils::kron(braketZero, partialMCT[k]);
                                     } else if (k > j) {
-                                        partialToff[k] = mathUtils::kron(braketOne, partialToff[k]);
+                                        partialMCT[k] = mathUtils::kron(braketOne, partialMCT[k]);
                                     } else if (k < j) {
-                                        partialToff[k] = mathUtils::kron(identityEdge, partialToff[k]);
+                                        partialMCT[k] = mathUtils::kron(identityEdge, partialMCT[k]);
                                     }
                                 }
                             }
                 } else {
                     if (i != maxIndex) {
-                        for (int j = 0; j < partialToff.size(); j++) {
-                            partialToff[j] = mathUtils::kron(identityEdge, partialToff[j]);
+                        for (int j = 0; j < partialMCT.size(); j++) {
+                            partialMCT[j] = mathUtils::kron(identityEdge, partialMCT[j]);
                         }
                     }
                 }
             }
         }
-        QMDDEdge customToff = accumulate(partialToff.begin() + 1, partialToff.end(), partialToff[0], [](const QMDDEdge& accumulated, const QMDDEdge& current) {
+        QMDDEdge customMCT = accumulate(partialMCT.begin() + 1, partialMCT.end(), partialMCT[0], [](const QMDDEdge& accumulated, const QMDDEdge& current) {
             return mathUtils::add(accumulated, current);
         });
-        edges.push_back(customToff);
+        edges.push_back(customMCT);
         QMDDGate result = accumulate(edges.rbegin() + 1, edges.rend(), edges.back(), [](const QMDDEdge& accumulated, const QMDDEdge& current) {
             return mathUtils::kron(current, accumulated, 0);
         });

@@ -17,7 +17,7 @@ ostream& operator<<(ostream& os, const QMDDVariant& variant) {
 /////////////////////////////////////
 
 QMDDEdge::QMDDEdge(complex<double> w, shared_ptr<QMDDNode> n)
-    : weight(w), uniqueTableKey(n ? calculation::generateUniqueTableKey(n) : 0), isTerminal(!n) {
+    : weight(w), uniqueTableKey((n && w != complex<double>(.0, .0)) ? calculation::generateUniqueTableKey(n) : 0), isTerminal(!n) {
     #ifdef __APPLE__
         CONFIG.loadFromFile("/Users/mitsuishikaito/my_quantum_simulator_with_gpu/config.yaml");
     #elif __linux__
@@ -25,13 +25,13 @@ QMDDEdge::QMDDEdge(complex<double> w, shared_ptr<QMDDNode> n)
     #else
         #error "Unsupported operating system"
     #endif
-    if (n) UniqueTable::getInstance().insert(this->uniqueTableKey, n);
-    this->depth = this->calculateDepth();
+    if (this->uniqueTableKey) UniqueTable::getInstance().insert(this->uniqueTableKey, n);
+    this->calculateDepth();
     // cout << "Edge created with weight: " << weight << " and uniqueTableKey: " << uniqueTableKey << " and isTerminal: " << isTerminal << endl;
 }
 
 QMDDEdge::QMDDEdge(double w, shared_ptr<QMDDNode> n)
-    : weight(complex<double>(w, .0)), uniqueTableKey(n ? calculation::generateUniqueTableKey(n) : 0), isTerminal(!n) {
+    : weight(complex<double>(w, .0)), uniqueTableKey((n && w != .0) ? calculation::generateUniqueTableKey(n) : 0), isTerminal(!n) {
     #ifdef __APPLE__
         CONFIG.loadFromFile("/Users/mitsuishikaito/my_quantum_simulator_with_gpu/config.yaml");
     #elif __linux__
@@ -39,13 +39,13 @@ QMDDEdge::QMDDEdge(double w, shared_ptr<QMDDNode> n)
     #else
         #error "Unsupported operating system"
     #endif
-    if (n) UniqueTable::getInstance().insert(this->uniqueTableKey, n);
-    this->depth = this->calculateDepth();
+    if (this->uniqueTableKey) UniqueTable::getInstance().insert(this->uniqueTableKey, n);
+    this->calculateDepth();
     // cout << "Edge created with weight: " << weight << " and uniqueTableKey: " << uniqueTableKey << " and isTerminal: " << isTerminal << endl;
 }
 
 QMDDEdge::QMDDEdge(complex<double> w, long long key)
-    : weight(w), uniqueTableKey(key), isTerminal(key == 0) {
+    : weight(w), uniqueTableKey(w != complex<double>(.0, .0) ? key : 0), isTerminal(key == 0) {
     #ifdef __APPLE__
         CONFIG.loadFromFile("/Users/mitsuishikaito/my_quantum_simulator_with_gpu/config.yaml");
     #elif __linux__
@@ -53,12 +53,12 @@ QMDDEdge::QMDDEdge(complex<double> w, long long key)
     #else
         #error "Unsupported operating system"
     #endif
-    this->depth = this->calculateDepth();
+    this->calculateDepth();
     // cout << "Edge created with weight: " << weight << " and uniqueTableKey: " << uniqueTableKey << " and isTerminal: " << isTerminal << endl;
 }
 
 QMDDEdge::QMDDEdge(double w, long long key)
-    : weight(complex<double>(w, .0)), uniqueTableKey(key), isTerminal(key == 0) {
+    : weight(complex<double>(w, .0)), uniqueTableKey(w != .0 ? key : 0), isTerminal(key == 0) {
     #ifdef __APPLE__
         CONFIG.loadFromFile("/Users/mitsuishikaito/my_quantum_simulator_with_gpu/config.yaml");
     #elif __linux__
@@ -66,7 +66,7 @@ QMDDEdge::QMDDEdge(double w, long long key)
     #else
         #error "Unsupported operating system"
     #endif
-    this->depth = this->calculateDepth();
+    this->calculateDepth();
     // cout << "Edge created with weight: " << weight << " and uniqueTableKey: " << uniqueTableKey << " and isTerminal: " << isTerminal << endl;
 }
 
@@ -108,11 +108,10 @@ vector<complex<double>> QMDDEdge::getAllElementsForKet() {
 }
 
 bool QMDDEdge::operator==(const QMDDEdge& other) const {
-    UniqueTable& table = UniqueTable::getInstance();
-    if (weight != other.weight) return false;
-    if (isTerminal != other.isTerminal) return false;
-    if (!isTerminal && uniqueTableKey != other.uniqueTableKey) return false;
-    if (!isTerminal && table.find(uniqueTableKey) != table.find(other.uniqueTableKey)) return false;
+    if (this->weight != other.weight) return false;
+    if (this->isTerminal != other.isTerminal) return false;
+    if (this->uniqueTableKey != other.uniqueTableKey) return false;
+    if (this->getStartNode() != other.getStartNode()) return false;
     return true;
 }
 
@@ -132,12 +131,20 @@ ostream& operator<<(ostream& os, const QMDDEdge& edge) {
     return os;
 }
 
-int QMDDEdge::calculateDepth() const {
+void QMDDEdge::calculateDepth() {
     if (this->isTerminal || this->uniqueTableKey ==  0) {
-        return 0;
+        this->depth = 0;
     } else {
-        return 1 + this->getStartNode()->edges[0][0].depth;
+        vector<int> depths;
+        for (const auto& edgeRow : this->getStartNode()->edges) {
+            for (const auto& edge : edgeRow) {
+                depths.push_back(edge.depth);
+            }
+        }
+        // return 1 + this->getStartNode()->edges[0][0].depth;
+        this->depth = 1 + *max_element(depths.begin(), depths.end());
     }
+    return;
 }
 
 /////////////////////////////////////
@@ -146,8 +153,7 @@ int QMDDEdge::calculateDepth() const {
 //
 /////////////////////////////////////
 
-QMDDNode::QMDDNode(const vector<vector<QMDDEdge>>& edges) : edges(edges) {
-}
+QMDDNode::QMDDNode(const vector<vector<QMDDEdge>>& edges) : edges(edges) {}
 
 QMDDNode& QMDDNode::operator=(QMDDNode&& other) noexcept {
     if (this != &other) {
@@ -158,11 +164,11 @@ QMDDNode& QMDDNode::operator=(QMDDNode&& other) noexcept {
 }
 
 bool QMDDNode::operator==(const QMDDNode& other) const {
-    if (edges.size() != other.edges.size()) return false;
+    if (this->edges.size() != other.edges.size()) return false;
     for (size_t i = 0; i < edges.size(); ++i) {
-        if (edges[i].size() != other.edges[i].size()) return false;
+        if (this->edges[i].size() != other.edges[i].size()) return false;
         for (size_t j = 0; j < edges[i].size(); ++j) {
-            if (edges[i][j] != other.edges[i][j]) return false;
+            if (this->edges[i][j] != other.edges[i][j]) return false;
         }
     }
     return true;
@@ -185,11 +191,11 @@ ostream& operator<<(ostream& os, const QMDDNode& node) {
 
 vector<complex<double>> QMDDNode::getWeights() const {
     vector<complex<double>> weights;
-        for (const auto& edgeRow : this->edges) {
-            for (const auto& edge : edgeRow) {
-                weights.push_back(edge.weight);
-            }
+    for (const auto& edgeRow : this->edges) {
+        for (const auto& edge : edgeRow) {
+            weights.push_back(edge.weight);
         }
+    }
     return weights;
 }
 
@@ -213,7 +219,7 @@ QMDDEdge QMDDGate::getInitialEdge() const {
 }
 
 bool QMDDGate::operator==(const QMDDGate& other) const {
-    return initialEdge == other.initialEdge;
+    return this->initialEdge == other.initialEdge;
 }
 
 bool QMDDGate::operator!=(const QMDDGate& other) const {
@@ -243,7 +249,7 @@ QMDDEdge QMDDState::getInitialEdge() const {
 }
 
 bool QMDDState::operator==(const QMDDState& other) const {
-    return initialEdge == other.initialEdge;
+    return this->initialEdge == other.initialEdge;
 }
 
 bool QMDDState::operator!=(const QMDDState& other) const {
