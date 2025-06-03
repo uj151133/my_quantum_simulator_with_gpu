@@ -22,17 +22,6 @@ public class OperationCache {
         return cache.getIfPresent(key);
     }
 
-    // public static native void nativeInsert(long key, double real, double imag, long uniqueTableKey);
-    // public static native double[] nativeFind(long key);
-
-    // public static void doNativeInsert(long key, double real, double imag, long uniqueTableKey) {
-    //     OperationResult result = new OperationResult(real, imag, uniqueTableKey);
-    //     getInstance().insert(key, result);
-    // }
-
-    // public static OperationResult doNativeFind(long key) {
-    //     return getInstance().find(key);
-    // }
     public boolean contains(long key) {
         return cache.getIfPresent(key) != null;
     }
