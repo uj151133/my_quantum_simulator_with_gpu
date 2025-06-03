@@ -6,7 +6,7 @@ public class OperationCache {
 
     private OperationCache() {
         this.cache = Caffeine.newBuilder()
-                .maximumSize(1048576)
+                .maximumSize(1_048_576)
                 .build();
     }
 
@@ -22,15 +22,34 @@ public class OperationCache {
         return cache.getIfPresent(key);
     }
 
-    public static native void nativeInsert(long key, double real, double imag, long uniqueTableKey);
-    public static native double[] nativeFind(long key);
+    // public static native void nativeInsert(long key, double real, double imag, long uniqueTableKey);
+    // public static native double[] nativeFind(long key);
 
-    public static void doNativeInsert(long key, double real, double imag, long uniqueTableKey) {
-        OperationResult result = new OperationResult(real, imag, uniqueTableKey);
-        getInstance().insert(key, result);
+    // public static void doNativeInsert(long key, double real, double imag, long uniqueTableKey) {
+    //     OperationResult result = new OperationResult(real, imag, uniqueTableKey);
+    //     getInstance().insert(key, result);
+    // }
+
+    // public static OperationResult doNativeFind(long key) {
+    //     return getInstance().find(key);
+    // }
+    public boolean contains(long key) {
+        return cache.getIfPresent(key) != null;
+    }
+    
+    public void invalidate(long key) {
+        cache.invalidate(key);
+    }
+    
+    public void clear() {
+        cache.invalidateAll();
+    }
+    
+    public long size() {
+        return cache.estimatedSize();
     }
 
-    public static OperationResult doNativeFind(long key) {
-        return getInstance().find(key);
+    public void printStats() {
+        System.out.println("Cache size: " + cache.estimatedSize());
     }
 }
