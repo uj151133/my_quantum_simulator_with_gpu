@@ -576,6 +576,44 @@ QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
     return result;
 }
 
+QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1) {
+    jniUtils& cache = jniUtils::getInstance();
+    long long operationCacheKey = calculation::generateOperationCacheKey(OperationKey(e0, OperationType::KRONECKER, e1));
+    OperationResult existingAnswer = cache.jniFind(operationCacheKey);
+    if (existingAnswer != OperationResult{.0, 0}) {
+        // cout << "\033[1;36mCache hit!\033[0m" << endl;
+        QMDDEdge answer = QMDDEdge(existingAnswer.first, existingAnswer.second);
+        if (answer.uniqueTableKey != 0) {
+        //     // cout << "\033[1;36mCache hit!\033[0m" << endl;
+            return answer;
+        }
+    }
+    // cout << "\033[1;35mCache miss!\033[0m" << endl;
+
+    if (e0.isTerminal) {
+        if (e0.weight == .0) {
+            return e0;
+        }else if (e0.weight == 1.0) {
+            return e1;
+        } else {
+            return QMDDEdge(e0.weight * e1.weight, e1.uniqueTableKey);
+        }
+    }
+    shared_ptr<QMDDNode> n0 = e0.getStartNode();
+    shared_ptr<QMDDNode> n1 = e1.getStartNode();
+    vector<vector<QMDDEdge>> z(n0->edges.size(), vector<QMDDEdge>(n1->edges[0].size()));
+    for (size_t i = 0; i < n0->edges.size(); i++) {
+        for (size_t j = 0; j < n0->edges[i].size(); j++) {
+            z[i][j] = QMDDEdge(n0->edges[i][j].weight, e1.uniqueTableKey);
+        }
+    }
+
+    QMDDEdge result = QMDDEdge(e0.weight * e1.weight, make_shared<QMDDNode>(z));
+    cache.jniInsert(operationCacheKey, result.weight, result.uniqueTableKey);
+    return result;
+}
+
+
 QMDDEdge mathUtils::kronForDiagonal(const QMDDEdge& e0, const QMDDEdge& e1) {
 
     jniUtils& cache = jniUtils::getInstance();
@@ -657,9 +695,7 @@ QMDDEdge mathUtils::kronForDiagonal(const QMDDEdge& e0, const QMDDEdge& e1) {
 QMDDEdge mathUtils::dyad(const QMDDEdge& e0, const QMDDEdge& e1) {
     shared_ptr<QMDDNode> n0 = e0.getStartNode();
     shared_ptr<QMDDNode> n1 = e1.getStartNode();
-    // bool allWeightsAreZero = true;
     vector<vector<QMDDEdge>> z(n0->edges.size(), vector<QMDDEdge>(n1->edges[0].size()));
-    // complex<double> tmpWeight = .0;
     for (size_t i = 0; i < n0->edges.size(); i++) {
         for (size_t j = 0; j < n1->edges[0].size(); j++) {
             z[i][j] = QMDDEdge(n0->edges[i][0].weight * n1->edges[0][j].weight, 0);
