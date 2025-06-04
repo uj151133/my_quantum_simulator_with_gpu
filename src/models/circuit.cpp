@@ -186,7 +186,7 @@ void QuantumCircuit::addH(vector<int> qubitIndices) {
 void QuantumCircuit::addAllH() {
     vector<QMDDEdge> edges(numQubits, gate::H().getInitialEdge());
     QMDDGate result = accumulate(edges.rbegin() + 1, edges.rend(), edges.back(), [](const QMDDEdge& accumulated, const QMDDEdge& current) {
-        return mathUtils::kron(current, accumulated, 0);
+        return mathUtils::kron(current, accumulated);
     });
     this->gateQueue.push(result);
     return;
