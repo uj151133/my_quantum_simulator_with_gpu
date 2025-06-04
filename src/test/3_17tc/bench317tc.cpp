@@ -3,7 +3,7 @@
 void bench317tc() {
     QMDDState ket_0 = state::Ket0();
     QuantumCircuit circuit(3);
-    circuit.addX({2});
+    circuit.addX(2);
     circuit.addCX(0, 2);
     circuit.addCX(2, 1);
     array<int, 2> controlIndexes = {1, 2};
