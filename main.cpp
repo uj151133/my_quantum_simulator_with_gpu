@@ -27,13 +27,15 @@ void execute() {
 
     // OperationCache& cache = OperationCache::getInstance();
 
-    int numQubits = 3;
-    int numGates = 1000;
+    int numQubits = 2;
+    int numGates = 200;
 
-    QuantumCircuit circuit(numQubits);
-    for ([[maybe_unused]] int _ = 0; _ < numGates; ++_) {
-        circuit.addAllX();
-    }
+    random2(numQubits, numGates);
+
+    // QuantumCircuit circuit(numQubits);
+    // for ([[maybe_unused]] int _ = 0; _ < numGates; ++_) {
+    //     circuit.addAllX();
+    // }
     // circuit.addToff({0, 1}, 3);
     // circuit.simulate();
 
