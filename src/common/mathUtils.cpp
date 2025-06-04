@@ -1,9 +1,9 @@
 #include "mathUtils.hpp"
 
 QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
-    jniUtils& cache = jniUtils::getInstance();
+    OperationCacheClient& cache = OperationCacheClient::getInstance();
     long long operationCacheKey = calculation::generateOperationCacheKey(OperationKey(e0, OperationType::MUL, e1));
-    OperationResult existingAnswer = cache.jniFind(operationCacheKey);
+    OperationResult existingAnswer = cache.find(operationCacheKey);
     if (existingAnswer != OperationResult{.0, 0}) {
         // cout << "\033[1;36mCache hit!\033[0m" << endl;
         QMDDEdge answer = QMDDEdge(existingAnswer.first, existingAnswer.second);
@@ -133,19 +133,19 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
     } else {
         result = QMDDEdge(tmpWeight, make_shared<QMDDNode>(z));
     }
-    cache.jniInsert(operationCacheKey, result.weight, result.uniqueTableKey);
+    cache.insert(operationCacheKey, OperationResult(result.weight, result.uniqueTableKey));
     return result;
 }
 
 QMDDEdge mathUtils::mulForDiagonal(const QMDDEdge& e0, const QMDDEdge& e1) {
 
-    jniUtils& cache = jniUtils::getInstance();
+    OperationCacheClient& cache = OperationCacheClient::getInstance();
     long long operationCacheKey = calculation::generateOperationCacheKey(
         OperationKey(e0, OperationType::MUL, e1)
     );
 
     auto cacheFuture = threadPool.enqueue([&cache, operationCacheKey]() -> QMDDEdge {
-        OperationResult existing = cache.jniFind(operationCacheKey);
+        OperationResult existing = cache.find(operationCacheKey);
         if (existing != OperationResult{.0, 0}) {
             QMDDEdge answer{ existing.first, existing.second };
             if (answer.uniqueTableKey!= 0) {
@@ -203,7 +203,7 @@ QMDDEdge mathUtils::mulForDiagonal(const QMDDEdge& e0, const QMDDEdge& e1) {
             QMDDEdge computed = computeFuture.get();
 
             threadPool.enqueue([&cache, operationCacheKey, computed]() {
-                cache.jniInsert(operationCacheKey, computed.weight, computed.uniqueTableKey);
+                cache.insert(operationCacheKey, OperationResult(computed.weight, computed.uniqueTableKey));
             });
             return computed;
         }
@@ -211,7 +211,7 @@ QMDDEdge mathUtils::mulForDiagonal(const QMDDEdge& e0, const QMDDEdge& e1) {
         if (computeFuture.wait_for(std::chrono::milliseconds(0)) == std::future_status::ready) {
             QMDDEdge computed = computeFuture.get();
             threadPool.enqueue([&cache, operationCacheKey, computed]() {
-                cache.jniInsert(operationCacheKey, computed.weight, computed.uniqueTableKey);
+                cache.insert(operationCacheKey, OperationResult(computed.weight, computed.uniqueTableKey));
             });
             return computed;
         }
@@ -219,9 +219,9 @@ QMDDEdge mathUtils::mulForDiagonal(const QMDDEdge& e0, const QMDDEdge& e1) {
 }
 
 QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
-    jniUtils& cache = jniUtils::getInstance();
+    OperationCacheClient& cache = OperationCacheClient::getInstance();
     long long operationCacheKey = calculation::generateOperationCacheKey(OperationKey(e0, OperationType::ADD, e1));
-    OperationResult existingAnswer = cache.jniFind(operationCacheKey);
+    OperationResult existingAnswer = cache.find(operationCacheKey);
     if (existingAnswer != OperationResult{.0, 0}) {
         // cout << "\033[1;36mCache hit!\033[0m" << endl;
         QMDDEdge answer = QMDDEdge(existingAnswer.first, existingAnswer.second);
@@ -379,18 +379,18 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
     } else {
         result = QMDDEdge(tmpWeight, make_shared<QMDDNode>(z));
     }
-    cache.jniInsert(operationCacheKey, result.weight, result.uniqueTableKey);
+    cache.insert(operationCacheKey, OperationResult(result.weight, result.uniqueTableKey));
     return result;
 }
 
 QMDDEdge mathUtils::addForDiagonal(const QMDDEdge& e0, const QMDDEdge& e1) {
-    jniUtils& cache = jniUtils::getInstance();
+    OperationCacheClient& cache = OperationCacheClient::getInstance();
     long long operationCacheKey = calculation::generateOperationCacheKey(
         OperationKey(e0, OperationType::ADD, e1)
     );
 
     auto cacheFuture = threadPool.enqueue([&cache, operationCacheKey]() -> QMDDEdge {
-        OperationResult existing = cache.jniFind(operationCacheKey);
+        OperationResult existing = cache.find(operationCacheKey);
         if (existing != OperationResult{.0, 0}) {
             QMDDEdge answer{ existing.first, existing.second };
             if (answer.uniqueTableKey != 0) {
@@ -447,7 +447,7 @@ QMDDEdge mathUtils::addForDiagonal(const QMDDEdge& e0, const QMDDEdge& e1) {
             QMDDEdge computed = computeFuture.get();
 
             threadPool.enqueue([&cache, operationCacheKey, computed]() {
-                cache.jniInsert(operationCacheKey, computed.weight, computed.uniqueTableKey);
+                cache.insert(operationCacheKey, OperationResult(computed.weight, computed.uniqueTableKey));
             });
             return computed;
         }
@@ -455,7 +455,7 @@ QMDDEdge mathUtils::addForDiagonal(const QMDDEdge& e0, const QMDDEdge& e1) {
         if (computeFuture.wait_for(std::chrono::milliseconds(0)) == std::future_status::ready) {
             QMDDEdge computed = computeFuture.get();
             threadPool.enqueue([&cache, operationCacheKey, computed]() {
-                cache.jniInsert(operationCacheKey, computed.weight, computed.uniqueTableKey);
+                cache.insert(operationCacheKey, OperationResult(computed.weight, computed.uniqueTableKey));
             });
             return computed;
         }
@@ -463,9 +463,9 @@ QMDDEdge mathUtils::addForDiagonal(const QMDDEdge& e0, const QMDDEdge& e1) {
 }
 
 QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
-    jniUtils& cache = jniUtils::getInstance();
+    OperationCacheClient& cache = OperationCacheClient::getInstance();
     long long operationCacheKey = calculation::generateOperationCacheKey(OperationKey(e0, OperationType::KRONECKER, e1));
-    OperationResult existingAnswer = cache.jniFind(operationCacheKey);
+    OperationResult existingAnswer = cache.find(operationCacheKey);
     if (existingAnswer != OperationResult{.0, 0}) {
         // cout << "\033[1;36mCache hit!\033[0m" << endl;
         QMDDEdge answer = QMDDEdge(existingAnswer.first, existingAnswer.second);
@@ -572,14 +572,14 @@ QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
     } else {
         result = QMDDEdge(e0.weight * tmpWeight, make_shared<QMDDNode>(z));
     }
-    cache.jniInsert(operationCacheKey, result.weight, result.uniqueTableKey);
+    cache.insert(operationCacheKey, OperationResult(result.weight, result.uniqueTableKey));
     return result;
 }
 
 QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1) {
-    jniUtils& cache = jniUtils::getInstance();
+    OperationCacheClient& cache = OperationCacheClient::getInstance();
     long long operationCacheKey = calculation::generateOperationCacheKey(OperationKey(e0, OperationType::KRONECKER, e1));
-    OperationResult existingAnswer = cache.jniFind(operationCacheKey);
+    OperationResult existingAnswer = cache.find(operationCacheKey);
     if (existingAnswer != OperationResult{.0, 0}) {
         // cout << "\033[1;36mCache hit!\033[0m" << endl;
         QMDDEdge answer = QMDDEdge(existingAnswer.first, existingAnswer.second);
@@ -609,20 +609,20 @@ QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1) {
     }
 
     QMDDEdge result = QMDDEdge(e0.weight * e1.weight, make_shared<QMDDNode>(z));
-    cache.jniInsert(operationCacheKey, result.weight, result.uniqueTableKey);
+    cache.insert(operationCacheKey, OperationResult(result.weight, result.uniqueTableKey));
     return result;
 }
 
 
 QMDDEdge mathUtils::kronForDiagonal(const QMDDEdge& e0, const QMDDEdge& e1) {
 
-    jniUtils& cache = jniUtils::getInstance();
+    OperationCacheClient& cache = OperationCacheClient::getInstance();
     long long operationCacheKey = calculation::generateOperationCacheKey(
         OperationKey(e0, OperationType::KRONECKER, e1)
     );
 
     auto cacheFuture = threadPool.enqueue([&cache, operationCacheKey]() -> QMDDEdge {
-        OperationResult existing = cache.jniFind(operationCacheKey);
+        OperationResult existing = cache.find(operationCacheKey);
         if (existing != OperationResult{.0, 0}) {
             QMDDEdge answer{ existing.first, existing.second };
             if (answer.uniqueTableKey != 0) {
@@ -677,7 +677,7 @@ QMDDEdge mathUtils::kronForDiagonal(const QMDDEdge& e0, const QMDDEdge& e1) {
             QMDDEdge computed = computeFuture.get();
 
             // threadPool.enqueue([&cache, operationCacheKey, computed]() {
-            //     cache.jniInsert(operationCacheKey, computed.weight, computed.uniqueTableKey);
+            //     cache.insert(operationCacheKey, OperationResult(computed.weight, computed.uniqueTableKey));
             // });
             return computed;
         }
@@ -685,7 +685,7 @@ QMDDEdge mathUtils::kronForDiagonal(const QMDDEdge& e0, const QMDDEdge& e1) {
         if (computeFuture.wait_for(std::chrono::milliseconds(0)) == std::future_status::ready) {
             QMDDEdge computed = computeFuture.get();
             // threadPool.enqueue([&cache, operationCacheKey, computed]() {
-            //     cache.jniInsert(operationCacheKey, computed.weight, computed.uniqueTableKey);
+            //     cache.insert(operationCacheKey, OperationResult(computed.weight, computed.uniqueTableKey));
             // });
             return computed;
         }

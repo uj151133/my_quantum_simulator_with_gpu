@@ -142,7 +142,7 @@ endif()
 
 configure_file(${CMAKE_SOURCE_DIR}/config.yaml ${CMAKE_BINARY_DIR}/config.yaml COPYONLY)
 
-file(GLOB SOURCES "src/models/*.cpp" "src/common/*.cpp" "src/modules/*.cpp" "src/test/*/*.cpp" )
+file(GLOB SOURCES "src/models/*.cpp" "src/common/*.cpp" "src/modules/*.cpp" "src/test/*/*.cpp" "src/java/*.cpp")
 
 
 # 通常のC++実行ファイルを追加
@@ -160,6 +160,7 @@ target_link_libraries(qmdd_sim PRIVATE
     ${JVM_LIB_PATH}
     xxhash
     TBB::tbb
+    dl
 )
 
 # make run ターゲットの追加
@@ -172,7 +173,7 @@ add_custom_target(run
 
 # make debug ターゲットの追加
 add_custom_target(debug
-    COMMAND lldb --file ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qmdd_sim
+    COMMAND ${CMAKE_COMMAND} -E env DYLD_LIBRARY_PATH=/opt/homebrew/Cellar/openjdk@21/21.0.7/libexec/openjdk.jdk/Contents/Home/lib/server:$ENV{DYLD_LIBRARY_PATH} lldb --file ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qmdd_sim
     DEPENDS qmdd_sim
     WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
     COMMENT "Debugging the application with lldb ..."

@@ -6,7 +6,6 @@
 
 
 #include "src/common/config.hpp"
-#include "src/common/jniUtils.hpp"
 #include "src/models/qmdd.hpp"
 #include "src/common/constant.hpp"
 #include "src/models/gate.hpp"
@@ -58,14 +57,31 @@ int main() {
         #error "Unsupported operating system"
     #endif
 
+    try {
+        cout << "Initializing OperationCacheClient..." << endl;
+        OperationCacheClient::initialize("/Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/java/liboperation-cache.dylib");
+        
+        cout << "Getting instance..." << endl;
+        OperationCacheClient& client = OperationCacheClient::getInstance();
+        
+        cout << "Client instance obtained successfully" << endl;
+        
+        // size()の呼び出しを有効化してテスト
+        int64_t cache_size = client.size();
+        cout << "Cache size: " << cache_size << endl;
+        
+        cout << "Program completed successfully" << endl;
+        
+    } catch (const std::exception& e) {
+        cerr << "Error: " << e.what() << endl;
+        return 1;
+    } catch (...) {
+        cerr << "Unknown error occurred" << endl;
+        return 1;
+    }
 
     // int n_threads = std::thread::hardware_concurrency();
 
-    // JNIEnv* env = nullptr;
-    // if (!initJvm("./src/java", "./src/java/caffeine-3.2.0.jar", &env)) {
-    //     std::cerr << "JVM起動失敗" << std::endl;
-    //     return 1;
-    // }
     // std::cout << "Main thread ID: " << std::this_thread::get_id() << std::endl;
 
 
@@ -73,18 +89,10 @@ int main() {
     // std::cout << "Total unique threads used: " << threadIds.size() << std::endl;
 
 
-    measureExecutionTime(execute);
+    // measureExecutionTime(execute);
 
     // threadPool.join();
 
-    // detachJni();
-
-    // detachJniForAllThreads();
-
-    // if (env && g_OperationCache_cls) {
-    //     env->DeleteGlobalRef(g_OperationCache_cls);
-    //     g_OperationCache_cls = nullptr;
-    // }
 
     return 0;
 }

@@ -19,12 +19,11 @@
 #include "calculation.hpp"
 #include "../modules/threadPool.hpp"
 #include <tbb/task_group.h>
-#include "jniUtils.hpp"
 #include "constant.hpp"
+#include "../java/operationCacheClient.hpp"
 
 
 using namespace std;
-// using namespace Eigen;
 
 namespace mathUtils {
     QMDDEdge mul(const QMDDEdge& e0, const QMDDEdge& e1, int depth = 0);
