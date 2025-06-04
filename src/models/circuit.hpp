@@ -56,15 +56,23 @@ public:
     QuantumCircuit& operator=(QuantumCircuit&& other) = default;
 
     void addI(int qubitIndex);
-    void addPh(const vector<pair<int, double>>& qubitParams);
-    void addX(const vector<int>& qubitIndices);
+    void addPh(int qubitIndex, double delta);
+    void addPh(vector<pair<int, double>>& qubitParams);
+    void addX(int qubitIndex);
+    void addX(vector<int>& qubitIndices);
     void addAllX();
-    void addY(const vector<int>& qubitIndices);
-    void addZ(const vector<int>& qubitIndices);
-    void addS(const vector<int>& qubitIndices);
-    void addSdg(const vector<int>& qubitIndices);
-    void addV(const vector<int>& qubitIndices);
-    void addH(const vector<int>& qubitIndices);
+    void addY(int qubitIndex);
+    void addY(vector<int>& qubitIndices);
+    void addZ(int qubitIndex);
+    void addZ(vector<int>& qubitIndices);
+    void addS(int qubitIndex);
+    void addS(vector<int>& qubitIndices);
+    void addSdg(int qubitIndex);
+    void addSdg(vector<int>& qubitIndices);
+    void addV(int qubitIndex);
+    void addV(vector<int>& qubitIndices);
+    void addH(int qubitIndex);
+    void addH(vector<int>& qubitIndices);
     void addAllH();
     void addCX(int controlIndex, int targetIndex);
     void addVarCX(int controlIndex, int targetIndex);
@@ -72,15 +80,22 @@ public:
     void addDCNOT(int controlIndex, int targetIndex);
     void addSWAP(int qubitIndex1, int qubitIndex2);
     void addiSWAP(int qubitIndex1, int qubitIndex2);
-    void addP(const vector<pair<int, double>>& qubitParams);
-    void addT(const vector<int>& qubitIndices);
-    void addTdg(const vector<int>& qubitIndices);
+    void addP(int qubitIndex, double phi);
+    void addP(vector<pair<int, double>>& qubitParams);
+    void addT(int qubitIndex);
+    void addT(vector<int>& qubitIndices);
+    void addTdg(int qubitIndex);
+    void addTdg(vector<int>& qubitIndices);
     void addCP(int controlIndex, int targetIndex, double phi);
     void addCS(int controlIndex, int targetIndex);
-    void addR(const vector<pair<int, pair<double, double>>>& qubitParams);
-    void addRx(const vector<pair<int, double>>& qubitParams);
-    void addRy(const vector<pair<int, double>>& qubitParams);
-    void addRz(const vector<pair<int, double>>& qubitParams);
+    void addR(int qubitIndex, double theta, double phi);
+    void addR(vector<pair<int, pair<double, double>>>& qubitParams);
+    void addRx(int qubitIndex, double theta);
+    void addRx(vector<pair<int, double>>& qubitParams);
+    void addRy(int qubitIndex, double theta);
+    void addRy(vector<pair<int, double>>& qubitParams);
+    void addRz(int qubitIndex, double theta);
+    void addRz(vector<pair<int, double>>& qubitParams);
     void addRxx(int controlIndex, int targetIndex, double phi);
     void addRyy(int controlIndex, int targetIndex, double phi);
     void addRzz(int controlIndex, int targetIndex, double phi);
@@ -89,10 +104,14 @@ public:
     void addSquareiSWAP(int qubitIndex1, int qubitIndex2);
     void addSWAPalpha(int qubitIndex1, int qubitIndex2, double alpha);
     void addFREDKIN(int controlIndex, int targetIndex1, int targetIndex2);
-    void addU(const vector<pair<int, tuple<double, double, double>>>& qubitParams);
-    void addU1(const vector<pair<int, double>>& qubitParams);
-    void addU2(const vector<pair<int, pair<double, double>>>& qubitParams);
-    void addU3(const vector<pair<int, tuple<double, double, double>>>& qubitParams);
+    void addU(int qubitIndex, double theta, double phi, double lambda);
+    void addU(vector<pair<int, tuple<double, double, double>>>& qubitParams);
+    void addU1(int qubitIndex, double lambda);
+    void addU1(vector<pair<int, double>>& qubitParams);
+    void addU2(int qubitIndex, double phi, double lambda);
+    void addU2(vector<pair<int, pair<double, double>>>& qubitParams);
+    void addU3(int qubitIndex, double theta, double phi, double lambda);
+    void addU3(vector<pair<int, tuple<double, double, double>>>& qubitParams);
     void addBARENCO(int qubitIndex, double alpha, double phi, double theta);
     void addB(int qubitIndex);
     void addCSX(int controlIndex, int targetIndex);
@@ -122,6 +141,7 @@ public:
 
     void simulate();
     int measure(int qubitIndex);
+
 };
 
 #endif
