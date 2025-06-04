@@ -12,4 +12,7 @@ using namespace std;
 void randomRotate(size_t numQubits, size_t numGates);
 void randomRotateDeep(size_t numQubits, size_t numLayers);
 
+void random2(size_t numQubits, size_t numGates);
+void random4(size_t numQubits, size_t numGates);
+
 #endif

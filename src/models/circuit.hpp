@@ -49,13 +49,20 @@ public:
 
     void addI(int qubitIndex);
     void addPh(int qubitIndex, double delta);
+    void addX(int qubitIndex);
     void addX(vector<int> qubitIndices);
     void addAllX();
+    void addY(int qubitIndex);
     void addY(vector<int> qubitIndices);
+    void addZ(int qubitIndex);
     void addZ(vector<int> qubitIndices);
+    void addS(int qubitIndex);
     void addS(vector<int> qubitIndices);
+    void addSdg(int qubitIndex);
     void addSdg(vector<int> qubitIndices);
+    void addV(int qubitIndex);
     void addV(vector<int> qubitIndices);
+    void addH(int qubitIndex);
     void addH(vector<int> qubitIndices);
     void addAllH();
     void addCX(int controlIndex, int targetIndex);
@@ -109,7 +116,7 @@ public:
 
     void simulate();
     int measure(int qubitIndex);
-    // コンストラクタやその他のメンバ関数はここに追加できます
+
 };
 
 #endif
