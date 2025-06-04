@@ -28,7 +28,7 @@ void execute() {
     // OperationCache& cache = OperationCache::getInstance();
 
     int numQubits = 3;
-    int numGates = 200;
+    int numGates = 1000;
 
     QuantumCircuit circuit(numQubits);
     for ([[maybe_unused]] int _ = 0; _ < numGates; ++_) {
