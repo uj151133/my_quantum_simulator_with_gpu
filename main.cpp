@@ -3,10 +3,10 @@
 #include <string>
 #include <unistd.h>
 #include <getopt.h>
-
+#include <random>
 
 #include "src/common/config.hpp"
-#include "src/common/jniUtils.hpp"
+// #include "src/common/jniUtils.hpp"
 #include "src/models/qmdd.hpp"
 #include "src/common/constant.hpp"
 #include "src/models/gate.hpp"
@@ -27,19 +27,25 @@ void execute() {
 
     // OperationCache& cache = OperationCache::getInstance();
 
-    int numQubits = 2;
+    int numQubits = 10;
     int numGates = 200;
 
-    random2(numQubits, numGates);
+    random_device rd;
+    mt19937 gen(rd());
+    uniform_real_distribution<double> dis(0.0, 2.0 * M_PI);
+
+    // random2(numQubits, numGates);
 
     // QuantumCircuit circuit(numQubits);
     // for ([[maybe_unused]] int _ = 0; _ < numGates; ++_) {
-    //     circuit.addAllX();
+    //     double randomAngle = dis(gen);
+    //     // circuit.addP(numQubits - 1, randomAngle);
+    //     circuit.addRz(numQubits - 1, randomAngle);
     // }
-    // circuit.addToff({0, 1}, 3);
+    // // circuit.addToff({0, 1}, 3);
     // circuit.simulate();
 
-    // randomRotate(numQubits, numGates);
+    randomRotate4(numQubits, numGates);
     // int omega = std::pow(2, numQubits) - 1;
 
     // grover(numQubits, omega);
