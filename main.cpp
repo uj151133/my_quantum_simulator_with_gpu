@@ -27,14 +27,10 @@ void execute() {
 
     // OperationCache& cache = OperationCache::getInstance();
 
-    int numQubits = 10;
+    int numQubits = 17;
     int numGates = 200;
 
-    random_device rd;
-    mt19937 gen(rd());
-    uniform_real_distribution<double> dis(0.0, 2.0 * M_PI);
-
-    // random2(numQubits, numGates);
+    random4(numQubits, numGates);
 
     // QuantumCircuit circuit(numQubits);
     // for ([[maybe_unused]] int _ = 0; _ < numGates; ++_) {
