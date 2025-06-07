@@ -43,6 +43,8 @@ private:
     int numQubits;
     int getMaxDepth(optional<int> start, optional<int> end) const;
     void normalizeLayer();
+    void smartInsert(int qubitIndex, const Part& part);
+    int searchJOKER(int qubitIndex);
 
 public:
     QuantumCircuit(int numQubitits, QMDDState initialState);
@@ -70,9 +72,9 @@ public:
     void addSdg(int qubitIndex);
     void addSdg(vector<int>& qubitIndices);
     void addV(int qubitIndex);
-    void addV(vector<int>& qubitIndices);
+    // void addV(vector<int>& qubitIndices);
     void addH(int qubitIndex);
-    void addH(vector<int>& qubitIndices);
+    // void addH(vector<int>& qubitIndices);
     void addAllH();
     void addCX(int controlIndex, int targetIndex);
     void addVarCX(int controlIndex, int targetIndex);
@@ -91,9 +93,9 @@ public:
     void addR(int qubitIndex, double theta, double phi);
     void addR(vector<pair<int, pair<double, double>>>& qubitParams);
     void addRx(int qubitIndex, double theta);
-    void addRx(vector<pair<int, double>>& qubitParams);
+    // void addRx(vector<pair<int, double>>& qubitParams);
     void addRy(int qubitIndex, double theta);
-    void addRy(vector<pair<int, double>>& qubitParams);
+    // void addRy(vector<pair<int, double>>& qubitParams);
     void addRz(int qubitIndex, double theta);
     void addRz(vector<pair<int, double>>& qubitParams);
     void addRxx(int controlIndex, int targetIndex, double phi);
