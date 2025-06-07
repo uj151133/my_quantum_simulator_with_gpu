@@ -37,8 +37,8 @@ void execute() {
     // circuit.addToff({0, 1}, 3);
     // circuit.simulate();
 
-    // randomRotate(numQubits, numGates);
-    random2(numQubits, numGates);
+    randomRotate(numQubits, numGates);
+    // random2(numQubits, numGates);
     // int omega = std::pow(2, numQubits) - 1;
 
     // grover(numQubits, omega);

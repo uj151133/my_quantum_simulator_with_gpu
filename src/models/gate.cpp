@@ -34,7 +34,9 @@ ostream& operator<<(ostream& os, Type type) {
         case Type::U2: os << "U2"; break;
         case Type::U3: os << "U3"; break;
         case Type::Other: os << "Other"; break;
-        case Type::Void: os << "Void"; break;
+        case Type::VOID: os << "🌑"; break;
+        case Type::BAN: os << "🚫"; break;
+        case Type::JOKER: os << "🃏"; break;
         default: os << "Unknown"; break;
     }
     return os;

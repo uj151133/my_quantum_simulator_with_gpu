@@ -44,7 +44,9 @@ enum class Type {
     U2,
     U3,
     Other,
-    Void
+    VOID,
+    BAN,
+    JOKER
 };
 
 ostream& operator<<(ostream& os, Type type);
