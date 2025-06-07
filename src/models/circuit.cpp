@@ -40,7 +40,7 @@ void QuantumCircuit::normalizeLayer() {
 }
 
 void QuantumCircuit::smartInsert(int qubitIndex, const Part& part) {
-    int JOKERDepth = this->serachJOKER(qubitIndex);
+    int JOKERDepth = this->searchJOKER(qubitIndex);
     if (JOKERDepth != -1) {
         this->wires[qubitIndex][JOKERDepth] = part;
     } else {
@@ -48,7 +48,7 @@ void QuantumCircuit::smartInsert(int qubitIndex, const Part& part) {
     }
 }
 
-int QuantumCircuit::serachJOKER(int qubitIndex) {
+int QuantumCircuit::searchJOKER(int qubitIndex) {
     const auto& wire = this->wires[qubitIndex];
     int JOKERDepth = -1;
 
