@@ -27,7 +27,7 @@ void execute() {
 
     // OperationCache& cache = OperationCache::getInstance();
 
-    int numQubits = 2;
+    int numQubits = 13;
     int numGates = 200;
 
     // QuantumCircuit circuit(numQubits);
@@ -39,6 +39,7 @@ void execute() {
 
     randomRotate(numQubits, numGates);
     // random2(numQubits, numGates);
+    // random4(numQubits, numGates);
     // int omega = std::pow(2, numQubits) - 1;
 
     // grover(numQubits, omega);
