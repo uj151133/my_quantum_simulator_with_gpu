@@ -30,7 +30,7 @@ void execute() {
     int numQubits = 17;
     int numGates = 200;
 
-    random4(numQubits, numGates);
+    randomRotate(numQubits, numGates);
 
     // QuantumCircuit circuit(numQubits);
     // for ([[maybe_unused]] int _ = 0; _ < numGates; ++_) {
