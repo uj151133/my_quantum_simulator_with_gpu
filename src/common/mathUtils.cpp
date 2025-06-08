@@ -242,6 +242,9 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
             return QMDDEdge(e0.weight + e1.weight, 0);
         }
     }
+    if (e0.uniqueTableKey == e1.uniqueTableKey) {
+        return QMDDEdge(e0.weight + e1.weight, e0.uniqueTableKey);
+    }
     shared_ptr<QMDDNode> n0 = e0.getStartNode();
     shared_ptr<QMDDNode> n1 = e1.getStartNode();
     bool allWeightsAreZero = true;
@@ -256,21 +259,7 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
                 futures.push_back(threadPool.enqueue([&, i, j]() {
                     QMDDEdge p(e0.weight * n0->edges[i][j].weight, n0->edges[i][j].uniqueTableKey);
                     QMDDEdge q(e1.weight * n1->edges[i][j].weight, n1->edges[i][j].uniqueTableKey);
-                    if (q.isTerminal) {
-                        std::swap(p, q);
-                    }
-                    if (p.isTerminal) {
-                        if (p.weight == .0) {
-                            return q;
-                        } else if (q.isTerminal) {
-                            return QMDDEdge(p.weight + q.weight, 0);
-                        }
-                    }
-                    if (p.uniqueTableKey == q.uniqueTableKey) {
-                        return QMDDEdge(p.weight + q.weight, p.uniqueTableKey);
-                    } else {
-                        return mathUtils::add(p, q, depth + 1);
-                    }
+                    return mathUtils::add(p, q, depth + 1);
                 }));
             }
         }
@@ -301,21 +290,7 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
                     boost::fibers::async([&, i, j]() {
                         QMDDEdge p(e0.weight * n0->edges[i][j].weight, n0->edges[i][j].uniqueTableKey);
                         QMDDEdge q(e1.weight * n1->edges[i][j].weight, n1->edges[i][j].uniqueTableKey);
-                        if (q.isTerminal) {
-                            std::swap(p, q);
-                        }
-                        if (p.isTerminal) {
-                            if (p.weight == .0) {
-                                return q;
-                            } else if (q.isTerminal) {
-                                return QMDDEdge(p.weight + q.weight, 0);
-                            }
-                        }
-                        if (p.uniqueTableKey == q.uniqueTableKey) {
-                            return QMDDEdge(p.weight + q.weight, p.uniqueTableKey);
-                        }else {
-                            return mathUtils::add(p, q, depth + 1);
-                        }
+                        return mathUtils::add(p, q, depth + 1);
                 }));
             }
         }
@@ -344,21 +319,7 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
             for (size_t j = 0; j < n0->edges[i].size(); j++) {
                 QMDDEdge p(e0.weight * n0->edges[i][j].weight, n0->edges[i][j].uniqueTableKey);
                 QMDDEdge q(e1.weight * n1->edges[i][j].weight, n1->edges[i][j].uniqueTableKey);
-                if (q.isTerminal) {
-                    std::swap(p, q);
-                }
-                if (p.isTerminal) {
-                    if (p.weight == .0) {
-                        z[i][j] = q;
-                    } else if (q.isTerminal) {
-                        z[i][j] = QMDDEdge(p.weight + q.weight, 0);
-                    }
-                }
-                if (p.uniqueTableKey == q.uniqueTableKey) {
-                    z[i][j] = QMDDEdge(p.weight + q.weight, p.uniqueTableKey);
-                } else {
-                    z[i][j] = mathUtils::add(p, q, depth + 1);
-                }
+                z[i][j] = mathUtils::add(p, q, depth + 1);
                 if (z[i][j].weight != .0) {
                     allWeightsAreZero = false;
                     if (tmpWeight == .0) {
