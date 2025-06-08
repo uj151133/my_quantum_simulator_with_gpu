@@ -27,7 +27,7 @@ void execute() {
 
     // OperationCache& cache = OperationCache::getInstance();
 
-    int numQubits = 13;
+    int numQubits = 17;
     int numGates = 200;
 
     // QuantumCircuit circuit(numQubits);
