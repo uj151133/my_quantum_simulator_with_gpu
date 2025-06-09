@@ -39,7 +39,7 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, bool done) {
 
     for (size_t i = 0; i < n0->edges.size(); i++) {
         for (size_t j = 0; j < n1->edges[i].size(); j++) {
-            if (done == false && min({n0->edges[i][0].depth, n0->edges[i][1].depth, n1->edges[0][j].depth, n1->edges[1][j].depth}) > CONFIG.process.parallelism) {
+            if (done == false && min({n0->edges[i][0].depth, n0->edges[i][1].depth, n1->edges[0][j].depth, n1->edges[1][j].depth}) >= CONFIG.process.parallelism) {
                 parallelTasks.push_back({i, j});
             } else {
                 sequentialTasks.push_back({i, j});
@@ -319,7 +319,7 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1, bool done) {
     // 2. タスク分類
     for (size_t i = 0; i < n0->edges.size(); i++) {
         for (size_t j = 0; j < n0->edges[i].size(); j++) {
-            if (done == false && min(n0->edges[i][j].depth, n1->edges[i][j].depth) > CONFIG.process.parallelism) {
+            if (done == false && min(n0->edges[i][j].depth, n1->edges[i][j].depth) >= CONFIG.process.parallelism) {
                 parallelTasks.push_back({i, j});
             } else {
                 sequentialTasks.push_back({i, j});
