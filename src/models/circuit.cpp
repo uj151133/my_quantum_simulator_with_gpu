@@ -40,7 +40,23 @@ void QuantumCircuit::addPh(int qubitIndex, double delta) {
         edges.push_back(gate::Ph(delta).getInitialEdge());
 
         QMDDGate result = accumulate(edges.rbegin() + 1, edges.rend(), edges.back(), [](const QMDDEdge& accumulated, const QMDDEdge& current) {
-            return mathUtils::kron(current, accumulated, 0);
+            return mathUtils::kron(current, accumulated);
+        });
+
+        this->gateQueue.push(result);
+    }
+    return;
+}
+
+void QuantumCircuit::addX(int qubitIndex) {
+    if (numQubits == 1 || qubitIndex == 0) {
+        this->gateQueue.push(gate::X());
+    } else {
+        vector<QMDDEdge> edges(qubitIndex, identityEdge);
+        edges.push_back(gate::X().getInitialEdge());
+
+        QMDDGate result = accumulate(edges.rbegin() + 1, edges.rend(), edges.back(), [](const QMDDEdge& accumulated, const QMDDEdge& current) {
+            return mathUtils::kron(current, accumulated);
         });
 
         this->gateQueue.push(result);
@@ -59,7 +75,7 @@ void QuantumCircuit::addX(vector<int> qubitIndices) {
             edges.push_back(gate::X().getInitialEdge());
         }
         QMDDGate result = accumulate(edges.rbegin() + 1, edges.rend(), edges.back(), [](const QMDDEdge& accumulated, const QMDDEdge& current) {
-            return mathUtils::kron(current, accumulated, 0);
+            return mathUtils::kron(current, accumulated);
         });
         this->gateQueue.push(result);
     }
@@ -75,6 +91,22 @@ void QuantumCircuit::addAllX() {
     return;
 }
 
+void QuantumCircuit::addY(int qubitIndex) {
+    if (numQubits == 1 || qubitIndex == 0) {
+        this->gateQueue.push(gate::Y());
+    } else {
+        vector<QMDDEdge> edges(qubitIndex, identityEdge);
+        edges.push_back(gate::Y().getInitialEdge());
+
+        QMDDGate result = accumulate(edges.rbegin() + 1, edges.rend(), edges.back(), [](const QMDDEdge& accumulated, const QMDDEdge& current) {
+            return mathUtils::kron(current, accumulated);
+        });
+
+        this->gateQueue.push(result);
+    }
+    return;
+}
+
 void QuantumCircuit::addY(vector<int> qubitIndices) {
     if (numQubits == 1) {
         this->gateQueue.push(gate::Y());
@@ -86,8 +118,24 @@ void QuantumCircuit::addY(vector<int> qubitIndices) {
             edges.push_back(gate::Y().getInitialEdge());
         }
         QMDDGate result = accumulate(edges.rbegin() + 1, edges.rend(), edges.back(), [](const QMDDEdge& accumulated, const QMDDEdge& current) {
-            return mathUtils::kron(current, accumulated, 0);
+            return mathUtils::kron(current, accumulated);
         });
+        this->gateQueue.push(result);
+    }
+    return;
+}
+
+void QuantumCircuit::addZ(int qubitIndex) {
+    if (numQubits == 1 || qubitIndex == 0) {
+        this->gateQueue.push(gate::Z());
+    } else {
+        vector<QMDDEdge> edges(qubitIndex, identityEdge);
+        edges.push_back(gate::Z().getInitialEdge());
+
+        QMDDGate result = accumulate(edges.rbegin() + 1, edges.rend(), edges.back(), [](const QMDDEdge& accumulated, const QMDDEdge& current) {
+            return mathUtils::kron(current, accumulated);
+        });
+
         this->gateQueue.push(result);
     }
     return;
@@ -104,8 +152,24 @@ void QuantumCircuit::addZ(vector<int> qubitIndices) {
             edges.push_back(gate::Z().getInitialEdge());
         }
         QMDDGate result = accumulate(edges.rbegin() + 1, edges.rend(), edges.back(), [](const QMDDEdge& accumulated, const QMDDEdge& current) {
-            return mathUtils::kron(current, accumulated, 0);
+            return mathUtils::kron(current, accumulated);
         });
+        this->gateQueue.push(result);
+    }
+    return;
+}
+
+void QuantumCircuit::addS(int qubitIndex) {
+    if (numQubits == 1 || qubitIndex == 0) {
+        this->gateQueue.push(gate::S());
+    } else {
+        vector<QMDDEdge> edges(qubitIndex, identityEdge);
+        edges.push_back(gate::S().getInitialEdge());
+
+        QMDDGate result = accumulate(edges.rbegin() + 1, edges.rend(), edges.back(), [](const QMDDEdge& accumulated, const QMDDEdge& current) {
+            return mathUtils::kron(current, accumulated);
+        });
+
         this->gateQueue.push(result);
     }
     return;
@@ -122,8 +186,24 @@ void QuantumCircuit::addS(vector<int> qubitIndices) {
             edges.push_back(gate::S().getInitialEdge());
         }
         QMDDGate result = accumulate(edges.rbegin() + 1, edges.rend(), edges.back(), [](const QMDDEdge& accumulated, const QMDDEdge& current) {
-            return mathUtils::kron(current, accumulated, 0);
+            return mathUtils::kron(current, accumulated);
         });
+        this->gateQueue.push(result);
+    }
+    return;
+}
+
+void QuantumCircuit::addSdg(int qubitIndex) {
+    if (numQubits == 1 || qubitIndex == 0) {
+        this->gateQueue.push(gate::Sdg());
+    } else {
+        vector<QMDDEdge> edges(qubitIndex, identityEdge);
+        edges.push_back(gate::Sdg().getInitialEdge());
+
+        QMDDGate result = accumulate(edges.rbegin() + 1, edges.rend(), edges.back(), [](const QMDDEdge& accumulated, const QMDDEdge& current) {
+            return mathUtils::kron(current, accumulated);
+        });
+
         this->gateQueue.push(result);
     }
     return;
@@ -140,8 +220,24 @@ void QuantumCircuit::addSdg(vector<int> qubitIndices) {
             edges.push_back(gate::Sdg().getInitialEdge());
         }
         QMDDGate result = accumulate(edges.rbegin() + 1, edges.rend(), edges.back(), [](const QMDDEdge& accumulated, const QMDDEdge& current) {
-            return mathUtils::kron(current, accumulated, 0);
+            return mathUtils::kron(current, accumulated);
         });
+        this->gateQueue.push(result);
+    }
+    return;
+}
+
+void QuantumCircuit::addV(int qubitIndex) {
+    if (numQubits == 1 || qubitIndex == 0) {
+        this->gateQueue.push(gate::V());
+    } else {
+        vector<QMDDEdge> edges(qubitIndex, identityEdge);
+        edges.push_back(gate::V().getInitialEdge());
+
+        QMDDGate result = accumulate(edges.rbegin() + 1, edges.rend(), edges.back(), [](const QMDDEdge& accumulated, const QMDDEdge& current) {
+            return mathUtils::kron(current, accumulated);
+        });
+
         this->gateQueue.push(result);
     }
     return;
@@ -158,8 +254,24 @@ void QuantumCircuit::addV(vector<int> qubitIndices) {
             edges.push_back(gate::V().getInitialEdge());
         }
         QMDDGate result = accumulate(edges.rbegin() + 1, edges.rend(), edges.back(), [](const QMDDEdge& accumulated, const QMDDEdge& current) {
-            return mathUtils::kron(current, accumulated, 0);
+            return mathUtils::kron(current, accumulated);
         });
+        this->gateQueue.push(result);
+    }
+    return;
+}
+
+void QuantumCircuit::addH(int qubitIndex) {
+    if (numQubits == 1 || qubitIndex == 0) {
+        this->gateQueue.push(gate::H());
+    } else {
+        vector<QMDDEdge> edges(qubitIndex, identityEdge);
+        edges.push_back(gate::H().getInitialEdge());
+
+        QMDDGate result = accumulate(edges.rbegin() + 1, edges.rend(), edges.back(), [](const QMDDEdge& accumulated, const QMDDEdge& current) {
+            return mathUtils::kron(current, accumulated);
+        });
+
         this->gateQueue.push(result);
     }
     return;
@@ -176,7 +288,7 @@ void QuantumCircuit::addH(vector<int> qubitIndices) {
             edges.push_back(gate::H().getInitialEdge());
         }
         QMDDGate result = accumulate(edges.rbegin() + 1, edges.rend(), edges.back(), [](const QMDDEdge& accumulated, const QMDDEdge& current) {
-            return mathUtils::kron(current, accumulated, 0);
+            return mathUtils::kron(current, accumulated);
         });
         this->gateQueue.push(result);
     }
@@ -186,7 +298,7 @@ void QuantumCircuit::addH(vector<int> qubitIndices) {
 void QuantumCircuit::addAllH() {
     vector<QMDDEdge> edges(numQubits, gate::H().getInitialEdge());
     QMDDGate result = accumulate(edges.rbegin() + 1, edges.rend(), edges.back(), [](const QMDDEdge& accumulated, const QMDDEdge& current) {
-        return mathUtils::kron(current, accumulated, 0);
+        return mathUtils::kron(current, accumulated);
     });
     this->gateQueue.push(result);
     return;
@@ -238,7 +350,7 @@ void QuantumCircuit::addCX(int controlIndex, int targetIndex) {
         }
         edges.push_back(customCX);
         QMDDGate result = accumulate(edges.rbegin() + 1, edges.rend(), edges.back(), [](const QMDDEdge& accumulated, const QMDDEdge& current) {
-            return mathUtils::kron(current, accumulated, 0);
+            return mathUtils::kron(current, accumulated);
         });
         this->gateQueue.push(result);
     }
@@ -284,7 +396,7 @@ void QuantumCircuit::addVarCX(int controlIndex, int targetIndex) {
             edges.push_back(customVarCX);
         }
         QMDDGate result = accumulate(edges.rbegin() + 1, edges.rend(), edges.back(), [](const QMDDEdge& accumulated, const QMDDEdge& current) {
-            return mathUtils::kron(current, accumulated, 0);
+            return mathUtils::kron(current, accumulated);
         });
         this->gateQueue.push(result);
     }
@@ -329,7 +441,7 @@ void QuantumCircuit::addCZ(int controlIndex, int targetIndex) {
             edges.push_back(customCZ);
         }
         QMDDGate result = accumulate(edges.rbegin() + 1, edges.rend(), edges.back(), [](const QMDDEdge& accumulated, const QMDDEdge& current) {
-            return mathUtils::kron(current, accumulated, 0);
+            return mathUtils::kron(current, accumulated);
         });
         this->gateQueue.push(result);
     }
@@ -400,7 +512,7 @@ void QuantumCircuit::addSWAP(int qubitIndex1, int qubitIndex2) {
         }
         edges.push_back(customSWAP);
         QMDDGate result = accumulate(edges.rbegin() + 1, edges.rend(), edges.back(), [](const QMDDEdge& accumulated, const QMDDEdge& current) {
-            return mathUtils::kron(current, accumulated, 0);
+            return mathUtils::kron(current, accumulated);
         });
         this->gateQueue.push(result);
     }
@@ -414,7 +526,7 @@ void QuantumCircuit::addP(int qubitIndex, double phi) {
         vector<QMDDEdge> edges(qubitIndex, identityEdge);
         edges.push_back(gate::P(phi).getInitialEdge());
         QMDDGate result = accumulate(edges.rbegin() + 1, edges.rend(), edges.back(), [](const QMDDEdge& accumulated, const QMDDEdge& current) {
-            return mathUtils::kron(current, accumulated, 0);
+            return mathUtils::kron(current, accumulated);
         });
         this->gateQueue.push(result);
     }
@@ -428,7 +540,7 @@ void QuantumCircuit::addT(int qubitIndex) {
         vector<QMDDEdge> edges(qubitIndex, identityEdge);
         edges.push_back(gate::T().getInitialEdge());
         QMDDGate result = accumulate(edges.rbegin() + 1, edges.rend(), edges.back(), [](const QMDDEdge& accumulated, const QMDDEdge& current) {
-            return mathUtils::kron(current, accumulated, 0);
+            return mathUtils::kron(current, accumulated);
         });
         this->gateQueue.push(result);
     }
@@ -442,7 +554,7 @@ void QuantumCircuit::addTdg(int qubitIndex) {
         vector<QMDDEdge> edges(qubitIndex, identityEdge);
         edges.push_back(gate::Tdg().getInitialEdge());
         QMDDGate result = accumulate(edges.rbegin() + 1, edges.rend(), edges.back(), [](const QMDDEdge& accumulated, const QMDDEdge& current) {
-            return mathUtils::kron(current, accumulated, 0);
+            return mathUtils::kron(current, accumulated);
         });
         this->gateQueue.push(result);
     }
@@ -487,7 +599,7 @@ void QuantumCircuit::addCP(int controlIndex, int targetIndex, double phi) {
             edges.push_back(customCP);
         }
         QMDDGate result = accumulate(edges.rbegin() + 1, edges.rend(), edges.back(), [](const QMDDEdge& accumulated, const QMDDEdge& current) {
-            return mathUtils::kron(current, accumulated, 0);
+            return mathUtils::kron(current, accumulated);
         });
         this->gateQueue.push(result);
     }
@@ -532,7 +644,7 @@ void QuantumCircuit::addCS(int controlIndex, int targetIndex) {
             edges.push_back(customCS);
         }
         QMDDGate result = accumulate(edges.rbegin() + 1, edges.rend(), edges.back(), [](const QMDDEdge& accumulated, const QMDDEdge& current) {
-            return mathUtils::kron(current, accumulated, 0);
+            return mathUtils::kron(current, accumulated);
         });
         this->gateQueue.push(result);
     }
@@ -547,7 +659,7 @@ void QuantumCircuit::addRx(int qubitIndex, double theta) {
         vector<QMDDEdge> edges(qubitIndex, identityEdge);
         edges.push_back(gate::Rx(theta).getInitialEdge());
         QMDDGate result = accumulate(edges.rbegin() + 1, edges.rend(), edges.back(), [](const QMDDEdge& accumulated, const QMDDEdge& current) {
-            return mathUtils::kron(current, accumulated, 0);
+            return mathUtils::kron(current, accumulated);
         });
         this->gateQueue.push(result);
     }
@@ -561,7 +673,7 @@ void QuantumCircuit::addRy(int qubitIndex, double theta) {
         vector<QMDDEdge> edges(qubitIndex, identityEdge);
         edges.push_back(gate::Ry(theta).getInitialEdge());
         QMDDGate result = accumulate(edges.rbegin() + 1, edges.rend(), edges.back(), [](const QMDDEdge& accumulated, const QMDDEdge& current) {
-            return mathUtils::kron(current, accumulated, 0);
+            return mathUtils::kron(current, accumulated);
         });
         this->gateQueue.push(result);
     }
@@ -575,7 +687,7 @@ void QuantumCircuit::addRz(int qubitIndex, double theta) {
         vector<QMDDEdge> edges(qubitIndex, identityEdge);
         edges.push_back(gate::Rz(theta).getInitialEdge());
         QMDDGate result = accumulate(edges.rbegin() + 1, edges.rend(), edges.back(), [](const QMDDEdge& accumulated, const QMDDEdge& current) {
-            return mathUtils::kron(current, accumulated, 0);
+            return mathUtils::kron(current, accumulated);
         });
         this->gateQueue.push(result);
     }
@@ -589,7 +701,7 @@ void QuantumCircuit::addU(int qubitIndex, double theta, double phi, double lambd
         vector<QMDDEdge> edges(qubitIndex, identityEdge);
         edges.push_back(gate::U(theta, phi, lambda).getInitialEdge());
         QMDDGate result = accumulate(edges.rbegin() + 1, edges.rend(), edges.back(), [](const QMDDEdge& accumulated, const QMDDEdge& current) {
-            return mathUtils::kron(current, accumulated, 0);
+            return mathUtils::kron(current, accumulated);
         });
         this->gateQueue.push(result);
     }
@@ -603,7 +715,7 @@ void QuantumCircuit::addU3(int qubitIndex, double theta, double phi, double lamb
         vector<QMDDEdge> edges(qubitIndex, identityEdge);
         edges.push_back(gate::U3(theta, phi, lambda).getInitialEdge());
         QMDDGate result = accumulate(edges.rbegin() + 1, edges.rend(), edges.back(), [](const QMDDEdge& accumulated, const QMDDEdge& current) {
-            return mathUtils::kron(current, accumulated, 0);
+            return mathUtils::kron(current, accumulated);
         });
         this->gateQueue.push(result);
     }
@@ -670,7 +782,7 @@ void QuantumCircuit::addToff(const array<int, 2>& controlIndexes, int targetInde
         });
         edges.push_back(customToff);
         QMDDGate result = accumulate(edges.rbegin() + 1, edges.rend(), edges.back(), [](const QMDDEdge& accumulated, const QMDDEdge& current) {
-            return mathUtils::kron(current, accumulated, 0);
+            return mathUtils::kron(current, accumulated);
         });
         this->gateQueue.push(result);
 
@@ -738,7 +850,7 @@ void QuantumCircuit::addMCT(const vector<int>& controlIndexes, int targetIndex) 
         });
         edges.push_back(customMCT);
         QMDDGate result = accumulate(edges.rbegin() + 1, edges.rend(), edges.back(), [](const QMDDEdge& accumulated, const QMDDEdge& current) {
-            return mathUtils::kron(current, accumulated, 0);
+            return mathUtils::kron(current, accumulated);
         });
         this->gateQueue.push(result);
 
@@ -753,7 +865,7 @@ void QuantumCircuit::addGate(int qubitIndex, const QMDDGate& gate) {
         vector<QMDDEdge> edges(qubitIndex, identityEdge);
         edges.push_back(gate.getInitialEdge());
         QMDDGate result = accumulate(edges.rbegin() + 1, edges.rend(), edges.back(), [](const QMDDEdge& accumulated, const QMDDEdge& current) {
-            return mathUtils::kron(current, accumulated, 0);
+            return mathUtils::kron(current, accumulated);
         });
         this->gateQueue.push(result);
     }
@@ -762,7 +874,7 @@ void QuantumCircuit::addGate(int qubitIndex, const QMDDGate& gate) {
 
 void QuantumCircuit::addQFT(int numQubits) {
     for (int i = numQubits - 1; i >= 0; i--) {
-        this->addH({i});
+        this->addH(i);
         for (int j = i - 1; j >= 0; j--) {
             this->addCP(i, j, M_PI / pow(2, j - i));
         }
@@ -799,11 +911,11 @@ void QuantumCircuit::addOracle(int omega) {
 
     vector<QMDDEdge> customI(numIndex, identityEdge);
     QMDDEdge partialCZ1 = accumulate(customI.rbegin() + 1, customI.rend(), customI.back(), [](const QMDDEdge& accumulated, const QMDDEdge& current) {
-        return mathUtils::kron(current, accumulated, 0);
+        return mathUtils::kron(current, accumulated);
     });
     vector<QMDDEdge> customBrkt(numIndex, braketZero);
     QMDDEdge partialCZ2 = QMDDEdge(-2.0, accumulate(customBrkt.rbegin() + 1, customBrkt.rend(), customBrkt.back(), [](const QMDDEdge& accumulated, const QMDDEdge& current) {
-        return mathUtils::kron(current, accumulated, 0);
+        return mathUtils::kron(current, accumulated);
     }).uniqueTableKey);
     QMDDEdge customCZ = mathUtils::add(partialCZ1, partialCZ2);
     this->gateQueue.push(QMDDGate(customCZ));
@@ -821,11 +933,11 @@ void QuantumCircuit::addIAM() {
 
     vector<QMDDEdge> customI(this->numQubits, identityEdge);
     QMDDEdge partialCZ1 = accumulate(customI.rbegin() + 1, customI.rend(), customI.back(), [](const QMDDEdge& accumulated, const QMDDEdge& current) {
-        return mathUtils::kron(current, accumulated, 0);
+        return mathUtils::kron(current, accumulated);
     });
     vector<QMDDEdge> customBrkt(this->numQubits, braketZero);
     QMDDEdge partialCZ2 = QMDDEdge(-2.0, accumulate(customBrkt.rbegin() + 1, customBrkt.rend(), customBrkt.back(), [](const QMDDEdge& accumulated, const QMDDEdge& current) {
-        return mathUtils::kron(current, accumulated, 0);
+        return mathUtils::kron(current, accumulated);
     }).uniqueTableKey);
     QMDDEdge customCZ = mathUtils::add(partialCZ1, partialCZ2);
     this->gateQueue.push(QMDDGate(customCZ));
@@ -862,10 +974,10 @@ int QuantumCircuit::measure(int qubitIndex) {
     edges0.insert(edges0.end(), numQubits - qubitIndex - 1, identityEdge);
     edges1.insert(edges1.end(), numQubits - qubitIndex - 1, identityEdge);
     QMDDGate m0 = accumulate(edges0.rbegin() + 1, edges0.rend(), edges0.back(), [](const QMDDEdge& accumulated, const QMDDEdge& current) {
-        return mathUtils::kron(current, accumulated, 0);
+        return mathUtils::kron(current, accumulated);
     });
     QMDDGate m1 = accumulate(edges1.rbegin() + 1, edges1.rend(), edges1.back(), [](const QMDDEdge& accumulated, const QMDDEdge& current) {
-        return mathUtils::kron(current, accumulated, 0);
+        return mathUtils::kron(current, accumulated);
     });
     QMDDEdge result0 = mathUtils::mul(m0.getInitialEdge(), finalState.getInitialEdge());
     QMDDEdge result1 = mathUtils::mul(m1.getInitialEdge(), finalState.getInitialEdge());
