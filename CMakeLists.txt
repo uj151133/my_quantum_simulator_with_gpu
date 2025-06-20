@@ -14,7 +14,11 @@ if(APPLE)
     set(CMAKE_OSX_ARCHITECTURES "arm64")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -isysroot ${CMAKE_OSX_SYSROOT}")
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -isysroot ${CMAKE_OSX_SYSROOT}")
-    set(JVM_LIB_PATH "/opt/homebrew/Cellar/openjdk@21/21.0.7/libexec/openjdk.jdk/Contents/Home/lib/server/libjvm.dylib")
+    # set(JVM_LIB_PATH "/opt/homebrew/Cellar/openjdk@21/21.0.7/libexec/openjdk.jdk/Contents/Home/lib/server/libjvm.dylib")
+    set(JAVA_HOME "$ENV{HOME}/.sdkman/candidates/java/current")
+    include_directories(${JAVA_HOME}/include)
+    include_directories(${JAVA_HOME}/include/darwin)
+    set(JVM_LIB_PATH "${JAVA_HOME}/lib/server/libjvm.dylib")
 
     set(BOOST_MIN_VERSION "1.87.0")
     set(YAML_CPP_INCLUDE_DIR /opt/homebrew/Cellar/yaml-cpp/0.8.0/include)
@@ -102,8 +106,6 @@ include_directories(SYSTEM
     ${Python3_INCLUDE_DIRS}
     ${YAML_CPP_INCLUDE_DIR}
     /opt/homebrew/include
-    /opt/homebrew/opt/openjdk/include
-    /opt/homebrew/opt/openjdk/include/darwin
     ${CMAKE_SOURCE_DIR}/src
 )
 
@@ -164,7 +166,7 @@ target_link_libraries(qmdd_sim PRIVATE
 
 # make run ターゲットの追加
 add_custom_target(run
-    COMMAND DYLD_LIBRARY_PATH=/opt/homebrew/Cellar/openjdk@21/21.0.7/libexec/openjdk.jdk/Contents/Home/lib/server:$ENV{DYLD_LIBRARY_PATH} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qmdd_sim
+    COMMAND DYLD_LIBRARY_PATH=${JAVA_HOME}/lib/server:$ENV{DYLD_LIBRARY_PATH} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qmdd_sim
     DEPENDS qmdd_sim
     WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
     COMMENT "Running the application ..."
