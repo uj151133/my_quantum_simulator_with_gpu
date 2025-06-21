@@ -14,8 +14,17 @@ OperationCacheClient::OperationCacheClient() : isolate(nullptr) {
 }
 
 OperationCacheClient::~OperationCacheClient() {
+    if (thread_local_thread != nullptr) {
+        graal_detach_thread(thread_local_thread);
+        thread_local_thread = nullptr;
+    }
+
     if (isolate) {
-        graal_tear_down_isolate(nullptr);
+        graal_isolatethread_t* main_thread = nullptr;
+        if (graal_attach_thread(isolate, &main_thread) == 0) {
+            graal_tear_down_isolate(main_thread);
+        }
+        isolate = nullptr;
     }
 }
 
@@ -27,27 +36,6 @@ graal_isolatethread_t* OperationCacheClient::getThreadLocalThread() {
     }
     return thread_local_thread;
 }
-
-// void OperationCacheClient::insert(long long key, const complex<double>& weight, long long uniqueTableKey) {
-//     graal_isolatethread_t* thread = getThreadLocalThread();
-//     cacheInsert(thread, key, weight.real(), weight.imag(), uniqueTableKey);
-// }
-
-// bool OperationCacheClient::find(long long key, complex<double>& weight, long long& uniqueTableKey) {
-//     graal_isolatethread_t* thread = getThreadLocalThread();
-//     void* ptr = cacheFind(thread, key);
-    
-//     if (ptr == nullptr) {
-//         return false;
-//     }
-    
-//     double* data = static_cast<double*>(ptr);
-//     weight = complex<double>(data[0], data[1]);
-//     uniqueTableKey = *reinterpret_cast<long long*>(&data[2]);
-//     free(ptr);
-    
-//     return true;
-// }
 
 void OperationCacheClient::insert(long long key, const QMDDEdge& edge) {
     graal_isolatethread_t* thread = this->getThreadLocalThread();
@@ -71,6 +59,23 @@ optional<QMDDEdge> OperationCacheClient::find(long long key) {
 
     free(ptr);
     return result;
+}
+
+void OperationCacheClient::cleanup() {
+    lock_guard<mutex> lock(isolate_mutex);
+    
+    if (thread_local_thread != nullptr) {
+        graal_detach_thread(thread_local_thread);
+        thread_local_thread = nullptr;
+    }
+    
+    if (isolate) {
+        graal_isolatethread_t* main_thread = nullptr;
+        if (graal_attach_thread(isolate, &main_thread) == 0) {
+            graal_tear_down_isolate(main_thread);
+        }
+        isolate = nullptr;
+    }
 }
 
 OperationCacheClient& OperationCacheClient::getInstance() {
