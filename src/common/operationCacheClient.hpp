@@ -39,6 +39,7 @@ public:
     void insert(long long key, const QMDDEdge& edge);
     optional<QMDDEdge> find(long long key);
     static OperationCacheClient& getInstance();
+    void cleanup();
 };
 
 #endif
