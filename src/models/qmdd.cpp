@@ -44,7 +44,7 @@ QMDDEdge::QMDDEdge(double w, shared_ptr<QMDDNode> n)
     // cout << "Edge created with weight: " << weight << " and uniqueTableKey: " << uniqueTableKey << " and isTerminal: " << isTerminal << endl;
 }
 
-QMDDEdge::QMDDEdge(complex<double> w, long long key)
+QMDDEdge::QMDDEdge(complex<double> w, int64_t key)
     : weight(w), uniqueTableKey(w != complex<double>(.0, .0) ? key : 0), isTerminal(key == 0) {
     #ifdef __APPLE__
         CONFIG.loadFromFile("/Users/mitsuishikaito/my_quantum_simulator_with_gpu/config.yaml");
@@ -57,7 +57,7 @@ QMDDEdge::QMDDEdge(complex<double> w, long long key)
     // cout << "Edge created with weight: " << weight << " and uniqueTableKey: " << uniqueTableKey << " and isTerminal: " << isTerminal << endl;
 }
 
-QMDDEdge::QMDDEdge(double w, long long key)
+QMDDEdge::QMDDEdge(double w, int64_t key)
     : weight(complex<double>(w, .0)), uniqueTableKey(w != .0 ? key : 0), isTerminal(key == 0) {
     #ifdef __APPLE__
         CONFIG.loadFromFile("/Users/mitsuishikaito/my_quantum_simulator_with_gpu/config.yaml");

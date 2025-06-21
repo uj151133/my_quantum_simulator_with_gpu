@@ -1,7 +1,7 @@
 #include "calculation.hpp"
 #include "../models/uniqueTable.hpp"
 
-long long calculation::generateUniqueTableKey(const shared_ptr<QMDDNode>& node) {
+int64_t calculation::generateUniqueTableKey(const shared_ptr<QMDDNode>& node) {
     vector<uint8_t> buffer;
     size_t rowIdx = 0;
     for (const auto& edgeRow : node->edges) {
@@ -28,29 +28,29 @@ long long calculation::generateUniqueTableKey(const shared_ptr<QMDDNode>& node) 
     return llabs(XXH3_64bits(buffer.data(), buffer.size()));
 }
 
-long long calculation::generateOperationCacheKey(const OperationKey& key) {
+int64_t calculation::generateOperationCacheKey(const OperationKey& key) {
     auto customHash = [](const complex<double>& c) {
         size_t realHash = std::hash<double>()(c.real());
         size_t imagHash = std::hash<double>()(c.imag());
         return realHash ^ (imagHash << 1);
     };
 
-    auto hash_combine = [](long long& seed, size_t hash) {
-        seed ^= static_cast<long long>(hash) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
+    auto hash_combine = [](int64_t& seed, size_t hash) {
+        seed ^= static_cast<int64_t>(hash) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
     };
 
     auto edgeHash = [&](const QMDDEdge& edge) {
-        long long h = 0;
+        int64_t h = 0;
         hash_combine(h, customHash(edge.weight));
         hash_combine(h, std::hash<size_t>()(edge.uniqueTableKey));
         return h;
     };
 
-    long long seed = 0;
+    int64_t seed = 0;
 
     if (std::get<1>(key) == OperationType::ADD) {
-        long long h1 = edgeHash(std::get<0>(key));
-        long long h2 = edgeHash(std::get<2>(key));
+        int64_t h1 = edgeHash(std::get<0>(key));
+        int64_t h2 = edgeHash(std::get<2>(key));
         if (h1 < h2) {
             hash_combine(seed, h1);
             hash_combine(seed, std::hash<OperationType>()(std::get<1>(key)));

@@ -28,21 +28,35 @@ OperationCacheClient::~OperationCacheClient() {
     }
 }
 
-graal_isolatethread_t* OperationCacheClient::getThreadLocalThread() {
-    if (thread_local_thread == nullptr) {
-        if (graal_attach_thread(isolate, &thread_local_thread) != 0) {
-            throw runtime_error("Failed to attach thread to GraalVM isolate");
+inline graal_isolatethread_t* OperationCacheClient::getThreadLocalThread() {
+    if (thread_local_thread != nullptr) {
+            return thread_local_thread;
         }
+    return initializeNewThread();
+}
+
+graal_isolatethread_t* OperationCacheClient::initializeNewThread() {
+    if (isolate == nullptr) {
+        throw runtime_error("GraalVM isolate is not initialized");
     }
+    
+    if (graal_attach_thread(isolate, &thread_local_thread) != 0) {
+        throw runtime_error("Failed to attach thread to GraalVM isolate");
+    }
+    
+    #ifdef DEBUG
+    cout << "New thread attached to GraalVM isolate: " << thread_local_thread << endl;
+    #endif
+    
     return thread_local_thread;
 }
 
-void OperationCacheClient::insert(long long key, const QMDDEdge& edge) {
+void OperationCacheClient::insert(int64_t key, const QMDDEdge& edge) {
     graal_isolatethread_t* thread = this->getThreadLocalThread();
     cacheInsert(thread, key, edge.weight.real(), edge.weight.imag(), edge.uniqueTableKey);
 }
 
-optional<QMDDEdge> OperationCacheClient::find(long long key) {
+optional<QMDDEdge> OperationCacheClient::find(int64_t key) {
     graal_isolatethread_t* thread = this->getThreadLocalThread();
     void* ptr = cacheFind(thread, key);
 
@@ -51,10 +65,9 @@ optional<QMDDEdge> OperationCacheClient::find(long long key) {
     }
 
     double* data = static_cast<double*>(ptr);
-
     auto result = make_optional<QMDDEdge>(
         complex<double>(data[0], data[1]),
-        *reinterpret_cast<long long*>(&data[2])
+        data[2]
     );
 
     free(ptr);

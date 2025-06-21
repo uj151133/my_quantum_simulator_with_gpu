@@ -15,29 +15,24 @@
 using namespace std;
 
 extern "C" {
-    void cacheInsert(graal_isolatethread_t* thread, long long key, 
-                     double real, double imag, long long uniqueTableKey);
-    void* cacheFind(graal_isolatethread_t* thread, long long key);
+    void cacheInsert(graal_isolatethread_t* thread, int64_t key, double real, double imag, int64_t uniqueTableKey);
+    void* cacheFind(graal_isolatethread_t* thread, int64_t key);
 }
 
 class OperationCacheClient {
 private:
     graal_isolate_t* isolate;
-    
-    // スレッドローカルなIsolateThreadを管理
     thread_local static graal_isolatethread_t* thread_local_thread;
     static mutex isolate_mutex;
-    
-    graal_isolatethread_t* getThreadLocalThread();
+    inline graal_isolatethread_t* getThreadLocalThread();
+
+    graal_isolatethread_t* initializeNewThread();
 
 public:
     OperationCacheClient();
     ~OperationCacheClient();
-    
-    // void insert(long long key, const complex<double>& weight, long long uniqueTableKey);
-    // bool find(long long key, complex<double>& weight, long long& uniqueTableKey);
-    void insert(long long key, const QMDDEdge& edge);
-    optional<QMDDEdge> find(long long key);
+    void insert(int64_t key, const QMDDEdge& edge);
+    optional<QMDDEdge> find(int64_t key);
     static OperationCacheClient& getInstance();
     void cleanup();
 };
