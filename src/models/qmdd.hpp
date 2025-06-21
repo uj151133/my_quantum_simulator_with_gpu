@@ -34,7 +34,7 @@ enum class OperationType {
 
 using OperationKey = tuple<QMDDEdge, OperationType, QMDDEdge>;
 
-using OperationResult = pair<complex<double>, long long>;
+using OperationResult = pair<complex<double>, int64_t>;
 
 using QMDDVariant = variant<QMDDGate, QMDDState>;
 ostream& operator<<(ostream& os, const QMDDVariant& variant);
@@ -42,14 +42,14 @@ ostream& operator<<(ostream& os, const QMDDVariant& variant);
 
 struct QMDDEdge{
     complex<double> weight;
-    long long uniqueTableKey;
+    int64_t uniqueTableKey;
     bool isTerminal;
     int depth;
 
     QMDDEdge(complex<double> w = {.0, .0}, shared_ptr<QMDDNode> n = nullptr);
     QMDDEdge(double w, shared_ptr<QMDDNode> n = nullptr);
-    QMDDEdge(complex<double> w, long long key);
-    QMDDEdge(double w, long long key);
+    QMDDEdge(complex<double> w, int64_t key);
+    QMDDEdge(double w, int64_t key);
     QMDDEdge(const QMDDEdge& other) = default;
     shared_ptr<QMDDNode> getStartNode() const;
     vector<complex<double>> getAllElementsForKet();

@@ -2,7 +2,7 @@
 
 QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
     OperationCacheClient& cache = OperationCacheClient::getInstance();
-    long long operationCacheKey = calculation::generateOperationCacheKey(OperationKey(e0, OperationType::MUL, e1));
+    int64_t operationCacheKey = calculation::generateOperationCacheKey(OperationKey(e0, OperationType::MUL, e1));
     if (auto existingEdge = cache.find(operationCacheKey)) {
         if (existingEdge->weight != .0 && existingEdge->uniqueTableKey != 0) {
             // cout << "\033[1;36mCache hit!\033[0m" << endl;
@@ -137,7 +137,7 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
 // QMDDEdge mathUtils::mulForDiagonal(const QMDDEdge& e0, const QMDDEdge& e1) {
 
 //     jniUtils& cache = jniUtils::getInstance();
-//     long long operationCacheKey = calculation::generateOperationCacheKey(
+//     int64_t operationCacheKey = calculation::generateOperationCacheKey(
 //         OperationKey(e0, OperationType::MUL, e1)
 //     );
 
@@ -217,7 +217,7 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
 
 QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
     OperationCacheClient& cache = OperationCacheClient::getInstance();
-    long long operationCacheKey = calculation::generateOperationCacheKey(OperationKey(e0, OperationType::ADD, e1));
+    int64_t operationCacheKey = calculation::generateOperationCacheKey(OperationKey(e0, OperationType::ADD, e1));
     if (auto existingEdge = cache.find(operationCacheKey)) {
         if (existingEdge->weight != .0 && existingEdge->uniqueTableKey != 0) {
             // cout << "\033[1;36mCache hit!\033[0m" << endl;
@@ -379,7 +379,7 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
 
 // QMDDEdge mathUtils::addForDiagonal(const QMDDEdge& e0, const QMDDEdge& e1) {
 //     jniUtils& cache = jniUtils::getInstance();
-//     long long operationCacheKey = calculation::generateOperationCacheKey(
+//     int64_t operationCacheKey = calculation::generateOperationCacheKey(
 //         OperationKey(e0, OperationType::ADD, e1)
 //     );
 
@@ -458,7 +458,7 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
 
 QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
     OperationCacheClient cache = OperationCacheClient::getInstance();
-    long long operationCacheKey = calculation::generateOperationCacheKey(OperationKey(e0, OperationType::KRONECKER, e1));
+    int64_t operationCacheKey = calculation::generateOperationCacheKey(OperationKey(e0, OperationType::KRONECKER, e1));
     if (auto existingEdge = cache.find(operationCacheKey)) {
         if (existingEdge->weight != .0 && existingEdge->uniqueTableKey != 0) {
             // cout << "\033[1;36mCache hit!\033[0m" << endl;
@@ -569,7 +569,7 @@ QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
 
 QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1) {
     OperationCacheClient& cache = OperationCacheClient::getInstance();
-    long long operationCacheKey = calculation::generateOperationCacheKey(OperationKey(e0, OperationType::KRONECKER, e1));
+    int64_t operationCacheKey = calculation::generateOperationCacheKey(OperationKey(e0, OperationType::KRONECKER, e1));
     if (auto existingEdge = cache.find(operationCacheKey)) {
         if (existingEdge->weight != .0 && existingEdge->uniqueTableKey != 0) {
             // cout << "\033[1;36mCache hit!\033[0m" << endl;
@@ -605,7 +605,7 @@ QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1) {
 // QMDDEdge mathUtils::kronForDiagonal(const QMDDEdge& e0, const QMDDEdge& e1) {
 
 //     jniUtils& cache = jniUtils::getInstance();
-//     long long operationCacheKey = calculation::generateOperationCacheKey(
+//     int64_t operationCacheKey = calculation::generateOperationCacheKey(
 //         OperationKey(e0, OperationType::KRONECKER, e1)
 //     );
 

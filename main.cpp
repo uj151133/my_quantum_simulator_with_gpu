@@ -65,7 +65,6 @@ int main() {
     measureExecutionTime(execute);
     OperationCacheClient::getInstance().cleanup();
 
-
     return 0;
 }
 
