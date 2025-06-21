@@ -14,7 +14,7 @@ if(APPLE)
     set(CMAKE_OSX_ARCHITECTURES "arm64")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -isysroot ${CMAKE_OSX_SYSROOT}")
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -isysroot ${CMAKE_OSX_SYSROOT}")
-    set(JVM_LIB_PATH "/opt/homebrew/Cellar/openjdk@21/21.0.7/libexec/openjdk.jdk/Contents/Home/lib/server/libjvm.dylib")
+    # set(JVM_LIB_PATH "/opt/homebrew/Cellar/openjdk@21/21.0.7/libexec/openjdk.jdk/Contents/Home/lib/server/libjvm.dylib")
 
     set(BOOST_MIN_VERSION "1.87.0")
     set(YAML_CPP_INCLUDE_DIR /opt/homebrew/Cellar/yaml-cpp/0.8.0/include)
@@ -22,11 +22,11 @@ if(APPLE)
 elseif(UNIX AND NOT APPLE)
     # Ubuntu用のBoost設定
     set(BOOST_MIN_VERSION "1.83.0")
-    set(JAVA_HOME "/usr/lib/jvm/java-21-openjdk-amd64")
-    include_directories(${JAVA_HOME}/include)
-    include_directories(${JAVA_HOME}/include/linux)
-    find_library(JVM_LIB jvm HINTS ${JAVA_HOME}/lib/server REQUIRED)
-    set(JVM_LIB_PATH ${JVM_LIB})
+    # set(JAVA_HOME "/usr/lib/jvm/java-21-openjdk-amd64")
+    # include_directories(${JAVA_HOME}/include)
+    # include_directories(${JAVA_HOME}/include/linux)
+    # find_library(JVM_LIB jvm HINTS ${JAVA_HOME}/lib/server REQUIRED)
+    # set(JVM_LIB_PATH ${JVM_LIB})
 endif()
 
 # C++20を使用する
@@ -157,7 +157,7 @@ target_link_libraries(qmdd_sim PRIVATE
     GSL::gsl
     ${GMP_LIB}
     Threads::Threads
-    ${JVM_LIB_PATH}
+    # ${JVM_LIB_PATH}
     xxhash
     TBB::tbb
 )

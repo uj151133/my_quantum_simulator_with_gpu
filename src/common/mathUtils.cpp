@@ -2,16 +2,17 @@
 
 QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
     // jniUtils& cache = jniUtils::getInstance();
-    // long long operationCacheKey = calculation::generateOperationCacheKey(OperationKey(e0, OperationType::MUL, e1));
-    // OperationResult existingAnswer = cache.jniFind(operationCacheKey);
-    // if (existingAnswer != OperationResult{.0, 0}) {
-    //     // cout << "\033[1;36mCache hit!\033[0m" << endl;
-    //     QMDDEdge answer = QMDDEdge(existingAnswer.first, existingAnswer.second);
-    //     if (answer.uniqueTableKey != 0) {
-    //         // cout << "\033[1;36mCache hit!\033[0m" << endl;
-    //         return answer;
-    //     }
-    // }
+    OperationCache& cache = OperationCache::getInstance();
+    long long operationCacheKey = calculation::generateOperationCacheKey(OperationKey(e0, OperationType::MUL, e1));
+    OperationResult existingAnswer = cache.find(operationCacheKey);
+    if (existingAnswer != OperationResult{.0, 0}) {
+        // cout << "\033[1;36mCache hit!\033[0m" << endl;
+        QMDDEdge answer = QMDDEdge(existingAnswer.first, existingAnswer.second);
+        if (answer.uniqueTableKey != 0) {
+            // cout << "\033[1;36mCache hit!\033[0m" << endl;
+            return answer;
+        }
+    }
 
     if (e1.isTerminal) {
         std::swap(const_cast<QMDDEdge&>(e0), const_cast<QMDDEdge&>(e1));
@@ -134,6 +135,7 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
         result = QMDDEdge(tmpWeight, make_shared<QMDDNode>(z));
     }
     // cache.jniInsert(operationCacheKey, result.weight, result.uniqueTableKey);
+    cache.insert(operationCacheKey, OperationResult{result.weight, result.uniqueTableKey});
     return result;
 }
 
@@ -220,16 +222,17 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
 
 QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
     // jniUtils& cache = jniUtils::getInstance();
-    // long long operationCacheKey = calculation::generateOperationCacheKey(OperationKey(e0, OperationType::ADD, e1));
-    // OperationResult existingAnswer = cache.jniFind(operationCacheKey);
-    // if (existingAnswer != OperationResult{.0, 0}) {
-    //     // cout << "\033[1;36mCache hit!\033[0m" << endl;
-    //     QMDDEdge answer = QMDDEdge(existingAnswer.first, existingAnswer.second);
-    //     if (answer.uniqueTableKey != 0) {
-    //         // cout << "\033[1;36mCache hit!\033[0m" << endl;
-    //         return answer;
-    //     }
-    // }
+    OperationCache& cache = OperationCache::getInstance();
+    long long operationCacheKey = calculation::generateOperationCacheKey(OperationKey(e0, OperationType::ADD, e1));
+    OperationResult existingAnswer = cache.find(operationCacheKey);
+    if (existingAnswer != OperationResult{.0, 0}) {
+        // cout << "\033[1;36mCache hit!\033[0m" << endl;
+        QMDDEdge answer = QMDDEdge(existingAnswer.first, existingAnswer.second);
+        if (answer.uniqueTableKey != 0) {
+            // cout << "\033[1;36mCache hit!\033[0m" << endl;
+            return answer;
+        }
+    }
     // cout << "\033[1;35mCache miss!\033[0m" << endl;
 
     if (e1.isTerminal) {
@@ -380,6 +383,7 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
         result = QMDDEdge(tmpWeight, make_shared<QMDDNode>(z));
     }
     // cache.jniInsert(operationCacheKey, result.weight, result.uniqueTableKey);
+    cache.insert(operationCacheKey, OperationResult{result.weight, result.uniqueTableKey});
     return result;
 }
 
@@ -464,16 +468,17 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
 
 QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
     // jniUtils& cache = jniUtils::getInstance();
-    // long long operationCacheKey = calculation::generateOperationCacheKey(OperationKey(e0, OperationType::KRONECKER, e1));
-    // OperationResult existingAnswer = cache.jniFind(operationCacheKey);
-    // if (existingAnswer != OperationResult{.0, 0}) {
-    //     // cout << "\033[1;36mCache hit!\033[0m" << endl;
-    //     QMDDEdge answer = QMDDEdge(existingAnswer.first, existingAnswer.second);
-    //     if (answer.uniqueTableKey != 0) {
-    //     //     // cout << "\033[1;36mCache hit!\033[0m" << endl;
-    //         return answer;
-    //     }
-    // }
+    OperationCache& cache = OperationCache::getInstance();
+    long long operationCacheKey = calculation::generateOperationCacheKey(OperationKey(e0, OperationType::KRONECKER, e1));
+    OperationResult existingAnswer = cache.find(operationCacheKey);
+    if (existingAnswer != OperationResult{.0, 0}) {
+        // cout << "\033[1;36mCache hit!\033[0m" << endl;
+        QMDDEdge answer = QMDDEdge(existingAnswer.first, existingAnswer.second);
+        if (answer.uniqueTableKey != 0) {
+        //     // cout << "\033[1;36mCache hit!\033[0m" << endl;
+            return answer;
+        }
+    }
     // cout << "\033[1;35mCache miss!\033[0m" << endl;
 
     if (e0.isTerminal) {
@@ -573,21 +578,22 @@ QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
         result = QMDDEdge(e0.weight * tmpWeight, make_shared<QMDDNode>(z));
     }
     // cache.jniInsert(operationCacheKey, result.weight, result.uniqueTableKey);
+    cache.insert(operationCacheKey, OperationResult{result.weight, result.uniqueTableKey});
     return result;
 }
 
 QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1) {
-    // jniUtils& cache = jniUtils::getInstance();
-    // long long operationCacheKey = calculation::generateOperationCacheKey(OperationKey(e0, OperationType::KRONECKER, e1));
-    // OperationResult existingAnswer = cache.jniFind(operationCacheKey);
-    // if (existingAnswer != OperationResult{.0, 0}) {
-    //     // cout << "\033[1;36mCache hit!\033[0m" << endl;
-    //     QMDDEdge answer = QMDDEdge(existingAnswer.first, existingAnswer.second);
-    //     if (answer.uniqueTableKey != 0) {
-    //     //     // cout << "\033[1;36mCache hit!\033[0m" << endl;
-    //         return answer;
-    //     }
-    // }
+    OperationCache& cache = OperationCache::getInstance();
+    long long operationCacheKey = calculation::generateOperationCacheKey(OperationKey(e0, OperationType::KRONECKER, e1));
+    OperationResult existingAnswer = cache.find(operationCacheKey);
+    if (existingAnswer != OperationResult{.0, 0}) {
+        // cout << "\033[1;36mCache hit!\033[0m" << endl;
+        QMDDEdge answer = QMDDEdge(existingAnswer.first, existingAnswer.second);
+        if (answer.uniqueTableKey != 0) {
+        //     // cout << "\033[1;36mCache hit!\033[0m" << endl;
+            return answer;
+        }
+    }
     // cout << "\033[1;35mCache miss!\033[0m" << endl;
 
     if (e0.isTerminal) {
@@ -610,6 +616,7 @@ QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1) {
 
     QMDDEdge result = QMDDEdge(e0.weight * e1.weight, make_shared<QMDDNode>(z));
     // cache.jniInsert(operationCacheKey, result.weight, result.uniqueTableKey);
+    cache.insert(operationCacheKey, OperationResult{result.weight, result.uniqueTableKey});
     return result;
 }
 

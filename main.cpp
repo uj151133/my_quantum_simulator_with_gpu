@@ -27,7 +27,7 @@ void execute() {
 
     // OperationCache& cache = OperationCache::getInstance();
 
-    int numQubits = 17;
+    int numQubits = 10;
     int numGates = 200;
 
     randomRotate(numQubits, numGates);
@@ -41,7 +41,7 @@ void execute() {
     // // circuit.addToff({0, 1}, 3);
     // circuit.simulate();
 
-    randomRotate4(numQubits, numGates);
+    // randomRotate4(numQubits, numGates);
     // int omega = std::pow(2, numQubits) - 1;
 
     // grover(numQubits, omega);
