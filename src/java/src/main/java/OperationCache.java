@@ -1,23 +1,30 @@
-import com.github.benmanes.caffeine.cache.*;
-import org.graalvm.nativeimage.c.function.CEntryPoint;
-import org.graalvm.nativeimage.c.type.CCharPointer;
-import org.graalvm.nativeimage.c.type.CTypeConversion;
-import org.graalvm.nativeimage.UnmanagedMemory;
+import java.util.concurrent.ForkJoinPool;
+
 import org.graalvm.nativeimage.IsolateThread;
+import org.graalvm.nativeimage.UnmanagedMemory;
+import org.graalvm.nativeimage.c.function.CEntryPoint;
 import org.graalvm.word.Pointer;
 import org.graalvm.word.WordFactory;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.ForkJoinPool;
+
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 
 public class OperationCache {
     private static final OperationCache INSTANCE = new OperationCache();
     private final Cache<Long, OperationResult> cache;
+    private final ForkJoinPool executorPool;
 
     private OperationCache() {
+
+        this.executorPool = new ForkJoinPool(
+            Runtime.getRuntime().availableProcessors()
+        );
+
         this.cache = Caffeine.newBuilder()
                 .maximumSize(1_048_576)
                 .initialCapacity(262_144)
                 .recordStats()
+                .executor(executorPool)
                 .build();
     }
 
