@@ -44,6 +44,7 @@ graalvmNative {
                 '--initialize-at-run-time=com.github.benmanes.caffeine.cache.LocalCacheFactory',
                 '-O3',
                 '-march=native',
+                '--gc=epsilon',
                 '-H:+UnlockExperimentalVMOptions',
                 '-H:+UseEpsilonGC'
             ])
