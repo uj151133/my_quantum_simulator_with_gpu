@@ -8,8 +8,10 @@
 #include <mutex>
 #include <thread>
 #include <unordered_map>
-#include <cstdlib>
 #include <optional>
+#include <iostream>
+#include <cstdlib>
+#include <memory_resource>
 #include "../models/qmdd.hpp"
 
 using namespace std;

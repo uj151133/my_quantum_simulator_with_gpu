@@ -10,45 +10,37 @@ import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 
 public class OperationCache {
-    private static final OperationCache INSTANCE = new OperationCache();
-    private final Cache<Long, OperationResult> cache;
-    private final ForkJoinPool executorPool;
+    private static final Cache<Long, OperationResult> CACHE;
 
-    private OperationCache() {
+    static {
 
-        this.executorPool = new ForkJoinPool(
-            Runtime.getRuntime().availableProcessors()
-        );
-
-        this.cache = Caffeine.newBuilder()
+        CACHE = Caffeine.newBuilder()
                 .maximumSize(1_048_576)
                 .initialCapacity(262_144)
                 .recordStats()
-                .executor(executorPool)
                 .build();
     }
 
-    public static OperationCache getInstance() {
-        return INSTANCE;
+    private OperationCache() {
+        throw new AssertionError("Utility class");
     }
 
-    public void insert(long key, OperationResult result) {
-        cache.put(key, result);
+    public static void insert(long key, OperationResult result) {
+        CACHE.put(key, result);
     }
 
     @CEntryPoint(name = "cacheInsert")
     public static void nativeInsert(IsolateThread thread, long key, double real, double imag, long uniqueTableKey) {
-        OperationResult result = new OperationResult(real, imag, uniqueTableKey);
-        getInstance().insert(key, result);
+        CACHE.put(key, new OperationResult(real, imag, uniqueTableKey));
     }
 
-    public OperationResult find(long key) {
-        return cache.getIfPresent(key);
+    public static OperationResult find(long key) {
+        return CACHE.getIfPresent(key);
     }
 
     @CEntryPoint(name = "cacheFind")
     public static Pointer nativeFind(IsolateThread thread, long key) {
-        OperationResult result = getInstance().find(key);
+        OperationResult result = CACHE.getIfPresent(key);
         if (result == null) {
             return WordFactory.nullPointer();
         }
@@ -62,23 +54,23 @@ public class OperationCache {
     }
 
     public boolean contains(long key) {
-        return cache.getIfPresent(key) != null;
+        return CACHE.getIfPresent(key) != null;
     }
     
     public void invalidate(long key) {
-        cache.invalidate(key);
+        CACHE.invalidate(key);
     }
     
     public void clear() {
-        cache.invalidateAll();
+        CACHE.invalidateAll();
     }
     
     public long size() {
-        return cache.estimatedSize();
+        return CACHE.estimatedSize();
     }
 
     public void printStats() {
-        System.out.println("Cache size: " + cache.estimatedSize());
+        System.out.println("Cache size: " + CACHE.estimatedSize());
     }
 
     public static void main(String[] args) {
