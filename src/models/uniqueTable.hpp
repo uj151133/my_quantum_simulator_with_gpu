@@ -12,18 +12,18 @@
 using namespace std;
 
 struct Entry {
-    long long key;
+    int64_t key;
     shared_ptr<QMDDNode> value;
     Entry* next;
-    Entry(long long k, shared_ptr<QMDDNode> v, Entry* n=nullptr) : key(k), value(v), next(n) {}
+    Entry(int64_t k, shared_ptr<QMDDNode> v, Entry* n=nullptr) : key(k), value(v), next(n) {}
 };
 
 class UniqueTable {
 private:
     vector<atomic<Entry*>> table;
-    static constexpr long long tableSize=1048576;
+    static constexpr int64_t tableSize=1048576;
     UniqueTable();
-    long long hash(long long hashKey) const;
+    int64_t hash(int64_t hashKey) const;
 
 
 
@@ -31,8 +31,8 @@ public:
     UniqueTable(const UniqueTable&) = delete;
     UniqueTable& operator=(const UniqueTable&) = delete;
     static UniqueTable& getInstance();
-    void insert(long long hashKey, shared_ptr<QMDDNode> node);
-    shared_ptr<QMDDNode> find(long long hashKey) const;
+    void insert(int64_t hashKey, shared_ptr<QMDDNode> node);
+    shared_ptr<QMDDNode> find(int64_t hashKey) const;
     void printAllEntries() const;
 };
 

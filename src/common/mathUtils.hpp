@@ -19,8 +19,8 @@
 #include "calculation.hpp"
 #include "../modules/threadPool.hpp"
 #include <tbb/task_group.h>
-// #include "jniUtils.hpp"
 #include "constant.hpp"
+#include "../common/operationCacheClient.hpp"
 
 
 using namespace std;

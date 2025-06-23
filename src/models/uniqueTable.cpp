@@ -13,8 +13,8 @@ UniqueTable& UniqueTable::getInstance() {
     return instance;
 }
 
-void UniqueTable::insert(long long hashKey, shared_ptr<QMDDNode> node) {
-    long long idx = hash(hashKey);
+void UniqueTable::insert(int64_t hashKey, shared_ptr<QMDDNode> node) {
+    int64_t idx = hash(hashKey);
     Entry* newEntry = new Entry(hashKey, node, nullptr);
     Entry* oldHead;
     while (true) {
@@ -32,7 +32,7 @@ void UniqueTable::insert(long long hashKey, shared_ptr<QMDDNode> node) {
     }
 }
 
-shared_ptr<QMDDNode> UniqueTable::find(long long hashKey) const {
+shared_ptr<QMDDNode> UniqueTable::find(int64_t hashKey) const {
     size_t idx = hash(hashKey);
     Entry* head = table[idx].load(memory_order_acquire);
     for (Entry* p = head; p != nullptr; p = p->next) {
@@ -44,7 +44,7 @@ shared_ptr<QMDDNode> UniqueTable::find(long long hashKey) const {
 }
 
 // 実装ファイル
-long long UniqueTable::hash(long long key) const {
+int64_t UniqueTable::hash(int64_t key) const {
     return key & (tableSize - 1);
 }
 

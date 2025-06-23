@@ -1,0 +1,1 @@
+public record OperationResult(double real, double imag, long uniqueTableKey) {}
