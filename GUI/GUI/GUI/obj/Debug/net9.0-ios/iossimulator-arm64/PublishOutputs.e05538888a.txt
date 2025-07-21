@@ -249,6 +249,5 @@
 /Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI/bin/Debug/net9.0-ios/iossimulator-arm64/publish/../GUI.app/libmono-component-marshal-ilgen.dylib
 /Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI/bin/Debug/net9.0-ios/iossimulator-arm64/publish/../GUI.app/libmonosgen-2.0.dylib
 /Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI/bin/Debug/net9.0-ios/iossimulator-arm64/publish/../GUI.app/libxamarin-dotnet-debug.dylib
-/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI/bin/Debug/net9.0-ios/iossimulator-arm64/publish/../GUI.app/aot-instances.aotdata.arm64
 /Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI/bin/Debug/net9.0-ios/iossimulator-arm64/publish/../GUI.app/System.Private.CoreLib.aotdata.arm64
 /Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI/bin/Debug/net9.0-ios/iossimulator-arm64/publish/../GUI.app///GUI

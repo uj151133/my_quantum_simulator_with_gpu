@@ -34,4 +34,4 @@
 /Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Web/obj/Debug/net9.0/GUI.Web.pdb
 /Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Web/obj/Debug/net9.0/GUI.Web.genruntimeconfig.cache
 /Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Web/obj/Debug/net9.0/ref/GUI.Web.dll
-/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Web/obj/Debug/net9.0/compressed/ngrg2r3a6e-6gkjizxy3s.gz
+/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Web/obj/Debug/net9.0/compressed/ngrg2r3a6e-cyn00vqyic.gz

@@ -16,12 +16,10 @@ static void xamarin_invoke_registration_methods ()
 
 #include "xamarin/xamarin.h"
 
-extern void *mono_aot_module_aot_instances_info;
 extern void *mono_aot_module_System_Private_CoreLib_info;
 
 void xamarin_register_modules_impl ()
 {
-	mono_aot_register_module (mono_aot_module_aot_instances_info);
 	mono_aot_register_module (mono_aot_module_System_Private_CoreLib_info);
 
 }

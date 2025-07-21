@@ -130,6 +130,9 @@
     <_LinkerFrameworks Include="CryptoTokenKit">
       <IsWeak>false</IsWeak>
     </_LinkerFrameworks>
+    <_LinkerFrameworks Include="DataDetection">
+      <IsWeak>false</IsWeak>
+    </_LinkerFrameworks>
     <_LinkerFrameworks Include="DeviceCheck">
       <IsWeak>false</IsWeak>
     </_LinkerFrameworks>
@@ -359,6 +362,9 @@
       <IsWeak>true</IsWeak>
     </_LinkerFrameworks>
     <_LinkerFrameworks Include="ScreenCaptureKit">
+      <IsWeak>true</IsWeak>
+    </_LinkerFrameworks>
+    <_LinkerFrameworks Include="SecurityUI">
       <IsWeak>true</IsWeak>
     </_LinkerFrameworks>
     <_LinkerFrameworks Include="SensitiveContentAnalysis">

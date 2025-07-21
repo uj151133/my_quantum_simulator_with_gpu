@@ -1,13 +1,5 @@
-# config.yaml
-gui:
-  enabled: false
-
-process:
-  concurrency: 0 #並行性
-  parallelism: 1 #並列性
-
-table:
-  size: 1048576
-
-cache:
-  size: 1048576
+algorithm: qft
+n_qubits: 5
+cache_enabled: true
+max_grover_iterations: 10
+max_qft_size: 6
