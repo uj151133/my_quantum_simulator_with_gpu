@@ -1,6 +1,7 @@
 using GUI.Web.Components;
 using GUI.Shared.Services;
 using GUI.Web.Services;
+using Microsoft.AspNetCore.StaticFiles;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,7 +24,11 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseStaticFiles();
+app.UseStaticFiles(new StaticFileOptions
+{
+    ServeUnknownFileTypes = true,
+    DefaultContentType = "text/plain"
+});
 app.UseAntiforgery();
 
 app.MapRazorComponents<App>()

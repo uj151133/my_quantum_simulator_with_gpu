@@ -1,28 +1,12 @@
 {
   "Files": [
     {
-      "Id": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/Pages/Composer.razor.js",
-      "PackagePath": "staticwebassets/Pages/Composer.razor.js"
-    },
-    {
       "Id": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/obj/Debug/net9.0/scopedcss/projectbundle/GUI.Shared.bundle.scp.css",
-      "PackagePath": "staticwebassets/GUI.Shared.vmpqiylzuy.bundle.scp.css"
+      "PackagePath": "staticwebassets/GUI.Shared.2gvabez2fw.bundle.scp.css"
     },
     {
       "Id": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/wwwroot/app.css",
       "PackagePath": "staticwebassets/app.css"
-    },
-    {
-      "Id": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/wwwroot/blackhole.blend",
-      "PackagePath": "staticwebassets/blackhole.blend"
-    },
-    {
-      "Id": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/wwwroot/blackhole.mtl",
-      "PackagePath": "staticwebassets/blackhole.mtl"
-    },
-    {
-      "Id": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/wwwroot/blackhole.obj",
-      "PackagePath": "staticwebassets/blackhole.obj"
     },
     {
       "Id": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/wwwroot/bootstrap/bootstrap.min.css",
@@ -39,6 +23,14 @@
     {
       "Id": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/wwwroot/favicon.png",
       "PackagePath": "staticwebassets/favicon.png"
+    },
+    {
+      "Id": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/wwwroot/heartbleed.png",
+      "PackagePath": "staticwebassets/heartbleed.png"
+    },
+    {
+      "Id": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/wwwroot/shaders/vein.frag",
+      "PackagePath": "staticwebassets/shaders/vein.frag"
     },
     {
       "Id": "obj/Debug/net9.0/staticwebassets/msbuild.GUI.Shared.Microsoft.AspNetCore.StaticWebAssetEndpoints.props",

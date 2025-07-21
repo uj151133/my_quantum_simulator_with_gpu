@@ -238,6 +238,5 @@
 /Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI/bin/Debug/net9.0-maccatalyst/maccatalyst-arm64/publish/../GUI.app/Contents/MonoBundle/GUI.pdb
 /Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI/bin/Debug/net9.0-maccatalyst/maccatalyst-arm64/publish/../GUI.app/Contents/MonoBundle/GUI.Shared.pdb
 /Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI/bin/Debug/net9.0-maccatalyst/maccatalyst-arm64/publish/../GUI.app/Contents/MonoBundle/Microsoft.MacCatalyst.pdb
-/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI/bin/Debug/net9.0-maccatalyst/maccatalyst-arm64/publish/../GUI.app/Contents/MonoBundle/aot-instances.aotdata.arm64
 /Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI/bin/Debug/net9.0-maccatalyst/maccatalyst-arm64/publish/../GUI.app/Contents/MonoBundle/System.Private.CoreLib.aotdata.arm64
 /Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI/bin/Debug/net9.0-maccatalyst/maccatalyst-arm64/publish/../GUI.app/Contents/MacOS//GUI

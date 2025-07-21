@@ -1,0 +1,922 @@
+@page "/heartbeat"
+@inject IJSRuntime JSRuntime
+@implements IDisposable
+@using Microsoft.JSInterop
+@using Microsoft.AspNetCore.Components
+
+<PageTitle>Heartbeat</PageTitle>
+
+<!-- 完全統合実装：CSS + JavaScript + HTML + Veda.js Background -->
+<style>
+/* ページ全体の背景を透明にする */
+body, html {
+    background: transparent !important;
+    background-color: transparent !important;
+}
+
+/* Blazor Serverの既存背景を無効化（サイドバーは除く） */
+.main, .content, .page {
+    background: transparent !important;
+    background-color: transparent !important;
+}
+
+/* サイドバーの背景を保持 */
+.sidebar {
+    background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%) !important; /* 他のページと同じグラデーション */
+    background-color: rgb(5, 39, 103) !important;
+}
+
+/* サイドバー内の要素の背景も適切に設定 */
+.sidebar .nav-item {
+    background: transparent;
+}
+
+.sidebar .nav-item.active {
+    background: rgba(255, 255, 255, 0.1) !important;
+}
+
+.sidebar .nav-link {
+    color: white !important;
+}
+
+.sidebar .nav-link:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* より具体的なサイドバー背景設定 */
+nav.navbar, .navbar-dark, .bg-dark {
+    background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%) !important;
+    background-color: rgb(5, 39, 103) !important;
+}
+
+/* トップ行のナビゲーションバーは除外 */
+.sidebar .top-row.navbar,
+.top-row.navbar-dark {
+    background: rgba(0,0,0,0.4) !important;
+    background-color: rgba(0,0,0,0.4) !important;
+    background-image: none !important;
+}
+
+/* 最優先でトップ行の背景を半透明黒に強制変更 */
+.sidebar .top-row.ps-3.navbar.navbar-dark,
+div.sidebar div.top-row,
+.sidebar > .top-row {
+    background: rgba(0,0,0,0.4) !important;
+    background-color: rgba(0,0,0,0.4) !important;
+    background-image: none !important;
+}
+
+/* サイドバーのトップ行は元の半透明背景を維持 - より強力なセレクター */
+.sidebar .top-row,
+.top-row.ps-3.navbar.navbar-dark,
+.navbar-dark.top-row {
+    background: rgba(0,0,0,0.4) !important;
+    background-color: rgba(0,0,0,0.4) !important;
+    background-image: none !important;
+}
+
+/* ナビゲーションバーのブランド */
+.navbar-brand {
+    color: white !important;
+}
+
+/* サイドバー全体のスタイル保持 */
+.sidebar-content, .nav-scrollable {
+    background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%) !important;
+    background-color: rgb(5, 39, 103) !important;
+}
+
+/* アクティブなナビゲーション項目 */
+.nav-item .nav-link.active {
+    background: rgba(255, 255, 255, 0.2) !important;
+    color: white !important;
+}
+
+/* ホバー効果 */
+.nav-item .nav-link:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+    color: white !important;
+}
+
+/* Veda.js 背景エフェクト */
+.veda-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.veda-canvas {
+    width: 100vw !important;
+    height: 100vh !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    z-index: -1 !important;
+    background: transparent;
+    object-fit: cover;
+    display: block !important;
+}
+
+/* ダッシュボード要素を背景エフェクトの上に配置 */
+.status-dashboard {
+    position: relative;
+    z-index: 2;
+    background: rgba(255, 255, 255, 0.75); // 背景を透明にして量子回路が見えるように
+    backdrop-filter: blur(8px); // ガラスエフェクトを強化
+    border-radius: 16px;
+    padding: 20px;
+    margin: 20px;
+}
+
+/* ハートビートアニメーション */
+.heart-icon {
+    animation: heartbeat 1.2s ease-in-out infinite !important;
+    color: #e74c3c !important;
+    fill: #e74c3c !important;
+    filter: drop-shadow(0 0 5px rgba(231, 76, 60, 0.5));
+    transform-origin: center !important;
+    display: inline-block !important;
+    transition: none !important;
+}
+
+.heart-icon:hover {
+    animation: heartbeat-fast 0.8s ease-in-out infinite !important;
+    filter: drop-shadow(0 0 8px rgba(231, 76, 60, 0.8));
+}
+
+.heart-icon path {
+    fill: currentColor !important;
+}
+
+.card {
+    /* From https://css.glass */
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+@@keyframes heartbeat {
+    0% { 
+        transform: scale(1); 
+    }
+    14% { 
+        transform: scale(1.3); 
+    }
+    28% { 
+        transform: scale(1); 
+    }
+    42% { 
+        transform: scale(1.3); 
+    }
+    70% { 
+        transform: scale(1); 
+    }
+    100% { 
+        transform: scale(1); 
+    }
+}
+
+@@keyframes heartbeat-fast {
+    0% { 
+        transform: scale(1); 
+    }
+    50% { 
+        transform: scale(1.4); 
+    }
+    100% { 
+        transform: scale(1); 
+    }
+}
+
+/* 既存のスタイル */
+h1 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* レスポンシブデザイン */
+@@media (max-width: 768px) {
+    /* 削除済み */
+}
+</style>
+
+<h1>
+    <svg class="heart-icon" viewBox="0 0 24 24" width="32" height="32">
+        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="currentColor"/>
+    </svg>
+    Heartbeat
+</h1>
+
+<p>シミュレータプロセスのリアルタイム監視</p>
+
+<!-- Veda.js シェーダー背景エフェクト -->
+<!-- キャンバスはJavaScriptで動的に作成してbodyに追加するため、ここには配置しない -->
+<!--<div class="veda-background">
+    <canvas id="vedaCanvas" class="veda-canvas"></canvas>
+</div>-->
+
+<!-- デバッグ表示 (非表示) -->
+<div id="debugInfo" style="display: none; position: fixed; top: 10px; right: 10px; background: rgba(0,0,0,0.6); color: white; padding: 8px; border-radius: 8px; font-family: monospace; font-size: 11px; z-index: 1000; backdrop-filter: blur(5px); border: 1px solid rgba(255,255,255,0.1);">
+    <div style="color: #4ade80;">🔧 JS: <span id="jsStatus">Loading...</span></div>
+    <div style="color: #60a5fa;">🎨 Canvas: <span id="canvasStatus">Checking...</span></div>
+    <div style="color: #a78bfa;">🌌 WebGL: <span id="webglStatus">Testing...</span></div>
+    <div style="color: #f472b6;">🧬 Shader: <span id="shaderStatus">Loading...</span></div>
+    <div style="color: #fbbf24;">⏱️ Frames: <span id="frameCount">0</span></div>
+</div>
+
+@if (currentStatus == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <!-- シンプルな量子シミュレータ背景のみ -->
+}
+
+@code {
+    private HeartbeatInfo? currentStatus;
+    private DotNetObjectReference<object>? dotNetRef;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // DotNetObjectReferenceを作成
+        dotNetRef = DotNetObjectReference.Create<object>(this);
+        
+        // 初期データを読み込み
+        await LoadHeartbeatData();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            try
+            {
+                // JavaScriptオブジェクトが存在するか確認してから初期化
+                var objectExists = await JSRuntime.InvokeAsync<bool>("eval", "typeof window.heartbeatInterop !== 'undefined'");
+                
+                if (!objectExists)
+                {
+                    // heartbeatInteropオブジェクトを作成
+                    await JSRuntime.InvokeVoidAsync("eval", @"
+                        // Heartbeat用のJavaScriptオブジェクトを作成
+                        window.heartbeatInterop = {
+                            updateInterval: null,
+                            vedaInstance: null,
+                            
+                            startRealTimeUpdate: function(dotNetObjectReference) {
+                                console.log('Starting real-time heartbeat updates...');
+                                this.updateInterval = setInterval(() => {
+                                    try {
+                                        dotNetObjectReference.invokeMethodAsync('UpdateHeartbeatData');
+                                    } catch (error) {
+                                        console.error('Failed to update heartbeat data:', error);
+                                    }
+                                }, 3000);
+                            },
+                            
+                            stopRealTimeUpdate: function() {
+                                if (this.updateInterval) {
+                                    clearInterval(this.updateInterval);
+                                    this.updateInterval = null;
+                                }
+                            },
+                            
+                            animateMetrics: function() {
+                                // メトリクス関連のアニメーションは削除済み
+                                console.log('Metrics animation skipped (metrics removed)');
+                            },
+                            
+                            initializeVedaBackground: function() {
+                                console.log('🎯 initializeVedaBackground called');
+                                
+                                // キャンバスを取得または作成
+                                let canvas = document.getElementById('vedaCanvas');
+                                if (!canvas) {
+                                    console.log('❌ Veda canvas not found, creating new canvas');
+                                    canvas = document.createElement('canvas');
+                                    canvas.id = 'vedaCanvas';
+                                    canvas.className = 'veda-canvas';
+                                    document.body.appendChild(canvas);
+                                    console.log('✅ New canvas created and added to body');
+                                } else {
+                                    console.log('✅ Canvas element found:', canvas);
+                                }
+                                
+                                console.log('📊 Canvas dimensions:', canvas.width, 'x', canvas.height);
+                                console.log('🎨 Canvas style:', window.getComputedStyle(canvas));
+                                
+                                // 直接カスタムWebGLレンダラーを使用
+                                this.setupVedaShader(canvas);
+                            },
+                            
+                            loadVedaJS: function() {
+                                return new Promise((resolve, reject) => {
+                                    if (window.VEDA) {
+                                        resolve(window.VEDA);
+                                        return;
+                                    }
+                                    
+                                    const script = document.createElement('script');
+                                    script.src = 'https://unpkg.com/vedajs@1.3.3/lib/veda.js';
+                                    script.onload = () => {
+                                        console.log('Veda.js loaded successfully');
+                                        resolve(window.VEDA);
+                                    };
+                                    script.onerror = (error) => {
+                                        console.error('Failed to load Veda.js:', error);
+                                        reject(error);
+                                    };
+                                    document.head.appendChild(script);
+                                });
+                            },
+                            
+                            setupVedaShader: function(canvas) {
+                                console.log('🔧 setupVedaShader called with canvas:', canvas);
+                                
+                                // デバッグ表示を更新する関数をローカルで定義
+                                const updateDebugStatus = (id, status) => {
+                                    const element = document.getElementById(id);
+                                    if (element) element.textContent = status;
+                                };
+                                
+                                try {
+                                    // まず基本的なWebGLコンテキストをテスト
+                                    const gl = canvas.getContext('webgl2') || canvas.getContext('webgl');
+                                    if (!gl) {
+                                        console.warn('⚠️ WebGL not supported, falling back to simple background');
+                                        updateDebugStatus('webglStatus', 'Not supported ❌');
+                                        this.createSimpleBackground(canvas);
+                                        return;
+                                    }
+                                    
+                                    console.log('✅ WebGL context obtained:', gl);
+                                    console.log('🔍 WebGL version:', gl.getParameter(gl.VERSION));
+                                    console.log('🔍 WebGL renderer:', gl.getParameter(gl.RENDERER));
+                                    updateDebugStatus('webglStatus', 'Supported ✅');
+                                    
+                                    // 外部ファイル（vein.frag）を最優先で読み込み
+                                    console.log('🎨 Loading vein.frag shader from external file...');
+                                    console.log('📂 Primary source: /shaders/vein.frag');
+                                    updateDebugStatus('shaderStatus', 'Loading external...');
+                                    
+                                    this.loadQuantumShader()
+                                        .then(shaderSource => {
+                                            console.log('🎉 🎨 External vein.frag loaded and validated successfully!');
+                                            console.log('📊 Using external shader with', shaderSource.length, 'characters');
+                                            console.log('✨ This is the REAL vein.frag content - not embedded!');
+                                            updateDebugStatus('shaderStatus', 'External loaded ✅');
+                                            
+                                            // シェーダーコンパイル前の最終確認
+                                            console.log('🔥 About to compile external vein.frag shader...');
+                                            this.setupCustomWebGLRenderer(canvas, shaderSource);
+                                        })
+                                        .catch(error => {
+                                            console.log('⚠️ 🔴 External vein.frag loading failed, using emergency fallback');
+                                            console.log('🔍 Failure reason:', error.message);
+                                            console.log('📋 Full error details:', error);
+                                            updateDebugStatus('shaderStatus', 'Fallback to simple ⚠️');
+                                            
+                                            console.log('🔄 Loading simple emergency fallback shader...');
+                                            const embeddedShader = this.getEmbeddedQuantumShader();
+                                            console.log('📊 Using emergency fallback with', embeddedShader.length, 'characters');
+                                            console.log('⚠️ This is NOT the full vein.frag - just a simple backup!');
+                                            console.log('🔥 About to compile emergency fallback shader...');
+                                            this.setupCustomWebGLRenderer(canvas, embeddedShader);
+                                        });
+                                        
+                                        
+                                } catch (error) {
+                                    console.error('💥 Shader setup failed:', error);
+                                    updateDebugStatus('webglStatus', 'Error ❌');
+                                    this.createSimpleBackground(canvas);
+                                }
+                            },
+                            
+                            loadQuantumShader: async function() {
+                                console.log('📂 Fetching quantum shader from /shaders/vein.frag');
+                                console.log('🌐 Current URL:', window.location.href);
+                                console.log('🔗 Shader URL:', window.location.origin + '/shaders/vein.frag');
+                                
+                                try {
+                                    const response = await fetch('/shaders/vein.frag');
+                                    console.log('📡 Fetch response received:', response);
+                                    console.log('📊 Response status:', response.status, response.statusText);
+                                    console.log('📋 Response headers:', [...response.headers.entries()]);
+                                    console.log('🔍 Response type:', response.type);
+                                    console.log('✅ Response ok:', response.ok);
+                                    
+                                    if (!response.ok) {
+                                        throw new Error(`Shader fetch failed: ${response.status} ${response.statusText}`);
+                                    }
+                                    
+                                    const shaderSource = await response.text();
+                                    console.log('🎉 ✅ vein.frag loaded successfully!');
+                                    console.log('📊 Shader length:', shaderSource.length, 'characters');
+                                    console.log('🔍 First 200 chars:', shaderSource.substring(0, 200));
+                                    console.log('🔍 Last 100 chars:', shaderSource.slice(-100));
+                                    
+                                    // シェーダーの主要な特徴を検証
+                                    const hasUniforms = shaderSource.includes('uniform float time') && 
+                                                       shaderSource.includes('uniform vec2 resolution') && 
+                                                       shaderSource.includes('uniform float volume');
+                                    const hasMain = shaderSource.includes('void main()');
+                                    const hasRayMarching = shaderSource.includes('rayMarch');
+                                    const hasGetDist = shaderSource.includes('getDist');
+                                    
+                                    console.log('🔬 Shader validation:');
+                                    console.log('  - Has required uniforms:', hasUniforms);
+                                    console.log('  - Has main function:', hasMain);
+                                    console.log('  - Has ray marching:', hasRayMarching);
+                                    console.log('  - Has distance function:', hasGetDist);
+                                    
+                                    if (!hasUniforms || !hasMain) {
+                                        console.warn('⚠️ Shader may be incomplete or corrupted');
+                                    } else {
+                                        console.log('✅ Shader validation passed - looks good!');
+                                    }
+                                    
+                                    // シェーダーソースをそのまま使用（Veda.js標準uniform名に対応）
+                                    const adjustedShaderSource = shaderSource;
+                                    
+                                    console.log('🔧 Using standard Veda.js uniform names (time, resolution, volume)');
+                                    console.log('🎯 Final shader ready for compilation');
+                                    return adjustedShaderSource;
+                                } catch (error) {
+                                    console.error('❌ Error loading vein.frag shader:', error);
+                                    console.error('🔍 Error type:', error.constructor.name);
+                                    console.error('🔍 Error message:', error.message);
+                                    console.error('🔍 Error stack:', error.stack);
+                                    
+                                    // エラーの種類によって詳細な情報を提供
+                                    if (error instanceof TypeError) {
+                                        console.error('🌐 Network error - check if server is running and file exists');
+                                    } else if (error.message.includes('404')) {
+                                        console.error('📂 File not found - /shaders/vein.frag does not exist');
+                                        console.error('🔍 Check file path: /Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Web/wwwroot/shaders/vein.frag');
+                                    } else if (error.message.includes('403')) {
+                                        console.error('🔒 Access forbidden - check file permissions');
+                                    } else if (error.message.includes('500')) {
+                                        console.error('🔥 Server error - check server logs');
+                                    }
+                                    
+                                    throw error;
+                                }
+                            },
+
+                            getEmbeddedQuantumShader: function() {
+                                // 緊急時フォールバック用のシンプルなシェーダー
+                                // 通常は vein.frag から読み込むので、これは使われないはず
+                                console.log('⚠️ Using emergency fallback shader - vein.frag failed to load');
+                                return `
+                                    precision highp float;
+                                    uniform float time;
+                                    uniform vec2 resolution;
+                                    uniform float volume;
+                                    
+                                    void main() {
+                                        vec2 uv = (gl_FragCoord.xy - 0.5 * resolution.xy) / resolution.y;
+                                        
+                                        // シンプルな動的グラデーション
+                                        float t = time * 0.001;
+                                        vec3 col = vec3(
+                                            0.2 + 0.3 * sin(t + uv.x * 3.0),
+                                            0.1 + 0.2 * sin(t * 1.3 + uv.y * 2.0), 
+                                            0.4 + 0.3 * sin(t * 0.7 + length(uv) * 4.0)
+                                        );
+                                        
+                                        // ボリューム反映
+                                        col *= (0.5 + 0.5 * volume);
+                                        
+                                        gl_FragColor = vec4(col, 1.0);
+                                    }
+                                `;
+                            },
+                            
+                            setupCustomWebGLRenderer: function(canvas, fragmentShader) {
+                                console.log('🎬 setupCustomWebGLRenderer called');
+                                
+                                // デバッグ表示を更新する関数をローカルで定義
+                                const updateDebugStatus = (id, status) => {
+                                    const element = document.getElementById(id);
+                                    if (element) element.textContent = status;
+                                };
+                                
+                                try {
+                                    const gl = canvas.getContext('webgl2') || canvas.getContext('webgl');
+                                    if (!gl) {
+                                        console.error('❌ WebGL context not available');
+                                        this.createSimpleBackground(canvas);
+                                        return;
+                                    }
+                                    
+                                    console.log('✅ WebGL context ready for custom renderer');
+                                    
+                                    // 初期キャンバスサイズを設定
+                                    canvas.width = window.innerWidth;
+                                    canvas.height = window.innerHeight;
+                                    
+                                    // キャンバスを背景として配置
+                                    canvas.style.position = 'fixed';
+                                    canvas.style.top = '0px';
+                                    canvas.style.left = '0px';
+                                    canvas.style.width = '100vw';
+                                    canvas.style.height = '100vh';
+                                    canvas.style.zIndex = '-1'; // 背景として配置（他の要素の下に）
+                                    canvas.style.pointerEvents = 'none';
+                                    canvas.style.display = 'block';
+                                    canvas.style.visibility = 'visible';
+                                    canvas.style.opacity = '1.0';
+                                    canvas.style.backgroundColor = 'transparent';
+                                    canvas.style.border = 'none';
+                                    
+                                    gl.viewport(0, 0, canvas.width, canvas.height);
+                                    console.log('📐 Initial canvas size:', canvas.width, 'x', canvas.height);
+                                    console.log('🎯 Canvas positioning complete');
+                                    
+                                    // シェーダーコンパイル
+                                    const vertexShaderSource = `
+                                        attribute vec2 a_position;
+                                        void main() {
+                                            gl_Position = vec4(a_position, 0.0, 1.0);
+                                        }
+                                    `;
+                                    
+                                    const createShader = (type, source) => {
+                                        const shader = gl.createShader(type);
+                                        gl.shaderSource(shader, source);
+                                        gl.compileShader(shader);
+                                        if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+                                            const error = gl.getShaderInfoLog(shader);
+                                            console.error('💥 Shader compilation error:', error);
+                                            console.error('🔍 Shader source (first 500 chars):', source.substring(0, 500));
+                                            updateDebugStatus('shaderStatus', 'Compile error ❌');
+                                            gl.deleteShader(shader);
+                                            return null;
+                                        }
+                                        console.log('✅ Shader compiled successfully');
+                                        return shader;
+                                    };
+                                    
+                                    console.log('🔨 Compiling vertex shader...');
+                                    const vertexShader = createShader(gl.VERTEX_SHADER, vertexShaderSource);
+                                    
+                                    console.log('🔨 Compiling fragment shader...');
+                                    console.log('📊 Fragment shader length:', fragmentShader.length, 'characters');
+                                    console.log('🔍 Shader source analysis:');
+                                    console.log('  - Is vein.frag content:', fragmentShader.includes('RAYMARCH_SURFACE_DIST') && fragmentShader.includes('rayMarch'));
+                                    console.log('  - Has complex 3D math:', fragmentShader.includes('getDist') && fragmentShader.includes('tunnel'));
+                                    console.log('  - Is simple fallback:', fragmentShader.includes('emergency fallback'));
+                                    
+                                    if (fragmentShader.includes('RAYMARCH_SURFACE_DIST')) {
+                                        console.log('✨ Using FULL vein.frag shader with ray marching!');
+                                    } else {
+                                        console.log('⚠️ Using simple emergency fallback shader');
+                                    }
+                                    
+                                    console.log('  - Shader preview (first 150 chars):', fragmentShader.substring(0, 150).replace(/\s+/g, ' '));
+                                    
+                                    const fragShader = createShader(gl.FRAGMENT_SHADER, fragmentShader);
+                                    
+                                    if (!vertexShader || !fragShader) {
+                                        console.error('❌ Shader compilation failed');
+                                        this.createSimpleBackground(canvas);
+                                        return;
+                                    }
+                                    
+                                    console.log('✅ Shaders compiled successfully');
+                                    updateDebugStatus('shaderStatus', 'Compiled ✅');
+                                    
+                                    // プログラム作成
+                                    const program = gl.createProgram();
+                                    gl.attachShader(program, vertexShader);
+                                    gl.attachShader(program, fragShader);
+                                    gl.linkProgram(program);
+                                    
+                                    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+                                        console.error('💥 Program linking error:', gl.getProgramInfoLog(program));
+                                        this.createSimpleBackground(canvas);
+                                        return;
+                                    }
+                                    
+                                    console.log('✅ Shader program linked successfully');
+                                    
+                                    // バッファ設定
+                                    const positionBuffer = gl.createBuffer();
+                                    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+                                    const positions = [-1, -1, 1, -1, -1, 1, 1, 1];
+                                    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
+                                    
+                                    // アトリビュート設定
+                                    const positionLocation = gl.getAttribLocation(program, 'a_position');
+                                    gl.enableVertexAttribArray(positionLocation);
+                                    gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+                                    
+                                    // ユニフォーム取得（JSでは分かりやすい名前を使用、シェーダー内のuniform名と対応）
+                                    const Time = gl.getUniformLocation(program, 'time');
+                                    const Resolution = gl.getUniformLocation(program, 'resolution');
+                                    const Volume = gl.getUniformLocation(program, 'volume');
+
+                                    console.log('🎭 Uniforms located:', {
+                                        Time: Time,
+                                        Resolution: Resolution,
+                                        Volume: Volume
+                                    });
+                                    
+                                    let frameCount = 0;
+                                    
+                                    // レンダリング関数
+                                    const render = (time) => {
+                                        frameCount++;
+                                        
+                                        // フレームカウントを表示に更新
+                                        const frameCountElement = document.getElementById('frameCount');
+                                        if (frameCountElement) {
+                                            frameCountElement.textContent = frameCount;
+                                        }
+                                        
+                                        // 定期的にフレームカウントを出力
+                                        if (frameCount % 60 === 0) {
+                                            console.log('🎞️ Frames rendered:', frameCount, 'Time:', time.toFixed(2));
+                                        }
+                                        
+                                        // サイズ調整
+                                        if (canvas.width !== window.innerWidth || canvas.height !== window.innerHeight) {
+                                            canvas.width = window.innerWidth;
+                                            canvas.height = window.innerHeight;
+                                            gl.viewport(0, 0, canvas.width, canvas.height);
+                                        }
+                                        
+                                        // 背景をクリア（深い宇宙色）
+                                        gl.clearColor(0.02, 0.05, 0.15, 1.0);
+                                        gl.clear(gl.COLOR_BUFFER_BIT);
+                                        
+                                        // 描画
+                                        try {
+                                            gl.useProgram(program);
+                                            gl.uniform1f(Time, time * 0.001);
+                                            gl.uniform2f(Resolution, canvas.width, canvas.height);
+                                            
+                                            // volume uniformの設定（0.0〜1.0の値、動的に変化可能）
+                                            const volumeValue = 0.5 + 0.3 * Math.sin(time * 0.002); // 時間で変化する例
+                                            gl.uniform1f(Volume, volumeValue);
+                                            
+
+                                            gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+                                        } catch (shaderError) {
+                                            console.warn('⚠️ Shader rendering failed:', shaderError);
+                                        }
+                                        requestAnimationFrame(render);
+                                    };
+                                    
+                                    // レンダリング開始
+                                    console.log('🚀 Starting render loop...');
+                                    requestAnimationFrame(render);
+                                    
+                                    // リサイズ対応
+                                    window.addEventListener('resize', () => {
+                                        canvas.width = window.innerWidth;
+                                        canvas.height = window.innerHeight;
+                                        gl.viewport(0, 0, canvas.width, canvas.height);
+                                        console.log('📐 Canvas resized:', canvas.width, 'x', canvas.height);
+                                    });
+                                    
+                                    console.log('🎉 Custom WebGL quantum background initialized successfully!');
+                                    
+                                } catch (error) {
+                                    console.error('💥 Custom WebGL setup failed:', error);
+                                    console.error('Stack trace:', error.stack);
+                                    this.createSimpleBackground(canvas);
+                                }
+                            },
+                            
+                            createSimpleBackground: function(canvas) {
+                                const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+                                if (!gl) return;
+                                
+                                const updateSize = () => {
+                                    canvas.width = window.innerWidth;
+                                    canvas.height = window.innerHeight;
+                                    gl.viewport(0, 0, canvas.width, canvas.height);
+                                };
+                                updateSize();
+                                window.addEventListener('resize', updateSize);
+                                
+                                // 簡単なグラデーション背景
+                                const animate = () => {
+                                    const time = Date.now() * 0.001;
+                                    const r = 0.1 + 0.1 * Math.sin(time * 0.5);
+                                    const g = 0.2 + 0.1 * Math.sin(time * 0.7);
+                                    const b = 0.4 + 0.2 * Math.sin(time * 0.3);
+                                    
+                                    gl.clearColor(r, g, b, 1.0);
+                                    gl.clear(gl.COLOR_BUFFER_BIT);
+                                    requestAnimationFrame(animate);
+                                };
+                                animate();
+                                console.log('Simple background initialized');
+                            },
+                            
+                            initialize: function() {
+                                console.log('🚀 Initializing heartbeat dashboard...');
+                                
+                                // デバッグ表示を更新
+                                const updateDebugStatus = (id, status) => {
+                                    const element = document.getElementById(id);
+                                    if (element) element.textContent = status;
+                                };
+                                
+                                updateDebugStatus('jsStatus', 'Loaded ✅');
+                                
+                                // 背景色を強制的にクリア（デバッグ）
+                                document.body.style.background = 'transparent';
+                                document.body.style.backgroundColor = 'transparent';
+                                document.documentElement.style.background = 'transparent';
+                                document.documentElement.style.backgroundColor = 'transparent';
+                                console.log('🎨 Background colors forcefully cleared');
+                                
+                                // デバッグ情報
+                                console.log('Window size:', window.innerWidth, 'x', window.innerHeight);
+                                console.log('User agent:', navigator.userAgent);
+                                
+                                // ハートアイコンのアニメーション
+                                const heartIcon = document.querySelector('.heart-icon');
+                                if (heartIcon) {
+                                    heartIcon.style.animation = 'heartbeat 1.2s ease-in-out infinite';
+                                    console.log('❤️ Heart icon animation applied');
+                                } else {
+                                    console.warn('⚠️ Heart icon not found');
+                                }
+                                
+                                // キャンバス要素の確認・作成
+                                let canvas = document.getElementById('vedaCanvas');
+                                if (!canvas) {
+                                    // キャンバスが存在しない場合は作成
+                                    console.log('🎨 Canvas not found, creating new canvas element');
+                                    canvas = document.createElement('canvas');
+                                    canvas.id = 'vedaCanvas';
+                                    canvas.className = 'veda-canvas';
+                                } else {
+                                    console.log('🎨 Canvas found:', canvas.width, 'x', canvas.height);
+                                }
+                                
+                                updateDebugStatus('canvasStatus', 'Found/Created ✅');
+                                
+                                if (canvas) {
+                                    // 詳細なDOM構造とスタイル情報を出力
+                                    console.log('🔍 Canvas parent:', canvas.parentElement);
+                                    console.log('🔍 Canvas siblings:', Array.from(canvas.parentElement?.children || []));
+                                    console.log('🔍 Document body style:', {
+                                        background: window.getComputedStyle(document.body).background,
+                                        backgroundColor: window.getComputedStyle(document.body).backgroundColor
+                                    });
+                                    console.log('🔍 HTML style:', {
+                                        background: window.getComputedStyle(document.documentElement).background,
+                                        backgroundColor: window.getComputedStyle(document.documentElement).backgroundColor
+                                    });
+                                    
+                                    // キャンバスのスタイルを背景用に設定
+                                    canvas.style.position = 'fixed';
+                                    canvas.style.top = '0';
+                                    canvas.style.left = '0';
+                                    canvas.style.width = '100vw';
+                                    canvas.style.height = '100vh';
+                                    canvas.style.zIndex = '-1'; // 背景として配置（他の要素の下に）
+                                    canvas.style.pointerEvents = 'none';
+                                    canvas.style.display = 'block';
+                                    canvas.style.visibility = 'visible';
+                                    canvas.style.opacity = '1';
+                                    canvas.style.backgroundColor = 'transparent';
+                                    canvas.style.border = 'none';
+                                    
+                                    // 親要素のスタイルも適切に設定
+                                    if (canvas.parentElement) {
+                                        canvas.parentElement.style.position = 'relative';
+                                        canvas.parentElement.style.overflow = 'visible';
+                                    }
+                                    
+                                    // 親要素から切り離してbodyに直接追加（確実に最前面に）
+                                    document.body.appendChild(canvas);
+                                    console.log('🔄 Canvas moved/added to body');
+                                    
+                                    console.log('🎨 Canvas style forcefully applied');
+                                    console.log('🔍 Final canvas computed style:', {
+                                        position: window.getComputedStyle(canvas).position,
+                                        zIndex: window.getComputedStyle(canvas).zIndex,
+                                        width: window.getComputedStyle(canvas).width,
+                                        height: window.getComputedStyle(canvas).height,
+                                        visibility: window.getComputedStyle(canvas).visibility,
+                                        display: window.getComputedStyle(canvas).display,
+                                        backgroundColor: window.getComputedStyle(canvas).backgroundColor,
+                                        opacity: window.getComputedStyle(canvas).opacity
+                                    });
+                                    
+                                    // キャンバスの位置を視覚的に確認
+                                    const rect = canvas.getBoundingClientRect();
+                                    console.log('📐 Canvas position:', {
+                                        top: rect.top,
+                                        left: rect.left,
+                                        width: rect.width,
+                                        height: rect.height,
+                                        visible: rect.width > 0 && rect.height > 0
+                                    });
+                                    
+                                    // 即座にサイズ設定
+                                    canvas.width = window.innerWidth;
+                                    canvas.height = window.innerHeight;
+                                    console.log('📐 Canvas resized to:', canvas.width, 'x', canvas.height);
+                                } else {
+                                    console.error('❌ Canvas element could not be found or created!');
+                                    updateDebugStatus('canvasStatus', 'Creation failed ❌');
+                                }
+                                
+                                // 背景エフェクトを少し遅延させて初期化（DOM確実に準備されるように）
+                                setTimeout(() => {
+                                    console.log('🌌 Starting background initialization...');
+                                    this.initializeVedaBackground();
+                                }, 100);
+                                
+                                // 初期アニメーション
+                                setTimeout(() => {
+                                    this.animateMetrics();
+                                }, 200);
+                            },
+                            
+                            cleanup: function() {
+                                this.stopRealTimeUpdate();
+                                console.log('Heartbeat cleanup completed');
+                            }
+                        };
+                    ");
+                }
+                
+                // JavaScriptの初期化
+                await JSRuntime.InvokeVoidAsync("heartbeatInterop.initialize");
+                
+                // リアルタイム更新は不要なので削除
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"JavaScript initialization failed: {ex.Message}");
+            }
+        }
+        else
+        {
+            try
+            {
+                // データ更新後にJavaScript関数を呼び出し
+                await JSRuntime.InvokeVoidAsync("heartbeatInterop.animateMetrics");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"JavaScript update failed: {ex.Message}");
+            }
+        }
+    }
+
+    [JSInvokable]
+    public async Task UpdateHeartbeatData()
+    {
+        await LoadHeartbeatData();
+        StateHasChanged();
+    }
+
+    private async Task LoadHeartbeatData()
+    {
+        // 単純な初期化のみ
+        await Task.Delay(100);
+        
+        currentStatus = new HeartbeatInfo
+        {
+            IsHealthy = true
+        };
+    }
+
+    public void Dispose()
+    {
+        try
+        {
+            // リアルタイム更新を停止
+            JSRuntime.InvokeVoidAsync("heartbeatInterop.cleanup");
+            dotNetRef?.Dispose();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Cleanup failed: {ex.Message}");
+        }
+    }
+
+    private class HeartbeatInfo
+    {
+        public bool IsHealthy { get; set; }
+    }
+}

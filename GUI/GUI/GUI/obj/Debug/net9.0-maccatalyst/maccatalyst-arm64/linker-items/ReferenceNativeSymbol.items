@@ -1177,6 +1177,12 @@
     <ReferenceNativeSymbol Include="_OBJC_CLASS_$_XamarinSwiftFunctions">
       <SymbolType>ObjectiveCClass</SymbolType>
     </ReferenceNativeSymbol>
+    <ReferenceNativeSymbol Include="_xamarin_UIApplicationMain">
+      <SymbolType>Function</SymbolType>
+    </ReferenceNativeSymbol>
+    <ReferenceNativeSymbol Include="_xamarin_os_log">
+      <SymbolType>Function</SymbolType>
+    </ReferenceNativeSymbol>
     <ReferenceNativeSymbol Include="_xamarin_release_managed_ref">
       <SymbolType>Function</SymbolType>
     </ReferenceNativeSymbol>
@@ -1214,12 +1220,6 @@
       <SymbolType>Function</SymbolType>
     </ReferenceNativeSymbol>
     <ReferenceNativeSymbol Include="_xamarin_init_nsthread">
-      <SymbolType>Function</SymbolType>
-    </ReferenceNativeSymbol>
-    <ReferenceNativeSymbol Include="_xamarin_os_log">
-      <SymbolType>Function</SymbolType>
-    </ReferenceNativeSymbol>
-    <ReferenceNativeSymbol Include="_xamarin_UIApplicationMain">
       <SymbolType>Function</SymbolType>
     </ReferenceNativeSymbol>
     <ReferenceNativeSymbol Include="_xamarin_locate_assembly_resource">
@@ -1309,12 +1309,6 @@
     <ReferenceNativeSymbol Include="_xamarin_simd__Vector2_objc_msgSendSuper">
       <SymbolType>Function</SymbolType>
     </ReferenceNativeSymbol>
-    <ReferenceNativeSymbol Include="_xamarin_simd__Vector2_objc_msgSend_stret">
-      <SymbolType>Function</SymbolType>
-    </ReferenceNativeSymbol>
-    <ReferenceNativeSymbol Include="_xamarin_simd__Vector2_objc_msgSendSuper_stret">
-      <SymbolType>Function</SymbolType>
-    </ReferenceNativeSymbol>
     <ReferenceNativeSymbol Include="_xamarin_simd__void_objc_msgSend_Vector2">
       <SymbolType>Function</SymbolType>
     </ReferenceNativeSymbol>
@@ -1325,12 +1319,6 @@
       <SymbolType>Function</SymbolType>
     </ReferenceNativeSymbol>
     <ReferenceNativeSymbol Include="_xamarin_simd__Vector3_objc_msgSendSuper">
-      <SymbolType>Function</SymbolType>
-    </ReferenceNativeSymbol>
-    <ReferenceNativeSymbol Include="_xamarin_simd__Vector3_objc_msgSend_stret">
-      <SymbolType>Function</SymbolType>
-    </ReferenceNativeSymbol>
-    <ReferenceNativeSymbol Include="_xamarin_simd__Vector3_objc_msgSendSuper_stret">
       <SymbolType>Function</SymbolType>
     </ReferenceNativeSymbol>
     <ReferenceNativeSymbol Include="_xamarin_simd__void_objc_msgSend_Vector3">
@@ -1361,12 +1349,6 @@
       <SymbolType>Function</SymbolType>
     </ReferenceNativeSymbol>
     <ReferenceNativeSymbol Include="_xamarin_simd__NVector2i_objc_msgSendSuper">
-      <SymbolType>Function</SymbolType>
-    </ReferenceNativeSymbol>
-    <ReferenceNativeSymbol Include="_xamarin_simd__NVector2i_objc_msgSend_stret">
-      <SymbolType>Function</SymbolType>
-    </ReferenceNativeSymbol>
-    <ReferenceNativeSymbol Include="_xamarin_simd__NVector2i_objc_msgSendSuper_stret">
       <SymbolType>Function</SymbolType>
     </ReferenceNativeSymbol>
     <ReferenceNativeSymbol Include="_xamarin_simd__NativeHandle_objc_msgSend_NVector2i_int_int_bool">
@@ -1435,12 +1417,6 @@
     <ReferenceNativeSymbol Include="_xamarin_simd__NVector2d_objc_msgSendSuper">
       <SymbolType>Function</SymbolType>
     </ReferenceNativeSymbol>
-    <ReferenceNativeSymbol Include="_xamarin_simd__NVector2d_objc_msgSend_stret">
-      <SymbolType>Function</SymbolType>
-    </ReferenceNativeSymbol>
-    <ReferenceNativeSymbol Include="_xamarin_simd__NVector2d_objc_msgSendSuper_stret">
-      <SymbolType>Function</SymbolType>
-    </ReferenceNativeSymbol>
     <ReferenceNativeSymbol Include="_xamarin_simd__NativeHandle_objc_msgSend_NativeHandle_NVector2d_NVector2d_NVector2i_bool">
       <SymbolType>Function</SymbolType>
     </ReferenceNativeSymbol>
@@ -1501,22 +1477,10 @@
     <ReferenceNativeSymbol Include="_xamarin_simd__Vector2_objc_msgSendSuper_UIntPtr">
       <SymbolType>Function</SymbolType>
     </ReferenceNativeSymbol>
-    <ReferenceNativeSymbol Include="_xamarin_simd__Vector2_objc_msgSend_stret_UIntPtr">
-      <SymbolType>Function</SymbolType>
-    </ReferenceNativeSymbol>
-    <ReferenceNativeSymbol Include="_xamarin_simd__Vector2_objc_msgSendSuper_stret_UIntPtr">
-      <SymbolType>Function</SymbolType>
-    </ReferenceNativeSymbol>
     <ReferenceNativeSymbol Include="_xamarin_simd__Vector3_objc_msgSend_UIntPtr">
       <SymbolType>Function</SymbolType>
     </ReferenceNativeSymbol>
     <ReferenceNativeSymbol Include="_xamarin_simd__Vector3_objc_msgSendSuper_UIntPtr">
-      <SymbolType>Function</SymbolType>
-    </ReferenceNativeSymbol>
-    <ReferenceNativeSymbol Include="_xamarin_simd__Vector3_objc_msgSend_stret_UIntPtr">
-      <SymbolType>Function</SymbolType>
-    </ReferenceNativeSymbol>
-    <ReferenceNativeSymbol Include="_xamarin_simd__Vector3_objc_msgSendSuper_stret_UIntPtr">
       <SymbolType>Function</SymbolType>
     </ReferenceNativeSymbol>
     <ReferenceNativeSymbol Include="_xamarin_simd__NativeHandle_objc_msgSend_GKQuad_float">
@@ -1547,12 +1511,6 @@
       <SymbolType>Function</SymbolType>
     </ReferenceNativeSymbol>
     <ReferenceNativeSymbol Include="_xamarin_simd__GKQuad_objc_msgSendSuper">
-      <SymbolType>Function</SymbolType>
-    </ReferenceNativeSymbol>
-    <ReferenceNativeSymbol Include="_xamarin_simd__GKQuad_objc_msgSend_stret">
-      <SymbolType>Function</SymbolType>
-    </ReferenceNativeSymbol>
-    <ReferenceNativeSymbol Include="_xamarin_simd__GKQuad_objc_msgSendSuper_stret">
       <SymbolType>Function</SymbolType>
     </ReferenceNativeSymbol>
     <ReferenceNativeSymbol Include="_xamarin_simd__void_objc_msgSend_NativeHandle_Vector2_Vector2_IntPtr">
@@ -1601,12 +1559,6 @@
       <SymbolType>Function</SymbolType>
     </ReferenceNativeSymbol>
     <ReferenceNativeSymbol Include="_xamarin_simd__Vector4_objc_msgSendSuper">
-      <SymbolType>Function</SymbolType>
-    </ReferenceNativeSymbol>
-    <ReferenceNativeSymbol Include="_xamarin_simd__Vector4_objc_msgSend_stret">
-      <SymbolType>Function</SymbolType>
-    </ReferenceNativeSymbol>
-    <ReferenceNativeSymbol Include="_xamarin_simd__Vector4_objc_msgSendSuper_stret">
       <SymbolType>Function</SymbolType>
     </ReferenceNativeSymbol>
     <ReferenceNativeSymbol Include="_xamarin_simd__void_objc_msgSend_Vector4">
@@ -1675,12 +1627,6 @@
     <ReferenceNativeSymbol Include="_xamarin_simd__Quaternion_objc_msgSendSuper_Double">
       <SymbolType>Function</SymbolType>
     </ReferenceNativeSymbol>
-    <ReferenceNativeSymbol Include="_xamarin_simd__Quaternion_objc_msgSend_stret_Double">
-      <SymbolType>Function</SymbolType>
-    </ReferenceNativeSymbol>
-    <ReferenceNativeSymbol Include="_xamarin_simd__Quaternion_objc_msgSendSuper_stret_Double">
-      <SymbolType>Function</SymbolType>
-    </ReferenceNativeSymbol>
     <ReferenceNativeSymbol Include="_xamarin_simd__NQuaterniond_objc_msgSend_Double">
       <SymbolType>Function</SymbolType>
     </ReferenceNativeSymbol>
@@ -1711,22 +1657,10 @@
     <ReferenceNativeSymbol Include="_xamarin_simd__Vector2_objc_msgSendSuper_Double">
       <SymbolType>Function</SymbolType>
     </ReferenceNativeSymbol>
-    <ReferenceNativeSymbol Include="_xamarin_simd__Vector2_objc_msgSend_stret_Double">
-      <SymbolType>Function</SymbolType>
-    </ReferenceNativeSymbol>
-    <ReferenceNativeSymbol Include="_xamarin_simd__Vector2_objc_msgSendSuper_stret_Double">
-      <SymbolType>Function</SymbolType>
-    </ReferenceNativeSymbol>
     <ReferenceNativeSymbol Include="_xamarin_simd__NVector2d_objc_msgSend_Double">
       <SymbolType>Function</SymbolType>
     </ReferenceNativeSymbol>
     <ReferenceNativeSymbol Include="_xamarin_simd__NVector2d_objc_msgSendSuper_Double">
-      <SymbolType>Function</SymbolType>
-    </ReferenceNativeSymbol>
-    <ReferenceNativeSymbol Include="_xamarin_simd__NVector2d_objc_msgSend_stret_Double">
-      <SymbolType>Function</SymbolType>
-    </ReferenceNativeSymbol>
-    <ReferenceNativeSymbol Include="_xamarin_simd__NVector2d_objc_msgSendSuper_stret_Double">
       <SymbolType>Function</SymbolType>
     </ReferenceNativeSymbol>
     <ReferenceNativeSymbol Include="_xamarin_simd__void_objc_msgSend_NVector3_Double">
@@ -1745,12 +1679,6 @@
       <SymbolType>Function</SymbolType>
     </ReferenceNativeSymbol>
     <ReferenceNativeSymbol Include="_xamarin_simd__NVector3_objc_msgSendSuper_Double">
-      <SymbolType>Function</SymbolType>
-    </ReferenceNativeSymbol>
-    <ReferenceNativeSymbol Include="_xamarin_simd__NVector3_objc_msgSend_stret_Double">
-      <SymbolType>Function</SymbolType>
-    </ReferenceNativeSymbol>
-    <ReferenceNativeSymbol Include="_xamarin_simd__NVector3_objc_msgSendSuper_stret_Double">
       <SymbolType>Function</SymbolType>
     </ReferenceNativeSymbol>
     <ReferenceNativeSymbol Include="_xamarin_simd__NVector3d_objc_msgSend_Double">
@@ -1781,12 +1709,6 @@
       <SymbolType>Function</SymbolType>
     </ReferenceNativeSymbol>
     <ReferenceNativeSymbol Include="_xamarin_simd__Vector4_objc_msgSendSuper_Double">
-      <SymbolType>Function</SymbolType>
-    </ReferenceNativeSymbol>
-    <ReferenceNativeSymbol Include="_xamarin_simd__Vector4_objc_msgSend_stret_Double">
-      <SymbolType>Function</SymbolType>
-    </ReferenceNativeSymbol>
-    <ReferenceNativeSymbol Include="_xamarin_simd__Vector4_objc_msgSendSuper_stret_Double">
       <SymbolType>Function</SymbolType>
     </ReferenceNativeSymbol>
     <ReferenceNativeSymbol Include="_xamarin_simd__NVector4d_objc_msgSend_Double">
@@ -1837,12 +1759,6 @@
     <ReferenceNativeSymbol Include="_xamarin_simd__NVector3_objc_msgSendSuper">
       <SymbolType>Function</SymbolType>
     </ReferenceNativeSymbol>
-    <ReferenceNativeSymbol Include="_xamarin_simd__NVector3_objc_msgSend_stret">
-      <SymbolType>Function</SymbolType>
-    </ReferenceNativeSymbol>
-    <ReferenceNativeSymbol Include="_xamarin_simd__NVector3_objc_msgSendSuper_stret">
-      <SymbolType>Function</SymbolType>
-    </ReferenceNativeSymbol>
     <ReferenceNativeSymbol Include="_xamarin_simd__void_objc_msgSend_NVector3">
       <SymbolType>Function</SymbolType>
     </ReferenceNativeSymbol>
@@ -1889,12 +1805,6 @@
       <SymbolType>Function</SymbolType>
     </ReferenceNativeSymbol>
     <ReferenceNativeSymbol Include="_xamarin_simd__Vector3_objc_msgSendSuper_NVector2i_NVector2i">
-      <SymbolType>Function</SymbolType>
-    </ReferenceNativeSymbol>
-    <ReferenceNativeSymbol Include="_xamarin_simd__Vector3_objc_msgSend_stret_NVector2i_NVector2i">
-      <SymbolType>Function</SymbolType>
-    </ReferenceNativeSymbol>
-    <ReferenceNativeSymbol Include="_xamarin_simd__Vector3_objc_msgSendSuper_stret_NVector2i_NVector2i">
       <SymbolType>Function</SymbolType>
     </ReferenceNativeSymbol>
     <ReferenceNativeSymbol Include="_xamarin_simd__NativeHandle_objc_msgSend_NativeHandle_bool_NativeHandle_NVector2i_IntPtr_UIntPtr_IntPtr_bool">
@@ -2101,12 +2011,6 @@
     <ReferenceNativeSymbol Include="_xamarin_simd__Vector3_objc_msgSendSuper_Double">
       <SymbolType>Function</SymbolType>
     </ReferenceNativeSymbol>
-    <ReferenceNativeSymbol Include="_xamarin_simd__Vector3_objc_msgSend_stret_Double">
-      <SymbolType>Function</SymbolType>
-    </ReferenceNativeSymbol>
-    <ReferenceNativeSymbol Include="_xamarin_simd__Vector3_objc_msgSendSuper_stret_Double">
-      <SymbolType>Function</SymbolType>
-    </ReferenceNativeSymbol>
     <ReferenceNativeSymbol Include="_xamarin_simd__void_objc_msgSend_Vector3_Double">
       <SymbolType>Function</SymbolType>
     </ReferenceNativeSymbol>
@@ -2167,22 +2071,10 @@
     <ReferenceNativeSymbol Include="_xamarin_simd__NVector4i_objc_msgSendSuper_Vector3">
       <SymbolType>Function</SymbolType>
     </ReferenceNativeSymbol>
-    <ReferenceNativeSymbol Include="_xamarin_simd__NVector4i_objc_msgSend_stret_Vector3">
-      <SymbolType>Function</SymbolType>
-    </ReferenceNativeSymbol>
-    <ReferenceNativeSymbol Include="_xamarin_simd__NVector4i_objc_msgSendSuper_stret_Vector3">
-      <SymbolType>Function</SymbolType>
-    </ReferenceNativeSymbol>
     <ReferenceNativeSymbol Include="_xamarin_simd__Vector3_objc_msgSend_NVector4i">
       <SymbolType>Function</SymbolType>
     </ReferenceNativeSymbol>
     <ReferenceNativeSymbol Include="_xamarin_simd__Vector3_objc_msgSendSuper_NVector4i">
-      <SymbolType>Function</SymbolType>
-    </ReferenceNativeSymbol>
-    <ReferenceNativeSymbol Include="_xamarin_simd__Vector3_objc_msgSend_stret_NVector4i">
-      <SymbolType>Function</SymbolType>
-    </ReferenceNativeSymbol>
-    <ReferenceNativeSymbol Include="_xamarin_simd__Vector3_objc_msgSendSuper_stret_NVector4i">
       <SymbolType>Function</SymbolType>
     </ReferenceNativeSymbol>
     <ReferenceNativeSymbol Include="_xamarin_simd__MDLAxisAlignedBoundingBox_objc_msgSend_NVector4i">
@@ -2213,12 +2105,6 @@
       <SymbolType>Function</SymbolType>
     </ReferenceNativeSymbol>
     <ReferenceNativeSymbol Include="_xamarin_simd__Quaternion_objc_msgSendSuper">
-      <SymbolType>Function</SymbolType>
-    </ReferenceNativeSymbol>
-    <ReferenceNativeSymbol Include="_xamarin_simd__Quaternion_objc_msgSend_stret">
-      <SymbolType>Function</SymbolType>
-    </ReferenceNativeSymbol>
-    <ReferenceNativeSymbol Include="_xamarin_simd__Quaternion_objc_msgSendSuper_stret">
       <SymbolType>Function</SymbolType>
     </ReferenceNativeSymbol>
     <ReferenceNativeSymbol Include="_xamarin_simd__NativeHandle_objc_msgSend_NativeHandle_Quaternion_NativeHandle">
@@ -2257,12 +2143,6 @@
     <ReferenceNativeSymbol Include="_xamarin_simd__Vector3_objc_msgSendSuper_Vector3">
       <SymbolType>Function</SymbolType>
     </ReferenceNativeSymbol>
-    <ReferenceNativeSymbol Include="_xamarin_simd__Vector3_objc_msgSend_stret_Vector3">
-      <SymbolType>Function</SymbolType>
-    </ReferenceNativeSymbol>
-    <ReferenceNativeSymbol Include="_xamarin_simd__Vector3_objc_msgSendSuper_stret_Vector3">
-      <SymbolType>Function</SymbolType>
-    </ReferenceNativeSymbol>
     <ReferenceNativeSymbol Include="_xamarin_simd__NativeHandle_objc_msgSend_Vector4">
       <SymbolType>Function</SymbolType>
     </ReferenceNativeSymbol>
@@ -2273,12 +2153,6 @@
       <SymbolType>Function</SymbolType>
     </ReferenceNativeSymbol>
     <ReferenceNativeSymbol Include="_xamarin_vector_float3__Vector4_objc_msgSendSuper">
-      <SymbolType>Function</SymbolType>
-    </ReferenceNativeSymbol>
-    <ReferenceNativeSymbol Include="_xamarin_vector_float3__Vector4_objc_msgSend_stret">
-      <SymbolType>Function</SymbolType>
-    </ReferenceNativeSymbol>
-    <ReferenceNativeSymbol Include="_xamarin_vector_float3__Vector4_objc_msgSendSuper_stret">
       <SymbolType>Function</SymbolType>
     </ReferenceNativeSymbol>
     <ReferenceNativeSymbol Include="_xamarin_vector_float3__void_objc_msgSend_Vector4">
@@ -2299,34 +2173,22 @@
     <ReferenceNativeSymbol Include="_xamarin_simd__NMatrix2_objc_msgSendSuper">
       <SymbolType>Function</SymbolType>
     </ReferenceNativeSymbol>
-    <ReferenceNativeSymbol Include="_xamarin_simd__NMatrix2_objc_msgSend_stret">
-      <SymbolType>Function</SymbolType>
-    </ReferenceNativeSymbol>
-    <ReferenceNativeSymbol Include="_xamarin_simd__NMatrix2_objc_msgSendSuper_stret">
-      <SymbolType>Function</SymbolType>
-    </ReferenceNativeSymbol>
     <ReferenceNativeSymbol Include="_xamarin_simd__void_objc_msgSend_NMatrix2">
       <SymbolType>Function</SymbolType>
     </ReferenceNativeSymbol>
     <ReferenceNativeSymbol Include="_xamarin_simd__void_objc_msgSendSuper_NMatrix2">
       <SymbolType>Function</SymbolType>
     </ReferenceNativeSymbol>
-    <ReferenceNativeSymbol Include="_xamarin_simd__IntPtr_objc_msgSend_NativeHandle_Vector2_exception">
+    <ReferenceNativeSymbol Include="_xamarin_simd__NativeHandle_objc_msgSend_NativeHandle_Vector2">
       <SymbolType>Function</SymbolType>
     </ReferenceNativeSymbol>
-    <ReferenceNativeSymbol Include="_xamarin_simd__IntPtr_objc_msgSendSuper_NativeHandle_Vector2_exception">
+    <ReferenceNativeSymbol Include="_xamarin_simd__NativeHandle_objc_msgSendSuper_NativeHandle_Vector2">
       <SymbolType>Function</SymbolType>
     </ReferenceNativeSymbol>
-    <ReferenceNativeSymbol Include="_xamarin_simd__IntPtr_objc_msgSend_NativeHandle_Vector3">
+    <ReferenceNativeSymbol Include="_xamarin_simd__NativeHandle_objc_msgSend_NativeHandle_Vector4">
       <SymbolType>Function</SymbolType>
     </ReferenceNativeSymbol>
-    <ReferenceNativeSymbol Include="_xamarin_simd__IntPtr_objc_msgSendSuper_NativeHandle_Vector3">
-      <SymbolType>Function</SymbolType>
-    </ReferenceNativeSymbol>
-    <ReferenceNativeSymbol Include="_xamarin_simd__IntPtr_objc_msgSend_NativeHandle_Vector4">
-      <SymbolType>Function</SymbolType>
-    </ReferenceNativeSymbol>
-    <ReferenceNativeSymbol Include="_xamarin_simd__IntPtr_objc_msgSendSuper_NativeHandle_Vector4">
+    <ReferenceNativeSymbol Include="_xamarin_simd__NativeHandle_objc_msgSendSuper_NativeHandle_Vector4">
       <SymbolType>Function</SymbolType>
     </ReferenceNativeSymbol>
     <ReferenceNativeSymbol Include="_xamarin_simd__NativeHandle_objc_msgSend_NativeHandle_NMatrix2">
@@ -2347,22 +2209,10 @@
     <ReferenceNativeSymbol Include="_xamarin_simd__NativeHandle_objc_msgSendSuper_NativeHandle_NMatrix4">
       <SymbolType>Function</SymbolType>
     </ReferenceNativeSymbol>
-    <ReferenceNativeSymbol Include="_xamarin_simd__NativeHandle_objc_msgSend_NativeHandle_Vector4">
-      <SymbolType>Function</SymbolType>
-    </ReferenceNativeSymbol>
-    <ReferenceNativeSymbol Include="_xamarin_simd__NativeHandle_objc_msgSendSuper_NativeHandle_Vector4">
-      <SymbolType>Function</SymbolType>
-    </ReferenceNativeSymbol>
     <ReferenceNativeSymbol Include="_xamarin_simd__Vector2_objc_msgSend_IntPtr">
       <SymbolType>Function</SymbolType>
     </ReferenceNativeSymbol>
     <ReferenceNativeSymbol Include="_xamarin_simd__Vector2_objc_msgSendSuper_IntPtr">
-      <SymbolType>Function</SymbolType>
-    </ReferenceNativeSymbol>
-    <ReferenceNativeSymbol Include="_xamarin_simd__Vector2_objc_msgSend_stret_IntPtr">
-      <SymbolType>Function</SymbolType>
-    </ReferenceNativeSymbol>
-    <ReferenceNativeSymbol Include="_xamarin_simd__Vector2_objc_msgSendSuper_stret_IntPtr">
       <SymbolType>Function</SymbolType>
     </ReferenceNativeSymbol>
   </ItemGroup>
