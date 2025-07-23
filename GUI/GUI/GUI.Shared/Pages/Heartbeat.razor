@@ -1,8 +1,10 @@
 @page "/heartbeat"
 @inject IJSRuntime JSRuntime
+@inject NavigationManager NavigationManager
 @implements IDisposable
 @using Microsoft.JSInterop
 @using Microsoft.AspNetCore.Components
+@using System.Text.Json
 
 <PageTitle>Heartbeat</PageTitle>
 
@@ -239,12 +241,187 @@ h1 {
 }
 else
 {
-    <!-- シンプルな量子シミュレータ背景のみ -->
+    <!-- シミュレーション結果表示 -->
+    @if (simulationResult != null)
+    {
+        <div class="card mb-4">
+            <div class="card-header">
+                <h4 class="mb-0">🚀 Quantum Circuit Simulation Results</h4>
+                <small class="text-muted">@simulationResult.Timestamp</small>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <h5 class="card-title text-success">✅ Success</h5>
+                                <p class="card-text">Execution Time<br><strong>@(simulationResult.ExecutionTime.ToString("F2"))ms</strong></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <h5 class="card-title text-info">🔢 Gates</h5>
+                                <p class="card-text">Total Gates<br><strong>@simulationResult.GateCount</strong></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <h5 class="card-title text-primary">⚡ Status</h5>
+                                <p class="card-text">Circuit<br><strong>Completed</strong></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- ゲート実行ログ -->
+                <div class="card">
+                    <div class="card-header">
+                        <h6 class="mb-0">📋 Detailed Gate Execution Log</h6>
+                        <small class="text-muted">C++ QMDD Simulator Output Style</small>
+                    </div>
+                    <div class="card-body">
+                        <div style="max-height: 400px; overflow-y: auto; font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace; font-size: 11px; line-height: 1.4; background: #1a1a1a; color: #e0e0e0; padding: 15px; border-radius: 8px;">
+                            @if (simulationResult.DetailedLog?.Count > 0)
+                            {
+                                <div style="color: #00FF00; margin-bottom: 10px;">🎯 Found @simulationResult.DetailedLog.Count detailed log entries</div>
+                                @foreach (var logEntry in simulationResult.DetailedLog)
+                                {
+                                    <div class="mb-3" style="border-left: 3px solid #4CAF50; padding-left: 10px; margin-bottom: 15px;">
+                                        <!-- Gate Number and Label -->
+                                        <div style="color: #81C784; font-weight: bold; margin-bottom: 5px;">
+                                            number of gates: @logEntry.GateNumber
+                                        </div>
+                                        
+                                        <!-- Gate Info -->
+                                        <div style="color: #FFB74D; margin-bottom: 3px;">
+                                            Gate: Gate @logEntry.GateNumber (@logEntry.GateType)
+                                        </div>
+                                        <div style="color: #E0E0E0; margin-left: 10px; margin-bottom: 3px;">
+                                            Qubits: [@string.Join(", ", logEntry.Qubits)]
+                                            @if (logEntry.ControlQubits?.Count > 0)
+                                            {
+                                                <span> (Control: [@string.Join(", ", logEntry.ControlQubits)])</span>
+                                            }
+                                        </div>
+                                        <div style="color: #90CAF9; margin-left: 10px; margin-bottom: 3px;">
+                                            Current Gate: Weight = @logEntry.CurrentGate.Weight, Key = @logEntry.CurrentGate.Key
+                                        </div>
+                                        <div style="color: #CE93D8; margin-left: 10px;">
+                                            Current State: Weight = @logEntry.CurrentState.Weight, Key = @logEntry.CurrentState.Key
+                                        </div>
+                                        <div style="color: #546E7A; margin: 5px 0;">
+                                            ================================================================
+                                        </div>
+                                    </div>
+                                }
+                                
+                                <!-- Final State -->
+                                <div style="border-left: 3px solid #FF7043; padding-left: 10px; margin-top: 20px;">
+                                    <div style="color: #FF8A65; font-weight: bold; margin-bottom: 5px;">
+                                        📊 Final Simulation State
+                                    </div>
+                                    <div style="color: #FFCC02; margin-left: 10px; font-family: 'Courier New', monospace;">
+                                        @if (!string.IsNullOrEmpty(simulationResult.FinalState))
+                                        {
+                                            <div>@simulationResult.FinalState</div>
+                                        }
+                                        else
+                                        {
+                                            <div style="color: #FF6B6B;">Final state information not available</div>
+                                        }
+                                    </div>
+                                    
+                                    @* 詳細な最終状態情報がある場合は表示 *@
+                                    @if (simulationResult.DetailedLog?.Count > 0)
+                                    {
+                                        var lastLog = simulationResult.DetailedLog.LastOrDefault();
+                                        if (lastLog?.CurrentState != null)
+                                        {
+                                            <div style="color: #81C784; margin-left: 10px; margin-top: 10px; font-family: 'Courier New', monospace;">
+                                                <div style="color: #4CAF50; font-weight: bold;">Final State Details:</div>
+                                                <div style="margin-left: 15px;">
+                                                    <div>Weight = @(lastLog.CurrentState.Weight ?? "N/A")</div>
+                                                    <div>Key = @(lastLog.CurrentState.Key?.ToString() ?? "N/A")</div>
+                                                    <div>Is Terminal = @(lastLog.CurrentState.IsTerminal.ToString())</div>
+                                                </div>
+                                            </div>
+                                        }
+                                    }
+                                </div>
+                            }
+                            else
+                            {
+                                <div style="color: #FF6B6B; margin-bottom: 10px;">❌ DetailedLog is empty or null (Count: @(simulationResult.DetailedLog?.Count ?? -1))</div>
+                                <!-- Fallback to simple gate list if detailed log is not available -->
+                                @if (simulationResult.Gates?.Count > 0)
+                                {
+                                    <div style="color: #FFA726; margin-bottom: 10px;">📋 Using fallback simple gate display</div>
+                                    @foreach (var gate in simulationResult.Gates)
+                                    {
+                                        <div class="mb-2" style="border-left: 3px solid #4CAF50; padding-left: 10px;">
+                                            <div style="color: #81C784; font-weight: bold;">number of gates: @gate.GateNumber</div>
+                                            <div style="color: #FFB74D;">Gate: @gate.Label (@gate.Type)</div>
+                                            <div style="color: #B39DDB; margin-left: 15px;">
+                                                Qubits: [@string.Join(", ", gate.Qubits)]
+                                                @if (gate.ControlQubits?.Count > 0)
+                                                {
+                                                    <span> | Control: [@string.Join(", ", gate.ControlQubits)]</span>
+                                                }
+                                            </div>
+                                            <div style="color: #616161;">============================================================</div>
+                                        </div>
+                                    }
+                                }
+                                else
+                                {
+                                    <div style="color: #FF6B6B;">❌ No Gates data available either</div>
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="text-center mt-3">
+                    <button class="btn btn-primary" @onclick="RunNewSimulation">
+                        🔄 Run New Simulation
+                    </button>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <!-- 結果がない場合のメッセージ -->
+        <div class="card">
+            <div class="card-body text-center">
+                <h5>📊 Waiting for Simulation Results</h5>
+                <p class="text-muted">
+                    Run a quantum circuit simulation from the Composer page.<br/>
+                    Results will automatically appear here in real-time!
+                </p>
+                <button class="btn btn-primary" @onclick="GoToComposer">
+                    🎛️ Go to Circuit Composer
+                </button>
+                <div class="mt-3">
+                    <small class="text-muted">
+                        💡 Heartbeat page automatically updates every 5 seconds to show the latest simulation results
+                    </small>
+                </div>
+            </div>
+        </div>
+    }
 }
 
 @code {
     private HeartbeatInfo? currentStatus;
     private DotNetObjectReference<object>? dotNetRef;
+    private SimulationResultData? simulationResult;
+    private CancellationTokenSource _cancellationTokenSource = new();
+    private CancellationToken _cancellationToken => _cancellationTokenSource.Token;
 
     protected override async Task OnInitializedAsync()
     {
@@ -253,6 +430,27 @@ else
         
         // 初期データを読み込み
         await LoadHeartbeatData();
+        
+        // リアルタイム更新を開始（5秒間隔）
+        _ = Task.Run(async () =>
+        {
+            while (!_cancellationToken.IsCancellationRequested)
+            {
+                await Task.Delay(5000, _cancellationToken);
+                if (!_cancellationToken.IsCancellationRequested)
+                {
+                    try
+                    {
+                        await LoadSimulationResult();
+                        await InvokeAsync(StateHasChanged);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Error updating simulation results: {ex.Message}");
+                    }
+                }
+            }
+        });
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -261,7 +459,14 @@ else
         {
             try
             {
-                // JavaScriptオブジェクトが存在するか確認してから初期化
+                // DOM が完全にレンダリングされるまで少し待機
+                await Task.Delay(100);
+                
+                // シミュレーション結果を読み込み（JavaScript interopは OnAfterRenderAsync で実行）
+                await LoadSimulationResult();
+                StateHasChanged(); // 再レンダリングをトリガー
+                
+                // JavaScript初期化（既存のコード）
                 var objectExists = await JSRuntime.InvokeAsync<bool>("eval", "typeof window.heartbeatInterop !== 'undefined'");
                 
                 if (!objectExists)
@@ -859,8 +1064,23 @@ else
                     ");
                 }
                 
-                // JavaScriptの初期化
-                await JSRuntime.InvokeVoidAsync("heartbeatInterop.initialize");
+                // JavaScript関数の存在確認後に初期化
+                var initializeExists = await JSRuntime.InvokeAsync<bool>("eval", "typeof window.heartbeatInterop !== 'undefined' && typeof window.heartbeatInterop.initialize === 'function'");
+                
+                if (initializeExists)
+                {
+                    // JavaScriptの初期化
+                    await JSRuntime.InvokeVoidAsync("heartbeatInterop.initialize");
+                }
+                else
+                {
+                    // Heartbeatページ以外では警告を表示しない
+                    var currentPath = NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
+                    if (currentPath.StartsWith("heartbeat"))
+                    {
+                        Console.WriteLine("heartbeatInterop.initialize is not available");
+                    }
+                }
                 
                 // リアルタイム更新は不要なので削除
             }
@@ -873,8 +1093,23 @@ else
         {
             try
             {
-                // データ更新後にJavaScript関数を呼び出し
-                await JSRuntime.InvokeVoidAsync("heartbeatInterop.animateMetrics");
+                // heartbeatInteropオブジェクトが存在するかチェック
+                var functionExists = await JSRuntime.InvokeAsync<bool>("eval", "typeof window.heartbeatInterop !== 'undefined' && typeof window.heartbeatInterop.animateMetrics === 'function'");
+                
+                if (functionExists)
+                {
+                    // データ更新後にJavaScript関数を呼び出し
+                    await JSRuntime.InvokeVoidAsync("heartbeatInterop.animateMetrics");
+                }
+                else
+                {
+                    // Heartbeatページ以外では警告を表示しない
+                    var currentPath = NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
+                    if (currentPath.StartsWith("heartbeat"))
+                    {
+                        Console.WriteLine("heartbeatInterop.animateMetrics is not yet available");
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -901,12 +1136,86 @@ else
         };
     }
 
+    private async Task LoadSimulationResult()
+    {
+        try
+        {
+            Console.WriteLine("🔍 LoadSimulationResult called");
+            
+            // 1. まず最新の結果ファイルから読み込み（最新の結果を優先）
+            var tempDir = Path.Combine(Path.GetTempPath(), "qmdd_gui_results");
+            var resultFile = Path.Combine(tempDir, "latest_simulation_result.json");
+            
+            Console.WriteLine($"🔍 Checking for result file: {resultFile}");
+            
+            if (File.Exists(resultFile))
+            {
+                var fileInfo = new FileInfo(resultFile);
+                Console.WriteLine($"📁 File found, last modified: {fileInfo.LastWriteTime}");
+                
+                var fileResultJson = await File.ReadAllTextAsync(resultFile);
+                
+                simulationResult = JsonSerializer.Deserialize<SimulationResultData>(fileResultJson, 
+                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    
+                Console.WriteLine($"✅ Loaded simulation result from file: {simulationResult.GateCount} gates, DetailedLog count: {simulationResult.DetailedLog?.Count ?? 0}");
+                
+                // 詳細ログの内容を確認
+                if (simulationResult.DetailedLog?.Count > 0)
+                {
+                    var firstLog = simulationResult.DetailedLog[0];
+                    Console.WriteLine($"📊 First DetailedLog entry: Gate={firstLog.GateNumber}, Weight={firstLog.CurrentGate.Weight}, Key={firstLog.CurrentGate.Key}");
+                }
+                
+                // ファイルから読み込んだ結果をセッションストレージにも保存
+                await JSRuntime.InvokeVoidAsync("sessionStorage.setItem", "simulationResult", fileResultJson);
+                Console.WriteLine("💾 Updated session storage with file result");
+                return;
+            }
+
+            // 2. ファイルがない場合はセッションストレージから試行
+            var sessionResultJson = await JSRuntime.InvokeAsync<string>("sessionStorage.getItem", "simulationResult");
+            if (!string.IsNullOrEmpty(sessionResultJson))
+            {
+                simulationResult = JsonSerializer.Deserialize<SimulationResultData>(sessionResultJson, 
+                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                
+                Console.WriteLine($"✅ Loaded simulation result from session storage: {simulationResult.GateCount} gates, DetailedLog count: {simulationResult.DetailedLog?.Count ?? 0}");
+                return;
+            }
+
+            Console.WriteLine("❌ No simulation result found in file system or session storage");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"❌ Failed to load simulation result: {ex.Message}");
+        }
+    }
+
+    private async Task RunNewSimulation()
+    {
+        // セッションストレージをクリア
+        await JSRuntime.InvokeVoidAsync("sessionStorage.removeItem", "simulationResult");
+        
+        // Composerページに移動
+        NavigationManager.NavigateTo("/composer");
+    }
+
+    private void GoToComposer()
+    {
+        NavigationManager.NavigateTo("/composer");
+    }
+
     public void Dispose()
     {
         try
         {
-            // リアルタイム更新を停止
-            JSRuntime.InvokeVoidAsync("heartbeatInterop.cleanup");
+            // キャンセレーショントークンをキャンセル
+            _cancellationTokenSource.Cancel();
+            _cancellationTokenSource.Dispose();
+            
+            // リアルタイム更新を停止（存在確認は省略、cleanup時なのでエラー無視）
+            _ = JSRuntime.InvokeVoidAsync("heartbeatInterop.cleanup");
             dotNetRef?.Dispose();
         }
         catch (Exception ex)
@@ -918,5 +1227,50 @@ else
     private class HeartbeatInfo
     {
         public bool IsHealthy { get; set; }
+    }
+
+    private class SimulationResultData
+    {
+        public bool Success { get; set; }
+        public int GateCount { get; set; }
+        public double ExecutionTime { get; set; }
+        public List<GateExecutionInfo> Gates { get; set; } = new();
+        public string Timestamp { get; set; } = string.Empty;
+        public string FinalState { get; set; } = string.Empty;
+        public List<GateLogEntry> DetailedLog { get; set; } = new();
+    }
+
+    private class GateExecutionInfo
+    {
+        public int GateNumber { get; set; }
+        public string Type { get; set; } = string.Empty;
+        public string Label { get; set; } = string.Empty;
+        public List<int> Qubits { get; set; } = new();
+        public List<int>? ControlQubits { get; set; }
+    }
+
+    private class GateLogEntry
+    {
+        public int GateNumber { get; set; }
+        public string GateLabel { get; set; } = string.Empty;
+        public string GateType { get; set; } = string.Empty;
+        public List<int> Qubits { get; set; } = new();
+        public List<int>? ControlQubits { get; set; }
+        public QMDDGateInfo CurrentGate { get; set; } = new();
+        public QMDDStateInfo CurrentState { get; set; } = new();
+    }
+
+    private class QMDDGateInfo
+    {
+        public string Weight { get; set; } = string.Empty;
+        public string Key { get; set; } = string.Empty;
+        public int IsTerminal { get; set; }
+    }
+
+    private class QMDDStateInfo
+    {
+        public string Weight { get; set; } = string.Empty;
+        public string Key { get; set; } = string.Empty;
+        public int IsTerminal { get; set; }
     }
 }

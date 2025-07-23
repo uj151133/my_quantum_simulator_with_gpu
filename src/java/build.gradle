@@ -45,7 +45,6 @@ graalvmNative {
                 '-O3',
                 '-march=native',
                 '--gc=epsilon',
-                '-H:+UnlockExperimentalVMOptions',
                 '-H:+UseEpsilonGC'
             ])
         }

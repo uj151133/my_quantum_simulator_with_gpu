@@ -4,6 +4,8 @@
 #include <unistd.h>
 #include <getopt.h>
 #include <random>
+#include <thread>
+#include <signal.h>
 
 #include "src/common/config.hpp"
 #include "src/models/qmdd.hpp"
@@ -17,8 +19,20 @@
 #include "src/common/monitor.hpp"
 #include "src/test/Grover/grover.hpp"
 #include "src/test/random/randomRotate.hpp"
+#include "src/common/ipc_shared_memory.hpp"
 
 using namespace std;
+
+// グローバルな共有メモリIPCサーバーインスタンス
+IPC::SharedMemoryIPCServer* ipcServer = nullptr;
+
+// シグナルハンドラ
+void signalHandler(int signal) {
+    if (ipcServer) {
+        ipcServer->stop();
+    }
+    exit(0);
+}
 
 
 void execute() {
@@ -51,7 +65,10 @@ void execute() {
 
 
 
-int main() {
+int main(int argc, char* argv[]) {
+    // シグナルハンドラを設定
+    signal(SIGINT, signalHandler);
+    signal(SIGTERM, signalHandler);
 
     #ifdef __APPLE__
         CONFIG.loadFromFile("/Users/mitsuishikaito/my_quantum_simulator_with_gpu/config.yaml");
@@ -61,10 +78,47 @@ int main() {
         #error "Unsupported operating system"
     #endif
 
+    // コマンドライン引数を解析
+    bool startSharedMemoryServer = false;
+    int opt;
+    while ((opt = getopt(argc, argv, "sh")) != -1) {
+        switch (opt) {
+            case 's':
+                startSharedMemoryServer = true;
+                break;
+            case 'h':
+                cout << "Usage: " << argv[0] << " [-s] [-h]" << endl;
+                cout << "  -s: Start Shared Memory IPC server for GUI communication" << endl;
+                cout << "  -h: Show this help message" << endl;
+                return 0;
+            default:
+                cout << "Use -h for help" << endl;
+                return 1;
+        }
+    }
 
-    measureExecutionTime(execute);
+    if (startSharedMemoryServer) {
+        // 共有メモリIPCサーバーモードで起動
+        cout << "Starting QMDD Simulator in Shared Memory IPC server mode..." << endl;
+        
+        ipcServer = new IPC::SharedMemoryIPCServer();
+        if (ipcServer->initialize()) {
+            cout << "Shared Memory IPC Server ready. Waiting for GUI connections..." << endl;
+            ipcServer->run();
+        } else {
+            cout << "Failed to start Shared Memory IPC server" << endl;
+            delete ipcServer;
+            return 1;
+        }
+        
+        delete ipcServer;
+    } else {
+        // 従来のシミュレーションモード
+        cout << "Starting QMDD Simulator in standalone mode..." << endl;
+        measureExecutionTime(execute);
+    }
+
     OperationCacheClient::getInstance().cleanup();
-
     return 0;
 }
 

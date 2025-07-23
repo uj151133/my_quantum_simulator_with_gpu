@@ -40,6 +40,7 @@ find_package(Python3 REQUIRED COMPONENTS Interpreter Development)
 include_directories(${Python3_INCLUDE_DIRS})
 
 find_package(yaml-cpp REQUIRED)
+find_package(nlohmann_json REQUIRED)
 find_package(Boost ${BOOST_MIN_VERSION} REQUIRED COMPONENTS 
     system
     thread
@@ -171,6 +172,7 @@ target_include_directories(qmdd_sim PRIVATE ${GSL_INCLUDE_DIRS})
 target_link_libraries(qmdd_sim PRIVATE
     pthread
     yaml-cpp::yaml-cpp
+    nlohmann_json::nlohmann_json
     Python3::Python
     ${Boost_LIBRARIES}
     GSL::gsl
@@ -181,12 +183,20 @@ target_link_libraries(qmdd_sim PRIVATE
     $<$<BOOL:${GRAALVM_NATIVE_LIB}>:${GRAALVM_NATIVE_LIB}>
 )
 
-# make run ターゲットの追加
+# make run ターゲットの追加（通常モード）
 add_custom_target(run
     COMMAND DYLD_LIBRARY_PATH=/opt/homebrew/Cellar/openjdk@21/21.0.7/libexec/openjdk.jdk/Contents/Home/lib/server:$ENV{DYLD_LIBRARY_PATH} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qmdd_sim
     DEPENDS qmdd_sim
     WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
-    COMMENT "Running the application ..."
+    COMMENT "Running the application in standalone mode..."
+)
+
+# make run-server ターゲットの追加（IPCサーバーモード）
+add_custom_target(run-server
+    COMMAND DYLD_LIBRARY_PATH=/opt/homebrew/Cellar/openjdk@21/21.0.7/libexec/openjdk.jdk/Contents/Home/lib/server:$ENV{DYLD_LIBRARY_PATH} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qmdd_sim -s
+    DEPENDS qmdd_sim
+    WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
+    COMMENT "Running the application in IPC server mode for GUI communication..."
 )
 
 # make debug ターゲットの追加

@@ -1,5 +1,11 @@
 @page "/composer"
 @inject IJSRuntime JSRuntime
+@inject QMDDSimulatorClient SimulatorClient
+@inject NavigationManager NavigationManager
+@using GUI.Shared.Services
+@using GUI.Shared.Models
+@using System.Text.Json
+@using Microsoft.AspNetCore.Components
 
 <style>
 .button {
@@ -545,17 +551,31 @@
                 </div>
             </div>
             
-            <!-- ゴミ箱エリア -->
-            <div class="trash-zone" title="ここにゲートをドラッグして削除">
-                <div class="trash-container">
-                    <svg class="trash-icon" viewBox="0 0 24 24" width="24" height="24">
-                        <path d="M19 7H16V6C16 4.89 15.11 4 14 4H10C8.89 4 8 4.89 8 6V7H5C4.45 7 4 7.45 4 8S4.45 9 5 9H6V19C6 20.11 6.89 21 8 21H16C17.11 21 18 20.11 18 19V9H19C19.55 9 20 8.55 20 8S19.55 7 19 7ZM10 6H14V7H10V6ZM16 19H8V9H16V19Z" fill="currentColor"/>
-                        <path d="M10 11V17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                        <path d="M14 11V17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                    </svg>
-                    <p class="trash-text">ゲートを削除</p>
-                    <div class="trash-glow"></div>
+            <div style="display: flex; align-items: center; gap: 20px;">
+                <!-- ゴミ箱エリア -->
+                <div class="trash-zone" title="ここにゲートをドラッグして削除">
+                    <div class="trash-container">
+                        <svg class="trash-icon" viewBox="0 0 24 24" width="24" height="24">
+                            <path d="M19 7H16V6C16 4.89 15.11 4 14 4H10C8.89 4 8 4.89 8 6V7H5C4.45 7 4 7.45 4 8S4.45 9 5 9H6V19C6 20.11 6.89 21 8 21H16C17.11 21 18 20.11 18 19V9H19C19.55 9 20 8.55 20 8S19.55 7 19 7ZM10 6H14V7H10V6ZM16 19H8V9H16V19Z" fill="currentColor"/>
+                            <path d="M10 11V17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                            <path d="M14 11V17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                        </svg>
+                        <p class="trash-text">ゲートを削除</p>
+                        <div class="trash-glow"></div>
+                    </div>
                 </div>
+                
+                <!-- Runボタン -->
+                <button class="button" @onclick="SimulateCircuit" disabled="@isSimulating">
+                    @if (isSimulating)
+                    {
+                        <span>🔄 Running...</span>
+                    }
+                    else
+                    {
+                        <span>▶️ Run</span>
+                    }
+                </button>
             </div>
         </div>
     </div>
@@ -625,6 +645,9 @@
 
 @code {
     private int currentCount = 2;
+    private bool isSimulating = false;
+    private GUI.Shared.Models.SimulationResult? lastResult = null; // **明示的に名前空間を指定**
+    private string statusMessage = "";
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -649,13 +672,333 @@
         }
     }
 
+    private async Task SimulateCircuit()
+    {
+        isSimulating = true;
+        statusMessage = "🔄 回路データを取得中...";
+        StateHasChanged();
+
+        try
+        {
+            // シミュレータが利用可能かチェック
+            if (!await SimulatorClient.IsSimulatorAvailableAsync())
+            {
+                statusMessage = "❌ QMDD Simulator is not available. Please start the simulator with -s flag.";
+                return;
+            }
+
+            // JavaScriptから現在の回路データを取得
+            var circuitDataJson = await JSRuntime.InvokeAsync<string>("getCircuitData");
+            
+            if (string.IsNullOrEmpty(circuitDataJson))
+            {
+                statusMessage = "⚠️ No circuit data found. Please add some gates first.";
+                return;
+            }
+
+            var circuitData = JsonSerializer.Deserialize<CircuitData>(circuitDataJson, 
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+            if (circuitData == null)
+            {
+                statusMessage = "⚠️ Failed to parse circuit data. Please try again.";
+                return;
+            }
+
+            var request = BuildCircuitRequest(circuitData);
+            
+            if (request.Gates.Count == 0)
+            {
+                statusMessage = "⚠️ No gates in circuit. Please add some gates first.";
+                return;
+            }
+
+            // シミュレーション実行
+            statusMessage = $"🚀 Simulating circuit with {request.Gates.Count} gates on {request.NumQubits} qubits...";
+            StateHasChanged();
+
+            lastResult = await SimulatorClient.SimulateCircuitAsync(request);
+            
+            if (lastResult.Success)
+            {
+                statusMessage = $"✅ Simulation completed successfully in {lastResult.ExecutionTime:F2}ms";
+                
+                // **SaveResultForHeartbeatと同じ形式でデータを構成**
+                var simulationData = new
+                {
+                    Success = lastResult.Success,
+                    GateCount = request.Gates.Count,
+                    ExecutionTime = lastResult.ExecutionTime,
+                    Gates = request.Gates.Select((gate, index) => new
+                    {
+                        GateNumber = index + 1,
+                        Type = gate.Type,
+                        Label = $"Gate {index + 1} ({gate.Type})",
+                        Qubits = gate.Qubits,
+                        ControlQubits = gate.ControlQubits
+                    }).ToList(),
+                    Timestamp = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"),
+                    FinalState = lastResult.FinalState,
+                    DetailedLog = lastResult.GateExecutionLogs.Select(log => new
+                    {
+                        GateNumber = log.GateNumber,
+                        GateLabel = log.GateLabel,
+                        GateType = log.GateType,
+                        Qubits = log.Qubits,
+                        ControlQubits = log.ControlQubits,
+                        CurrentGate = new
+                        {
+                            Weight = log.CurrentGate.Weight,
+                            Key = log.CurrentGate.Key,
+                            IsTerminal = log.CurrentGate.IsTerminal
+                        },
+                        CurrentState = new
+                        {
+                            Weight = log.CurrentState.Weight,
+                            Key = log.CurrentState.Key,
+                            IsTerminal = log.CurrentState.IsTerminal
+                        }
+                    }).ToList()
+                };
+
+                Console.WriteLine($"🎯 Composer saving result - DetailedLog count: {simulationData.DetailedLog.Count()}");
+
+                await JSRuntime.InvokeVoidAsync("sessionStorage.setItem", "simulationResult", 
+                    JsonSerializer.Serialize(simulationData, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }));
+                
+                Console.WriteLine("💾 Composer result saved to session storage");
+                
+                // Heartbeatページに移動
+                NavigationManager.NavigateTo("/heartbeat");
+            }
+            else
+            {
+                statusMessage = $"❌ Simulation failed: {lastResult.ErrorMessage}";
+            }
+        }
+        catch (Exception ex)
+        {
+            statusMessage = $"💥 Error: {ex.Message}";
+        }
+        finally
+        {
+            isSimulating = false;
+            StateHasChanged();
+        }
+    }
+
+    private CircuitRequest BuildCircuitRequest(CircuitData? circuitData)
+    {
+        var request = new CircuitRequest
+        {
+            NumQubits = currentCount, // **現在設定されている量子ビット数を正しく使用**
+            Gates = new List<GateCommand>()
+        };
+
+        if (circuitData?.Qubits == null) return request;
+
+        // **グローバル順序が存在する場合は必ずそれを使用（時系列順序）**
+        if (circuitData.GlobalGateOrder != null && circuitData.GlobalGateOrder.Count > 0)
+        {
+            Console.WriteLine($"🔄 Using global gate order: {circuitData.GlobalGateOrder.Count} gates");
+            
+            // グローバル順序に従ってゲートを処理（先頭から順番）
+            foreach (var globalGate in circuitData.GlobalGateOrder.OrderBy(g => g.GateIndex))
+            {
+                Console.WriteLine($"🎯 Processing gate {globalGate.GateIndex}: {globalGate.Type} on qubit {globalGate.QubitIndex}");
+                
+                if (globalGate.QubitIndex >= 0 && globalGate.QubitIndex < currentCount)
+                {
+                    var gateCommand = new GateCommand
+                    {
+                        Type = ConvertGateType(globalGate.Type),
+                        Qubits = new List<int> { globalGate.QubitIndex }
+                    };
+                    
+                    Console.WriteLine($"✅ Added gate: {gateCommand.Type} on qubit {globalGate.QubitIndex}");
+                    request.Gates.Add(gateCommand);
+                }
+                else
+                {
+                    Console.WriteLine($"⚠️ Skipping gate on invalid qubit {globalGate.QubitIndex}");
+                }
+            }
+        }
+        else
+        {
+            // **従来通りの処理（後方互換性のため）**
+            for (int qubitIndex = 0; qubitIndex < Math.Min(circuitData.Qubits.Count, currentCount); qubitIndex++)
+            {
+                var qubitGates = circuitData.Qubits[qubitIndex].Gates;
+                
+                if (qubitGates == null) continue;
+                
+                foreach (var gate in qubitGates)
+                {
+                    if (gate?.Type == null) continue;
+                    
+                    var gateCommand = new GateCommand
+                    {
+                        Type = ConvertGateType(gate.Type),
+                        Qubits = new List<int> { qubitIndex }
+                    };
+                    
+                    // 2量子ビットゲートの場合
+                    if (gate.Type == "CNOT" || gate.Type == "CZ")
+                    {
+                        if (gate.TargetQubit.HasValue && gate.TargetQubit.Value < currentCount)
+                        {
+                            gateCommand.ControlQubits = new List<int> { qubitIndex };
+                            gateCommand.Qubits = new List<int> { gate.TargetQubit.Value };
+                        }
+                    }
+                    
+                    // 回転ゲートの角度設定
+                    if (gate.Angle.HasValue)
+                    {
+                        gateCommand.Angle = gate.Angle.Value;
+                    }
+                    
+                    request.Gates.Add(gateCommand);
+                }
+            }
+        }
+
+        return request;
+    }
+
+    private string ConvertGateType(string guiGateType)
+    {
+        // GUIでのゲート表示名をシミュレータで使用される名前に変換
+        return guiGateType switch
+        {
+            "H" => "H",
+            "X" => "X",
+            "I" => "I",
+            "T" => "T",
+            "T†" => "Tdg",
+            "S" => "S", 
+            "S†" => "Sdg",
+            "Z" => "Z",
+            "P" => "P",
+            "RZ" => "RZ",
+            "|0⟩" => "Reset",
+            _ => guiGateType
+        };
+    }
+
+    private string GenerateGateLabel(string gateType, List<int> qubits, List<int>? controlQubits = null)
+    {
+        var label = gateType switch
+        {
+            "H" => "Hadamard Gate",
+            "X" => "Pauli-X Gate", 
+            "Y" => "Pauli-Y Gate",
+            "Z" => "Pauli-Z Gate",
+            "I" => "Identity Gate",
+            "T" => "T Gate",
+            "Tdg" => "T† Gate (T-dagger)",
+            "S" => "S Gate",
+            "Sdg" => "S† Gate (S-dagger)",
+            "P" => "Phase Gate",
+            "RZ" => "Rotation-Z Gate",
+            "RX" => "Rotation-X Gate", 
+            "RY" => "Rotation-Y Gate",
+            "CNOT" => "Controlled-X Gate",
+            "CZ" => "Controlled-Z Gate",
+            "Reset" => "Reset to |0⟩",
+            _ => $"{gateType} Gate"
+        };
+
+        // 量子ビット情報を追加
+        if (controlQubits?.Count > 0)
+        {
+            return $"{label} [Control: {string.Join(",", controlQubits)} → Target: {string.Join(",", qubits)}]";
+        }
+        else
+        {
+            return $"{label} [Qubit: {string.Join(",", qubits)}]";
+        }
+    }
+
+    private object GenerateDetailedLogEntry(int gateIndex, string gateType, List<int> qubits, List<int>? controlQubits = null)
+    {
+        // C++のQMDDGateとQMDDStateの情報をシミュレート
+        // ゲートタイプに基づく理論的な正しい値を生成
+        
+        // ゲートタイプとインデックスに基づいて一意のシードを生成
+        var gateSeed = $"{gateType}_{gateIndex}_{string.Join(",", qubits)}".GetHashCode();
+        var stateSeed = gateSeed + 12345;
+        
+        return new
+        {
+            gateNumber = gateIndex,
+            gateLabel = GenerateGateLabel(gateType, qubits, controlQubits),
+            gateType = gateType,
+            qubits = qubits,
+            controlQubits = controlQubits,
+            currentGate = new
+            {
+                weight = GenerateTheoreticWeight(gateType, gateSeed),
+                key = GenerateRandomKey(gateSeed),
+                isTerminal = 0
+            },
+            currentState = new
+            {
+                weight = GenerateTheoreticWeight(gateType, stateSeed),
+                key = GenerateRandomKey(stateSeed),
+                isTerminal = 0
+            }
+        };
+    }
+
+    private string GenerateTheoreticWeight(string gateType, int? seed = null)
+    {
+        // 量子ゲートの理論的なweight値を生成
+        return gateType switch
+        {
+            "H" => "(0.707107,0.000000)", // アダマールゲート: 1/√2
+            "X" => "(1.000000,0.000000)", // パウリXゲート
+            "Y" => "(0.000000,1.000000)", // パウリYゲート  
+            "Z" => "(1.000000,0.000000)", // パウリZゲート
+            "I" => "(1.000000,0.000000)", // 恒等ゲート
+            "T" => "(0.707107,0.707107)", // Tゲート: (1+i)/√2
+            "Tdg" => "(0.707107,-0.707107)", // T†ゲート: (1-i)/√2
+            "S" => "(0.000000,1.000000)", // Sゲート: i
+            "Sdg" => "(0.000000,-1.000000)", // S†ゲート: -i
+            "P" => GenerateRandomComplexNumber(seed), // 位相ゲート（角度依存）
+            "RZ" => GenerateRandomComplexNumber(seed), // 回転Zゲート（角度依存）
+            "Reset" => "(1.000000,0.000000)", // リセット
+            _ => GenerateRandomComplexNumber(seed) // その他
+        };
+    }
+
+    private string GenerateRandomComplexNumber(int? seed = null)
+    {
+        var random = seed.HasValue ? new Random(seed.Value) : new Random(DateTime.Now.Millisecond + Environment.TickCount);
+        var real = (random.NextDouble() - 0.5) * 2;
+        var imag = (random.NextDouble() - 0.5) * 2;
+        return $"({real:F6},{imag:F6})";
+    }
+
+    private string GenerateRandomKey(int? seed = null)
+    {
+        var random = seed.HasValue ? new Random(seed.Value + 1000) : new Random(DateTime.Now.Millisecond + Environment.TickCount + 1000);
+        return random.Next(100000000, 999999999).ToString() + random.Next(100000000, 999999999).ToString();
+    }
+
+    private int GetNumQubits()
+    {
+        return currentCount;
+    }
+
     private async Task IncrementCount()
     {
         currentCount++;
         StateHasChanged();
         try
         {
-            await Task.Delay(10); // DOM更新を待つ
+            await Task.Delay(50); // **DOM更新を確実に待つ**
             await JSRuntime.InvokeVoidAsync("dragAndDropInterop.reinitialize");
         }
         catch (Exception ex)
@@ -666,13 +1009,13 @@
 
     private async Task DecrementCount()
     {
-        if (currentCount > 0)
+        if (currentCount > 1) // **最小値を1に設定**
         {
             currentCount--;
             StateHasChanged();
             try
             {
-                await Task.Delay(10); // DOM更新を待つ
+                await Task.Delay(50); // **DOM更新を確実に待つ**
                 await JSRuntime.InvokeVoidAsync("dragAndDropInterop.reinitialize");
             }
             catch (Exception ex)
@@ -684,13 +1027,13 @@
 
     private async Task OnInputChange(ChangeEventArgs e)
     {
-        if (int.TryParse(e.Value?.ToString(), out int value) && value >= 0)
+        if (int.TryParse(e.Value?.ToString(), out int value) && value >= 1) // **最小値を1に設定**
         {
             currentCount = value;
             StateHasChanged();
             try
             {
-                await Task.Delay(10); // DOM更新を待つ
+                await Task.Delay(50); // **DOM更新を確実に待つ**
                 await JSRuntime.InvokeVoidAsync("dragAndDropInterop.reinitialize");
             }
             catch (Exception ex)
@@ -712,6 +1055,14 @@
 }
 </div>
 
+<!-- ステータス表示エリア -->
+@if (!string.IsNullOrEmpty(statusMessage))
+{
+    <div style="margin: 20px 0; padding: 10px; background-color: @(lastResult?.Success == true ? "#d4edda" : "#f8d7da"); border-radius: 4px; border: 1px solid @(lastResult?.Success == true ? "#c3e6cb" : "#f5c6cb");">
+        @statusMessage
+    </div>
+}
+
 <script>
 // ドラッグ&ドロップ機能の初期化
 window.dragAndDropInterop = (function() {
@@ -719,6 +1070,7 @@ window.dragAndDropInterop = (function() {
     // プライベート変数
     let draggedElement = null;
     let isFromDroppedGate = false;
+    let isDragging = false; // **重複防止フラグを追加**
 
     // ゲートのHTMLコンテンツを取得
     function getGateContent(element) {
@@ -752,6 +1104,12 @@ window.dragAndDropInterop = (function() {
 
     // ドラッグ開始
     function handleDragStart(e) {
+        if (isDragging) { // **既にドラッグ中の場合は無視**
+            e.preventDefault();
+            return;
+        }
+        
+        isDragging = true; // **ドラッグ開始をマーク**
         draggedElement = e.target;
         isFromDroppedGate = e.target.classList.contains('dropped-gate');
         
@@ -778,6 +1136,11 @@ window.dragAndDropInterop = (function() {
         e.target.classList.remove('dragging');
         draggedElement = null;
         isFromDroppedGate = false;
+        
+        // **少し遅延してからフラグをリセット（重複防止）**
+        setTimeout(() => {
+            isDragging = false;
+        }, 100);
     }
 
     // ドロップゾーンの初期化
@@ -847,6 +1210,11 @@ window.dragAndDropInterop = (function() {
         e.preventDefault();
         e.stopPropagation();
         
+        // **既に処理中の場合は無視**
+        if (!isDragging) {
+            return;
+        }
+        
         const target = e.target.closest('.qubit-line') || e.target;
         target.style.backgroundColor = '';
         target.style.height = '1px';
@@ -867,11 +1235,17 @@ window.dragAndDropInterop = (function() {
                 draggedElement.remove();
             }
             
+            // **重複チェック: 同じデータで既存のゲートがある場合は作成しない**
+            const existingGatesCount = qubitLine.querySelectorAll('.dropped-gate').length;
+            
             // 新しいゲート要素を作成
             const newGate = document.createElement('div');
             newGate.className = data.gateType + ' dropped-gate';
             newGate.draggable = true;
             newGate.id = 'gate-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+            
+            // **タイムスタンプを追加（配置順序の追跡用）**
+            newGate.dataset.timestamp = Date.now().toString();
             
             // コンテンツを設定
             if (data.contentType === 'html') {
@@ -883,34 +1257,30 @@ window.dragAndDropInterop = (function() {
             // ドロップ位置を計算（グリッドの縦線にスナップ）
             const rect = qubitLine.getBoundingClientRect();
             const dropX = e.clientX - rect.left;
-            const gridSize = 50; // CSSのbackground-sizeと同じ
-            const gateWidth = 40; // ゲートの幅
-            const gateHalfWidth = gateWidth / 2; // 20px
+            const gridSize = 50;
+            const gateWidth = 40;
+            const gateHalfWidth = gateWidth / 2;
             
-            // 最も近い縦線の位置にスナップ（0px、50px、100px、150px...）
+            // 最も近い縦線の位置にスナップ
             const snappedX = Math.round(dropX / gridSize) * gridSize;
-            
-            // ゲートの中央が縦線に来るように調整（左端位置 = 縦線位置 - ゲート幅の半分）
             const adjustedX = snappedX - gateHalfWidth;
-            
-            // グリッド範囲内に制限
-            const maxX = qubitLine.offsetWidth - gateWidth; // ゲートの幅を考慮
+            const maxX = qubitLine.offsetWidth - gateWidth;
             let finalX = Math.max(0 - gateHalfWidth, Math.min(adjustedX, maxX));
             
-            // 重複チェック - 同じ位置に既存のゲートがあるかチェック
+            // **重複チェックを改善**
             const existingGates = qubitLine.querySelectorAll('.dropped-gate');
             let positionOccupied = true;
             let attempts = 0;
             
-            while (positionOccupied && attempts < 20) { // 最大20回試行
+            while (positionOccupied && attempts < 20) {
                 positionOccupied = false;
                 for (const existingGate of existingGates) {
                     const existingX = parseInt(existingGate.style.left) || 0;
-                    if (Math.abs(finalX - existingX) < 45) { // 45px以内は重複とみなす
+                    if (Math.abs(finalX - existingX) < 45) {
                         positionOccupied = true;
-                        finalX += gridSize; // 次のグリッド位置に移動
+                        finalX += gridSize;
                         if (finalX > maxX) {
-                            finalX = 0 - gateHalfWidth; // 右端を超えたら最初のグリッド位置に戻る（左端の縦線）
+                            finalX = 0 - gateHalfWidth;
                         }
                         break;
                     }
@@ -918,7 +1288,7 @@ window.dragAndDropInterop = (function() {
                 attempts++;
             }
             
-            // 基本スタイルを設定
+            // **スタイル設定を改善**
             newGate.style.position = 'absolute';
             newGate.style.left = finalX + 'px';
             newGate.style.transform = 'translateY(-50%)';
@@ -976,7 +1346,7 @@ window.dragAndDropInterop = (function() {
                 newGate.remove();
             });
             
-            // 内部要素のスタイルを調整
+            // **内部要素のスタイルを調整**
             const pElements = newGate.querySelectorAll('p');
             pElements.forEach(p => {
                 p.style.margin = '0';
@@ -999,7 +1369,7 @@ window.dragAndDropInterop = (function() {
             qubitLine.appendChild(newGate);
             
         } catch (error) {
-            // エラーハンドリング
+            console.error('Drop error:', error);
         }
     }
 
@@ -1067,7 +1437,148 @@ window.dragAndDropInterop = (function() {
 
         reinitialize: function() {
             this.initializeDragAndDrop();
+        },
+
+        // 回路データを取得する関数
+        getCircuitData: function() {
+            const qubitLines = document.querySelectorAll('.qubit-line');
+            const allGates = [];
+            
+            // すべてのゲートを収集してタイムスタンプ/位置でソート
+            qubitLines.forEach((line, qubitIndex) => {
+                const droppedGates = line.querySelectorAll('.dropped-gate');
+                
+                droppedGates.forEach((gate, gateIndex) => {
+                    const leftPosition = parseInt(gate.style.left) || 0;
+                    const gateType = getGateTypeFromElement(gate);
+                    const timestamp = gate.dataset.timestamp ? parseInt(gate.dataset.timestamp) : Date.now() + gateIndex;
+                    
+                    allGates.push({
+                        type: gateType,
+                        position: leftPosition,
+                        qubitIndex: qubitIndex,
+                        timestamp: timestamp,
+                        targetQubit: null, // 将来の2量子ビットゲート対応用
+                        angle: null // 将来の回転ゲート対応用
+                    });
+                });
+            });
+            
+            // タイムスタンプと位置で時系列ソート（配置順序を反映）
+            allGates.sort((a, b) => {
+                if (a.timestamp !== b.timestamp) {
+                    return a.timestamp - b.timestamp;
+                }
+                // 同じタイムスタンプの場合は位置順
+                if (a.position !== b.position) {
+                    return a.position - b.position;
+                }
+                // 位置も同じ場合は量子ビット順
+                return a.qubitIndex - b.qubitIndex;
+            });
+            
+            // 量子ビット別にグループ化
+            const qubits = [];
+            for (let i = 0; i < qubitLines.length; i++) {
+                qubits.push({
+                    index: i,
+                    gates: []
+                });
+            }
+            
+            // ソートされたゲートを各量子ビットに割り当て
+            allGates.forEach(gate => {
+                if (gate.qubitIndex < qubits.length) {
+                    qubits[gate.qubitIndex].gates.push({
+                        type: gate.type,
+                        position: gate.position,
+                        targetQubit: gate.targetQubit,
+                        angle: gate.angle
+                    });
+                }
+            });
+            
+            return {
+                qubits: qubits,
+                globalGateOrder: allGates.map((gate, index) => ({
+                    gateIndex: index + 1,
+                    qubitIndex: gate.qubitIndex,
+                    type: gate.type,
+                    timestamp: gate.timestamp
+                }))
+            };
         }
     };
+
+    // ドロップされたゲート要素からゲートタイプを取得
+    function getGateTypeFromElement(element) {
+        // テキストコンテンツを最初に確認（最も確実）
+        const textContent = element.textContent?.trim() || '';
+        console.log(`🔍 Detecting gate type from element:`, element, `text: "${textContent}"`);
+        console.log(`📱 Element classes:`, Array.from(element.classList));
+        console.log(`🏷️ Element innerHTML:`, element.innerHTML);
+        
+        // **I-gate専用の詳細検出**
+        if (textContent === 'I' || textContent === '𝐈' || textContent === 'Identity') {
+            console.log('✅ Detected I gate from text content');
+            return 'I';
+        }
+        
+        // **基本テキストベースの判定**
+        if (textContent === 'H') {
+            console.log('✅ Detected H gate from text content');
+            return 'H';
+        }
+        if (textContent === 'X') {
+            console.log('✅ Detected X gate from text content');
+            return 'X';
+        }
+        if (textContent === 'T†') return 'T†';
+        if (textContent === 'S†') return 'S†';
+        if (textContent === 'T') return 'T';
+        if (textContent === 'S') return 'S';
+        if (textContent === 'Z') return 'Z';
+        if (textContent === 'P') return 'P';
+        if (textContent === 'RZ') return 'RZ';
+        if (textContent === '|0⟩') return '|0⟩';
+        
+        // **HTMLコンテンツとクラスによる判定（テキストが無い場合）**
+        const content = element.innerHTML || '';
+        
+        // I-gate専用のクラス判定
+        if (element.classList.contains('i-gate') || 
+            element.classList.contains('identity-gate') || 
+            element.classList.contains('identity')) {
+            console.log('✅ Detected I gate from class');
+            return 'I';
+        }
+        
+        // HTMLコンテンツからI-gateを検出
+        if (content.includes('I') && !content.includes('H') && !content.includes('circle')) {
+            console.log('✅ Detected I gate from innerHTML content');
+            return 'I';
+        }
+        
+        // その他のクラス名による判定
+        if (element.classList.contains('h-gate')) {
+            console.log('✅ Detected H gate from class');
+            return 'H';
+        }
+        
+        // SVGベースのXゲートを判定
+        if (content.includes('<svg') || content.includes('viewBox') || 
+            content.includes('circle') || content.includes('<line')) {
+            console.log('✅ Detected X gate from SVG content');
+            return 'X';
+        }
+        
+        console.log('⚠️ Unknown gate type, defaulting to H');
+        return 'H'; // デフォルト
+    }
 })();
+
+// グローバル関数として露出（C#から呼び出し可能）
+window.getCircuitData = function() {
+    return JSON.stringify(window.dragAndDropInterop.getCircuitData());
+};
 </script>
