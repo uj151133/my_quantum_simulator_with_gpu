@@ -11,6 +11,7 @@ builder.Services.AddRazorComponents()
 
 // Add device-specific services used by the GUI.Shared project
 builder.Services.AddSingleton<IFormFactor, FormFactor>();
+builder.Services.AddSingleton<QMDDSimulatorClient>();
 
 var app = builder.Build();
 
