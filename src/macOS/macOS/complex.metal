@@ -4,6 +4,8 @@
 
 #include <metal_stdlib>
 #include <metal_math>
+#include <metal_float64>
+
 using namespace metal;
 
 struct Complex {

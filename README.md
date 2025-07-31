@@ -68,13 +68,14 @@ sudo make install
 brew install nlohmann-json
 ```
 
-### OpenMP
-```zsh
-export OMP_NUM_THREADS=4
-export OMP_PROC_BIND=spread
-export OMP_PLACES=cores
-```
+### 64 bit float for metal
 
+```zsh
+gh repo clone philipturner/metal-float64
+cd metal-float64
+bash build.sh
+swift test
+```
 
 ### .NET MAUI
 ↓download from this link
