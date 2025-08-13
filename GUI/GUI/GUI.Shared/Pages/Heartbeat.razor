@@ -198,6 +198,110 @@ div.sidebar div.top-row,
     }
 }
 
+/* サーバー回路表示のスタイル */
+.server-circuit-display {
+    background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+    border-radius: 12px;
+    padding: 20px;
+}
+
+.qubit-wire {
+    position: relative;
+    z-index: 1;
+}
+
+.qubit-label {
+    font-family: 'Cascadia Code', 'Fira Code', monospace;
+    color: #2c3e50;
+    font-weight: bold;
+    /* 背景を削除してテキストのみに */
+}
+
+.qubit-label sub {
+    font-size: 0.8em;
+    vertical-align: sub;
+    line-height: 0;
+}
+
+.wire-line {
+    background: #1e3a8a; /* 濃い青色でコントラスト高め */
+    box-shadow: 0 1px 3px rgba(30, 58, 138, 0.3);
+    border-radius: 1px;
+}
+
+/* サーバーゲートのベーススタイル（Composerから完全継承） */
+.server-gate {
+    position: absolute;
+    text-align: center;
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    border: none;
+    border-radius: 0px;
+    color: black;
+    font-family: OpenSansRegular, sans-serif;
+    font-size: 20px;
+    font-weight: medium;
+    cursor: help;
+    user-select: none;
+    transform: translateY(-50%);
+    z-index: 10;
+    top: 50%;
+}
+
+.server-gate:hover {
+    filter: brightness(0.9);
+}
+
+/* Hadamard ゲート（Composerスタイル完全一致） */
+.server-h-gate {
+    background-color: #fa4d56;
+    color: black;
+    font-size: 20px;
+}
+
+/* Classical ゲート（X, Y, Z） */
+.server-x-gate, .server-y-gate, .server-z-gate {
+    background-color: #4588ff;
+    color: black;
+    font-size: 18px;
+}
+
+/* Phase ゲート（T, Tdg, S, Sdg） */
+.server-t-gate, .server-tdg-gate, .server-s-gate, .server-sdg-gate {
+    background-color: #bae6fe;
+    color: black;
+    font-size: 18px;
+}
+
+/* Identity ゲート */
+.server-i-gate {
+    background-color: #a1a9af;
+    color: black;
+    font-size: 16px;
+}
+
+/* その他のゲート */
+.server-other-gate {
+    background-color: #a1a9af;
+    color: black;
+    font-size: 16px;
+}
+
+/* CNOT ゲート（Classicalゲートスタイル） */
+.server-cx-gate {
+    background-color: #4588ff;
+    color: black;
+    font-size: 18px;
+}
+
+/* CZ ゲート（Classicalゲートスタイル） */
+.server-cz-gate {
+    background-color: #4588ff;
+    color: black;
+    font-size: 18px;
+}
+
 /* 既存のスタイル */
 h1 {
     display: flex;
@@ -244,41 +348,115 @@ else
     <!-- シミュレーション結果表示 -->
     @if (simulationResult != null)
     {
+        <!-- 統合されたQuantum Circuit表示 -->
         <div class="card mb-4">
-            <div class="card-header">
-                <h4 class="mb-0">🚀 Quantum Circuit Simulation Results</h4>
-                <small class="text-muted">@simulationResult.Timestamp</small>
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <div>
+                    <h4 class="mb-0">⚛️ Quantum Circuit Simulation</h4>
+                    <small class="text-muted">Server-side circuit execution and results</small>
+                </div>
+                <small class="text-muted">⏱️ @(simulationResult.ExecutionTime.ToString("F2"))ms</small>
             </div>
             <div class="card-body">
-                <div class="row mb-3">
-                    <div class="col-md-4">
-                        <div class="card">
-                            <div class="card-body text-center">
-                                <h5 class="card-title text-success">✅ Success</h5>
-                                <p class="card-text">Execution Time<br><strong>@(simulationResult.ExecutionTime.ToString("F2"))ms</strong></p>
+                @if (simulationResult.DetailedLog?.Count > 0)
+                {
+                    <!-- サーバー実行回路の視覚化 -->
+                    <div class="server-circuit-display">
+                        @{
+                            // サーバーの量子回路サイズを使用（デフォルト2ビット）
+                            var maxQubitIndex = simulationResult.DetailedLog
+                                .SelectMany(g => g.Qubits)
+                                .DefaultIfEmpty(-1)
+                                .Max();
+                            var qubitCount = Math.Max(simulationResult.QubitCount, maxQubitIndex + 1);
+                            
+                            // Iゲート以外のゲートのみをフィルタリングして位置を計算
+                            var nonIdGates = simulationResult.DetailedLog
+                                .Where(g => !string.Equals(g.GateType, "I", StringComparison.OrdinalIgnoreCase))
+                                .OrderBy(g => g.GateNumber)
+                                .ToList();
+                                
+                            // デバッグ：全てのゲートとフィルタリング後のゲートを確認
+                            var allGates = simulationResult.DetailedLog.OrderBy(g => g.GateNumber).ToList();
+                            
+                            // グローバルゲート位置マッピングを作成（Iゲート除外後の連続位置）
+                            var gatePositionMap = new Dictionary<int, int>();
+                            for (int i = 0; i < nonIdGates.Count; i++)
+                            {
+                                gatePositionMap[nonIdGates[i].GateNumber] = i;
+                            }
+                        }
+                        
+                        @if (qubitCount > 0)
+                        {
+                            <!-- デバッグ情報表示 -->
+                            <div class="alert alert-info mb-3">
+                                <strong>🔍 Debug Info:</strong><br/>
+                                All Gates: @string.Join(", ", allGates.Select(g => $"#{g.GateNumber}({g.GateType})"))<br/>
+                                Non-I Gates: @string.Join(", ", nonIdGates.Select(g => $"#{g.GateNumber}({g.GateType})"))<br/>
+                                Position Map: @string.Join(", ", gatePositionMap.Select(kvp => $"#{kvp.Key}→pos{kvp.Value}→{kvp.Value * 80 + 20}px"))
                             </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="card">
-                            <div class="card-body text-center">
-                                <h5 class="card-title text-info">🔢 Gates</h5>
-                                <p class="card-text">Total Gates<br><strong>@simulationResult.GateCount</strong></p>
+                            
+                            <div class="circuit-visualization" style="padding: 20px; background: rgba(0,0,0,0.05); border-radius: 12px; overflow-x: auto;">
+                                @for (int q = 0; q < qubitCount; q++)
+                                {
+                                    <div class="qubit-wire" style="display: flex; align-items: center; margin: 15px 0; min-height: 50px;">
+                                        <!-- Qubit ラベル（添字形式） -->
+                                        <div class="qubit-label" style="min-width: 80px; text-align: right; padding-right: 15px; font-weight: bold; color: #2c3e50; font-family: 'Cascadia Code', 'Fira Code', monospace;">
+                                            |q<sub>@(q)</sub>⟩
+                                        </div>
+                                        
+                                        <!-- ワイヤーライン（濃い青色でコントラスト高め） -->
+                                        <div class="wire-line" style="flex: 1; height: 3px; background: #1e3a8a; position: relative; margin: 0 10px;">
+                                            <!-- この Qubit に作用するゲート（Iゲート除外）を描画 -->
+                                            @{
+                                                var gatesOnQubit = nonIdGates.Where(g => g.Qubits.Contains(q)).ToList();
+                                            }
+                                            @foreach (var gate in gatesOnQubit)
+                                            {
+                                                var gatePosition = gatePositionMap[gate.GateNumber] * 80 + 20; // 間隔を狭めて連続配置
+                                                <div class="server-gate @GetServerGateClass(gate.GateType)" 
+                                                     style="left: @(gatePosition)px;">
+                                                    @gate.GateType
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                }
                             </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="card">
-                            <div class="card-body text-center">
-                                <h5 class="card-title text-primary">⚡ Status</h5>
-                                <p class="card-text">Circuit<br><strong>Completed</strong></p>
+                            
+                            <!-- ゲート実行順序の説明 -->
+                            <div class="mt-3">
+                                <h6>🔄 Execution Order:</h6>
+                                <div class="d-flex flex-wrap gap-2">
+                                    @foreach (var gate in nonIdGates)
+                                    {
+                                        <span class="badge bg-secondary">
+                                            @(gate.GateNumber). @gate.GateType on q<sub>@(string.Join("</sub>,q<sub>", gate.Qubits))</sub>
+                                        </span>
+                                    }
+                                </div>
                             </div>
-                        </div>
+                        }
+                        else
+                        {
+                            <div class="text-center text-muted py-4">
+                                <i class="bi bi-info-circle me-2"></i>
+                                No circuit visualization available - quantum circuit has no qubits
+                            </div>
+                        }
                     </div>
-                </div>
+                }
+                else
+                {
+                    <div class="text-center text-muted py-4">
+                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        No simulation data available - run a circuit from Composer first
+                    </div>
+                }
                 
                 <!-- ゲート実行ログ -->
-                <div class="card">
+                <div class="card mt-3">
                     <div class="card-header">
                         <h6 class="mb-0">📋 Detailed Gate Execution Log</h6>
                         <small class="text-muted">C++ QMDD Simulator Output Style</small>
@@ -1158,13 +1336,13 @@ else
                 simulationResult = JsonSerializer.Deserialize<SimulationResultData>(fileResultJson, 
                     new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
                     
-                Console.WriteLine($"✅ Loaded simulation result from file: {simulationResult.GateCount} gates, DetailedLog count: {simulationResult.DetailedLog?.Count ?? 0}");
+                Console.WriteLine($"✅ Loaded simulation result from file: {simulationResult?.GateCount ?? 0} gates, DetailedLog count: {simulationResult?.DetailedLog?.Count ?? 0}");
                 
                 // 詳細ログの内容を確認
-                if (simulationResult.DetailedLog?.Count > 0)
+                if (simulationResult?.DetailedLog?.Count > 0)
                 {
                     var firstLog = simulationResult.DetailedLog[0];
-                    Console.WriteLine($"📊 First DetailedLog entry: Gate={firstLog.GateNumber}, Weight={firstLog.CurrentGate.Weight}, Key={firstLog.CurrentGate.Key}");
+                    Console.WriteLine($"📊 First DetailedLog entry: Gate={firstLog?.GateNumber}, Weight={firstLog?.CurrentGate?.Weight}, Key={firstLog?.CurrentGate?.Key}");
                 }
                 
                 // ファイルから読み込んだ結果をセッションストレージにも保存
@@ -1180,7 +1358,7 @@ else
                 simulationResult = JsonSerializer.Deserialize<SimulationResultData>(sessionResultJson, 
                     new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
                 
-                Console.WriteLine($"✅ Loaded simulation result from session storage: {simulationResult.GateCount} gates, DetailedLog count: {simulationResult.DetailedLog?.Count ?? 0}");
+                Console.WriteLine($"✅ Loaded simulation result from session storage: {simulationResult?.GateCount} gates, DetailedLog count: {simulationResult?.DetailedLog?.Count ?? 0}");
                 return;
             }
 
@@ -1233,6 +1411,7 @@ else
     {
         public bool Success { get; set; }
         public int GateCount { get; set; }
+        public int QubitCount { get; set; } = 2; // デフォルトで2ビット
         public double ExecutionTime { get; set; }
         public List<GateExecutionInfo> Gates { get; set; } = new();
         public string Timestamp { get; set; } = string.Empty;
@@ -1272,5 +1451,34 @@ else
         public string Weight { get; set; } = string.Empty;
         public string Key { get; set; } = string.Empty;
         public int IsTerminal { get; set; }
+    }
+    
+    // サーバー側ゲートタイプに応じたCSSクラスを返すメソッド（Composerスタイルに合わせて分類）
+    private string GetServerGateClass(string gateType)
+    {
+        return gateType.ToUpper() switch
+        {
+            // Hadamardゲート
+            "H" => "server-h-gate",
+            
+            // Classicalゲート（X, Y, Z, CNOT, CZ）
+            "X" => "server-x-gate", 
+            "Y" => "server-y-gate",
+            "Z" => "server-z-gate",
+            "CX" or "CNOT" => "server-cx-gate",
+            "CZ" => "server-cz-gate",
+            
+            // Phaseゲート（T, Tdg, S, Sdg）
+            "T" => "server-t-gate",
+            "TDG" => "server-tdg-gate",
+            "S" => "server-s-gate",
+            "SDG" => "server-sdg-gate",
+            
+            // Identityゲート
+            "I" => "server-i-gate",
+            
+            // その他のゲート
+            _ => "server-other-gate"
+        };
     }
 }

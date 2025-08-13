@@ -25,6 +25,7 @@ struct SimulationResult {
     std::string errorMessage;
     double executionTime = 0.0;
     std::string finalState;
+    std::string simulationLog; // C++シミュレーションの詳細ログ
 };
 
 // 共有メモリ構造体

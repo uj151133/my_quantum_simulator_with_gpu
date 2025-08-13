@@ -108,6 +108,8 @@ public:
 
     void addGate(int qubitIndex, const QMDDGate& gate);
 
+    void addBARRIER();
+
     void addQFT(int numQubits);
     void addQFT();
 

@@ -872,6 +872,10 @@ void QuantumCircuit::addGate(int qubitIndex, const QMDDGate& gate) {
     return;
 }
 
+void QuantumCircuit::addBARRIER() {
+    return;
+}
+
 void QuantumCircuit::addQFT(int numQubits) {
     for (int i = numQubits - 1; i >= 0; i--) {
         this->addH(i);

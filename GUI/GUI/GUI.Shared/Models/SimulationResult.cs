@@ -8,6 +8,7 @@ namespace GUI.Shared.Models
         public string ErrorMessage { get; set; } = string.Empty;
         public double ExecutionTime { get; set; }
         public string FinalState { get; set; } = string.Empty;
+        public string SimulationLog { get; set; } = string.Empty; // C++シミュレーションの詳細ログ
         public List<GateExecutionLog> GateExecutionLogs { get; set; } = new List<GateExecutionLog>();
     }
 

@@ -10,8 +10,9 @@
 #include "../common/mathUtils.hpp"
 using namespace std;
 
-enum class GateType {
+enum class Type {
     I,
+    Ph,
     X,
     Y,
     Z,
@@ -20,7 +21,8 @@ enum class GateType {
     V,
     Vdg,
     H,
-    CNOT,
+    CX,
+    varCX,
     CZ,
     SWAP,
     P,
@@ -36,9 +38,16 @@ enum class GateType {
     Ryy,
     Rzz,
     Rxy,
+    U,
+    U1,
+    U2,
+    U3,
     Other,
-    Void
+    VOID,
+    BAN,
+    JOKER
 };
+
 namespace gate {
     /* Identity gate and global phase */
     QMDDGate I();

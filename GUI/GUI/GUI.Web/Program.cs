@@ -1,6 +1,6 @@
 using GUI.Web.Components;
-using GUI.Shared.Services;
 using GUI.Web.Services;
+using GUI.Shared.Services;
 using Microsoft.AspNetCore.StaticFiles;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,7 +11,7 @@ builder.Services.AddRazorComponents()
 
 // Add device-specific services used by the GUI.Shared project
 builder.Services.AddSingleton<IFormFactor, FormFactor>();
-builder.Services.AddSingleton<QMDDSimulatorClient>();
+builder.Services.AddSingleton<IQMDDSimulatorClient, GUI.Web.Services.QMDDSimulatorClient>();
 
 var app = builder.Build();
 

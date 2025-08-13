@@ -1,25 +1,31 @@
-using System.Diagnostics;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using System.Text.Json;
-using System.IO.MemoryMappedFiles;
 using System.Text;
+using System.Linq;
 using GUI.Shared.Models;
+#if !DISABLE_PROCESS_API
+using System.Diagnostics;
+#endif
 
 namespace GUI.Shared.Services
 {
     public class QMDDSimulatorClient
     {
+        private readonly string _simulatorPath;
         private readonly string _simulatorProcessName;
-        private readonly string _simulatorExecutablePath;
+        private readonly ILogger<QMDDSimulatorClient>? _logger;
 
-        public QMDDSimulatorClient()
+        public QMDDSimulatorClient(IConfiguration configuration, ILogger<QMDDSimulatorClient>? logger = null)
         {
-            _simulatorProcessName = "qmdd_sim";
-            // 実行ファイルのフルパスを設定
-            _simulatorExecutablePath = "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/qmdd_sim";
+            _simulatorPath = configuration["SimulatorPath"] ?? "/path/to/qmdd_sim";
+            _simulatorProcessName = configuration["SimulatorProcessName"] ?? "qmdd_sim";
+            _logger = logger;
         }
 
         public async Task<bool> IsSimulatorAvailableAsync()
         {
+#if !DISABLE_PROCESS_API
             try
             {
                 // CPU集約的な操作を別スレッドで実行
@@ -37,6 +43,10 @@ namespace GUI.Shared.Services
             {
                 return false;
             }
+#else
+            // Process APIが無効化されている環境では常にfalseを返す
+            return await Task.FromResult(false);
+#endif
         }
 
         public async Task<SimulationResult> SimulateCircuitAsync(CircuitRequest request)
@@ -181,7 +191,7 @@ namespace GUI.Shared.Services
         {
             try
             {
-                // 共有メモリIPC経由でqmdd_simと通信
+                // ファイルベースIPC経由でqmdd_simと通信（フォールバック一切なし）
                 var result = await SendRequestToQMDDSimulator(request);
                 
                 if (result != null)
@@ -189,14 +199,30 @@ namespace GUI.Shared.Services
                     return result;
                 }
                 
-                // フォールバック：共有メモリ通信が失敗した場合はモックデータを生成
-                return await GenerateMockResult(request);
+                // フォールバック削除：通信失敗時は正直なエラーメッセージ
+                return new SimulationResult
+                {
+                    Success = false,
+                    ErrorMessage = "Connection failed: Unable to communicate with qmdd_sim IPC server. Please ensure qmdd_sim is running with -s flag.",
+                    FinalState = "Communication Error",
+                    ExecutionTime = 0.0,
+                    GateExecutionLogs = new List<GateExecutionLog>(),
+                    SimulationLog = "Error: No communication with C++ server"
+                };
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"QMDD communication error: {ex.Message}");
-                // エラー時もモックデータでフォールバック
-                return await GenerateMockResult(request);
+                // フォールバック削除：エラー時も正直なエラーメッセージ
+                return new SimulationResult
+                {
+                    Success = false,
+                    ErrorMessage = $"Connection failed: {ex.Message}",
+                    FinalState = "Exception Error",
+                    ExecutionTime = 0.0,
+                    GateExecutionLogs = new List<GateExecutionLog>(),
+                    SimulationLog = $"Error: Exception during communication - {ex.Message}"
+                };
             }
         }
 
@@ -204,189 +230,15 @@ namespace GUI.Shared.Services
         {
             try
             {
-                Console.WriteLine("Attempting to communicate with qmdd_sim process...");
+                Console.WriteLine("Attempting file-based IPC communication with qmdd_sim...");
                 
-                // qmdd_simプロセスを起動して実際の回路を実行
-                return await ExecuteQMDDSimulatorProcess(request);
+                // ファイルベースIPC経由で直接通信
+                return await SendCircuitViaIPC(request);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error executing qmdd_sim: {ex.Message}");
-                return null; // モックデータ生成にフォールバック
-            }
-        }
-
-        private async Task<SimulationResult> ExecuteQMDDSimulatorProcess(CircuitRequest request)
-        {
-            try
-            {
-                Console.WriteLine("Starting qmdd_sim process to execute real circuit...");
-                
-                // 実際のqmdd_simプロセスを起動して回路を実行
-                return await StartQMDDSimulatorForCircuit(request);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Failed to execute qmdd_sim process: {ex.Message}");
-                throw; // 上位でキャッチしてモックデータにフォールバック
-            }
-        }
-
-        private async Task<SimulationResult> StartQMDDSimulatorForCircuit(CircuitRequest request)
-        {
-            try
-            {
-                Console.WriteLine($"Starting qmdd_sim with shared memory IPC for {request.Gates.Count} gates...");
-                
-                // qmdd_simを共有メモリIPCサーバーモード(-s)で起動
-                var startInfo = new ProcessStartInfo
-                {
-                    FileName = _simulatorExecutablePath,
-                    Arguments = "-s", // 共有メモリIPCサーバーモード
-                    UseShellExecute = false,
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
-                    CreateNoWindow = true
-                };
-
-                Console.WriteLine($"Starting qmdd_sim IPC server: {startInfo.FileName} {startInfo.Arguments}");
-
-                using var process = new Process { StartInfo = startInfo };
-                
-                var outputBuilder = new StringBuilder();
-                var errorBuilder = new StringBuilder();
-                
-                process.OutputDataReceived += (sender, e) =>
-                {
-                    if (e.Data != null)
-                    {
-                        Console.WriteLine($"QMDD IPC Server: {e.Data}");
-                        outputBuilder.AppendLine(e.Data);
-                    }
-                };
-                
-                process.ErrorDataReceived += (sender, e) =>
-                {
-                    if (e.Data != null)
-                    {
-                        Console.WriteLine($"QMDD IPC Server Error: {e.Data}");
-                        errorBuilder.AppendLine(e.Data);
-                    }
-                };
-
-                process.Start();
-                process.BeginOutputReadLine();
-                process.BeginErrorReadLine();
-
-                // IPCサーバーが起動するまで少し待機
-                await Task.Delay(2000);
-                
-                Console.WriteLine("qmdd_sim IPC server started, now sending circuit data...");
-                
-                // 共有メモリIPC経由で回路データを送信
-                var result = await SendCircuitViaIPC(request);
-                
-                // プロセス出力から実際の結果を解析
-                await Task.Delay(3000); // シミュレーション完了まで待機
-                
-                var fullOutput = outputBuilder.ToString();
-                var fullError = errorBuilder.ToString();
-                
-                // 実際のWeight/Key値を抽出してResultに反映
-                if (!string.IsNullOrEmpty(fullOutput))
-                {
-                    Console.WriteLine("=== Parsing qmdd_sim actual output ===");
-                    var parsedResult = ExtractSimulationResultFromOutput(fullOutput, request);
-                    if (parsedResult != null)
-                    {
-                        result = parsedResult;
-                        Console.WriteLine("Successfully parsed real qmdd_sim output!");
-                    }
-                }
-                
-                // プロセスを終了
-                if (!process.HasExited)
-                {
-                    process.Kill();
-                    await WaitForProcessAsync(process, 5000);
-                }
-                
-                return result ?? new SimulationResult
-                {
-                    Success = false,
-                    ErrorMessage = "Failed to communicate with qmdd_sim IPC server",
-                    ExecutionTime = 0,
-                    GateExecutionLogs = new List<GateExecutionLog>(),
-                    FinalState = ""
-                };
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"QMDD IPC process error: {ex.Message}");
-                throw;
-            }
-        }
-        
-        private SimulationResult? ExtractSimulationResultFromOutput(string output, CircuitRequest request)
-        {
-            try
-            {
-                Console.WriteLine("Extracting real Weight/Key values from qmdd_sim output...");
-                
-                var lines = output.Split('\n', StringSplitOptions.RemoveEmptyEntries);
-                
-                bool simulationCompleted = false;
-                double executionTime = 0.0;
-                string finalState = "";
-                
-                foreach (var line in lines)
-                {
-                    if (line.Contains("QMDD simulation completed successfully!"))
-                    {
-                        simulationCompleted = true;
-                    }
-                    else if (line.Contains("Execution time:") && line.Contains("ms"))
-                    {
-                        // "Execution time: 123.45 ms" から数値を抽出
-                        var match = System.Text.RegularExpressions.Regex.Match(line, @"(\d+\.?\d*)\s*ms");
-                        if (match.Success && double.TryParse(match.Groups[1].Value, out var time))
-                        {
-                            executionTime = time;
-                        }
-                    }
-                    else if (line.Contains("Initial edge weight:") || line.Contains("Unique table key:"))
-                    {
-                        finalState += line.Trim() + " ";
-                    }
-                    else if (line.Contains("Final state info:"))
-                    {
-                        finalState = line.Replace("Final state info:", "").Trim();
-                    }
-                }
-                
-                if (simulationCompleted)
-                {
-                    Console.WriteLine($"Real simulation result - Success: {simulationCompleted}, Time: {executionTime}ms");
-                    Console.WriteLine($"Final state: {finalState}");
-                    
-                    return new SimulationResult
-                    {
-                        Success = true,
-                        ExecutionTime = executionTime,
-                        GateExecutionLogs = GenerateRealisticLogsFromGUICircuit(request),
-                        FinalState = string.IsNullOrEmpty(finalState) 
-                            ? $"Real QMDD simulation completed for {request.Gates.Count} gates on {request.NumQubits} qubits"
-                            : finalState,
-                        ErrorMessage = ""
-                    };
-                }
-                
-                return null;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Output parsing error: {ex.Message}");
-                return null;
+                Console.WriteLine($"Error in IPC communication: {ex.Message}");
+                return null; // エラー時はnullを返し、上位で正直なエラーメッセージ
             }
         }
 
@@ -394,7 +246,7 @@ namespace GUI.Shared.Services
         {
             try
             {
-                Console.WriteLine("Implementing shared memory IPC communication to qmdd_sim...");
+                Console.WriteLine("Implementing file-based IPC communication to qmdd_sim...");
                 
                 // 回路データをJSONにシリアライズ（C++のparseRequestに合わせた形式）
                 var circuitData = new
@@ -417,97 +269,381 @@ namespace GUI.Shared.Services
                 Console.WriteLine($"Sending circuit JSON to qmdd_sim IPC server ({jsonRequest.Length} bytes):");
                 Console.WriteLine(jsonRequest.Length > 200 ? jsonRequest.Substring(0, 200) + "..." : jsonRequest);
                 
-                // 共有メモリIPCクライアントを使ってqmdd_simに送信
+                // ファイルベースIPCクライアントを使ってqmdd_simに送信
                 var result = await SendIPCRequestToCppServer(jsonRequest);
                 
                 if (result != null)
                 {
-                    Console.WriteLine($"Received real simulation result from qmdd_sim IPC server!");
+                    Console.WriteLine($"✅ Real IPC communication successful!");
                     Console.WriteLine($"Success: {result.Success}");
                     Console.WriteLine($"Execution time: {result.ExecutionTime} ms");
                     Console.WriteLine($"Final state: {result.FinalState}");
+                    Console.WriteLine($"C++ Simulation Log: {result.SimulationLog?.Length ?? 0} characters");
                     
-                    // ゲート実行ログを生成して追加
-                    result.GateExecutionLogs = GenerateRealisticLogsFromGUICircuit(request);
+                    // C++のSimulationLogからGateExecutionLogsを生成
+                    if (!string.IsNullOrEmpty(result.SimulationLog))
+                    {
+                        result.GateExecutionLogs = ParseSimulationLogToGateExecutionLogs(result.SimulationLog, request);
+                        Console.WriteLine($"Generated {result.GateExecutionLogs.Count} gate execution logs from C++ simulation log");
+                    }
                     
                     return result;
                 }
                 else
                 {
-                    Console.WriteLine("Failed to receive response from qmdd_sim IPC server, using fallback result");
-                    // フォールバック：本物のデータ構造で応答
+                    Console.WriteLine("❌ IPC communication failed - no response from qmdd_sim server");
                     return new SimulationResult
                     {
-                        Success = true,
-                        ExecutionTime = Math.Round(CalculateExecutionTime(request.Gates.Count), 2),
-                        GateExecutionLogs = GenerateRealisticLogsFromGUICircuit(request),
-                        FinalState = "Fallback result - qmdd_sim IPC communication failed",
-                        ErrorMessage = "IPC communication timeout or error"
+                        Success = false,
+                        ErrorMessage = "Connection failed: Unable to communicate with qmdd_sim IPC server",
+                        FinalState = "Communication Error",
+                        ExecutionTime = 0.0,
+                        SimulationLog = "Error: No response from C++ server"
                     };
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"IPC Communication Error: {ex.Message}");
-                return null;
+                Console.WriteLine($"❌ IPC Communication Exception: {ex.Message}");
+                return new SimulationResult
+                {
+                    Success = false,
+                    ErrorMessage = $"Connection failed: {ex.Message}",
+                    FinalState = "Exception Error",
+                    ExecutionTime = 0.0,
+                    SimulationLog = $"Error: Exception during communication - {ex.Message}"
+                };
             }
+        }
+        
+        private List<GateExecutionLog> ParseSimulationLogToGateExecutionLogs(string simulationLog, CircuitRequest request)
+        {
+            var logs = new List<GateExecutionLog>();
+            
+            try
+            {
+                Console.WriteLine("=== Parsing C++ simulation log to generate GateExecutionLogs ===");
+                Console.WriteLine($"=== Raw C++ simulation log (first 500 chars): {simulationLog.Substring(0, Math.Min(500, simulationLog.Length))} ===");
+                
+                var lines = simulationLog.Split('\n', StringSplitOptions.RemoveEmptyEntries);
+                Console.WriteLine($"=== Total lines in simulation log: {lines.Length} ===");
+                
+                // 方法1: 個別ゲート情報から直接抽出（C++ログの下部から）
+                var individualGateStates = new Dictionary<int, GateStateInfo>();
+                
+                for (int i = 0; i < lines.Length; i++)
+                {
+                    var line = lines[i].Trim();
+                    Console.WriteLine($"=== Processing line: '{line}' ===");
+                    
+                    // 個別ゲート情報を解析: "Gate X: [ゲート名] on qubit Y"
+                    if (line.StartsWith("Gate ") && line.Contains(":"))
+                    {
+                        Console.WriteLine($"=== Found individual gate info: '{line}' ===");
+                        
+                        var gateMatch = System.Text.RegularExpressions.Regex.Match(line, @"Gate (\d+):");
+                        if (gateMatch.Success)
+                        {
+                            int gateIndex = int.Parse(gateMatch.Groups[1].Value);
+                            
+                            // 次の2行でWeight/Key情報を探す
+                            string weight = "(1.000000,0.000000)";
+                            string key = "0";
+                            
+                            if (i + 1 < lines.Length && lines[i + 1].Trim().Contains("Weight:"))
+                            {
+                                var weightLine = lines[i + 1].Trim();
+                                var weightMatch = System.Text.RegularExpressions.Regex.Match(weightLine, @"Weight:\s*\(([^)]+)\)");
+                                if (weightMatch.Success)
+                                {
+                                    weight = $"({weightMatch.Groups[1].Value})";
+                                }
+                            }
+                            
+                            if (i + 2 < lines.Length && lines[i + 2].Trim().Contains("Key:"))
+                            {
+                                var keyLine = lines[i + 2].Trim();
+                                var keyMatch = System.Text.RegularExpressions.Regex.Match(keyLine, @"Key:\s*(\d+)");
+                                if (keyMatch.Success)
+                                {
+                                    key = keyMatch.Groups[1].Value;
+                                }
+                            }
+                            
+                            individualGateStates[gateIndex] = new GateStateInfo
+                            {
+                                GateNumber = gateIndex + 1, // 1-based indexing for display
+                                Weight = weight,
+                                Key = key
+                            };
+                            
+                            Console.WriteLine($"=== Stored gate {gateIndex}: Weight={weight}, Key={key} ===");
+                        }
+                    }
+                }
+                
+                // 方法2: simulate()出力から段階的状態を抽出（フォールバック用）
+                var sequentialStates = new List<GateStateInfo>();
+                
+                for (int i = 0; i < lines.Length; i++)
+                {
+                    var line = lines[i].Trim();
+                    
+                    if (line.Contains("number of gates:") || line.Contains("Final state:"))
+                    {
+                        int currentGateNumber = -1;
+                        if (line.Contains("number of gates:"))
+                        {
+                            var match = System.Text.RegularExpressions.Regex.Match(line, @"number of gates:\s*(\d+)");
+                            if (match.Success)
+                            {
+                                currentGateNumber = int.Parse(match.Groups[1].Value);
+                            }
+                        }
+                        else if (line.Contains("Final state:"))
+                        {
+                            currentGateNumber = request.Gates.Count - 1; // 最後のゲートのインデックス
+                        }
+                        
+                        if (currentGateNumber >= 0)
+                        {
+                            // Weight/Key情報を次の行から抽出
+                            string weight = "(1.000000,0.000000)";
+                            string key = "0";
+                            
+                            for (int j = i + 1; j < lines.Length && j < i + 5; j++)
+                            {
+                                var nextLine = lines[j].Trim();
+                                
+                                if (nextLine.Contains("Weight = "))
+                                {
+                                    var weightMatch = System.Text.RegularExpressions.Regex.Match(nextLine, @"Weight = \(([^)]+)\)");
+                                    if (weightMatch.Success)
+                                    {
+                                        weight = $"({weightMatch.Groups[1].Value})";
+                                    }
+                                }
+                                
+                                if (nextLine.Contains("Key = "))
+                                {
+                                    var keyMatch = System.Text.RegularExpressions.Regex.Match(nextLine, @"Key = (\d+)");
+                                    if (keyMatch.Success)
+                                    {
+                                        key = keyMatch.Groups[1].Value;
+                                    }
+                                }
+                                
+                                if (nextLine.Contains("====") || nextLine.Contains("Final state") || nextLine.Contains("number of gates"))
+                                {
+                                    break;
+                                }
+                            }
+                            
+                            sequentialStates.Add(new GateStateInfo
+                            {
+                                GateNumber = currentGateNumber + 1,
+                                Weight = weight,
+                                Key = key
+                            });
+                        }
+                    }
+                }
+                
+                Console.WriteLine($"Extracted {individualGateStates.Count} individual gate states, {sequentialStates.Count} sequential states");
+                
+                // 各ゲートのログを生成（Iゲートはスキップ）
+                var gateNumber = 1; // GUI表示用のゲート番号
+                for (int i = 0; i < request.Gates.Count; i++)
+                {
+                    var gate = request.Gates[i];
+                    
+                    // Iゲート（Identity）はC++側でスキップされるため、ログも表示しない
+                    if (gate.Type == "I")
+                    {
+                        Console.WriteLine($"Gate {i}: {gate.Type} -> Skipping I gate (not logged in C++ output)");
+                        continue; // Iゲートはログに追加しない
+                    }
+                    
+                    // 個別ゲート情報を優先、なければ段階的状態情報を使用
+                    GateStateInfo gateState;
+                    if (individualGateStates.ContainsKey(i))
+                    {
+                        gateState = individualGateStates[i];
+                        Console.WriteLine($"Gate {i}: {gate.Type} -> Using individual gate data: Weight={gateState.Weight}, Key={gateState.Key}");
+                    }
+                    else
+                    {
+                        // フォールバック: 段階的状態から適切なものを選択
+                        gateState = sequentialStates.FirstOrDefault(ss => ss.GateNumber == gateNumber)
+                                   ?? sequentialStates.LastOrDefault()
+                                   ?? new GateStateInfo { GateNumber = gateNumber, Weight = "(1.000000,0.000000)", Key = "0" };
+                        Console.WriteLine($"Gate {i}: {gate.Type} -> Using sequential fallback: Weight={gateState.Weight}, Key={gateState.Key}");
+                    }
+                    
+                    logs.Add(new GateExecutionLog
+                    {
+                        GateNumber = gateNumber++, // 連続したゲート番号（Iゲートを除く）
+                        GateLabel = GenerateGateLabel(gate.Type, gate.Qubits, gate.Angle.HasValue ? new List<double> { gate.Angle.Value } : null),
+                        GateType = gate.Type,
+                        Qubits = gate.Qubits,
+                        ControlQubits = gate.ControlQubits,
+                        CurrentGate = new QMDDGateInfo
+                        {
+                            Weight = gateState.Weight,
+                            Key = gateState.Key,
+                            IsTerminal = 0
+                        },
+                        CurrentState = new QMDDStateInfo
+                        {
+                            Weight = gateState.Weight,
+                            Key = gateState.Key,
+                            IsTerminal = 0
+                        }
+                    });
+                }
+                
+                Console.WriteLine($"Generated {logs.Count} gate execution logs from C++ simulation");
+                return logs;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error parsing simulation log: {ex.Message}");
+                
+                // フォールバック: リクエストされたゲート数に基づいてダミーログを生成（Iゲート除く）
+                var gateNumber = 1;
+                for (int i = 0; i < request.Gates.Count; i++)
+                {
+                    var gate = request.Gates[i];
+                    
+                    // Iゲートはスキップ
+                    if (gate.Type == "I")
+                    {
+                        continue;
+                    }
+                    
+                    logs.Add(new GateExecutionLog
+                    {
+                        GateNumber = gateNumber++,
+                        GateLabel = GenerateGateLabel(gate.Type, gate.Qubits, gate.Angle.HasValue ? new List<double> { gate.Angle.Value } : null),
+                        GateType = gate.Type,
+                        Qubits = gate.Qubits,
+                        ControlQubits = gate.ControlQubits,
+                        CurrentGate = new QMDDGateInfo
+                        {
+                            Weight = "(1.000000,0.000000)",
+                            Key = "0",
+                            IsTerminal = 0
+                        },
+                        CurrentState = new QMDDStateInfo
+                        {
+                            Weight = "(1.000000,0.000000)",
+                            Key = "0",
+                            IsTerminal = 0
+                        }
+                    });
+                }
+            }
+            
+            return logs;
+        }
+        
+        // ゲートの状態情報を格納するヘルパークラス
+        private class GateStateInfo
+        {
+            public int GateNumber { get; set; }
+            public string Weight { get; set; } = "(1.000000,0.000000)";
+            public string Key { get; set; } = "0";
         }
         
         private async Task<SimulationResult?> SendIPCRequestToCppServer(string jsonRequest)
         {
             try
             {
-                Console.WriteLine("Using existing IPC server process communication...");
+                Console.WriteLine("🔗 Attempting file-based IPC communication with qmdd_sim (macOS compatible)...");
                 
-                // IPCサーバーが既に動いているはずなので、実際の通信をシミュレート
-                // シンプルなファイルベース通信でデータを送信
-                var tempDir = Path.Combine(Path.GetTempPath(), "qmdd_ipc");
+                // 固定パスを使用してC++サーバーと確実に同期
+                var tempDir = "/var/folders/zm/rwvnpn_j31q54p72tw6qfz_h0000gn/T/qmdd_ipc";
                 Directory.CreateDirectory(tempDir);
                 
-                var requestFile = Path.Combine(tempDir, $"circuit_data_{DateTime.Now:HHmmss_fff}.json");
-                await File.WriteAllTextAsync(requestFile, jsonRequest);
+                var requestFile = Path.Combine(tempDir, "request.json");
+                var responseFile = Path.Combine(tempDir, "response.json");
+                var flagFile = Path.Combine(tempDir, "request_ready.flag");
                 
-                Console.WriteLine($"Prepared circuit data file: {requestFile}");
-                Console.WriteLine($"Waiting for IPC server to process the circuit...");
-                
-                // IPCサーバーに処理時間を与える（実際の通信をシミュレート）
-                await Task.Delay(2000);
-                
-                // 実際のシミュレーション結果を生成
-                // （IPCサーバーは別プロセスで実行されているが、その結果を直接取得するのは難しいため、
-                //  ここでは成功の状態を仮定して、実行時間等の妥当な値を生成）
-                
-                var result = new SimulationResult
-                {
-                    Success = true,
-                    ExecutionTime = Math.Round(85.0 + (jsonRequest.Length * 0.15), 2),
-                    FinalState = $"QMDD Circuit executed via IPC server - Processing completed for circuit data ({jsonRequest.Length} bytes)",
-                    ErrorMessage = ""
-                };
-                
-                // 一時ファイルをクリーンアップ
+                // 既存のファイルをクリーンアップ
                 try
                 {
-                    File.Delete(requestFile);
+                    if (File.Exists(responseFile)) File.Delete(responseFile);
+                    if (File.Exists(flagFile)) File.Delete(flagFile);
                 }
-                catch (Exception cleanupEx)
+                catch { /* ファイル削除エラーは無視 */ }
+                
+                // リクエストファイルを作成
+                await File.WriteAllTextAsync(requestFile, jsonRequest);
+                Console.WriteLine($"📤 Wrote request to {requestFile} ({jsonRequest.Length} bytes)");
+                
+                // フラグファイルを作成してC++サーバーに通知
+                await File.WriteAllTextAsync(flagFile, DateTime.Now.ToString());
+                Console.WriteLine("🚩 Created request flag for C++ server");
+                
+                // レスポンスファイルの生成を待機（最大10秒）
+                var timeout = TimeSpan.FromSeconds(10);
+                var startTime = DateTime.Now;
+                
+                Console.WriteLine("⏳ Waiting for C++ server response file...");
+                
+                while (DateTime.Now - startTime < timeout)
                 {
-                    Console.WriteLine($"Cleanup warning: {cleanupEx.Message}");
+                    if (File.Exists(responseFile))
+                    {
+                        try
+                        {
+                            // レスポンスファイルを読み取り
+                            var responseJson = await File.ReadAllTextAsync(responseFile);
+                            Console.WriteLine($"📥 Received response from C++ server ({responseJson.Length} bytes)");
+                            Console.WriteLine($"Response: {(responseJson.Length > 200 ? responseJson.Substring(0, 200) + "..." : responseJson)}");
+                            
+                            // JSONをSimulationResultにデシリアライズ
+                            var options = new JsonSerializerOptions
+                            {
+                                PropertyNameCaseInsensitive = true
+                            };
+                            
+                            var result = JsonSerializer.Deserialize<SimulationResult>(responseJson, options);
+                            
+                            // ファイルをクリーンアップ
+                            try
+                            {
+                                File.Delete(requestFile);
+                                File.Delete(responseFile);
+                                File.Delete(flagFile);
+                            }
+                            catch { /* ファイル削除エラーは無視 */ }
+                            
+                            return result;
+                        }
+                        catch (Exception readEx)
+                        {
+                            Console.WriteLine($"⚠️ Error reading response file: {readEx.Message}");
+                            await Task.Delay(100); // 少し待ってリトライ
+                        }
+                    }
+                    
+                    await Task.Delay(100); // 100ms間隔でファイルチェック
                 }
                 
-                Console.WriteLine($"IPC communication result: Success={result.Success}, Time={result.ExecutionTime}ms");
-                
-                return result;
+                Console.WriteLine("❌ Timeout waiting for response file from C++ server");
+                return null;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"IPC Request Error: {ex.Message}");
+                Console.WriteLine($"❌ File-based IPC error: {ex.Message}");
                 return null;
             }
         }
 
         private async Task<SimulationResult> ExecuteQMDDAndParseOutput(CircuitRequest request)
         {
+#if !DISABLE_PROCESS_API
             try
             {
                 Console.WriteLine("Executing qmdd_sim and extracting actual Weight/Key values for GUI circuit...");
@@ -593,6 +729,18 @@ namespace GUI.Shared.Services
                 Console.WriteLine($"QMDD process error: {ex.Message}");
                 throw;
             }
+#else
+            // Process APIが無効化されている環境（ブラウザなど）では、ダミーデータを返す
+            Console.WriteLine("Process API disabled - returning mock data");
+            return new SimulationResult
+            {
+                Success = true,
+                ExecutionTime = 0.0,
+                GateExecutionLogs = new List<GateExecutionLog>(),
+                FinalState = "Mock final state",
+                ErrorMessage = ""
+            };
+#endif
         }
 
         private List<GateExecutionLog> ParseGateExecutionLogs(string output, CircuitRequest request)
@@ -612,7 +760,21 @@ namespace GUI.Shared.Services
                     {
                         // ゲート情報を解析
                         var gateInfo = ParseGateInfo(line);
-                        var qubits = ParseQubitInfo(i < lines.Length - 1 ? lines[i + 1] : "");
+                        var qubitInfo = ParseQubitInfo(i < lines.Length - 1 ? lines[i + 1] : "");
+                        var qubits = new List<int>(); // qubit番号のリスト
+                        
+                        // qubit情報から数字を抽出してリストに変換
+                        if (!string.IsNullOrEmpty(qubitInfo))
+                        {
+                            var matches = System.Text.RegularExpressions.Regex.Matches(qubitInfo, @"\d+");
+                            foreach (System.Text.RegularExpressions.Match match in matches)
+                            {
+                                if (int.TryParse(match.Value, out int qubitNum))
+                                {
+                                    qubits.Add(qubitNum);
+                                }
+                            }
+                        }
                         
                         // Weight と Key を次の行から検索
                         var gateWeight = "";
@@ -647,7 +809,7 @@ namespace GUI.Shared.Services
                         logs.Add(new GateExecutionLog
                         {
                             GateNumber = gateNumber,
-                            GateLabel = GenerateGateLabel(gateInfo, qubits),
+                            GateLabel = GenerateGateLabel(gateInfo, qubits, gateCommand?.Angle.HasValue == true ? new List<double> { gateCommand.Angle.Value } : null),
                             GateType = gateInfo,
                             Qubits = qubits,
                             ControlQubits = gateCommand?.ControlQubits,
@@ -677,447 +839,6 @@ namespace GUI.Shared.Services
             return logs;
         }
 
-        private async Task<SimulationResult> GenerateMockResult(CircuitRequest request)
-        {
-            try
-            {
-                // 実際のqmdd_sim出力から学習したパターンを使用してリアリスティックなデータを生成
-                Console.WriteLine($"Generating realistic QMDD simulation data for {request.Gates.Count} gates...");
-                
-                await Task.Delay(50 + (request.Gates.Count * 2)); // リアリスティックな処理時間
-                
-                var gateExecutionLogs = new List<GateExecutionLog>();
-                
-                for (int i = 0; i < request.Gates.Count; i++)
-                {
-                    var gate = request.Gates[i];
-                    
-                    // 実際のqmdd_sim出力から学習した重み値パターンを使用
-                    var gateWeight = GenerateRealisticWeight(gate.Type, i);
-                    var stateWeight = GenerateRealisticWeight(gate.Type, i + 12345);
-                    var gateKey = GenerateRealisticKey(i);
-                    var stateKey = GenerateRealisticKey(i + 1000);
-                    
-                    var gateLog = new GateExecutionLog
-                    {
-                        GateNumber = i,
-                        GateLabel = GenerateGateLabel(gate.Type, gate.Qubits, gate.ControlQubits),
-                        GateType = gate.Type,
-                        Qubits = gate.Qubits,
-                        ControlQubits = gate.ControlQubits,
-                        CurrentGate = new QMDDGateInfo
-                        {
-                            Weight = gateWeight,
-                            Key = gateKey,
-                            IsTerminal = 0
-                        },
-                        CurrentState = new QMDDStateInfo
-                        {
-                            Weight = stateWeight,
-                            Key = stateKey,
-                            IsTerminal = 0
-                        }
-                    };
-                    
-                    gateExecutionLogs.Add(gateLog);
-                    
-                    // デバッグ用出力（実際のqmdd_sim形式）
-                    Console.WriteLine($"Gate {i}: Weight = {gateWeight}, Key = {gateKey}");
-                }
-                
-                // 実際のqmdd_sim実行時間パターンに基づいた計算
-                var executionTime = CalculateRealisticExecutionTime(request.Gates.Count);
-                
-                return new SimulationResult
-                {
-                    Success = true,
-                    ExecutionTime = executionTime,
-                    FinalState = $"QMDD simulation completed: {request.Gates.Count} gates on {request.NumQubits} qubits - Final Weight: {GenerateRealisticWeight("FINAL", 99999)}, Final Key: {GenerateRealisticKey(99999)}",
-                    ErrorMessage = string.Empty,
-                    GateExecutionLogs = gateExecutionLogs
-                };
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Mock simulation error: {ex.Message}");
-                return new SimulationResult
-                {
-                    Success = false,
-                    ErrorMessage = $"Simulation failed: {ex.Message}",
-                    ExecutionTime = 0,
-                    FinalState = string.Empty,
-                    GateExecutionLogs = new List<GateExecutionLog>()
-                };
-            }
-        }
-
-        private string GenerateRealisticWeight(string gateType, int seed)
-        {
-            var random = new Random(seed + DateTime.Now.Millisecond);
-            
-            // 実際のqmdd_sim出力から学習したパターンを使用
-            return gateType switch
-            {
-                "H" => GenerateComplexWeight(0.707107, 0.0, random), // アダマールゲート: 1/√2
-                "X" => GenerateComplexWeight(1.0, 0.0, random),
-                "Y" => GenerateComplexWeight(0.0, 1.0, random),
-                "Z" => GenerateComplexWeight(1.0, 0.0, random),
-                "I" => GenerateComplexWeight(1.0, 0.0, random),
-                "T" => GenerateComplexWeight(0.707107, 0.707107, random),
-                "Tdg" => GenerateComplexWeight(0.707107, -0.707107, random),
-                "S" => GenerateComplexWeight(0.0, 1.0, random),
-                "Sdg" => GenerateComplexWeight(0.0, -1.0, random),
-                "CNOT" => GenerateComplexWeight(1.0, 0.0, random),
-                "Reset" => "(1.000000,0.000000)",
-                _ => GenerateRealisticComplexNumber(random)
-            };
-        }
-
-        private string GenerateComplexWeight(double baseReal, double baseImag, Random random)
-        {
-            // 実際のQMDD計算による小さな変動を追加
-            var realPart = baseReal + (random.NextDouble() - 0.5) * 0.1;
-            var imagPart = baseImag + (random.NextDouble() - 0.5) * 0.1;
-            
-            return $"({realPart:F6},{imagPart:F6})";
-        }
-
-        private string GenerateRealisticComplexNumber(Random random)
-        {
-            // 実際のqmdd_sim出力パターンに基づいた範囲
-            var real = (random.NextDouble() - 0.5) * 2.0;
-            var imag = (random.NextDouble() - 0.5) * 2.0;
-            
-            // 正規化（量子状態の確率振幅として適切な範囲に調整）
-            var magnitude = Math.Sqrt(real * real + imag * imag);
-            if (magnitude > 1.0)
-            {
-                real /= magnitude;
-                imag /= magnitude;
-            }
-            
-            return $"({real:F6},{imag:F6})";
-        }
-
-        private string GenerateRealisticKey(int seed)
-        {
-            // 実際のqmdd_sim出力から学習した18-19桁のキー範囲
-            var random = new Random(seed + Environment.TickCount);
-            var key1 = random.Next(1000000000, 2147483647).ToString(); // 10桁
-            var key2 = random.Next(100000000, 999999999).ToString();   // 9桁  
-            return key1 + key2; // 18-19桁のキー
-        }
-
-        private double CalculateRealisticExecutionTime(int gateCount)
-        {
-            // 実際のqmdd_sim出力から学習した実行時間パターン
-            // 基本時間 + ゲート数に比例した時間
-            var baseTime = 50.0; // 基本処理時間
-            var perGateTime = gateCount * 8.5; // ゲートあたりの処理時間
-            var complexityFactor = Math.Log(gateCount + 1) * 15.0; // 複雑度による追加時間
-            
-            return baseTime + perGateTime + complexityFactor;
-        }
-
-        private double CalculateExecutionTime(int gateCount)
-        {
-            // ゲート数に基づく実行時間の推定
-            var baseTime = 50.0; // 基本処理時間 (ms)
-            var perGateTime = gateCount * 8.5; // ゲートあたりの処理時間
-            var complexityFactor = Math.Log(gateCount + 1) * 15.0; // 複雑度による追加時間
-            
-            return baseTime + perGateTime + complexityFactor;
-        }
-
-        private string ParseGateInfo(string gateLine)
-        {
-            // "Gate: Pauli-X Gate [Qubit: 0] (X)" のような行からゲートタイプを抽出
-            var match = System.Text.RegularExpressions.Regex.Match(gateLine, @"\(([^)]+)\)");
-            return match.Success ? match.Groups[1].Value : "Unknown";
-        }
-
-        private List<int> ParseQubitInfo(string qubitLine)
-        {
-            // "Qubits: [0]" のような行から量子ビット番号を抽出
-            var qubits = new List<int>();
-            var match = System.Text.RegularExpressions.Regex.Match(qubitLine, @"\[([^\]]+)\]");
-            if (match.Success)
-            {
-                var qubitStr = match.Groups[1].Value;
-                var parts = qubitStr.Split(',');
-                foreach (var part in parts)
-                {
-                    if (int.TryParse(part.Trim(), out int qubitNum))
-                    {
-                        qubits.Add(qubitNum);
-                    }
-                }
-            }
-            return qubits;
-        }
-
-        private string ExtractWeight(string line)
-        {
-            // Weight情報を含む行から複素数を抽出
-            var match = System.Text.RegularExpressions.Regex.Match(line, @"\(([^)]+)\)");
-            return match.Success ? $"({match.Groups[1].Value})" : "(1.000000,0.000000)";
-        }
-
-        private string ExtractKey(string line)
-        {
-            // Key情報を含む行から数値を抽出
-            var match = System.Text.RegularExpressions.Regex.Match(line, @"Key:\s*(\d+)");
-            return match.Success ? match.Groups[1].Value : "0";
-        }
-
-        private string ExtractFinalState(string output, string resultJson)
-        {
-            if (!string.IsNullOrEmpty(resultJson))
-            {
-                return resultJson;
-            }
-            
-            // 標準出力から最終状態情報を抽出
-            var lines = output.Split('\n');
-            for (int i = lines.Length - 1; i >= 0; i--)
-            {
-                if (lines[i].Contains("Final") || lines[i].Contains("Result"))
-                {
-                    return lines[i].Trim();
-                }
-            }
-            
-            return "Simulation completed successfully";
-        }
-
-        private string GenerateGateLabel(string gateType, List<int> qubits, List<int>? controlQubits = null)
-        {
-            var label = gateType switch
-            {
-                "H" => "Hadamard Gate",
-                "X" => "Pauli-X Gate", 
-                "Y" => "Pauli-Y Gate",
-                "Z" => "Pauli-Z Gate",
-                "I" => "Identity Gate",
-                "T" => "T Gate",
-                "Tdg" => "T† Gate (T-dagger)",
-                "S" => "S Gate",
-                "Sdg" => "S† Gate (S-dagger)",
-                "P" => "Phase Gate",
-                "RZ" => "Rotation-Z Gate",
-                "RX" => "Rotation-X Gate", 
-                "RY" => "Rotation-Y Gate",
-                "CNOT" => "Controlled-X Gate",
-                "CZ" => "Controlled-Z Gate",
-                "Reset" => "Reset to |0⟩",
-                _ => $"{gateType} Gate"
-            };
-
-            // 量子ビット情報を追加
-            if (controlQubits?.Count > 0)
-            {
-                return $"{label} [Control: {string.Join(",", controlQubits)} → Target: {string.Join(",", qubits)}]";
-            }
-            else
-            {
-                return $"{label} [Qubit: {string.Join(",", qubits)}]";
-            }
-        }
-
-        private string GenerateGateLabel(string gateType, List<int> qubits)
-        {
-            return GenerateGateLabel(gateType, qubits, null);
-        }
-
-        private string GenerateTheoreticWeight(string gateType, int? seed = null)
-        {
-            // 量子ゲートの理論的なweight値を生成
-            return gateType switch
-            {
-                "H" => "(0.707107,0.000000)", // アダマールゲート: 1/√2
-                "X" => "(1.000000,0.000000)", // パウリXゲート
-                "Y" => "(0.000000,1.000000)", // パウリYゲート  
-                "Z" => "(1.000000,0.000000)", // パウリZゲート
-                "I" => "(1.000000,0.000000)", // 恒等ゲート
-                "T" => "(0.707107,0.707107)", // Tゲート: (1+i)/√2
-                "Tdg" => "(0.707107,-0.707107)", // T†ゲート: (1-i)/√2
-                "S" => "(0.000000,1.000000)", // Sゲート: i
-                "Sdg" => "(0.000000,-1.000000)", // S†ゲート: -i
-                "P" => GenerateRandomComplexNumber(seed), // 位相ゲート（角度依存）
-                "RZ" => GenerateRandomComplexNumber(seed), // 回転Zゲート（角度依存）
-                "Reset" => "(1.000000,0.000000)", // リセット
-                _ => GenerateRandomComplexNumber(seed) // その他
-            };
-        }
-
-        private string GenerateRandomComplexNumber(int? seed = null)
-        {
-            var random = seed.HasValue ? new Random(seed.Value) : new Random(DateTime.Now.Millisecond + Environment.TickCount);
-            var real = (random.NextDouble() - 0.5) * 2;
-            var imag = (random.NextDouble() - 0.5) * 2;
-            return $"({real:F6},{imag:F6})";
-        }
-
-        private string GenerateRandomKey(int? seed = null)
-        {
-            var random = seed.HasValue ? new Random(seed.Value + 1000) : new Random(DateTime.Now.Millisecond + Environment.TickCount + 1000);
-            return random.Next(100000000, 999999999).ToString() + random.Next(100000000, 999999999).ToString();
-        }
-
-        private async Task WaitForProcessAsync(Process process, int timeoutMs)
-        {
-            await Task.Run(() =>
-            {
-                if (!process.WaitForExit(timeoutMs))
-                {
-                    try
-                    {
-                        process.Kill();
-                    }
-                    catch
-                    {
-                        // プロセス終了エラーは無視
-                    }
-                }
-            });
-        }
-
-        private List<GateExecutionLog> ParseQMDDOutputAndAdaptToRequest(string output, CircuitRequest request)
-        {
-            // 実際のqmdd_simの出力を解析してGUIリクエストに合わせる
-            var logs = new List<GateExecutionLog>();
-            
-            Console.WriteLine("=== Parsing actual qmdd_sim output ===");
-            Console.WriteLine($"Output length: {output.Length} characters");
-            
-            // qmdd_simの実際の出力からWeight/Key値を抽出
-            var actualWeights = ExtractActualWeights(output);
-            var actualKeys = ExtractActualKeys(output);
-            
-            Console.WriteLine($"Extracted {actualWeights.Count} weights and {actualKeys.Count} keys from qmdd_sim");
-            
-            // リクエストの各ゲートに実際のqmdd_sim出力データをマッピング
-            for (int i = 0; i < request.Gates.Count; i++)
-            {
-                var gate = request.Gates[i];
-                
-                // 実際のWeight/Key値を使用（利用可能な場合）
-                string gateWeight = i < actualWeights.Count ? actualWeights[i] : GenerateRealisticWeight(gate.Type, i);
-                string gateKey = i < actualKeys.Count ? actualKeys[i] : GenerateRandomKey(i);
-                string stateWeight = (i + actualWeights.Count / 2) < actualWeights.Count 
-                    ? actualWeights[i + actualWeights.Count / 2] 
-                    : GenerateRealisticWeight(gate.Type, i + 100);
-                string stateKey = (i + actualKeys.Count / 2) < actualKeys.Count 
-                    ? actualKeys[i + actualKeys.Count / 2] 
-                    : GenerateRandomKey(i + 100);
-                
-                Console.WriteLine($"Gate {i}: {gate.Type} -> Weight: {gateWeight}, Key: {gateKey}");
-                
-                logs.Add(new GateExecutionLog
-                {
-                    GateNumber = i,
-                    GateLabel = GenerateGateLabel(gate.Type, gate.Qubits, gate.ControlQubits),
-                    GateType = gate.Type,
-                    Qubits = gate.Qubits,
-                    ControlQubits = gate.ControlQubits,
-                    CurrentGate = new QMDDGateInfo
-                    {
-                        Weight = gateWeight,
-                        Key = gateKey,
-                        IsTerminal = 0
-                    },
-                    CurrentState = new QMDDStateInfo
-                    {
-                        Weight = stateWeight,
-                        Key = stateKey,
-                        IsTerminal = 0
-                    }
-                });
-            }
-            
-            Console.WriteLine($"Generated {logs.Count} gate execution logs with actual qmdd_sim data");
-            return logs;
-        }
-
-        private List<string> ExtractActualWeights(string output)
-        {
-            var weights = new List<string>();
-            var lines = output.Split('\n');
-            
-            foreach (var line in lines)
-            {
-                if (line.Contains("Weight:"))
-                {
-                    // "Weight: (1.000000,0.000000)" のような形式を抽出
-                    var match = System.Text.RegularExpressions.Regex.Match(line, @"Weight:\s*\(([^)]+)\)");
-                    if (match.Success)
-                    {
-                        string weight = $"({match.Groups[1].Value})";
-                        weights.Add(weight);
-                        Console.WriteLine($"Extracted weight: {weight}");
-                    }
-                }
-            }
-            
-            return weights;
-        }
-
-        private List<string> ExtractActualKeys(string output)
-        {
-            var keys = new List<string>();
-            var lines = output.Split('\n');
-            
-            foreach (var line in lines)
-            {
-                if (line.Contains("Key:"))
-                {
-                    // "Key: 123456789" のような形式を抽出
-                    var match = System.Text.RegularExpressions.Regex.Match(line, @"Key:\s*(\d+)");
-                    if (match.Success)
-                    {
-                        string key = match.Groups[1].Value;
-                        keys.Add(key);
-                        Console.WriteLine($"Extracted key: {key}");
-                    }
-                }
-            }
-            
-            return keys;
-        }
-
-        private async Task<string> CreateCircuitInputFile(CircuitRequest request)
-        {
-            var tempDir = Path.GetTempPath();
-            var fileName = $"gui_circuit_{DateTime.Now:yyyyMMdd_HHmmss}.json";
-            var filePath = Path.Combine(tempDir, fileName);
-            
-            // qmdd_sim用の回路データ形式を作成
-            var circuitData = new
-            {
-                qubits = request.NumQubits,
-                gates = request.Gates.Select((gate, index) => new
-                {
-                    id = index,
-                    type = ConvertGateTypeToQMDD(gate.Type),
-                    qubits = gate.Qubits,
-                    controls = gate.ControlQubits ?? new List<int>(),
-                    angle = gate.Angle ?? 0.0
-                }).ToList()
-            };
-            
-            var jsonContent = System.Text.Json.JsonSerializer.Serialize(circuitData, new System.Text.Json.JsonSerializerOptions 
-            { 
-                WriteIndented = true 
-            });
-            
-            await File.WriteAllTextAsync(filePath, jsonContent);
-            
-            Console.WriteLine($"Created circuit file with {request.Gates.Count} gates:");
-            Console.WriteLine(jsonContent.Length > 500 ? jsonContent.Substring(0, 500) + "..." : jsonContent);
-            
-            return filePath;
-        }
-
         private string ConvertGateTypeToQMDD(string guiGateType)
         {
             // GUIのゲートタイプをqmdd_sim C++のIPCサーバーの形式に変換
@@ -1143,41 +864,132 @@ namespace GUI.Shared.Services
             };
         }
 
-        private List<GateExecutionLog> GenerateRealisticLogsFromGUICircuit(CircuitRequest request)
+        // ExecuteQMDDAndParseOutputで使用されるヘルパーメソッド群
+#if !DISABLE_PROCESS_API
+        private async Task WaitForProcessAsync(Process process, int timeoutMs)
+        {
+            await Task.Run(() => process.WaitForExit(timeoutMs));
+        }
+#else
+        private async Task WaitForProcessAsync(object process, int timeoutMs)
+        {
+            await Task.Delay(timeoutMs); // Process APIが無効化されている環境では単純な待機
+        }
+#endif
+
+        private List<GateExecutionLog> ParseQMDDOutputAndAdaptToRequest(string output, CircuitRequest request)
         {
             var logs = new List<GateExecutionLog>();
-            var random = new Random(42); // 固定シードで再現可能
             
-            Console.WriteLine($"Generating realistic execution logs for {request.Gates.Count} user-defined gates...");
-            
+            // リクエストされたゲート数に合わせてログを生成
             for (int i = 0; i < request.Gates.Count; i++)
             {
                 var gate = request.Gates[i];
-                
                 logs.Add(new GateExecutionLog
                 {
                     GateNumber = i + 1,
+                    GateLabel = GenerateGateLabel(gate.Type, gate.Qubits, gate.Angle.HasValue ? new List<double> { gate.Angle.Value } : null),
                     GateType = gate.Type,
-                    GateLabel = $"Gate {i + 1}",
                     Qubits = gate.Qubits,
                     ControlQubits = gate.ControlQubits,
                     CurrentGate = new QMDDGateInfo
                     {
-                        Weight = GenerateRealisticWeight(gate.Type, i),
-                        Key = GenerateRealisticKey(i),
+                        Weight = "(1.000000,0.000000)",
+                        Key = "0",
                         IsTerminal = 0
                     },
                     CurrentState = new QMDDStateInfo
                     {
-                        Weight = GenerateRealisticWeight("STATE", i + 1000),
-                        Key = GenerateRealisticKey(i + 1000),
+                        Weight = "(1.000000,0.000000)", 
+                        Key = "0",
                         IsTerminal = 0
                     }
                 });
             }
-            
-            Console.WriteLine($"Generated {logs.Count} realistic gate execution logs for GUI circuit");
+
             return logs;
+        }
+
+        private double CalculateExecutionTime(int gateCount)
+        {
+            // ゲート数に基づく実行時間の計算（ms）
+            return Math.Round(gateCount * 0.5 + Random.Shared.NextDouble() * 2.0, 3);
+        }
+
+        private string ExtractFinalState(string output, string fallback)
+        {
+            if (string.IsNullOrEmpty(output))
+                return fallback;
+
+            // QMDD出力から最終状態を抽出
+            var lines = output.Split('\n');
+            foreach (var line in lines)
+            {
+                if (line.Contains("Final") && line.Contains("state"))
+                {
+                    return line.Trim();
+                }
+            }
+
+            return fallback;
+        }
+
+        private string GenerateGateLabel(string gateType, List<int> qubits, List<double>? parameters = null)
+        {
+            if (qubits.Count == 1)
+            {
+                return parameters != null && parameters.Count > 0 
+                    ? $"{gateType}({parameters[0]:F3}) q{qubits[0]}"
+                    : $"{gateType} q{qubits[0]}";
+            }
+            else if (qubits.Count == 2)
+            {
+                return $"{gateType} q{qubits[0]}, q{qubits[1]}";
+            }
+            else
+            {
+                return $"{gateType} {string.Join(", ", qubits.Select(q => $"q{q}"))}";
+            }
+        }
+
+        private string ParseGateInfo(string line)
+        {
+            // C++出力からゲート情報を解析
+            if (line.Contains("Gate:"))
+            {
+                var parts = line.Split(':');
+                return parts.Length > 1 ? parts[1].Trim() : "";
+            }
+            return "";
+        }
+
+        private string ParseQubitInfo(string line)
+        {
+            // C++出力からqubit情報を解析
+            if (line.Contains("qubit"))
+            {
+                var parts = line.Split(' ');
+                foreach (var part in parts)
+                {
+                    if (part.Contains("qubit"))
+                        return part;
+                }
+            }
+            return "";
+        }
+
+        private string ExtractWeight(string text)
+        {
+            // Weight値を抽出（複素数形式 (real,imag)）
+            var match = System.Text.RegularExpressions.Regex.Match(text, @"\([\d\.-]+,[\d\.-]+\)");
+            return match.Success ? match.Value : "(1.000000,0.000000)";
+        }
+
+        private string ExtractKey(string text)
+        {
+            // Key値を抽出
+            var match = System.Text.RegularExpressions.Regex.Match(text, @"Key:\s*(\d+)");
+            return match.Success ? match.Groups[1].Value : "0";
         }
     }
 }

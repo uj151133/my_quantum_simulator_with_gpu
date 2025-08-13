@@ -72,54 +72,6 @@
 		<data>
 		pQd2ziDaGqGEyK6euNUMGeNjKFo=
 		</data>
-		<key>Resources/wwwroot/_content/GUI.Shared/GUI.Shared.dq6st10ug3.bundle.scp.css</key>
-		<data>
-		LQoIhrprrUctWrZqJfWabZVXCYI=
-		</data>
-		<key>Resources/wwwroot/_content/GUI.Shared/GUI.Shared.dq6st10ug3.bundle.scp.css.br</key>
-		<data>
-		ndOi7ojA+TR9W8Ll1RPFZmZgqrE=
-		</data>
-		<key>Resources/wwwroot/_content/GUI.Shared/GUI.Shared.dq6st10ug3.bundle.scp.css.gz</key>
-		<data>
-		ntq54jyXRi30n2jJX6LHfFV4qO8=
-		</data>
-		<key>Resources/wwwroot/_content/GUI.Shared/GUI.Shared.jjq5m8480y.bundle.scp.css</key>
-		<data>
-		+3i8xZVXzaq92AXgBQf8OKSnFDM=
-		</data>
-		<key>Resources/wwwroot/_content/GUI.Shared/GUI.Shared.jjq5m8480y.bundle.scp.css.br</key>
-		<data>
-		kVOGFgf3fvXg+qREC8sbuJU7R7w=
-		</data>
-		<key>Resources/wwwroot/_content/GUI.Shared/GUI.Shared.jjq5m8480y.bundle.scp.css.gz</key>
-		<data>
-		k7tEJ++rTbitygQLPF1lidlelKk=
-		</data>
-		<key>Resources/wwwroot/_content/GUI.Shared/Pages/Composer.razor.js</key>
-		<data>
-		DLJcE1uIirxfxoPDraGIhPj1VSU=
-		</data>
-		<key>Resources/wwwroot/_content/GUI.Shared/Pages/Composer.razor.js.br</key>
-		<data>
-		l7fkLIJyIibDH0FdXnTOKvcYfUs=
-		</data>
-		<key>Resources/wwwroot/_content/GUI.Shared/Pages/Composer.razor.js.gz</key>
-		<data>
-		UvMVUykMlE/KVOHr+WND4/hwaTc=
-		</data>
-		<key>Resources/wwwroot/_content/GUI.Shared/Pages/Heartbeat.razor.js</key>
-		<data>
-		zMAwGrMpxx+x3dL6t0yqUi7VEBg=
-		</data>
-		<key>Resources/wwwroot/_content/GUI.Shared/Pages/Heartbeat.razor.js.br</key>
-		<data>
-		j1NfhmAPKR46WpdUMXCZzZI6IfY=
-		</data>
-		<key>Resources/wwwroot/_content/GUI.Shared/Pages/Heartbeat.razor.js.gz</key>
-		<data>
-		hKwCKCpJ83Kibq9UfZrODloVP24=
-		</data>
 		<key>Resources/wwwroot/_content/GUI.Shared/app.css</key>
 		<data>
 		WI8apN5C8DuiJIQpS+hJ6Ez9ORU=
@@ -203,28 +155,28 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			JtuZl9ly7dn74SJnq9XBJ0RONi2Y7/hmrV6u/T6hwTk=
+			C+NChYsHP7hUnHLtNOHA3yIGzjHqLLzS7bTydY9Qjzw=
 			</data>
 		</dict>
 		<key>MonoBundle/GUI.Shared.pdb</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			/VUx1MGnYAJLC2goGmD9WNPbUEzTEsSd568Dg/qOMrw=
+			qk4Sp0SzPqUKxALQ0Togul8QXTfWcHQHA6fk9nxWqAY=
 			</data>
 		</dict>
 		<key>MonoBundle/GUI.dll</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			QweJrdhkQSAQs1CCM4Nk2K7ktS++jmrwEJuHyRqMmyk=
+			uxDQLa5jGO5KFqlm3JqqwggT5I2qNah4XJLq4xpANjk=
 			</data>
 		</dict>
 		<key>MonoBundle/GUI.pdb</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			fSf8ILgOrfZPNs3HdjcuWEgDf3uukJIpY/+spNDkf+A=
+			xCSOFjJd5TjrKMxZBk1cveOLrcyvYhaINbE2KQCNTOc=
 			</data>
 		</dict>
 		<key>MonoBundle/Microsoft.AspNetCore.Authorization.dll</key>
@@ -2003,90 +1955,6 @@
 			<key>hash2</key>
 			<data>
 			k/Zb9ZdgTcp3yqCoLwV/OSHhmKyMj67A+B/v5WetBF4=
-			</data>
-		</dict>
-		<key>Resources/wwwroot/_content/GUI.Shared/GUI.Shared.dq6st10ug3.bundle.scp.css</key>
-		<dict>
-			<key>hash2</key>
-			<data>
-			FXI9+8c75DY0ve23l1JmGRq+K4pjQAJ8LPIoccMrLL0=
-			</data>
-		</dict>
-		<key>Resources/wwwroot/_content/GUI.Shared/GUI.Shared.dq6st10ug3.bundle.scp.css.br</key>
-		<dict>
-			<key>hash2</key>
-			<data>
-			QegNXdbFTqJof6E4Ku8K5PtzfXJT17jty4ViAQKiwJc=
-			</data>
-		</dict>
-		<key>Resources/wwwroot/_content/GUI.Shared/GUI.Shared.dq6st10ug3.bundle.scp.css.gz</key>
-		<dict>
-			<key>hash2</key>
-			<data>
-			5IS1jZEHs5IdI0ClaHLAFWrukqdC8eYSV/2DYn0SM88=
-			</data>
-		</dict>
-		<key>Resources/wwwroot/_content/GUI.Shared/GUI.Shared.jjq5m8480y.bundle.scp.css</key>
-		<dict>
-			<key>hash2</key>
-			<data>
-			n0uzy6flQAAFwc/A2pwXEm8KReJMGFYt6pRU3xVuwGk=
-			</data>
-		</dict>
-		<key>Resources/wwwroot/_content/GUI.Shared/GUI.Shared.jjq5m8480y.bundle.scp.css.br</key>
-		<dict>
-			<key>hash2</key>
-			<data>
-			vPgTkeKRkFUe/L9Lspk1SLzbCuXb65sNrZxBZ+2vFKk=
-			</data>
-		</dict>
-		<key>Resources/wwwroot/_content/GUI.Shared/GUI.Shared.jjq5m8480y.bundle.scp.css.gz</key>
-		<dict>
-			<key>hash2</key>
-			<data>
-			miXQVgS964DI7G9YrrdoQODqZaf6ybrvMzr8EswP6L0=
-			</data>
-		</dict>
-		<key>Resources/wwwroot/_content/GUI.Shared/Pages/Composer.razor.js</key>
-		<dict>
-			<key>hash2</key>
-			<data>
-			zhLXLSGCLSFZF/vZG0GMKEl2mJSBxilGGf7dMqts+wo=
-			</data>
-		</dict>
-		<key>Resources/wwwroot/_content/GUI.Shared/Pages/Composer.razor.js.br</key>
-		<dict>
-			<key>hash2</key>
-			<data>
-			gmN9FF7fkRWYnvK3ZUiWtBql7t/r2ELbsepGhbZG0n0=
-			</data>
-		</dict>
-		<key>Resources/wwwroot/_content/GUI.Shared/Pages/Composer.razor.js.gz</key>
-		<dict>
-			<key>hash2</key>
-			<data>
-			vJq+ysk5ZQh7ZpVBAWgDqoOHu/PhzPkBPbkdGT17CjY=
-			</data>
-		</dict>
-		<key>Resources/wwwroot/_content/GUI.Shared/Pages/Heartbeat.razor.js</key>
-		<dict>
-			<key>hash2</key>
-			<data>
-			qv/2Rp4MlGhQv7b14uZo4yTL5LLfEOdwmLCyM7f0WnQ=
-			</data>
-		</dict>
-		<key>Resources/wwwroot/_content/GUI.Shared/Pages/Heartbeat.razor.js.br</key>
-		<dict>
-			<key>hash2</key>
-			<data>
-			9McYOs9wM5ImjC4v0CsHUMosaVljqQICdl3E/DMylI4=
-			</data>
-		</dict>
-		<key>Resources/wwwroot/_content/GUI.Shared/Pages/Heartbeat.razor.js.gz</key>
-		<dict>
-			<key>hash2</key>
-			<data>
-			YRLZ3/h5kgdNDyUsv5xAA30HrGZs02YlP0PvPpviJpU=
 			</data>
 		</dict>
 		<key>Resources/wwwroot/_content/GUI.Shared/app.css</key>
