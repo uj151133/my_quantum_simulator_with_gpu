@@ -15,6 +15,8 @@ namespace GUI.Shared.Models
         public int QubitIndex { get; set; }
         public string Type { get; set; } = "";
         public long Timestamp { get; set; }
+        public int ColumnIndex { get; set; } // X座標（カラム位置）
+        public int RowIndex { get; set; } // Y座標（量子ビット行）
     }
 
     public class QubitInfo  

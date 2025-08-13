@@ -5,7 +5,7 @@ extern "C" {
     }
 
 UniqueTable::UniqueTable() : table(tableSize) {
-    for (auto& entry : table) entry.store(nullptr, memory_order_relaxed);
+    for (auto& entry : this->table) entry.store(nullptr, memory_order_relaxed);
 }
 
 UniqueTable& UniqueTable::getInstance() {
@@ -18,7 +18,7 @@ void UniqueTable::insert(int64_t hashKey, shared_ptr<QMDDNode> node) {
     Entry* newEntry = new Entry(hashKey, node, nullptr);
     Entry* oldHead;
     while (true) {
-        oldHead = table[idx].load(memory_order_acquire);
+        oldHead = this->table[idx].load(memory_order_acquire);
         for (Entry* p = oldHead; p != nullptr; p = p->next) {
             if (p->key == hashKey && p->value == node) {
                 delete newEntry;
@@ -26,15 +26,14 @@ void UniqueTable::insert(int64_t hashKey, shared_ptr<QMDDNode> node) {
             }
         }
         newEntry->next = oldHead;
-        if (cas((void**)&table[idx], oldHead, newEntry)) break;
-        // if(table[idx].compare_exchange_strong(oldHead, newEntry, memory_order_release, memory_order_relaxed)) break;
+        if (cas((void**)&this->table[idx], oldHead, newEntry)) break;
         boost::this_fiber::yield();
     }
 }
 
 shared_ptr<QMDDNode> UniqueTable::find(int64_t hashKey) const {
     size_t idx = hash(hashKey);
-    Entry* head = table[idx].load(memory_order_acquire);
+    Entry* head = this->table[idx].load(memory_order_acquire);
     for (Entry* p = head; p != nullptr; p = p->next) {
         if (p->key == hashKey) {
             return p->value;
@@ -45,14 +44,14 @@ shared_ptr<QMDDNode> UniqueTable::find(int64_t hashKey) const {
 
 // 実装ファイル
 int64_t UniqueTable::hash(int64_t key) const {
-    return key & (tableSize - 1);
+    return key & (this->tableSize - 1);
 }
 
 void UniqueTable::printAllEntries() const {
     int validEntries = 0;
     int invalidEntries = 0;
-    for (size_t idx = 0; idx < tableSize; ++idx) {
-        Entry* head = table[idx].load(memory_order_acquire);
+    for (size_t idx = 0; idx < this->tableSize; ++idx) {
+        Entry* head = this->table[idx].load(memory_order_acquire);
         if (!head) continue;
         cout << "Index: " << idx << endl;
         for (Entry* p = head; p != nullptr; p = p->next) {
@@ -68,9 +67,9 @@ void UniqueTable::printAllEntries() const {
         }
         cout << endl;
     }
-    cout << "Total entries: (unknown in vector mode)" << endl;
-    cout << "Table size: " << tableSize << endl;
+    cout << "Total entries(unknown in vector mode): "  << validEntries + invalidEntries << endl;
+    cout << "Table size: " << this->tableSize << endl;
     cout << "Valid entries: " << validEntries << endl;
     cout << "Invalid entries: " << invalidEntries << endl;
-    cout << "Table bucket count: " << tableSize << endl;
+    cout << "Table bucket count: " << this->tableSize << endl;
 }

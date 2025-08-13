@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "YQoGLtS6+Sc=",
+  "dgSpecHash": "5kjNGgB9bsw=",
   "success": true,
   "projectFilePath": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/GUI.Shared.csproj",
   "expectedPackageFiles": [
@@ -10,6 +10,7 @@
     "/Users/mitsuishikaito/.nuget/packages/microsoft.aspnetcore.components.forms/9.0.0/microsoft.aspnetcore.components.forms.9.0.0.nupkg.sha512",
     "/Users/mitsuishikaito/.nuget/packages/microsoft.aspnetcore.components.web/9.0.0/microsoft.aspnetcore.components.web.9.0.0.nupkg.sha512",
     "/Users/mitsuishikaito/.nuget/packages/microsoft.aspnetcore.metadata/9.0.0/microsoft.aspnetcore.metadata.9.0.0.nupkg.sha512",
+    "/Users/mitsuishikaito/.nuget/packages/microsoft.extensions.configuration.abstractions/9.0.0/microsoft.extensions.configuration.abstractions.9.0.0.nupkg.sha512",
     "/Users/mitsuishikaito/.nuget/packages/microsoft.extensions.dependencyinjection/9.0.0/microsoft.extensions.dependencyinjection.9.0.0.nupkg.sha512",
     "/Users/mitsuishikaito/.nuget/packages/microsoft.extensions.dependencyinjection.abstractions/9.0.0/microsoft.extensions.dependencyinjection.abstractions.9.0.0.nupkg.sha512",
     "/Users/mitsuishikaito/.nuget/packages/microsoft.extensions.logging.abstractions/9.0.0/microsoft.extensions.logging.abstractions.9.0.0.nupkg.sha512",

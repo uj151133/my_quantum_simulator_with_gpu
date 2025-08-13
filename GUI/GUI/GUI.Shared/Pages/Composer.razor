@@ -1,8 +1,8 @@
 @page "/composer"
 @inject IJSRuntime JSRuntime
-@inject QMDDSimulatorClient SimulatorClient
-@inject NavigationManager NavigationManager
 @using GUI.Shared.Services
+@inject IQMDDSimulatorClient SimulatorClient
+@inject NavigationManager NavigationManager
 @using GUI.Shared.Models
 @using System.Text.Json
 @using Microsoft.AspNetCore.Components
@@ -620,14 +620,29 @@
                 <div class="phase-gate" draggable="true" title="S†ゲート">
                     <p>S<sup>†</sup></p>
                 </div>
+                <div class="phase-gate" draggable="true" title="Vゲート">
+                    <p>V</p>
+                </div>
+                <div class="phase-gate" draggable="true" title="V†ゲート">
+                    <p>V<sup>†</sup></p>
+                </div>
+                <div class="phase-gate" draggable="true" title="Yゲート">
+                    <p>Y</p>
+                </div>
                 <div class="phase-gate" draggable="true" title="Zゲート">
                     <p>Z</p>
                 </div>
                 <div class="phase-gate" draggable="true" title="位相ゲート">
                     <p>P</p>
                 </div>
+                <div class="phase-gate" draggable="true" title="回転Xゲート">
+                    <p>Rx</p>
+                </div>
+                <div class="phase-gate" draggable="true" title="回転Yゲート">
+                    <p>Ry</p>
+                </div>
                 <div class="phase-gate" draggable="true" title="回転Zゲート">
-                    <p>RZ</p>
+                    <p>Rz</p>
                 </div>
             </div>
         </div>
@@ -802,8 +817,21 @@
         {
             Console.WriteLine($"🔄 Using global gate order: {circuitData.GlobalGateOrder.Count} gates");
             
-            // グローバル順序に従ってゲートを処理（先頭から順番）
-            foreach (var globalGate in circuitData.GlobalGateOrder.OrderBy(g => g.GateIndex))
+            // **物理順ソート後のゲート順序をデバッグ出力**
+            var sortedGates = circuitData.GlobalGateOrder
+                .OrderBy(g => g.ColumnIndex)
+                .ThenBy(g => g.RowIndex)
+                .ThenBy(g => g.GateIndex)
+                .ToList();
+            
+            Console.WriteLine("📊 Gate execution order (Column→Row→Index):");
+            foreach (var gate in sortedGates)
+            {
+                Console.WriteLine($"  Gate: {gate.Type} | Column: {gate.ColumnIndex} | Row: {gate.RowIndex} | Qubit: {gate.QubitIndex}");
+            }
+            
+            // グローバル順序に従ってゲートを処理（回路の物理順：左から右→上から下）
+            foreach (var globalGate in sortedGates)
             {
                 Console.WriteLine($"🎯 Processing gate {globalGate.GateIndex}: {globalGate.Type} on qubit {globalGate.QubitIndex}");
                 
@@ -879,9 +907,14 @@
             "T†" => "Tdg",
             "S" => "S", 
             "S†" => "Sdg",
+            "V" => "V",
+            "V†" => "Vdg",
+            "Y" => "Y",
             "Z" => "Z",
             "P" => "P",
-            "RZ" => "RZ",
+            "Rx" => "RX",
+            "Ry" => "RY",
+            "Rz" => "RZ",
             "|0⟩" => "Reset",
             _ => guiGateType
         };
@@ -900,10 +933,12 @@
             "Tdg" => "T† Gate (T-dagger)",
             "S" => "S Gate",
             "Sdg" => "S† Gate (S-dagger)",
+            "V" => "V Gate",
+            "Vdg" => "V† Gate (V-dagger)",
             "P" => "Phase Gate",
-            "RZ" => "Rotation-Z Gate",
-            "RX" => "Rotation-X Gate", 
+            "RX" => "Rotation-X Gate",
             "RY" => "Rotation-Y Gate",
+            "RZ" => "Rotation-Z Gate",
             "CNOT" => "Controlled-X Gate",
             "CZ" => "Controlled-Z Gate",
             "Reset" => "Reset to |0⟩",
@@ -919,72 +954,6 @@
         {
             return $"{label} [Qubit: {string.Join(",", qubits)}]";
         }
-    }
-
-    private object GenerateDetailedLogEntry(int gateIndex, string gateType, List<int> qubits, List<int>? controlQubits = null)
-    {
-        // C++のQMDDGateとQMDDStateの情報をシミュレート
-        // ゲートタイプに基づく理論的な正しい値を生成
-        
-        // ゲートタイプとインデックスに基づいて一意のシードを生成
-        var gateSeed = $"{gateType}_{gateIndex}_{string.Join(",", qubits)}".GetHashCode();
-        var stateSeed = gateSeed + 12345;
-        
-        return new
-        {
-            gateNumber = gateIndex,
-            gateLabel = GenerateGateLabel(gateType, qubits, controlQubits),
-            gateType = gateType,
-            qubits = qubits,
-            controlQubits = controlQubits,
-            currentGate = new
-            {
-                weight = GenerateTheoreticWeight(gateType, gateSeed),
-                key = GenerateRandomKey(gateSeed),
-                isTerminal = 0
-            },
-            currentState = new
-            {
-                weight = GenerateTheoreticWeight(gateType, stateSeed),
-                key = GenerateRandomKey(stateSeed),
-                isTerminal = 0
-            }
-        };
-    }
-
-    private string GenerateTheoreticWeight(string gateType, int? seed = null)
-    {
-        // 量子ゲートの理論的なweight値を生成
-        return gateType switch
-        {
-            "H" => "(0.707107,0.000000)", // アダマールゲート: 1/√2
-            "X" => "(1.000000,0.000000)", // パウリXゲート
-            "Y" => "(0.000000,1.000000)", // パウリYゲート  
-            "Z" => "(1.000000,0.000000)", // パウリZゲート
-            "I" => "(1.000000,0.000000)", // 恒等ゲート
-            "T" => "(0.707107,0.707107)", // Tゲート: (1+i)/√2
-            "Tdg" => "(0.707107,-0.707107)", // T†ゲート: (1-i)/√2
-            "S" => "(0.000000,1.000000)", // Sゲート: i
-            "Sdg" => "(0.000000,-1.000000)", // S†ゲート: -i
-            "P" => GenerateRandomComplexNumber(seed), // 位相ゲート（角度依存）
-            "RZ" => GenerateRandomComplexNumber(seed), // 回転Zゲート（角度依存）
-            "Reset" => "(1.000000,0.000000)", // リセット
-            _ => GenerateRandomComplexNumber(seed) // その他
-        };
-    }
-
-    private string GenerateRandomComplexNumber(int? seed = null)
-    {
-        var random = seed.HasValue ? new Random(seed.Value) : new Random(DateTime.Now.Millisecond + Environment.TickCount);
-        var real = (random.NextDouble() - 0.5) * 2;
-        var imag = (random.NextDouble() - 0.5) * 2;
-        return $"({real:F6},{imag:F6})";
-    }
-
-    private string GenerateRandomKey(int? seed = null)
-    {
-        var random = seed.HasValue ? new Random(seed.Value + 1000) : new Random(DateTime.Now.Millisecond + Environment.TickCount + 1000);
-        return random.Next(100000000, 999999999).ToString() + random.Next(100000000, 999999999).ToString();
     }
 
     private int GetNumQubits()
@@ -1453,28 +1422,42 @@ window.dragAndDropInterop = (function() {
                     const gateType = getGateTypeFromElement(gate);
                     const timestamp = gate.dataset.timestamp ? parseInt(gate.dataset.timestamp) : Date.now() + gateIndex;
                     
+                    // 実際のグリッドサイズを動的に計算（一般的には50px）
+                    const gridSize = 50; // 多くのGUIでは50pxグリッド
+                    const columnIndex = Math.round(leftPosition / gridSize);
+                    
+                    console.log(`🔍 Gate processing: ${gateType} at position ${leftPosition}px → column ${columnIndex} (qubit ${qubitIndex})`);
+                    
                     allGates.push({
                         type: gateType,
                         position: leftPosition,
                         qubitIndex: qubitIndex,
                         timestamp: timestamp,
                         targetQubit: null, // 将来の2量子ビットゲート対応用
-                        angle: null // 将来の回転ゲート対応用
+                        angle: null, // 将来の回転ゲート対応用
+                        columnIndex: columnIndex, // X座標をカラムインデックスに変換
+                        rowIndex: qubitIndex // Y座標（量子ビット行）
                     });
                 });
             });
             
-            // タイムスタンプと位置で時系列ソート（配置順序を反映）
+            // **物理順ソート：左から右（カラム）→上から下（行）**
             allGates.sort((a, b) => {
-                if (a.timestamp !== b.timestamp) {
-                    return a.timestamp - b.timestamp;
+                // カラム順が最優先（左から右）
+                if (a.columnIndex !== b.columnIndex) {
+                    return a.columnIndex - b.columnIndex;
                 }
-                // 同じタイムスタンプの場合は位置順
-                if (a.position !== b.position) {
-                    return a.position - b.position;
+                // 同じカラムなら行順（上から下）
+                if (a.rowIndex !== b.rowIndex) {
+                    return a.rowIndex - b.rowIndex;
                 }
-                // 位置も同じ場合は量子ビット順
-                return a.qubitIndex - b.qubitIndex;
+                // 最後にタイムスタンプ（配置順序の fallback）
+                return a.timestamp - b.timestamp;
+            });
+            
+            console.log('📊 JavaScript sorted gate order:');
+            allGates.forEach((gate, index) => {
+                console.log(`  ${index + 1}: ${gate.type} | Col: ${gate.columnIndex} | Row: ${gate.rowIndex} | Pos: ${gate.position}px | Qubit: ${gate.qubitIndex}`);
             });
             
             // 量子ビット別にグループ化
@@ -1504,7 +1487,9 @@ window.dragAndDropInterop = (function() {
                     gateIndex: index + 1,
                     qubitIndex: gate.qubitIndex,
                     type: gate.type,
-                    timestamp: gate.timestamp
+                    timestamp: gate.timestamp,
+                    columnIndex: gate.columnIndex,
+                    rowIndex: gate.rowIndex
                 }))
             };
         }
@@ -1525,21 +1510,19 @@ window.dragAndDropInterop = (function() {
         }
         
         // **基本テキストベースの判定**
-        if (textContent === 'H') {
-            console.log('✅ Detected H gate from text content');
-            return 'H';
-        }
-        if (textContent === 'X') {
-            console.log('✅ Detected X gate from text content');
-            return 'X';
-        }
+        if (textContent === 'H') return 'H';
         if (textContent === 'T†') return 'T†';
         if (textContent === 'S†') return 'S†';
+        if (textContent === 'V†') return 'V†';
         if (textContent === 'T') return 'T';
         if (textContent === 'S') return 'S';
+        if (textContent === 'V') return 'V';
+        if (textContent === 'Y') return 'Y';
         if (textContent === 'Z') return 'Z';
         if (textContent === 'P') return 'P';
-        if (textContent === 'RZ') return 'RZ';
+        if (textContent === 'Rx') return 'Rx';
+        if (textContent === 'Ry') return 'Ry';
+        if (textContent === 'Rz') return 'Rz';
         if (textContent === '|0⟩') return '|0⟩';
         
         // **HTMLコンテンツとクラスによる判定（テキストが無い場合）**

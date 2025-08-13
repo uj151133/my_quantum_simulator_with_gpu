@@ -1,6 +1,9 @@
 #include "ipc_shared_memory.hpp"
 #include "../models/circuit.hpp"
 #include <iostream>
+#include <fstream>
+#include <sstream>
+#include <cstdio>
 #include <thread>
 #include <nlohmann/json.hpp>
 
@@ -23,11 +26,65 @@ bool SharedMemoryIPCServer::initialize() {
 
 void SharedMemoryIPCServer::run() {
     isRunning = true;
-    std::cout << "SharedMemory IPC Server started" << std::endl;
+    std::cout << "SharedMemory IPC Server started (supports file-based and memory-based IPC)" << std::endl;
+    
+    // ファイルベースIPC用のディレクトリを作成
+    // 固定パスを使用してGUIアプリケーションと確実に同期
+    std::string tempDir = "/var/folders/zm/rwvnpn_j31q54p72tw6qfz_h0000gn/T/qmdd_ipc";
+    
+    std::cout << "Using fixed temp directory: " << tempDir << std::endl;
+    
+    // 固定パスでディレクトリを作成
+    std::string createDirCommand = "mkdir -p \"" + tempDir + "\"";
+    system(createDirCommand.c_str());
+    
+    std::string requestFile = tempDir + "/request.json";
+    std::string responseFile = tempDir + "/response.json";
+    std::string flagFile = tempDir + "/request_ready.flag";
+    
+    std::cout << "File-based IPC monitoring: " << tempDir << std::endl;
     
     while (isRunning) {
         try {
+            // **ファイルベースIPCをチェック**
+            if (std::ifstream(flagFile)) {
+                std::cout << "🚩 File-based IPC request detected!" << std::endl;
+                
+                // リクエストファイルを読み取り
+                std::ifstream requestStream(requestFile);
+                if (requestStream.is_open()) {
+                    std::string requestStr((std::istreambuf_iterator<char>(requestStream)),
+                                         std::istreambuf_iterator<char>());
+                    requestStream.close();
+                    
+                    std::cout << "📖 Read request from file (" << requestStr.length() << " bytes)" << std::endl;
+                    std::cout << "📋 Request JSON: " << requestStr << std::endl;
+                    
+                    // フラグファイルを削除（処理中であることを示す）
+                    std::remove(flagFile.c_str());
+                    
+                    // リクエストを処理
+                    CircuitRequest circuitReq = parseRequest(requestStr);
+                    SimulationResult result = processCircuitRequest(circuitReq);
+                    
+                    // レスポンスファイルに書き込み
+                    std::string response = serializeResult(result);
+                    std::ofstream responseStream(responseFile);
+                    if (responseStream.is_open()) {
+                        responseStream << response;
+                        responseStream.close();
+                        std::cout << "📝 Wrote response to file (" << response.length() << " bytes)" << std::endl;
+                        std::cout << "📋 Response JSON: " << response << std::endl;
+                    }
+                } else {
+                    std::cout << "❌ Could not read request file" << std::endl;
+                    std::remove(flagFile.c_str()); // エラー時もフラグを削除
+                }
+            }
+            
+            // **メモリベースIPCもチェック（後方互換性のため）**
             if (sharedData && sharedData->hasRequest) {
+                std::cout << "🧠 Memory-based IPC request detected!" << std::endl;
                 std::string requestStr(sharedData->requestData);
                 CircuitRequest circuitReq = parseRequest(requestStr);
                 SimulationResult result = processCircuitRequest(circuitReq);
@@ -41,20 +98,34 @@ void SharedMemoryIPCServer::run() {
                 sharedData->hasRequest = false;
             }
         } catch (const std::exception& e) {
+            std::cout << "❌ IPC Server error: " << e.what() << std::endl;
+            
             SimulationResult errorResult;
             errorResult.success = false;
             errorResult.errorMessage = e.what();
             
             std::string response = serializeResult(errorResult);
-            size_t responseSize = std::min(response.size(), sizeof(sharedData->responseData) - 1);
-            std::memcpy(sharedData->responseData, response.c_str(), responseSize);
-            sharedData->responseData[responseSize] = '\0';
-            sharedData->responseSize = responseSize;
-            sharedData->hasResponse = true;
-            sharedData->hasRequest = false;
+            
+            // ファイルベースのエラーレスポンス
+            std::ofstream errorResponseStream(responseFile);
+            if (errorResponseStream.is_open()) {
+                errorResponseStream << response;
+                errorResponseStream.close();
+            }
+            std::remove(flagFile.c_str()); // エラー時もフラグを削除
+            
+            // メモリベースのエラーレスポンス
+            if (sharedData && sharedData->hasRequest) {
+                size_t responseSize = std::min(response.size(), sizeof(sharedData->responseData) - 1);
+                std::memcpy(sharedData->responseData, response.c_str(), responseSize);
+                sharedData->responseData[responseSize] = '\0';
+                sharedData->responseSize = responseSize;
+                sharedData->hasResponse = true;
+                sharedData->hasRequest = false;
+            }
         }
         
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        std::this_thread::sleep_for(std::chrono::milliseconds(100)); // ファイルチェック間隔を100msに調整
     }
 }
 
@@ -64,6 +135,10 @@ void SharedMemoryIPCServer::stop() {
 
 SimulationResult SharedMemoryIPCServer::processCircuitRequest(const CircuitRequest& request) {
     SimulationResult result;
+    
+    // **ログキャプチャ用の変数をtryブロック外で宣言**
+    std::ostringstream logStream;
+    std::streambuf* originalCoutBuffer = std::cout.rdbuf();
     
     try {
         auto startTime = std::chrono::high_resolution_clock::now();
@@ -143,7 +218,25 @@ SimulationResult SharedMemoryIPCServer::processCircuitRequest(const CircuitReque
         }
         
         std::cout << "Starting QMDD simulation..." << std::endl;
+        std::cout << "=== Circuit simulation output START ===" << std::endl;
+        
+        // stdout をキャプチャするために stringstream にリダイレクト
+        std::ostringstream simulateLogCapture;
+        std::streambuf* coutBuffer = std::cout.rdbuf();
+        std::cout.rdbuf(simulateLogCapture.rdbuf());
+        
+        // simulate()メソッドを実行（このメソッドは内部でcoutを使用して詳細ログを出力）
         circuit.simulate();
+        
+        // stdoutを元に戻す
+        std::cout.rdbuf(coutBuffer);
+        
+        // キャプチャしたログを表示
+        std::string capturedSimulateLog = simulateLogCapture.str();
+        std::cout << "Captured simulate() output:" << std::endl;
+        std::cout << capturedSimulateLog << std::endl;
+        
+        std::cout << "=== Circuit simulation output END ===" << std::endl;
         std::cout << "QMDD simulation completed successfully!" << std::endl;
         
         auto endTime = std::chrono::high_resolution_clock::now();
@@ -157,10 +250,34 @@ SimulationResult SharedMemoryIPCServer::processCircuitRequest(const CircuitReque
                         << "Initial edge weight: " << finalState.getInitialEdge().weight
                         << ", Unique table key: " << finalState.getInitialEdge().uniqueTableKey;
         
+        // 詳細なシミュレーションログを手動で生成（実際のsimulate()ログを含む）
+        std::stringstream simulationLogBuilder;
+        simulationLogBuilder << "QMDD Quantum Circuit Simulation Details:\n";
+        simulationLogBuilder << "Number of qubits: " << request.num_qubits << "\n";
+        simulationLogBuilder << "Number of gates: " << request.gates.size() << "\n\n";
+        
+        // 実際のsimulate()メソッドの出力を追加
+        simulationLogBuilder << "=== simulate() method output ===\n";
+        simulationLogBuilder << capturedSimulateLog;
+        simulationLogBuilder << "=== End of simulate() output ===\n\n";
+        
+        // ゲートごとの詳細情報を生成（シミュレーション後の状態情報を含む）
+        auto currentState = circuit.getFinalState();
+        for (size_t i = 0; i < request.gates.size(); i++) {
+            simulationLogBuilder << "Gate " << i << ": " << request.gates[i].type << " on qubit " << request.gates[i].qubits[0] << "\n";
+            simulationLogBuilder << "  Weight: " << currentState.getInitialEdge().weight << "\n";
+            simulationLogBuilder << "  Key: " << currentState.getInitialEdge().uniqueTableKey << "\n";
+        }
+        
+        simulationLogBuilder << "Final state weight: " << finalState.getInitialEdge().weight << "\n";
+        simulationLogBuilder << "Final state key: " << finalState.getInitialEdge().uniqueTableKey << "\n";
+        
         result.success = true;
         result.executionTime = duration.count() / 1000.0;
         result.finalState = finalStateStream.str();
+        result.simulationLog = simulationLogBuilder.str();
         
+        // 結果を表示
         std::cout << "=== Simulation Results ===" << std::endl;
         std::cout << "Success: " << (result.success ? "true" : "false") << std::endl;
         std::cout << "Execution time: " << result.executionTime << " ms" << std::endl;
@@ -170,6 +287,7 @@ SimulationResult SharedMemoryIPCServer::processCircuitRequest(const CircuitReque
     } catch (const std::exception& e) {
         result.success = false;
         result.errorMessage = e.what();
+        result.simulationLog = "Error occurred during simulation: " + std::string(e.what());
         std::cout << "Simulation error: " << e.what() << std::endl;
     }
     
@@ -187,8 +305,12 @@ CircuitRequest SharedMemoryIPCServer::parseRequest(const std::string& jsonReques
         gate.type = gateJson["type"];
         gate.qubits = gateJson["qubits"].get<std::vector<int>>();
         
-        if (gateJson.contains("controlQubits")) {
-            gate.control_qubits = gateJson["controlQubits"].get<std::vector<int>>();
+        if (gateJson.contains("controlQubits") || gateJson.contains("control_qubits")) {
+            if (gateJson.contains("controlQubits")) {
+                gate.control_qubits = gateJson["controlQubits"].get<std::vector<int>>();
+            } else {
+                gate.control_qubits = gateJson["control_qubits"].get<std::vector<int>>();
+            }
         }
         
         if (gateJson.contains("angle")) {
@@ -207,6 +329,7 @@ std::string SharedMemoryIPCServer::serializeResult(const SimulationResult& resul
     j["errorMessage"] = result.errorMessage;
     j["executionTime"] = result.executionTime;
     j["finalState"] = result.finalState;
+    j["simulationLog"] = result.simulationLog; // C++シミュレーションログを追加
     
     return j.dump();
 }

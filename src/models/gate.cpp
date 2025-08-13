@@ -1,5 +1,47 @@
 #include "gate.hpp"
 
+ostream& operator<<(ostream& os, Type type) {
+    switch (type) {
+        case Type::I: os << "I"; break;
+        case Type::Ph: os << "Ph"; break;
+        case Type::X: os << "X"; break;
+        case Type::Y: os << "Y"; break;
+        case Type::Z: os << "Z"; break;
+        case Type::S: os << "S"; break;
+        case Type::Sdg: os << "Sdg"; break;
+        case Type::V: os << "V"; break;
+        case Type::Vdg: os << "Vdg"; break;
+        case Type::H: os << "H"; break;
+        case Type::CX: os << "CX"; break;
+        case Type::varCX: os << "varCX"; break;
+        case Type::CZ: os << "CZ"; break;
+        case Type::SWAP: os << "SWAP"; break;
+        case Type::P: os << "P"; break;
+        case Type::T: os << "T"; break;
+        case Type::Tdg: os << "Tdg"; break;
+        case Type::CP: os << "CP"; break;
+        case Type::CS: os << "CS"; break;
+        case Type::R: os << "R"; break;
+        case Type::Rx: os << "Rx"; break;
+        case Type::Ry: os << "Ry"; break;
+        case Type::Rz: os << "Rz"; break;
+        case Type::Rxx: os << "Rxx"; break;
+        case Type::Ryy: os << "Ryy"; break;
+        case Type::Rzz: os << "Rzz"; break;
+        case Type::Rxy: os << "Rxy"; break;
+        case Type::U: os << "U"; break;
+        case Type::U1: os << "U1"; break;
+        case Type::U2: os << "U2"; break;
+        case Type::U3: os << "U3"; break;
+        case Type::Other: os << "Other"; break;
+        case Type::VOID: os << "🌑"; break;
+        case Type::BAN: os << "🚫"; break;
+        case Type::JOKER: os << "🃏"; break;
+        default: os << "Unknown"; break;
+    }
+    return os;
+}
+
 
 QMDDGate gate::I() {
     call_once(initEdgeFlag, initEdge);
