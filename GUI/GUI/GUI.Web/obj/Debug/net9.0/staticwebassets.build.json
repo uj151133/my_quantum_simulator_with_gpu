@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "GAiE0doDMuwJY5dp0g3yUtYG4CmxRyLM8SQYBRF5xjA=",
+  "Hash": "rzYbQUiLX0bmniGwYDxHnSDLxRySqzaOUYaSVXemoOI=",
   "Source": "GUI.Web",
   "BasePath": "_content/GUI.Web",
   "Mode": "Default",
@@ -265,6 +265,90 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/wwwroot/heartbleed.png"
+    },
+    {
+      "Identity": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/wwwroot/models/blackhole.blend",
+      "SourceId": "GUI.Shared",
+      "SourceType": "Project",
+      "ContentRoot": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/wwwroot/",
+      "BasePath": "_content/GUI.Shared",
+      "RelativePath": "models/blackhole#[.{fingerprint}]?.blend",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "lx3xbn4qj8",
+      "Integrity": "1wboTCN4wt2fVuvqxo1SIurK+KiTlK9WXaf986Qkpmw=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/wwwroot/models/blackhole.blend"
+    },
+    {
+      "Identity": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/wwwroot/models/blackhole.glb",
+      "SourceId": "GUI.Shared",
+      "SourceType": "Project",
+      "ContentRoot": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/wwwroot/",
+      "BasePath": "_content/GUI.Shared",
+      "RelativePath": "models/blackhole#[.{fingerprint}]?.glb",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "ms37h0kbbk",
+      "Integrity": "CkBikptDSBrBXdwi5gQcMKi1jeBfpF8fFNTAwtAJdRY=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/wwwroot/models/blackhole.glb"
+    },
+    {
+      "Identity": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/wwwroot/models/blackhole.mtl",
+      "SourceId": "GUI.Shared",
+      "SourceType": "Project",
+      "ContentRoot": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/wwwroot/",
+      "BasePath": "_content/GUI.Shared",
+      "RelativePath": "models/blackhole#[.{fingerprint}]?.mtl",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "xmbpqt83t0",
+      "Integrity": "KTUxFndxuL4nKy+4q3SMqDY4VkpblYyk4Kz15u4oRNE=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/wwwroot/models/blackhole.mtl"
+    },
+    {
+      "Identity": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/wwwroot/models/blackhole.obj",
+      "SourceId": "GUI.Shared",
+      "SourceType": "Project",
+      "ContentRoot": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/wwwroot/",
+      "BasePath": "_content/GUI.Shared",
+      "RelativePath": "models/blackhole#[.{fingerprint}]?.obj",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "hizt2ymctg",
+      "Integrity": "CcMF3rOv6QgmNNDScVZ91WKxKcmAE7X5riV9r4yUgHE=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/wwwroot/models/blackhole.obj"
     },
     {
       "Identity": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/wwwroot/shaders/vein.frag",
@@ -1464,7 +1548,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sat, 09 Aug 2025 04:02:06 GMT"
+          "Value": "Thu, 14 Aug 2025 07:33:48 GMT"
         },
         {
           "Name": "Vary",
@@ -1521,7 +1605,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sat, 09 Aug 2025 04:02:06 GMT"
+          "Value": "Thu, 14 Aug 2025 07:33:48 GMT"
         }
       ],
       "EndpointProperties": [
@@ -1570,7 +1654,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sat, 09 Aug 2025 04:02:06 GMT"
+          "Value": "Thu, 14 Aug 2025 07:33:48 GMT"
         },
         {
           "Name": "Vary",
@@ -1625,7 +1709,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sat, 09 Aug 2025 04:02:06 GMT"
+          "Value": "Thu, 14 Aug 2025 07:33:48 GMT"
         },
         {
           "Name": "Vary",
@@ -1674,7 +1758,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sat, 09 Aug 2025 04:02:06 GMT"
+          "Value": "Thu, 14 Aug 2025 07:33:48 GMT"
         }
       ],
       "EndpointProperties": [
@@ -1715,7 +1799,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sat, 09 Aug 2025 04:02:06 GMT"
+          "Value": "Thu, 14 Aug 2025 07:33:48 GMT"
         },
         {
           "Name": "Vary",
@@ -1808,6 +1892,334 @@
         {
           "Name": "label",
           "Value": "_content/GUI.Shared/heartbleed.png"
+        }
+      ]
+    },
+    {
+      "Route": "_content/GUI.Shared/models/blackhole.blend",
+      "AssetFile": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/wwwroot/models/blackhole.blend",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "1186952"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/octet-stream"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"1wboTCN4wt2fVuvqxo1SIurK+KiTlK9WXaf986Qkpmw=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 01 Aug 2025 10:45:48 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-1wboTCN4wt2fVuvqxo1SIurK+KiTlK9WXaf986Qkpmw="
+        }
+      ]
+    },
+    {
+      "Route": "_content/GUI.Shared/models/blackhole.glb",
+      "AssetFile": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/wwwroot/models/blackhole.glb",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "121300"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/octet-stream"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"CkBikptDSBrBXdwi5gQcMKi1jeBfpF8fFNTAwtAJdRY=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 13 Aug 2025 18:15:03 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-CkBikptDSBrBXdwi5gQcMKi1jeBfpF8fFNTAwtAJdRY="
+        }
+      ]
+    },
+    {
+      "Route": "_content/GUI.Shared/models/blackhole.hizt2ymctg.obj",
+      "AssetFile": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/wwwroot/models/blackhole.obj",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "423666"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/octet-stream"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"CcMF3rOv6QgmNNDScVZ91WKxKcmAE7X5riV9r4yUgHE=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 01 Aug 2025 10:45:48 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "hizt2ymctg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-CcMF3rOv6QgmNNDScVZ91WKxKcmAE7X5riV9r4yUgHE="
+        },
+        {
+          "Name": "label",
+          "Value": "_content/GUI.Shared/models/blackhole.obj"
+        }
+      ]
+    },
+    {
+      "Route": "_content/GUI.Shared/models/blackhole.lx3xbn4qj8.blend",
+      "AssetFile": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/wwwroot/models/blackhole.blend",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "1186952"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/octet-stream"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"1wboTCN4wt2fVuvqxo1SIurK+KiTlK9WXaf986Qkpmw=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 01 Aug 2025 10:45:48 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "lx3xbn4qj8"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-1wboTCN4wt2fVuvqxo1SIurK+KiTlK9WXaf986Qkpmw="
+        },
+        {
+          "Name": "label",
+          "Value": "_content/GUI.Shared/models/blackhole.blend"
+        }
+      ]
+    },
+    {
+      "Route": "_content/GUI.Shared/models/blackhole.ms37h0kbbk.glb",
+      "AssetFile": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/wwwroot/models/blackhole.glb",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "121300"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/octet-stream"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"CkBikptDSBrBXdwi5gQcMKi1jeBfpF8fFNTAwtAJdRY=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 13 Aug 2025 18:15:03 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "ms37h0kbbk"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-CkBikptDSBrBXdwi5gQcMKi1jeBfpF8fFNTAwtAJdRY="
+        },
+        {
+          "Name": "label",
+          "Value": "_content/GUI.Shared/models/blackhole.glb"
+        }
+      ]
+    },
+    {
+      "Route": "_content/GUI.Shared/models/blackhole.mtl",
+      "AssetFile": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/wwwroot/models/blackhole.mtl",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "448"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/octet-stream"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"KTUxFndxuL4nKy+4q3SMqDY4VkpblYyk4Kz15u4oRNE=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 01 Aug 2025 10:45:48 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-KTUxFndxuL4nKy+4q3SMqDY4VkpblYyk4Kz15u4oRNE="
+        }
+      ]
+    },
+    {
+      "Route": "_content/GUI.Shared/models/blackhole.obj",
+      "AssetFile": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/wwwroot/models/blackhole.obj",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "423666"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/octet-stream"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"CcMF3rOv6QgmNNDScVZ91WKxKcmAE7X5riV9r4yUgHE=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 01 Aug 2025 10:45:48 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-CcMF3rOv6QgmNNDScVZ91WKxKcmAE7X5riV9r4yUgHE="
+        }
+      ]
+    },
+    {
+      "Route": "_content/GUI.Shared/models/blackhole.xmbpqt83t0.mtl",
+      "AssetFile": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/wwwroot/models/blackhole.mtl",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "448"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/octet-stream"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"KTUxFndxuL4nKy+4q3SMqDY4VkpblYyk4Kz15u4oRNE=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 01 Aug 2025 10:45:48 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "xmbpqt83t0"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-KTUxFndxuL4nKy+4q3SMqDY4VkpblYyk4Kz15u4oRNE="
+        },
+        {
+          "Name": "label",
+          "Value": "_content/GUI.Shared/models/blackhole.mtl"
         }
       ]
     },
@@ -1918,7 +2330,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sat, 09 Aug 2025 04:02:06 GMT"
+          "Value": "Thu, 14 Aug 2025 07:33:48 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -1987,7 +2399,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sat, 09 Aug 2025 04:02:06 GMT"
+          "Value": "Thu, 14 Aug 2025 07:33:48 GMT"
         },
         {
           "Name": "Link",
@@ -2032,7 +2444,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sat, 09 Aug 2025 04:02:06 GMT"
+          "Value": "Thu, 14 Aug 2025 07:33:48 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -2087,7 +2499,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sat, 09 Aug 2025 04:02:06 GMT"
+          "Value": "Thu, 14 Aug 2025 07:33:48 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -2148,7 +2560,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sat, 09 Aug 2025 04:02:06 GMT"
+          "Value": "Thu, 14 Aug 2025 07:33:48 GMT"
         },
         {
           "Name": "Link",
@@ -2185,7 +2597,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sat, 09 Aug 2025 04:02:06 GMT"
+          "Value": "Thu, 14 Aug 2025 07:33:48 GMT"
         },
         {
           "Name": "Cache-Control",

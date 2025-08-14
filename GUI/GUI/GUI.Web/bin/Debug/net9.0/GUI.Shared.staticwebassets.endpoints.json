@@ -43,7 +43,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sat, 09 Aug 2025 04:02:06 GMT"
+          "Value": "Thu, 14 Aug 2025 07:33:48 GMT"
         },
         {
           "Name": "Vary",
@@ -92,7 +92,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sat, 09 Aug 2025 04:02:06 GMT"
+          "Value": "Thu, 14 Aug 2025 07:33:48 GMT"
         }
       ],
       "EndpointProperties": [
@@ -141,7 +141,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sat, 09 Aug 2025 04:02:06 GMT"
+          "Value": "Thu, 14 Aug 2025 07:33:48 GMT"
         },
         {
           "Name": "Vary",
@@ -204,7 +204,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sat, 09 Aug 2025 04:02:06 GMT"
+          "Value": "Thu, 14 Aug 2025 07:33:48 GMT"
         },
         {
           "Name": "Vary",
@@ -245,7 +245,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sat, 09 Aug 2025 04:02:06 GMT"
+          "Value": "Thu, 14 Aug 2025 07:33:48 GMT"
         }
       ],
       "EndpointProperties": [
@@ -286,7 +286,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sat, 09 Aug 2025 04:02:06 GMT"
+          "Value": "Thu, 14 Aug 2025 07:33:48 GMT"
         },
         {
           "Name": "Vary",
@@ -1437,6 +1437,334 @@
         {
           "Name": "label",
           "Value": "heartbleed.png"
+        }
+      ]
+    },
+    {
+      "Route": "models/blackhole.blend",
+      "AssetFile": "models/blackhole.blend",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "1186952"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/octet-stream"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"1wboTCN4wt2fVuvqxo1SIurK+KiTlK9WXaf986Qkpmw=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 01 Aug 2025 10:45:48 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-1wboTCN4wt2fVuvqxo1SIurK+KiTlK9WXaf986Qkpmw="
+        }
+      ]
+    },
+    {
+      "Route": "models/blackhole.glb",
+      "AssetFile": "models/blackhole.glb",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "121300"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/octet-stream"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"CkBikptDSBrBXdwi5gQcMKi1jeBfpF8fFNTAwtAJdRY=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 13 Aug 2025 18:15:03 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-CkBikptDSBrBXdwi5gQcMKi1jeBfpF8fFNTAwtAJdRY="
+        }
+      ]
+    },
+    {
+      "Route": "models/blackhole.hizt2ymctg.obj",
+      "AssetFile": "models/blackhole.obj",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "423666"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/octet-stream"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"CcMF3rOv6QgmNNDScVZ91WKxKcmAE7X5riV9r4yUgHE=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 01 Aug 2025 10:45:48 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "hizt2ymctg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-CcMF3rOv6QgmNNDScVZ91WKxKcmAE7X5riV9r4yUgHE="
+        },
+        {
+          "Name": "label",
+          "Value": "models/blackhole.obj"
+        }
+      ]
+    },
+    {
+      "Route": "models/blackhole.lx3xbn4qj8.blend",
+      "AssetFile": "models/blackhole.blend",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "1186952"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/octet-stream"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"1wboTCN4wt2fVuvqxo1SIurK+KiTlK9WXaf986Qkpmw=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 01 Aug 2025 10:45:48 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "lx3xbn4qj8"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-1wboTCN4wt2fVuvqxo1SIurK+KiTlK9WXaf986Qkpmw="
+        },
+        {
+          "Name": "label",
+          "Value": "models/blackhole.blend"
+        }
+      ]
+    },
+    {
+      "Route": "models/blackhole.ms37h0kbbk.glb",
+      "AssetFile": "models/blackhole.glb",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "121300"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/octet-stream"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"CkBikptDSBrBXdwi5gQcMKi1jeBfpF8fFNTAwtAJdRY=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 13 Aug 2025 18:15:03 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "ms37h0kbbk"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-CkBikptDSBrBXdwi5gQcMKi1jeBfpF8fFNTAwtAJdRY="
+        },
+        {
+          "Name": "label",
+          "Value": "models/blackhole.glb"
+        }
+      ]
+    },
+    {
+      "Route": "models/blackhole.mtl",
+      "AssetFile": "models/blackhole.mtl",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "448"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/octet-stream"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"KTUxFndxuL4nKy+4q3SMqDY4VkpblYyk4Kz15u4oRNE=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 01 Aug 2025 10:45:48 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-KTUxFndxuL4nKy+4q3SMqDY4VkpblYyk4Kz15u4oRNE="
+        }
+      ]
+    },
+    {
+      "Route": "models/blackhole.obj",
+      "AssetFile": "models/blackhole.obj",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "423666"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/octet-stream"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"CcMF3rOv6QgmNNDScVZ91WKxKcmAE7X5riV9r4yUgHE=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 01 Aug 2025 10:45:48 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-CcMF3rOv6QgmNNDScVZ91WKxKcmAE7X5riV9r4yUgHE="
+        }
+      ]
+    },
+    {
+      "Route": "models/blackhole.xmbpqt83t0.mtl",
+      "AssetFile": "models/blackhole.mtl",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "448"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/octet-stream"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"KTUxFndxuL4nKy+4q3SMqDY4VkpblYyk4Kz15u4oRNE=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 01 Aug 2025 10:45:48 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "xmbpqt83t0"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-KTUxFndxuL4nKy+4q3SMqDY4VkpblYyk4Kz15u4oRNE="
+        },
+        {
+          "Name": "label",
+          "Value": "models/blackhole.mtl"
         }
       ]
     },
