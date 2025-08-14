@@ -362,8 +362,8 @@ namespace GUI.Web.Services
                             int gateNum = int.Parse(gateNumMatch.Groups[1].Value);
                             Console.WriteLine($"=== Found gate execution state for gate {gateNum} ===");
                             
-                            string currentGateWeight = "(1.000000,0.000000)", currentGateKey = "0";
-                            string currentStateWeight = "(1.000000,0.000000)", currentStateKey = "0";
+                            string currentGateWeight = "🏳️", currentGateKey = "🏳️";
+                            string currentStateWeight = "🏳️", currentStateKey = "🏳️";
                             
                             // Current gate と Current state の Weight/Key を探す
                             for (int j = i + 1; j < Math.Min(i + 10, lines.Length); j++)
@@ -439,8 +439,8 @@ namespace GUI.Web.Services
                     }
                     
                     // 通常のゲート（H, X, Y, Z, T, Tdg, S, Sdg, etc.）
-                    string stateWeight = "(1.000000,0.000000)", stateKey = "0";
-                    string gateWeight = "(1.000000,0.000000)", gateKey = "0";
+                    string stateWeight = "🏳️", stateKey = "🏳️";
+                    string gateWeight = "🏳️", gateKey = "🏳️";
                     
                     if (actualExecutedGateIndex < gateExecutionStates.Count)
                     {
@@ -459,7 +459,7 @@ namespace GUI.Web.Services
                     }
                     else
                     {
-                        Console.WriteLine($"Gate {i}: {gate.Type} -> No execution state available, using default values");
+                        Console.WriteLine($"Gate {i}: {gate.Type} -> No execution state available, raise the white flag");
                     }
                     actualExecutedGateIndex++; // 実際に実行されたゲートのインデックスを進める
 
@@ -505,14 +505,14 @@ namespace GUI.Web.Services
                         ControlQubits = gate.ControlQubits,
                         CurrentGate = new QMDDGateInfo
                         {
-                            Weight = "(1.000000,0.000000)",
-                            Key = "0",
+                            Weight = "🏳️",
+                            Key = "🏳️",
                             IsTerminal = 0
                         },
                         CurrentState = new QMDDStateInfo
                         {
-                            Weight = "(1.000000,0.000000)",
-                            Key = "0",
+                            Weight = "🏳️",
+                            Key = "🏳️",
                             IsTerminal = 0
                         }
                     });
@@ -526,8 +526,8 @@ namespace GUI.Web.Services
         private class GateStateInfo
         {
             public int GateNumber { get; set; }
-            public string Weight { get; set; } = "(1.000000,0.000000)";
-            public string Key { get; set; } = "0";
+            public string Weight { get; set; } = "🏳️";
+            public string Key { get; set; } = "🏳️";
         }
         
         private async Task<SimulationResult?> SendIPCRequestToCppServer(string jsonRequest)
@@ -790,14 +790,14 @@ namespace GUI.Web.Services
                             ControlQubits = gateCommand?.ControlQubits,
                             CurrentGate = new QMDDGateInfo
                             {
-                                Weight = string.IsNullOrEmpty(gateWeight) ? "(1.000000,0.000000)" : gateWeight,
-                                Key = string.IsNullOrEmpty(gateKey) ? "0" : gateKey,
+                                Weight = string.IsNullOrEmpty(gateWeight) ? "🏳️" : gateWeight,
+                                Key = string.IsNullOrEmpty(gateKey) ? "🏳️" : gateKey,
                                 IsTerminal = 0
                             },
                             CurrentState = new QMDDStateInfo
                             {
-                                Weight = string.IsNullOrEmpty(stateWeight) ? "(1.000000,0.000000)" : stateWeight,
-                                Key = string.IsNullOrEmpty(stateKey) ? "0" : stateKey,
+                                Weight = string.IsNullOrEmpty(stateWeight) ? "🏳️" : stateWeight,
+                                Key = string.IsNullOrEmpty(stateKey) ? "🏳️" : stateKey,
                                 IsTerminal = 0
                             }
                         });
@@ -869,14 +869,14 @@ namespace GUI.Web.Services
                     ControlQubits = gate.ControlQubits,
                     CurrentGate = new QMDDGateInfo
                     {
-                        Weight = "(1.000000,0.000000)",
-                        Key = "0",
+                        Weight = "🏳️",
+                        Key = "🏳️",
                         IsTerminal = 0
                     },
                     CurrentState = new QMDDStateInfo
                     {
-                        Weight = "(1.000000,0.000000)", 
-                        Key = "0",
+                        Weight = "🏳️", 
+                        Key = "🏳️",
                         IsTerminal = 0
                     }
                 });
@@ -957,14 +957,14 @@ namespace GUI.Web.Services
         {
             // Weight値を抽出（複素数形式 (real,imag)）
             var match = System.Text.RegularExpressions.Regex.Match(text, @"\([\d\.-]+,[\d\.-]+\)");
-            return match.Success ? match.Value : "(1.000000,0.000000)";
+            return match.Success ? match.Value : "🏳️";
         }
 
         private string ExtractKey(string text)
         {
             // Key値を抽出
             var match = System.Text.RegularExpressions.Regex.Match(text, @"Key:\s*(\d+)");
-            return match.Success ? match.Groups[1].Value : "0";
+            return match.Success ? match.Groups[1].Value : "🏳️";
         }
 
         public async Task<string> ExecuteQMDDAndParseOutput(string qasmInput)

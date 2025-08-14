@@ -29,6 +29,22 @@
       "PackagePath": "staticwebassets/heartbleed.png"
     },
     {
+      "Id": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/wwwroot/models/blackhole.blend",
+      "PackagePath": "staticwebassets/models/blackhole.blend"
+    },
+    {
+      "Id": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/wwwroot/models/blackhole.glb",
+      "PackagePath": "staticwebassets/models/blackhole.glb"
+    },
+    {
+      "Id": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/wwwroot/models/blackhole.mtl",
+      "PackagePath": "staticwebassets/models/blackhole.mtl"
+    },
+    {
+      "Id": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/wwwroot/models/blackhole.obj",
+      "PackagePath": "staticwebassets/models/blackhole.obj"
+    },
+    {
       "Id": "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/GUI/GUI/GUI.Shared/wwwroot/shaders/vein.frag",
       "PackagePath": "staticwebassets/shaders/vein.frag"
     },
