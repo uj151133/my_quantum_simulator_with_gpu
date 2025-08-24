@@ -95,6 +95,6 @@ void OperationCacheClient::cleanup() {
 }
 
 OperationCacheClient& OperationCacheClient::getInstance() {
-    static OperationCacheClient instance;
-    return instance;
+    static OperationCacheClient* instance = new OperationCacheClient();
+    return *instance;
 }
