@@ -20,6 +20,7 @@
 #include "src/test/Grover/grover.hpp"
 #include "src/test/random/randomRotate.hpp"
 #include "src/common/ipc_shared_memory.hpp"
+#include "src/common/operationCacheClient.hpp"
 
 using namespace std;
 
@@ -118,7 +119,8 @@ int main(int argc, char* argv[]) {
         measureExecutionTime(execute);
     }
 
-    OperationCacheClient::getInstance().cleanup();
+    // OperationCacheClient::getInstance().cleanup(); // ハングするためコメントアウト
+    cout << "Program finished successfully." << endl;
     return 0;
 }
 
