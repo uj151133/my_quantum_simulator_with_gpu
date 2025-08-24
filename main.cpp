@@ -117,6 +117,11 @@ int main(int argc, char* argv[]) {
         // 従来のシミュレーションモード
         cout << "Starting QMDD Simulator in standalone mode..." << endl;
         measureExecutionTime(execute);
+        
+        // シミュレーション完了後にキャッシュをSQLiteに保存
+        cout << "Saving cache to SQLite database..." << endl;
+        auto& client = OperationCacheClient::getInstance();
+        client.saveCacheToSQLite();
     }
 
     // OperationCacheClient::getInstance().cleanup(); // ハングするためコメントアウト
