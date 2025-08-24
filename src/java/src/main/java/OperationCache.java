@@ -1,4 +1,12 @@
 import java.util.concurrent.ForkJoinPool;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import org.graalvm.nativeimage.IsolateThread;
 import org.graalvm.nativeimage.UnmanagedMemory;
@@ -11,14 +19,43 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 
 public class OperationCache {
     private static final Cache<Long, OperationResult> CACHE;
+    private static final String DB_PATH = "./bible.db";
+    private static final String INIT_TABLE_SQL_PATH = "./init_table.sql";
+    private static final String INSERT_CACHE_SQL_PATH = "./insert_cache.sql";
 
     static {
-
         CACHE = Caffeine.newBuilder()
                 .maximumSize(1_048_576)
                 .initialCapacity(262_144)
                 .recordStats()
                 .build();
+    }
+    
+    private static void initializeDatabase() {
+        try {
+            // データベースファイルが既に存在する場合はスキップ
+            if (Files.exists(Paths.get(DB_PATH))) {
+                System.out.println("OperationCache: SQLite database already exists at " + DB_PATH);
+                return;
+            }
+            
+            Class.forName("org.sqlite.JDBC");
+            
+            try (Connection conn = DriverManager.getConnection("jdbc:sqlite:" + DB_PATH)) {
+                String initTableSql = readSqlFile(INIT_TABLE_SQL_PATH);
+                try (Statement stmt = conn.createStatement()) {
+                    stmt.execute(initTableSql);
+                    System.out.println("OperationCache: SQLite database initialized at " + DB_PATH);
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("OperationCache: Failed to initialize SQLite database: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+    
+    private static String readSqlFile(String filePath) throws IOException {
+        return new String(Files.readAllBytes(Paths.get(filePath)));
     }
 
     private OperationCache() {
@@ -75,5 +112,41 @@ public class OperationCache {
 
     public static void main(String[] args) {
         System.out.println("OperationCache initialized");
+    }
+    
+    @CEntryPoint(name = "saveCacheToSQLite")
+    public static void saveCacheToSQLite(IsolateThread thread) {
+        System.out.println("OperationCache: Starting cache save to SQLite...");
+        
+        initializeDatabase();
+        
+        try (Connection conn = DriverManager.getConnection("jdbc:sqlite:" + DB_PATH)) {
+            String insertSql = readSqlFile(INSERT_CACHE_SQL_PATH);
+            
+            try (PreparedStatement pstmt = conn.prepareStatement(insertSql)) {
+                long savedCount = 0;
+                
+                for (var entry : CACHE.asMap().entrySet()) {
+                    Long key = entry.getKey();
+                    OperationResult result = entry.getValue();
+                    
+                    pstmt.setLong(1, key);
+                    pstmt.setDouble(2, result.real());
+                    pstmt.setDouble(3, result.imag());
+                    pstmt.setLong(4, result.uniqueTableKey());
+                    
+                    pstmt.executeUpdate();
+                    savedCount++;
+                }
+                
+                System.out.println("OperationCache: Successfully saved " + savedCount + " entries to SQLite");
+                System.out.println("OperationCache: Database file: " + DB_PATH);
+                System.out.println("OperationCache: Total cache size: " + CACHE.estimatedSize());
+                
+            }
+        } catch (Exception e) {
+            System.err.println("OperationCache: Failed to save cache to SQLite: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 }

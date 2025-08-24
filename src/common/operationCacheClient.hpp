@@ -19,6 +19,7 @@ using namespace std;
 extern "C" {
     void cacheInsert(graal_isolatethread_t* thread, int64_t key, double real, double imag, int64_t uniqueTableKey);
     void* cacheFind(graal_isolatethread_t* thread, int64_t key);
+    void saveCacheToSQLite(graal_isolatethread_t* thread);
 }
 
 class OperationCacheClient {
@@ -37,6 +38,7 @@ public:
     optional<QMDDEdge> find(int64_t key);
     static OperationCacheClient& getInstance();
     void cleanup();
+    void saveCacheToSQLite();
 };
 
 #endif

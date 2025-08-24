@@ -98,3 +98,22 @@ OperationCacheClient& OperationCacheClient::getInstance() {
     static OperationCacheClient* instance = new OperationCacheClient();
     return *instance;
 }
+
+void OperationCacheClient::saveCacheToSQLite() {
+    graal_isolatethread_t* thread = getThreadLocalThread();
+    if (thread == nullptr) {
+        thread = initializeNewThread();
+        if (thread == nullptr) {
+            throw runtime_error("Failed to create isolate thread for SQLite save");
+        }
+    }
+
+    lock_guard<mutex> lock(isolate_mutex);
+    
+    try {
+        ::saveCacheToSQLite(thread);
+        cout << "OperationCacheClient: Cache saved to SQLite successfully" << endl;
+    } catch (const exception& e) {
+        throw runtime_error("Failed to save cache to SQLite: " + string(e.what()));
+    }
+}
