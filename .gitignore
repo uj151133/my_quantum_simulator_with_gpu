@@ -8,3 +8,22 @@ config.yaml
 
 .fake
 GUI/GUI/GUI/obj
+
+# Large database files
+bible.db
+
+# Gradle
+.gradle/
+src/java/.gradle/
+**/build/
+gradle-app.setting
+!gradle-wrapper.jar
+!gradle-wrapper.properties
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# Environment variables
+.env
