@@ -41,7 +41,7 @@ void execute() {
 
     // OperationCache& cache = OperationCache::getInstance();
 
-    int numQubits = 10;
+    int numQubits = 1;
     int numGates = 200;
 
     randomRotate(numQubits, numGates);
@@ -60,7 +60,8 @@ void execute() {
 
     // grover(numQubits, omega);
     
-    // UniqueTable::getInstance().printAllEntries();
+    // UniqueTable::getInstance().printNodeNum();
+    cout << "Total entries: " << UniqueTable::getInstance().getTotalEntryCount() << endl;
 
 }
 
@@ -117,6 +118,8 @@ int main(int argc, char* argv[]) {
         // 従来のシミュレーションモード
         cout << "Starting QMDD Simulator in standalone mode..." << endl;
         measureExecutionTime(execute);
+
+        cout << "Total entries: " << UniqueTable::getInstance().getTotalEntryCount() << endl;
         
         // シミュレーション完了後にキャッシュをSQLiteに保存
         cout << "Saving cache to SQLite database..." << endl;
