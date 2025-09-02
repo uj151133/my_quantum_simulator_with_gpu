@@ -3,8 +3,8 @@ gui:
   enabled: false
 
 process:
-  concurrency: 0 #並行性
-  parallelism: 100 #並列性
+  concurrency: 1 #並行性
+  parallelism: 1 #並列性
 
 table:
   size: 1048576

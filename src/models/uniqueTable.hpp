@@ -34,6 +34,7 @@ public:
     void insert(long long hashKey, shared_ptr<QMDDNode> node);
     shared_ptr<QMDDNode> find(long long hashKey) const;
     void printAllEntries() const;
+    void printNodeNum() const;
 };
 
 #endif
