@@ -27,7 +27,7 @@ void execute() {
 
     // OperationCache& cache = OperationCache::getInstance();
 
-    int numQubits = 17;
+    int numQubits = 1;
     int numGates = 200;
 
     // QuantumCircuit circuit(numQubits);
@@ -44,7 +44,7 @@ void execute() {
 
     // grover(numQubits, omega);
     
-    // UniqueTable::getInstance().printAllEntries();
+    UniqueTable::getInstance().printNodeNum();
 
 }
 

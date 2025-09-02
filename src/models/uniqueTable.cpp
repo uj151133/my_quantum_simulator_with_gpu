@@ -48,7 +48,6 @@ shared_ptr<QMDDNode> UniqueTable::find(long long hashKey) const {
     return nullptr;
 }
 
-// 実装ファイル
 long long UniqueTable::hash(long long key) const {
     return key & (tableSize - 1);
 }
@@ -72,6 +71,29 @@ void UniqueTable::printAllEntries() const {
             }
         }
         cout << endl;
+    }
+    cout << "Total entries: (unknown in vector mode)" << endl;
+    cout << "Table size: " << tableSize << endl;
+    cout << "Valid entries: " << validEntries << endl;
+    cout << "Invalid entries: " << invalidEntries << endl;
+    cout << "Table bucket count: " << tableSize << endl;
+}
+
+
+void UniqueTable::printNodeNum() const {
+    int validEntries = 0;
+    int invalidEntries = 0;
+    for (size_t idx = 0; idx < tableSize; ++idx) {
+        Entry* head = table[idx].load(memory_order_acquire);
+        if (!head) continue;
+        cout << "Index: " << idx << endl;
+        for (Entry* p = head; p != nullptr; p = p->next) {
+            if (p->value) {
+                validEntries++;
+            } else {
+                invalidEntries++;
+            }
+        }
     }
     cout << "Total entries: (unknown in vector mode)" << endl;
     cout << "Table size: " << tableSize << endl;

@@ -14,7 +14,14 @@ if(APPLE)
     set(CMAKE_OSX_ARCHITECTURES "arm64")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -isysroot ${CMAKE_OSX_SYSROOT}")
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -isysroot ${CMAKE_OSX_SYSROOT}")
-    set(JVM_LIB_PATH "/opt/homebrew/Cellar/openjdk@21/21.0.7/libexec/openjdk.jdk/Contents/Home/lib/server/libjvm.dylib")
+    
+    # JAVA_HOME環境変数からJVMライブラリパスを取得
+    set(JAVA_HOME_ENV $ENV{JAVA_HOME})
+    if(JAVA_HOME_ENV)
+        set(JVM_LIB_PATH "${JAVA_HOME_ENV}/lib/server/libjvm.dylib")
+    else()
+        message(FATAL_ERROR "JAVA_HOME environment variable is not set")
+    endif()
 
     set(BOOST_MIN_VERSION "1.87.0")
     set(YAML_CPP_INCLUDE_DIR /opt/homebrew/Cellar/yaml-cpp/0.8.0/include)
@@ -102,8 +109,8 @@ include_directories(SYSTEM
     ${Python3_INCLUDE_DIRS}
     ${YAML_CPP_INCLUDE_DIR}
     /opt/homebrew/include
-    /opt/homebrew/opt/openjdk/include
-    /opt/homebrew/opt/openjdk/include/darwin
+    ${JAVA_HOME_ENV}/include
+    ${JAVA_HOME_ENV}/include/darwin
     ${CMAKE_SOURCE_DIR}/src
 )
 
@@ -145,9 +152,16 @@ configure_file(${CMAKE_SOURCE_DIR}/config.yaml ${CMAKE_BINARY_DIR}/config.yaml C
 file(GLOB SOURCES "src/models/*.cpp" "src/common/*.cpp" "src/modules/*.cpp" "src/test/*/*.cpp" )
 
 
+# Gradleでビルドされた共有ライブラリを生成するカスタムターゲット
+add_custom_target(build_java_lib
+    COMMAND ./gradlew nativeCompile
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/src/java
+    COMMENT "Building Java shared library with Gradle..."
+)
+
 # 通常のC++実行ファイルを追加
 add_executable(qmdd_sim main.cpp ${SOURCES} ${C_SRC} ${ASM_SRC})
-add_dependencies(qmdd_sim copy_config)
+add_dependencies(qmdd_sim copy_config build_java_lib)
 target_include_directories(qmdd_sim PRIVATE ${GSL_INCLUDE_DIRS})
 target_link_libraries(qmdd_sim PRIVATE
     pthread
@@ -164,7 +178,7 @@ target_link_libraries(qmdd_sim PRIVATE
 
 # make run ターゲットの追加
 add_custom_target(run
-    COMMAND DYLD_LIBRARY_PATH=/opt/homebrew/Cellar/openjdk@21/21.0.7/libexec/openjdk.jdk/Contents/Home/lib/server:$ENV{DYLD_LIBRARY_PATH} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qmdd_sim
+    COMMAND DYLD_LIBRARY_PATH=${JAVA_HOME_ENV}/lib/server:$ENV{DYLD_LIBRARY_PATH} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qmdd_sim
     DEPENDS qmdd_sim
     WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
     COMMENT "Running the application ..."

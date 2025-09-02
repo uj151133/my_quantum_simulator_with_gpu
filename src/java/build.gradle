@@ -1,3 +1,59 @@
+plugins {
+    id 'java'
+    id 'org.graalvm.buildtools.native' version '0.9.28'
+}
+
+group = 'com.quantum'
+version = '1.0.0'
+
+repositories {
+    mavenCentral()
+}
+
 dependencies {
-    implementation 'com.github.ben-manes.caffeine:caffeine:3.2.0'
+    implementation 'com.github.ben-manes.caffeine:caffeine:3.2.1'
+    implementation 'org.xerial:sqlite-jdbc:3.45.1.0'
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+test {
+    useJUnitPlatform()
+}
+
+graalvmNative {
+    binaries {
+        main {
+            imageName = 'liboperationcache'
+            sharedLibrary = true
+            buildArgs.addAll([
+                '--no-fallback',
+                '--verbose',
+                '-H:+UnlockExperimentalVMOptions',
+                '-H:+ReportUnsupportedElementsAtRuntime',
+                '--initialize-at-build-time=com.github.benmanes.caffeine',
+                '--initialize-at-build-time=org.checkerframework',
+                '--initialize-at-build-time=org.xerial.sqlite',
+                '--initialize-at-run-time=com.github.benmanes.caffeine.cache.LocalCacheFactory',
+                '-H:+AddAllCharsets',
+                '-H:IncludeResources=.*\\.sql',
+                '-O3',
+                '-march=native',
+                '--gc=epsilon',
+                '-H:+UseEpsilonGC'
+            ])
+        }
+    }
+}
+
+// カスタムタスク：ヘッダーファイル生成用
+task generateHeaders {
+    dependsOn 'nativeCompile'
+    doLast {
+        println "Native library generated: ${project.buildDir}/native/nativeCompile/"
+    }
 }
