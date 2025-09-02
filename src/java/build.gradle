@@ -31,6 +31,9 @@ graalvmNative {
             imageName = 'liboperationcache'
             sharedLibrary = true
             mainClass = 'OperationCache'
+            jvmArgs.addAll([
+                '-Xss128m'
+            ])
             buildArgs.addAll([
                 '--no-fallback',
                 '--verbose',
