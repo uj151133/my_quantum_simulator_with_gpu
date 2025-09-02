@@ -73,3 +73,35 @@ void UniqueTable::printAllEntries() const {
     cout << "Invalid entries: " << invalidEntries << endl;
     cout << "Table bucket count: " << this->tableSize << endl;
 }
+
+void UniqueTable::printNodeNum() const {
+    int validEntries = 0;
+    int invalidEntries = 0;
+    for (size_t idx = 0; idx < this->tableSize; ++idx) {
+        Entry* head = this->table[idx].load(memory_order_acquire);
+        if (!head) continue;
+        for (Entry* p = head; p != nullptr; p = p->next) {
+            if (p->value) {
+                validEntries++;
+            } else {
+                invalidEntries++;
+            }
+        }
+    }
+    cout << "Total entries(unknown in vector mode): "  << validEntries + invalidEntries << endl;
+    cout << "Table size: " << this->tableSize << endl;
+    cout << "Valid entries: " << validEntries << endl;
+    cout << "Invalid entries: " << invalidEntries << endl;
+    cout << "Table bucket count: " << this->tableSize << endl;
+}
+
+int UniqueTable::getTotalEntryCount() const {
+    int totalEntries = 0;
+    for (size_t idx = 0; idx < this->tableSize; ++idx) {
+        Entry* head = this->table[idx].load(memory_order_acquire);
+        for (Entry* p = head; p != nullptr; p = p->next) {
+            totalEntries++;
+        }
+    }
+    return totalEntries;
+}
