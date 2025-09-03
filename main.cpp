@@ -61,7 +61,7 @@ void execute() {
     // grover(numQubits, omega);
     
     // UniqueTable::getInstance().printNodeNum();
-    cout << "Total entries: " << UniqueTable::getInstance().getTotalEntryCount() << endl;
+
 
 }
 
@@ -122,9 +122,9 @@ int main(int argc, char* argv[]) {
         cout << "Total entries: " << UniqueTable::getInstance().getTotalEntryCount() << endl;
         
         // シミュレーション完了後にキャッシュをSQLiteに保存
-        cout << "Saving cache to SQLite database..." << endl;
-        auto& client = OperationCacheClient::getInstance();
-        client.saveCacheToSQLite();
+        // cout << "Saving cache to SQLite database..." << endl;
+        // auto& client = OperationCacheClient::getInstance();
+        // client.saveCacheToSQLite();
     }
 
     // OperationCacheClient::getInstance().cleanup(); // ハングするためコメントアウト
