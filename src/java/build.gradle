@@ -47,8 +47,7 @@ graalvmNative {
                 '-H:IncludeResources=.*\\.sql',
                 '-O3',
                 '-march=native',
-                '--gc=epsilon',
-                '-H:+UseEpsilonGC'
+                '-H:+UseSerialGC'
             ])
         }
     }
