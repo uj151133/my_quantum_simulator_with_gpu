@@ -184,20 +184,52 @@ target_link_libraries(qmdd_sim PRIVATE
 )
 
 # make run ターゲットの追加（通常モード）
-add_custom_target(run
-    COMMAND DYLD_LIBRARY_PATH=/opt/homebrew/Cellar/openjdk@21/21.0.7/libexec/openjdk.jdk/Contents/Home/lib/server:$ENV{DYLD_LIBRARY_PATH} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qmdd_sim
-    DEPENDS qmdd_sim
-    WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
-    COMMENT "Running the application in standalone mode..."
-)
+if(APPLE)
+    add_custom_target(run
+        COMMAND DYLD_LIBRARY_PATH=/opt/homebrew/Cellar/openjdk@21/21.0.7/libexec/openjdk.jdk/Contents/Home/lib/server:$ENV{DYLD_LIBRARY_PATH} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qmdd_sim
+        DEPENDS qmdd_sim
+        WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
+        COMMENT "Running the application in standalone mode..."
+    )
+elseif(UNIX AND NOT APPLE)
+    add_custom_target(run
+        COMMAND LD_LIBRARY_PATH=/home/ark/.sdkman/candidates/java/current/lib/server:/home/ark/.sdkman/candidates/java/current/lib:$ENV{LD_LIBRARY_PATH} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qmdd_sim
+        DEPENDS qmdd_sim
+        WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
+        COMMENT "Running the application in standalone mode..."
+    )
+else()
+    add_custom_target(run
+        COMMAND ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qmdd_sim
+        DEPENDS qmdd_sim
+        WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
+        COMMENT "Running the application in standalone mode..."
+    )
+endif()
 
 # make run-server ターゲットの追加（IPCサーバーモード）
-add_custom_target(run-server
-    COMMAND DYLD_LIBRARY_PATH=/opt/homebrew/Cellar/openjdk@21/21.0.7/libexec/openjdk.jdk/Contents/Home/lib/server:$ENV{DYLD_LIBRARY_PATH} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qmdd_sim -s
-    DEPENDS qmdd_sim
-    WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
-    COMMENT "Running the application in IPC server mode for GUI communication..."
-)
+if(APPLE)
+    add_custom_target(run-server
+        COMMAND DYLD_LIBRARY_PATH=/opt/homebrew/Cellar/openjdk@21/21.0.7/libexec/openjdk.jdk/Contents/Home/lib/server:$ENV{DYLD_LIBRARY_PATH} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qmdd_sim -s
+        DEPENDS qmdd_sim
+        WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
+        COMMENT "Running the application in IPC server mode for GUI communication..."
+    )
+elseif(UNIX AND NOT APPLE)
+    add_custom_target(run-server
+        COMMAND LD_LIBRARY_PATH=/home/ark/.sdkman/candidates/java/current/lib/server:/home/ark/.sdkman/candidates/java/current/lib:$ENV{LD_LIBRARY_PATH} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qmdd_sim -s
+        DEPENDS qmdd_sim
+        WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
+        COMMENT "Running the application in IPC server mode for GUI communication..."
+    )
+else()
+    add_custom_target(run-server
+        COMMAND ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qmdd_sim -s
+        DEPENDS qmdd_sim
+        WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
+        COMMENT "Running the application in IPC server mode for GUI communication..."
+    )
+endif()
 
 # make debug ターゲットの追加
 add_custom_target(debug
