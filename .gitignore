@@ -28,3 +28,6 @@ gradle-app.setting
 # Environment variables
 .env
 bible.db
+
+# Gradle
+.gradle/
