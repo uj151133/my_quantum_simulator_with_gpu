@@ -21,7 +21,7 @@
 #include <tbb/task_group.h>
 #include "jniUtils.hpp"
 #include "constant.hpp"
-
+#include "../common/operationCacheClient.hpp"
 
 using namespace std;
 // using namespace Eigen;

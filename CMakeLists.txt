@@ -8,32 +8,26 @@ project(Qmdd_Sim VERSION 0.1.0)
 # set(CMAKE_BUILD_TYPE Release)
 # set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3")
 
+set(GRAALVM_NATIVE_LIB_PATH "${CMAKE_SOURCE_DIR}/src/java/build/native/nativeCompile")
+set(GRAALVM_NATIVE_LIB_SEARCH_NAME "operationcache")
+
 if(APPLE)
     set(CMAKE_OSX_SYSROOT "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk")
     set(CMAKE_OSX_DEPLOYMENT_TARGET "15.0")
     set(CMAKE_OSX_ARCHITECTURES "arm64")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -isysroot ${CMAKE_OSX_SYSROOT}")
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -isysroot ${CMAKE_OSX_SYSROOT}")
-    
-    # JAVA_HOME環境変数からJVMライブラリパスを取得
-    set(JAVA_HOME_ENV $ENV{JAVA_HOME})
-    if(JAVA_HOME_ENV)
-        set(JVM_LIB_PATH "${JAVA_HOME_ENV}/lib/server/libjvm.dylib")
-    else()
-        message(FATAL_ERROR "JAVA_HOME environment variable is not set")
-    endif()
+
+    set(GRAALVM_NATIVE_LIB_NAME "liboperationcache.dylib")
 
     set(BOOST_MIN_VERSION "1.87.0")
     set(YAML_CPP_INCLUDE_DIR /opt/homebrew/Cellar/yaml-cpp/0.8.0/include)
     set(YAML_CPP_LIB_DIR /opt/homebrew/Cellar/yaml-cpp/0.8.0/lib)
 elseif(UNIX AND NOT APPLE)
-    # Ubuntu用のBoost設定
     set(BOOST_MIN_VERSION "1.83.0")
-    set(JAVA_HOME "/usr/lib/jvm/java-21-openjdk-amd64")
-    include_directories(${JAVA_HOME}/include)
-    include_directories(${JAVA_HOME}/include/linux)
-    find_library(JVM_LIB jvm HINTS ${JAVA_HOME}/lib/server REQUIRED)
-    set(JVM_LIB_PATH ${JVM_LIB})
+    set(GRAALVM_NATIVE_LIB_NAME "liboperationcache.so")
+elseif(WIN32)
+    set(GRAALVM_NATIVE_LIB_NAME "operationcache.dll")
 endif()
 
 # C++20を使用する
@@ -45,12 +39,8 @@ find_package(Python3 REQUIRED COMPONENTS Interpreter Development)
 # インクルードディレクトリとリンクディレクトリの設定
 include_directories(${Python3_INCLUDE_DIRS})
 
-# 環境変数の設定をCMakeの変数に変換
-
-
-# 環境変数の設定をCMakeの変数に変換
-
 find_package(yaml-cpp REQUIRED)
+find_package(nlohmann_json REQUIRED)
 find_package(Boost ${BOOST_MIN_VERSION} REQUIRED COMPONENTS 
     system
     thread
@@ -109,15 +99,17 @@ include_directories(SYSTEM
     ${Python3_INCLUDE_DIRS}
     ${YAML_CPP_INCLUDE_DIR}
     /opt/homebrew/include
-    ${JAVA_HOME_ENV}/include
-    ${JAVA_HOME_ENV}/include/darwin
+    /opt/homebrew/opt/openjdk/include
+    /opt/homebrew/opt/openjdk/include/darwin
     ${CMAKE_SOURCE_DIR}/src
+    ${GRAALVM_NATIVE_LIB_PATH}
 )
 
 link_directories(
     ${Python3_LIBRARY_DIRS}
     ${YAML_CPP_LIB_DIR}
     /opt/homebrew/lib
+    ${GRAALVM_NATIVE_LIB_PATH}
 )
 
 
@@ -149,15 +141,29 @@ endif()
 
 configure_file(${CMAKE_SOURCE_DIR}/config.yaml ${CMAKE_BINARY_DIR}/config.yaml COPYONLY)
 
+find_library(GRAALVM_NATIVE_LIB
+    NAMES ${GRAALVM_NATIVE_LIB_SEARCH_NAME}
+    PATHS ${GRAALVM_NATIVE_LIB_PATH}
+    NO_DEFAULT_PATH
+)
+
+if(NOT GRAALVM_NATIVE_LIB)
+    message(WARNING "GraalVM Native Image library not found!")
+    message(WARNING "Expected file: ${GRAALVM_NATIVE_LIB_PATH}/${GRAALVM_NATIVE_LIB_NAME}")
+    message(WARNING "Please build the Java library first:")
+    message(WARNING "  cd src/java")
+    message(WARNING "  ./gradlew nativeCompile")
+    
+    # ファイルの存在確認
+    if(EXISTS "${GRAALVM_NATIVE_LIB_PATH}/${GRAALVM_NATIVE_LIB_NAME}")
+        message(STATUS "File exists but not found by find_library, using direct path")
+        set(GRAALVM_NATIVE_LIB "${GRAALVM_NATIVE_LIB_PATH}/${GRAALVM_NATIVE_LIB_NAME}")
+    endif()
+endif()
+
+
 file(GLOB SOURCES "src/models/*.cpp" "src/common/*.cpp" "src/modules/*.cpp" "src/test/*/*.cpp" )
 
-
-# Gradleでビルドされた共有ライブラリを生成するカスタムターゲット
-add_custom_target(build_java_lib
-    COMMAND ./gradlew nativeCompile
-    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/src/java
-    COMMENT "Building Java shared library with Gradle..."
-)
 
 # 通常のC++実行ファイルを追加
 add_executable(qmdd_sim main.cpp ${SOURCES} ${C_SRC} ${ASM_SRC})
@@ -166,23 +172,64 @@ target_include_directories(qmdd_sim PRIVATE ${GSL_INCLUDE_DIRS})
 target_link_libraries(qmdd_sim PRIVATE
     pthread
     yaml-cpp::yaml-cpp
+    nlohmann_json::nlohmann_json
     Python3::Python
     ${Boost_LIBRARIES}
     GSL::gsl
     ${GMP_LIB}
     Threads::Threads
-    ${JVM_LIB_PATH}
     xxhash
     TBB::tbb
+    $<$<BOOL:${GRAALVM_NATIVE_LIB}>:${GRAALVM_NATIVE_LIB}>
 )
 
-# make run ターゲットの追加
-add_custom_target(run
-    COMMAND DYLD_LIBRARY_PATH=${JAVA_HOME_ENV}/lib/server:$ENV{DYLD_LIBRARY_PATH} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qmdd_sim
-    DEPENDS qmdd_sim
-    WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
-    COMMENT "Running the application ..."
-)
+# make run ターゲットの追加（通常モード）
+if(APPLE)
+    add_custom_target(run
+        COMMAND DYLD_LIBRARY_PATH=/opt/homebrew/Cellar/openjdk@21/21.0.7/libexec/openjdk.jdk/Contents/Home/lib/server:$ENV{DYLD_LIBRARY_PATH} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qmdd_sim
+        DEPENDS qmdd_sim
+        WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
+        COMMENT "Running the application in standalone mode..."
+    )
+elseif(UNIX AND NOT APPLE)
+    add_custom_target(run
+        COMMAND LD_LIBRARY_PATH=/home/ark/.sdkman/candidates/java/current/lib/server:/home/ark/.sdkman/candidates/java/current/lib:$ENV{LD_LIBRARY_PATH} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qmdd_sim
+        DEPENDS qmdd_sim
+        WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
+        COMMENT "Running the application in standalone mode..."
+    )
+else()
+    add_custom_target(run
+        COMMAND ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qmdd_sim
+        DEPENDS qmdd_sim
+        WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
+        COMMENT "Running the application in standalone mode..."
+    )
+endif()
+
+# make run-server ターゲットの追加（IPCサーバーモード）
+if(APPLE)
+    add_custom_target(run-server
+        COMMAND DYLD_LIBRARY_PATH=/opt/homebrew/Cellar/openjdk@21/21.0.7/libexec/openjdk.jdk/Contents/Home/lib/server:$ENV{DYLD_LIBRARY_PATH} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qmdd_sim -s
+        DEPENDS qmdd_sim
+        WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
+        COMMENT "Running the application in IPC server mode for GUI communication..."
+    )
+elseif(UNIX AND NOT APPLE)
+    add_custom_target(run-server
+        COMMAND LD_LIBRARY_PATH=/home/ark/.sdkman/candidates/java/current/lib/server:/home/ark/.sdkman/candidates/java/current/lib:$ENV{LD_LIBRARY_PATH} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qmdd_sim -s
+        DEPENDS qmdd_sim
+        WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
+        COMMENT "Running the application in IPC server mode for GUI communication..."
+    )
+else()
+    add_custom_target(run-server
+        COMMAND ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qmdd_sim -s
+        DEPENDS qmdd_sim
+        WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
+        COMMENT "Running the application in IPC server mode for GUI communication..."
+    )
+endif()
 
 # make debug ターゲットの追加
 add_custom_target(debug
@@ -198,4 +245,10 @@ add_custom_target(copy_config
         ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/config.yaml
     DEPENDS ${CMAKE_SOURCE_DIR}/config.yaml
     COMMENT "Copying config.yaml if it has changed"
+)
+
+add_custom_target(build_java_lib
+    COMMAND cd ${CMAKE_SOURCE_DIR}/src/java && ./gradlew nativeCompile
+    BYPRODUCTS ${GRAALVM_NATIVE_LIB_PATH}/${GRAALVM_NATIVE_LIB_NAME}
+    COMMENT "Building GraalVM Native Image library -> ${GRAALVM_NATIVE_LIB_NAME}"
 )

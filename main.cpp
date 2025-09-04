@@ -3,10 +3,11 @@
 #include <string>
 #include <unistd.h>
 #include <getopt.h>
-
+#include <random>
+#include <thread>
+#include <signal.h>
 
 #include "src/common/config.hpp"
-#include "src/common/jniUtils.hpp"
 #include "src/models/qmdd.hpp"
 #include "src/common/constant.hpp"
 #include "src/models/gate.hpp"
@@ -18,8 +19,21 @@
 #include "src/common/monitor.hpp"
 #include "src/test/Grover/grover.hpp"
 #include "src/test/random/randomRotate.hpp"
+#include "src/common/ipc_shared_memory.hpp"
+#include "src/common/operationCacheClient.hpp"
 
 using namespace std;
+
+// グローバルな共有メモリIPCサーバーインスタンス
+IPC::SharedMemoryIPCServer* ipcServer = nullptr;
+
+// シグナルハンドラ
+void signalHandler(int signal) {
+    if (ipcServer) {
+        ipcServer->stop();
+    }
+    exit(0);
+}
 
 
 void execute() {
@@ -27,30 +41,36 @@ void execute() {
 
     // OperationCache& cache = OperationCache::getInstance();
 
-    int numQubits = 1;
+    int numQubits = 14;
     int numGates = 200;
+
+    randomRotate(numQubits, numGates);
 
     // QuantumCircuit circuit(numQubits);
     // for ([[maybe_unused]] int _ = 0; _ < numGates; ++_) {
-    //     circuit.addAllX();
+    //     double randomAngle = dis(gen);
+    //     // circuit.addP(numQubits - 1, randomAngle);
+    //     circuit.addRz(numQubits - 1, randomAngle);
     // }
-    // circuit.addToff({0, 1}, 3);
+    // // circuit.addToff({0, 1}, 3);
     // circuit.simulate();
 
-    randomRotate(numQubits, numGates);
-    // random2(numQubits, numGates);
-    // random4(numQubits, numGates);
+    // randomRotate4(numQubits, numGates);
     // int omega = std::pow(2, numQubits) - 1;
 
     // grover(numQubits, omega);
     
-    UniqueTable::getInstance().printNodeNum();
+    // UniqueTable::getInstance().printNodeNum();
+
 
 }
 
 
 
-int main() {
+int main(int argc, char* argv[]) {
+    // シグナルハンドラを設定
+    signal(SIGINT, signalHandler);
+    signal(SIGTERM, signalHandler);
 
     #ifdef __APPLE__
         CONFIG.loadFromFile("/Users/mitsuishikaito/my_quantum_simulator_with_gpu/config.yaml");
@@ -60,34 +80,54 @@ int main() {
         #error "Unsupported operating system"
     #endif
 
+    // コマンドライン引数を解析
+    bool startSharedMemoryServer = false;
+    int opt;
+    while ((opt = getopt(argc, argv, "sh")) != -1) {
+        switch (opt) {
+            case 's':
+                startSharedMemoryServer = true;
+                break;
+            case 'h':
+                cout << "Usage: " << argv[0] << " [-s] [-h]" << endl;
+                cout << "  -s: Start Shared Memory IPC server for GUI communication" << endl;
+                cout << "  -h: Show this help message" << endl;
+                return 0;
+            default:
+                cout << "Use -h for help" << endl;
+                return 1;
+        }
+    }
 
-    // int n_threads = std::thread::hardware_concurrency();
+    if (startSharedMemoryServer) {
+        // 共有メモリIPCサーバーモードで起動
+        cout << "Starting QMDD Simulator in Shared Memory IPC server mode..." << endl;
+        
+        ipcServer = new IPC::SharedMemoryIPCServer();
+        if (ipcServer->initialize()) {
+            cout << "Shared Memory IPC Server ready. Waiting for GUI connections..." << endl;
+            ipcServer->run();
+        } else {
+            cout << "Failed to start Shared Memory IPC server" << endl;
+            delete ipcServer;
+            return 1;
+        }
+        
+        delete ipcServer;
+    } else {
+        // 従来のシミュレーションモード
+        cout << "Starting QMDD Simulator in standalone mode..." << endl;
+        measureExecutionTime(execute);
 
-    // JNIEnv* env = nullptr;
-    // if (!initJvm("./src/java", "./src/java/caffeine-3.2.0.jar", &env)) {
-    //     std::cerr << "JVM起動失敗" << std::endl;
-    //     return 1;
-    // }
-    // std::cout << "Main thread ID: " << std::this_thread::get_id() << std::endl;
+        cout << "Total entries: " << UniqueTable::getInstance().getTotalEntryCount() << endl;
+        
+        // シミュレーション完了後にキャッシュをSQLiteに保存
+        // cout << "Saving cache to SQLite database..." << endl;
+        // auto& client = OperationCacheClient::getInstance();
+        // client.saveCacheToSQLite();
+    }
 
-
-
-    // std::cout << "Total unique threads used: " << threadIds.size() << std::endl;
-
-
-    measureExecutionTime(execute);
-
-    // threadPool.join();
-
-    // detachJni();
-
-    // detachJniForAllThreads();
-
-    // if (env && g_OperationCache_cls) {
-    //     env->DeleteGlobalRef(g_OperationCache_cls);
-    //     g_OperationCache_cls = nullptr;
-    // }
-
+    // OperationCacheClient::getInstance().cleanup(); // ハングするためコメントアウト
+    cout << "Program finished successfully." << endl;
     return 0;
 }
-

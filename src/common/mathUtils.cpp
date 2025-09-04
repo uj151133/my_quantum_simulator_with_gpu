@@ -1,17 +1,14 @@
 #include "mathUtils.hpp"
 
 QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
-    // jniUtils& cache = jniUtils::getInstance();
-    // long long operationCacheKey = calculation::generateOperationCacheKey(OperationKey(e0, OperationType::MUL, e1));
-    // OperationResult existingAnswer = cache.jniFind(operationCacheKey);
-    // if (existingAnswer != OperationResult{.0, 0}) {
-    //     // cout << "\033[1;36mCache hit!\033[0m" << endl;
-    //     QMDDEdge answer = QMDDEdge(existingAnswer.first, existingAnswer.second);
-    //     if (answer.uniqueTableKey != 0) {
-    //         // cout << "\033[1;36mCache hit!\033[0m" << endl;
-    //         return answer;
-    //     }
-    // }
+    OperationCacheClient& cache = OperationCacheClient::getInstance();
+    int64_t operationCacheKey = calculation::generateOperationCacheKey(OperationKey(e0, OperationType::MUL, e1));
+    if (auto existingEdge = cache.find(operationCacheKey)) {
+        if (existingEdge->weight != .0 && existingEdge->uniqueTableKey != 0) {
+            // cout << "\033[1;36mCache hit!\033[0m" << endl;
+            return *existingEdge;
+        }
+    }
 
     if (e1.isTerminal) {
         std::swap(const_cast<QMDDEdge&>(e0), const_cast<QMDDEdge&>(e1));
@@ -133,14 +130,14 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
     } else {
         result = QMDDEdge(tmpWeight, make_shared<QMDDNode>(z));
     }
-    // cache.jniInsert(operationCacheKey, result.weight, result.uniqueTableKey);
+    cache.insert(operationCacheKey, result);
     return result;
 }
 
 // QMDDEdge mathUtils::mulForDiagonal(const QMDDEdge& e0, const QMDDEdge& e1) {
 
 //     jniUtils& cache = jniUtils::getInstance();
-//     long long operationCacheKey = calculation::generateOperationCacheKey(
+//     int64_t operationCacheKey = calculation::generateOperationCacheKey(
 //         OperationKey(e0, OperationType::MUL, e1)
 //     );
 
@@ -219,17 +216,14 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
 // }
 
 QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
-    // jniUtils& cache = jniUtils::getInstance();
-    // long long operationCacheKey = calculation::generateOperationCacheKey(OperationKey(e0, OperationType::ADD, e1));
-    // OperationResult existingAnswer = cache.jniFind(operationCacheKey);
-    // if (existingAnswer != OperationResult{.0, 0}) {
-    //     // cout << "\033[1;36mCache hit!\033[0m" << endl;
-    //     QMDDEdge answer = QMDDEdge(existingAnswer.first, existingAnswer.second);
-    //     if (answer.uniqueTableKey != 0) {
-    //         // cout << "\033[1;36mCache hit!\033[0m" << endl;
-    //         return answer;
-    //     }
-    // }
+    OperationCacheClient& cache = OperationCacheClient::getInstance();
+    int64_t operationCacheKey = calculation::generateOperationCacheKey(OperationKey(e0, OperationType::ADD, e1));
+    if (auto existingEdge = cache.find(operationCacheKey)) {
+        if (existingEdge->weight != .0 && existingEdge->uniqueTableKey != 0) {
+            // cout << "\033[1;36mCache hit!\033[0m" << endl;
+            return *existingEdge;
+        }
+    }
     // cout << "\033[1;35mCache miss!\033[0m" << endl;
 
     if (e1.isTerminal) {
@@ -241,9 +235,6 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
         } else if (e1.isTerminal) {
             return QMDDEdge(e0.weight + e1.weight, 0);
         }
-    }
-    if (e0.uniqueTableKey == e1.uniqueTableKey) {
-        return QMDDEdge(e0.weight + e1.weight, e0.uniqueTableKey);
     }
     shared_ptr<QMDDNode> n0 = e0.getStartNode();
     shared_ptr<QMDDNode> n1 = e1.getStartNode();
@@ -259,7 +250,21 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
                 futures.push_back(threadPool.enqueue([&, i, j]() {
                     QMDDEdge p(e0.weight * n0->edges[i][j].weight, n0->edges[i][j].uniqueTableKey);
                     QMDDEdge q(e1.weight * n1->edges[i][j].weight, n1->edges[i][j].uniqueTableKey);
-                    return mathUtils::add(p, q, depth + 1);
+                    if (q.isTerminal) {
+                        std::swap(p, q);
+                    }
+                    if (p.isTerminal) {
+                        if (p.weight == .0) {
+                            return q;
+                        } else if (q.isTerminal) {
+                            return QMDDEdge(p.weight + q.weight, 0);
+                        }
+                    }
+                    if (p.uniqueTableKey == q.uniqueTableKey) {
+                        return QMDDEdge(p.weight + q.weight, p.uniqueTableKey);
+                    } else {
+                        return mathUtils::add(p, q, depth + 1);
+                    }
                 }));
             }
         }
@@ -290,7 +295,21 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
                     boost::fibers::async([&, i, j]() {
                         QMDDEdge p(e0.weight * n0->edges[i][j].weight, n0->edges[i][j].uniqueTableKey);
                         QMDDEdge q(e1.weight * n1->edges[i][j].weight, n1->edges[i][j].uniqueTableKey);
-                        return mathUtils::add(p, q, depth + 1);
+                        if (q.isTerminal) {
+                            std::swap(p, q);
+                        }
+                        if (p.isTerminal) {
+                            if (p.weight == .0) {
+                                return q;
+                            } else if (q.isTerminal) {
+                                return QMDDEdge(p.weight + q.weight, 0);
+                            }
+                        }
+                        if (p.uniqueTableKey == q.uniqueTableKey) {
+                            return QMDDEdge(p.weight + q.weight, p.uniqueTableKey);
+                        }else {
+                            return mathUtils::add(p, q, depth + 1);
+                        }
                 }));
             }
         }
@@ -319,7 +338,21 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
             for (size_t j = 0; j < n0->edges[i].size(); j++) {
                 QMDDEdge p(e0.weight * n0->edges[i][j].weight, n0->edges[i][j].uniqueTableKey);
                 QMDDEdge q(e1.weight * n1->edges[i][j].weight, n1->edges[i][j].uniqueTableKey);
-                z[i][j] = mathUtils::add(p, q, depth + 1);
+                if (q.isTerminal) {
+                    std::swap(p, q);
+                }
+                if (p.isTerminal) {
+                    if (p.weight == .0) {
+                        z[i][j] = q;
+                    } else if (q.isTerminal) {
+                        z[i][j] = QMDDEdge(p.weight + q.weight, 0);
+                    }
+                }
+                if (p.uniqueTableKey == q.uniqueTableKey) {
+                    z[i][j] = QMDDEdge(p.weight + q.weight, p.uniqueTableKey);
+                } else {
+                    z[i][j] = mathUtils::add(p, q, depth + 1);
+                }
                 if (z[i][j].weight != .0) {
                     allWeightsAreZero = false;
                     if (tmpWeight == .0) {
@@ -340,13 +373,13 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
     } else {
         result = QMDDEdge(tmpWeight, make_shared<QMDDNode>(z));
     }
-    // cache.jniInsert(operationCacheKey, result.weight, result.uniqueTableKey);
+    cache.insert(operationCacheKey, result);
     return result;
 }
 
 // QMDDEdge mathUtils::addForDiagonal(const QMDDEdge& e0, const QMDDEdge& e1) {
 //     jniUtils& cache = jniUtils::getInstance();
-//     long long operationCacheKey = calculation::generateOperationCacheKey(
+//     int64_t operationCacheKey = calculation::generateOperationCacheKey(
 //         OperationKey(e0, OperationType::ADD, e1)
 //     );
 
@@ -424,17 +457,14 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
 // }
 
 QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
-    // jniUtils& cache = jniUtils::getInstance();
-    // long long operationCacheKey = calculation::generateOperationCacheKey(OperationKey(e0, OperationType::KRONECKER, e1));
-    // OperationResult existingAnswer = cache.jniFind(operationCacheKey);
-    // if (existingAnswer != OperationResult{.0, 0}) {
-    //     // cout << "\033[1;36mCache hit!\033[0m" << endl;
-    //     QMDDEdge answer = QMDDEdge(existingAnswer.first, existingAnswer.second);
-    //     if (answer.uniqueTableKey != 0) {
-    //     //     // cout << "\033[1;36mCache hit!\033[0m" << endl;
-    //         return answer;
-    //     }
-    // }
+    OperationCacheClient cache = OperationCacheClient::getInstance();
+    int64_t operationCacheKey = calculation::generateOperationCacheKey(OperationKey(e0, OperationType::KRONECKER, e1));
+    if (auto existingEdge = cache.find(operationCacheKey)) {
+        if (existingEdge->weight != .0 && existingEdge->uniqueTableKey != 0) {
+            // cout << "\033[1;36mCache hit!\033[0m" << endl;
+            return *existingEdge;
+        }
+    }
     // cout << "\033[1;35mCache miss!\033[0m" << endl;
 
     if (e0.isTerminal) {
@@ -533,22 +563,19 @@ QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
     } else {
         result = QMDDEdge(e0.weight * tmpWeight, make_shared<QMDDNode>(z));
     }
-    // cache.jniInsert(operationCacheKey, result.weight, result.uniqueTableKey);
+    cache.insert(operationCacheKey, result);
     return result;
 }
 
 QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1) {
-    // jniUtils& cache = jniUtils::getInstance();
-    // long long operationCacheKey = calculation::generateOperationCacheKey(OperationKey(e0, OperationType::KRONECKER, e1));
-    // OperationResult existingAnswer = cache.jniFind(operationCacheKey);
-    // if (existingAnswer != OperationResult{.0, 0}) {
-    //     // cout << "\033[1;36mCache hit!\033[0m" << endl;
-    //     QMDDEdge answer = QMDDEdge(existingAnswer.first, existingAnswer.second);
-    //     if (answer.uniqueTableKey != 0) {
-    //     //     // cout << "\033[1;36mCache hit!\033[0m" << endl;
-    //         return answer;
-    //     }
-    // }
+    OperationCacheClient& cache = OperationCacheClient::getInstance();
+    int64_t operationCacheKey = calculation::generateOperationCacheKey(OperationKey(e0, OperationType::KRONECKER, e1));
+    if (auto existingEdge = cache.find(operationCacheKey)) {
+        if (existingEdge->weight != .0 && existingEdge->uniqueTableKey != 0) {
+            // cout << "\033[1;36mCache hit!\033[0m" << endl;
+            return *existingEdge;
+        }
+    }
     // cout << "\033[1;35mCache miss!\033[0m" << endl;
 
     if (e0.isTerminal) {
@@ -570,7 +597,7 @@ QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1) {
     }
 
     QMDDEdge result = QMDDEdge(e0.weight * e1.weight, make_shared<QMDDNode>(z));
-    // cache.jniInsert(operationCacheKey, result.weight, result.uniqueTableKey);
+    cache.insert(operationCacheKey, result);
     return result;
 }
 
@@ -578,7 +605,7 @@ QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1) {
 // QMDDEdge mathUtils::kronForDiagonal(const QMDDEdge& e0, const QMDDEdge& e1) {
 
 //     jniUtils& cache = jniUtils::getInstance();
-//     long long operationCacheKey = calculation::generateOperationCacheKey(
+//     int64_t operationCacheKey = calculation::generateOperationCacheKey(
 //         OperationKey(e0, OperationType::KRONECKER, e1)
 //     );
 

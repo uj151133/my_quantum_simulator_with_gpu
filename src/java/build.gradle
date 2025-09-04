@@ -30,6 +30,10 @@ graalvmNative {
         main {
             imageName = 'liboperationcache'
             sharedLibrary = true
+            mainClass = 'OperationCache'
+            jvmArgs.addAll([
+                '-Xss128m'
+            ])
             buildArgs.addAll([
                 '--no-fallback',
                 '--verbose',
@@ -43,8 +47,7 @@ graalvmNative {
                 '-H:IncludeResources=.*\\.sql',
                 '-O3',
                 '-march=native',
-                '--gc=epsilon',
-                '-H:+UseEpsilonGC'
+                '-H:+UseSerialGC'
             ])
         }
     }
