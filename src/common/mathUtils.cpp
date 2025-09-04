@@ -457,7 +457,7 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
 // }
 
 QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
-    OperationCacheClient cache = OperationCacheClient::getInstance();
+    OperationCacheClient& cache = OperationCacheClient::getInstance();
     int64_t operationCacheKey = calculation::generateOperationCacheKey(OperationKey(e0, OperationType::KRONECKER, e1));
     if (auto existingEdge = cache.find(operationCacheKey)) {
         if (existingEdge->weight != .0 && existingEdge->uniqueTableKey != 0) {
