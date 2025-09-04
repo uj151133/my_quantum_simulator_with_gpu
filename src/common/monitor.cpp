@@ -87,7 +87,7 @@ void printMemoryUsageOnLinux() {
 #endif
 
 void measureExecutionTime(function<void()> func) {
-auto start = chrono::high_resolution_clock::now();
+    auto start = chrono::high_resolution_clock::now();
     func();
     auto end = chrono::high_resolution_clock::now();
     chrono::duration<double, milli> duration = end - start;
@@ -95,6 +95,18 @@ auto start = chrono::high_resolution_clock::now();
     // ホスト名を取得
     char hostname[255];
     gethostname(hostname, 255);
+
+    string branchName = "unknown";
+    FILE* pipe = popen("git rev-parse --abbrev-ref HEAD 2>/dev/null", "r");
+    if (pipe) {
+        char buffer[128];
+        if (fgets(buffer, sizeof(buffer), pipe) != nullptr) {
+            branchName = string(buffer);
+            // 改行文字を削除
+            branchName.erase(branchName.find_last_not_of(" \n\r\t") + 1);
+        }
+        pclose(pipe);
+    }
     
     // 時刻を取得
     time_t now = time(nullptr);
@@ -110,7 +122,8 @@ auto start = chrono::high_resolution_clock::now();
     if (logFile.is_open()) {
         logFile << "[" << timestamp << "] "
                 << "Host: " << hostname << " | "
-                << "Execution time: " << duration.count() << " ms" 
+                << "Branch: " << branchName << " | "
+                << "Execution time: " << duration.count() << " ms"
                 << endl;
         logFile.close();
     }
