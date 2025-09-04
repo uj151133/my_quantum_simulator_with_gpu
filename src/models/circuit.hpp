@@ -43,8 +43,6 @@ private:
     int numQubits;
     int getMaxDepth(optional<int> start, optional<int> end) const;
     void normalizeLayer();
-    void smartInsert(int qubitIndex, const Part& part);
-    int searchJOKER(int qubitIndex);
 
 public:
     QuantumCircuit(int numQubitits, QMDDState initialState);
@@ -93,9 +91,9 @@ public:
     void addR(int qubitIndex, double theta, double phi);
     void addR(vector<pair<int, pair<double, double>>>& qubitParams);
     void addRx(int qubitIndex, double theta);
-    // void addRx(vector<pair<int, double>>& qubitParams);
+    void addRx(vector<pair<int, double>>& qubitParams);
     void addRy(int qubitIndex, double theta);
-    // void addRy(vector<pair<int, double>>& qubitParams);
+    void addRy(vector<pair<int, double>>& qubitParams);
     void addRz(int qubitIndex, double theta);
     void addRz(vector<pair<int, double>>& qubitParams);
     void addRxx(int controlIndex, int targetIndex, double phi);
@@ -132,8 +130,6 @@ public:
     void addfFredkin(int controlIndex1, int controlIndex2, int targetIndex);
 
     void addGate(int qubitIndex, const QMDDGate& gate);
-
-    void addBARRIER();
 
     void addQFT(int numQubits);
     void addQFT();
