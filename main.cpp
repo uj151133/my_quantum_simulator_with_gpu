@@ -41,7 +41,7 @@ void execute() {
 
     // OperationCache& cache = OperationCache::getInstance();
 
-    int numQubits = 14;
+    int numQubits = 2;
     int numGates = 200;
 
     randomRotate(numQubits, numGates);
