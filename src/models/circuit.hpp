@@ -2,6 +2,7 @@
 #define CIRCUIT_HPP
 
 #include <numeric>
+#include <cmath>
 #include <queue>
 #include <array>
 #include <random>
@@ -39,6 +40,7 @@ private:
 public:
     QuantumCircuit(int numQubitits, QMDDState initialState);
     QuantumCircuit(int numQubitits);
+    vector<vector<int>> quantumRegister;
     ~QuantumCircuit() = default;
     queue<QMDDGate> getGateQueue() const;
     QMDDState getFinalState() const;
@@ -46,6 +48,8 @@ public:
     QuantumCircuit& operator=(const QuantumCircuit& other) = default;
     QuantumCircuit(QuantumCircuit&& other) = default;
     QuantumCircuit& operator=(QuantumCircuit&& other) = default;
+
+    void setRegister(int registerIdx, int size);
 
     void addI(int qubitIndex);
     void addPh(int qubitIndex, double delta);
@@ -113,8 +117,11 @@ public:
     void addQFT(int numQubits);
     void addQFT();
 
+    void addModularExponentiation(int base, int exponent, int modulus);
+    void addCModularExponentiation(int controlIndex, int targetIndex, int base, int exponent, int modulus);
+
     void addOracle(int omega);
-    void addIAM();
+    void addDiffuser();
 
     void simulate();
     int measure(int qubitIndex);
