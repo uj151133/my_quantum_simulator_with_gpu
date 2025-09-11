@@ -2,7 +2,7 @@
 
 extern "C" {
     #include "../atomic/atomic.h"
-}
+    }
 
 UniqueTable::UniqueTable() : table(tableSize) {
     for (auto& entry : this->table) entry.store(nullptr, memory_order_relaxed);

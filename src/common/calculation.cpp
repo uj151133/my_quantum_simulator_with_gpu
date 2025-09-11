@@ -1,5 +1,4 @@
 #include "calculation.hpp"
-#include "../models/uniqueTable.hpp"
 
 int64_t calculation::generateUniqueTableKey(const shared_ptr<QMDDNode>& node) {
     vector<uint8_t> buffer;
