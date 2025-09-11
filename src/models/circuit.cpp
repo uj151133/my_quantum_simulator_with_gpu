@@ -6,8 +6,8 @@ QuantumCircuit::QuantumCircuit(int numQubits, QMDDState initialState) : numQubit
     if (this->numQubits < 1) {
         throw std::invalid_argument("Number of qubits must be at least 1.");
     }
-    this->quantumRegister.resize(1);
-    this->setRegister(0, this->numQubits);
+    // this->quantumRegister.resize(1);
+    // this->setRegister(0, this->numQubits);
 }
 
 QuantumCircuit::QuantumCircuit(int numQubits) : numQubits(numQubits), finalState(state::Ket0()) {
@@ -20,8 +20,8 @@ QuantumCircuit::QuantumCircuit(int numQubits) : numQubits(numQubits), finalState
     for (int i = 1; i < this->numQubits; i++) {
         this->finalState = mathUtils::kron(state::Ket0().getInitialEdge(), this->finalState.getInitialEdge());
     }
-    this->quantumRegister.resize(1);
-    this->setRegister(0, this->numQubits);
+    // this->quantumRegister.resize(1);
+    // this->setRegister(0, this->numQubits);
 }
 
 queue<QMDDGate> QuantumCircuit::getGateQueue() const {
@@ -32,13 +32,13 @@ QMDDState QuantumCircuit::getFinalState() const {
     return this->finalState;
 }
 
-void QuantumCircuit::setRegister(int registerIdx, int size) {
-    if (registerIdx < 0) {
-        throw out_of_range("Invalid register index.");
-    }
-    this->quantumRegister[registerIdx].resize(size);
-    iota(this->quantumRegister[registerIdx].begin(), this->quantumRegister[registerIdx].end() + size, registerIdx == 0 ? 0 : this->quantumRegister[registerIdx - 1].back() + 1);
-}
+// void QuantumCircuit::setRegister(int registerIdx, int size) {
+//     if (registerIdx < 0) {
+//         throw out_of_range("Invalid register index.");
+//     }
+//     this->quantumRegister[registerIdx].resize(size);
+//     iota(this->quantumRegister[registerIdx].begin(), this->quantumRegister[registerIdx].end() + size, registerIdx == 0 ? 0 : this->quantumRegister[registerIdx - 1].back() + 1);
+// }
 
 void QuantumCircuit::addI(int qubitIndex) {
     return;
