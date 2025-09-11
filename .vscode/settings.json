@@ -96,7 +96,11 @@
         "filesystem": "cpp",
         "atomic.h": "c",
         "source_location": "cpp",
-        "span": "cpp"
+        "span": "cpp",
+        "any": "cpp",
+        "cfenv": "cpp",
+        "codecvt": "cpp",
+        "csignal": "cpp"
     },
     "dotnet.defaultSolution": "GUI.sln"
 }

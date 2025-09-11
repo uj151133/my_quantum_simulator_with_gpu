@@ -39,6 +39,30 @@ using OperationResult = pair<complex<double>, int64_t>;
 using QMDDVariant = variant<QMDDGate, QMDDState>;
 ostream& operator<<(ostream& os, const QMDDVariant& variant);
 
+extern "C" {
+    struct CComplex {
+        double real;
+        double imag;
+    };
+
+    struct CQMDDEdge {
+        CComplex weight;
+        uint64_t uniqueTableKey;
+        bool isTerminal;
+        int depth;
+    };
+    struct CQMDDNode {
+        CQMDDEdge* edges_ptr;
+        uint rows;
+        uint cols;
+    };
+
+    const CQMDDNode* find(uint64_t unique_id);
+    bool insert(uint64_t unique_id, const CQMDDNode* node);
+
+    void init_unique_table();
+    void shutdown_unique_table();
+}
 
 struct QMDDEdge{
     complex<double> weight;

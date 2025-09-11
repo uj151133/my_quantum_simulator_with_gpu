@@ -40,11 +40,14 @@ void execute() {
 
 
     // OperationCache& cache = OperationCache::getInstance();
+    // cout << state::Ket0().getInitialEdge().getStartNode()->edges.size() << endl;
+    // cout << state::Ket0().getInitialEdge().getStartNode()->edges[0].size() << endl;
+    init_unique_table();
+    shutdown_unique_table();
+    // int numQubits = 2;
+    // int numGates = 200;
 
-    int numQubits = 2;
-    int numGates = 200;
-
-    randomRotate(numQubits, numGates);
+    // randomRotate(numQubits, numGates);
 
     // QuantumCircuit circuit(numQubits);
     // for ([[maybe_unused]] int _ = 0; _ < numGates; ++_) {

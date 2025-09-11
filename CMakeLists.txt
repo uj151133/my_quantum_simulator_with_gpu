@@ -147,27 +147,14 @@ find_library(GRAALVM_NATIVE_LIB
     NO_DEFAULT_PATH
 )
 
-if(NOT GRAALVM_NATIVE_LIB)
-    message(WARNING "GraalVM Native Image library not found!")
-    message(WARNING "Expected file: ${GRAALVM_NATIVE_LIB_PATH}/${GRAALVM_NATIVE_LIB_NAME}")
-    message(WARNING "Please build the Java library first:")
-    message(WARNING "  cd src/java")
-    message(WARNING "  ./gradlew nativeCompile")
-    
-    # ファイルの存在確認
-    if(EXISTS "${GRAALVM_NATIVE_LIB_PATH}/${GRAALVM_NATIVE_LIB_NAME}")
-        message(STATUS "File exists but not found by find_library, using direct path")
-        set(GRAALVM_NATIVE_LIB "${GRAALVM_NATIVE_LIB_PATH}/${GRAALVM_NATIVE_LIB_NAME}")
-    endif()
-endif()
-
+set(RUST_UNIQUE_TABLE_LIB "${CMAKE_SOURCE_DIR}/src/rust/target/release/libunique_table.dylib")
 
 file(GLOB SOURCES "src/models/*.cpp" "src/common/*.cpp" "src/modules/*.cpp" "src/test/*/*.cpp" )
 
 
 # 通常のC++実行ファイルを追加
 add_executable(qmdd_sim main.cpp ${SOURCES} ${C_SRC} ${ASM_SRC})
-add_dependencies(qmdd_sim copy_config build_java_lib)
+add_dependencies(qmdd_sim copy_config build_java_lib build_rust_lib)
 target_include_directories(qmdd_sim PRIVATE ${GSL_INCLUDE_DIRS})
 target_link_libraries(qmdd_sim PRIVATE
     pthread
@@ -180,7 +167,8 @@ target_link_libraries(qmdd_sim PRIVATE
     Threads::Threads
     xxhash
     TBB::tbb
-    $<$<BOOL:${GRAALVM_NATIVE_LIB}>:${GRAALVM_NATIVE_LIB}>
+    $<$<TARGET_EXISTS:build_java_lib>:${GRAALVM_NATIVE_LIB_PATH}/${GRAALVM_NATIVE_LIB_NAME}>
+    $<$<TARGET_EXISTS:build_rust_lib>:${RUST_UNIQUE_TABLE_LIB}>
 )
 
 # make run ターゲットの追加（通常モード）
@@ -251,4 +239,11 @@ add_custom_target(build_java_lib
     COMMAND cd ${CMAKE_SOURCE_DIR}/src/java && ./gradlew nativeCompile
     BYPRODUCTS ${GRAALVM_NATIVE_LIB_PATH}/${GRAALVM_NATIVE_LIB_NAME}
     COMMENT "Building GraalVM Native Image library -> ${GRAALVM_NATIVE_LIB_NAME}"
+)
+
+add_custom_target(build_rust_lib
+    COMMAND cargo build --release
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/src/rust
+    BYPRODUCTS ${CMAKE_SOURCE_DIR}/src/rust/target/release/libunique_table.dylib
+    COMMENT "Building Rust UniqueTable library -> libunique_table.dylib"
 )
