@@ -2,7 +2,7 @@
 
 extern "C" {
     #include "../atomic/atomic.h"
-    }
+}
 
 UniqueTable::UniqueTable() : table(tableSize) {
     for (auto& entry : this->table) entry.store(nullptr, memory_order_relaxed);
@@ -20,7 +20,7 @@ void UniqueTable::insert(int64_t hashKey, shared_ptr<QMDDNode> node) {
     while (true) {
         oldHead = this->table[idx].load(memory_order_acquire);
         for (Entry* p = oldHead; p != nullptr; p = p->next) {
-            if (p->key == hashKey && p->value == node) {
+            if (p->key == hashKey) {
                 delete newEntry;
                 return;
             }
