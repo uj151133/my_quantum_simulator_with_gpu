@@ -308,11 +308,9 @@ void QuantumCircuit::addH(vector<int> qubitIndices) {
 }
 
 void QuantumCircuit::addAllH() {
-    vector<QMDDEdge> edges(numQubits, gate::H().getInitialEdge());
-    QMDDGate result = accumulate(edges.rbegin() + 1, edges.rend(), edges.back(), [](const QMDDEdge& accumulated, const QMDDEdge& current) {
-        return mathUtils::kron(current, accumulated);
-    });
-    this->gateQueue.push(result);
+    for (size_t i = 0; i < this->numQubits; i++) {
+        this->addH(i);
+    }
     return;
 }
 
@@ -912,28 +910,20 @@ void QuantumCircuit::addOracle(int omega) {
     size_t numIndex = omega == 0 ? 1 : static_cast<size_t>(ceil(log2(omega + 1)));
 
     bitset<64> bits(omega);
-    vector<int> xIndicies;
+    vector<QMDDEdge> customBrkt;
     for (int i = 0; i < numIndex; ++i) {
-        if (bits[i] == 0) xIndicies.push_back(i);
-    }
-    if (!xIndicies.empty()) {
-        this->addX(xIndicies);
+        customBrkt.push_back(bits[i] ? braketOne : braketZero);
     }
 
     vector<QMDDEdge> customI(numIndex, identityEdge);
     QMDDEdge partialCZ1 = accumulate(customI.rbegin() + 1, customI.rend(), customI.back(), [](const QMDDEdge& accumulated, const QMDDEdge& current) {
         return mathUtils::kron(current, accumulated);
     });
-    vector<QMDDEdge> customBrkt(numIndex, braketZero);
     QMDDEdge partialCZ2 = QMDDEdge(-2.0, accumulate(customBrkt.rbegin() + 1, customBrkt.rend(), customBrkt.back(), [](const QMDDEdge& accumulated, const QMDDEdge& current) {
         return mathUtils::kron(current, accumulated);
     }).uniqueTableKey);
     QMDDEdge customCZ = mathUtils::add(partialCZ1, partialCZ2);
     this->gateQueue.push(QMDDGate(customCZ));
-
-    if (!xIndicies.empty()) {
-        this->addX(xIndicies);
-    }
 
     return;
 }
