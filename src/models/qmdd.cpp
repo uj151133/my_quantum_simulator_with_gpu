@@ -10,6 +10,67 @@ ostream& operator<<(ostream& os, const QMDDVariant& variant) {
     return os;
 }
 
+CQMDDNode* convertToFFI(const shared_ptr<QMDDNode>& node) {
+    if (!node || node->edges.empty()) {
+        return nullptr;
+    }
+    
+    uint32_t rows = node->edges.size();
+    uint32_t cols = node->edges[0].size();
+    uint32_t total_elements = rows * cols;
+    
+    CQMDDEdge* edges_array = new CQMDDEdge[total_elements];
+    
+    for (uint32_t row = 0; row < rows; row++) {
+        for (uint32_t col = 0; col < cols; col++) {
+            uint32_t index = row * cols + col;
+            const QMDDEdge& edge = node->edges[row][col];
+            
+            // QMDDEdge → CQMDDEdgeに変換
+            edges_array[index] = {
+                .weight = {
+                    .real = edge.weight.real(),
+                    .imag = edge.weight.imag()
+                },
+                .uniqueTableKey = edge.uniqueTableKey
+            };
+        }
+    }
+    
+    CQMDDNode* cNode = new CQMDDNode{
+        .edges_ptr = edges_array,
+        .rows = rows,
+        .cols = cols
+    };
+    
+    return cNode;
+}
+
+shared_ptr<QMDDNode> convertFromFFI(const CQMDDNode& cNode) {
+    if (cNode.edges_ptr == nullptr || cNode.rows == 0 || cNode.cols == 0) {
+        return nullptr;
+    }
+    
+    vector<vector<QMDDEdge>> edges(cNode.rows);
+    
+    for (uint32_t row = 0; row < cNode.rows; row++) {
+        edges[row].reserve(cNode.cols);
+        
+        for (uint32_t col = 0; col < cNode.cols; col++) {
+            uint32_t index = row * cNode.cols + col;
+            const CQMDDEdge& cEdge = cNode.edges_ptr[index];
+            
+            QMDDEdge qEdge = QMDDEdge(
+                complex<double>(cEdge.weight.real, cEdge.weight.imag),
+                cEdge.uniqueTableKey
+            );
+            edges[row].push_back(qEdge);
+        }
+    }
+    
+    return make_shared<QMDDNode>(edges);
+}
+
 /////////////////////////////////////
 //
 //	QMDDEdge
@@ -25,7 +86,8 @@ QMDDEdge::QMDDEdge(complex<double> w, shared_ptr<QMDDNode> n)
     #else
         #error "Unsupported operating system"
     #endif
-    if (this->uniqueTableKey) UniqueTable::getInstance().insert(this->uniqueTableKey, n);
+    // if (this->uniqueTableKey) UniqueTable::getInstance().insert(this->uniqueTableKey, n);
+    if (this->uniqueTableKey) insert(this->uniqueTableKey, convertToFFI(n));
     this->calculateDepth();
     // cout << "Edge created with weight: " << weight << " and uniqueTableKey: " << uniqueTableKey << " and isTerminal: " << isTerminal << endl;
 }
@@ -39,7 +101,8 @@ QMDDEdge::QMDDEdge(double w, shared_ptr<QMDDNode> n)
     #else
         #error "Unsupported operating system"
     #endif
-    if (this->uniqueTableKey) UniqueTable::getInstance().insert(this->uniqueTableKey, n);
+    // if (this->uniqueTableKey) UniqueTable::getInstance().insert(this->uniqueTableKey, n);
+    if (this->uniqueTableKey) insert(this->uniqueTableKey, convertToFFI(n));
     this->calculateDepth();
     // cout << "Edge created with weight: " << weight << " and uniqueTableKey: " << uniqueTableKey << " and isTerminal: " << isTerminal << endl;
 }
@@ -71,7 +134,8 @@ QMDDEdge::QMDDEdge(double w, int64_t key)
 }
 
 shared_ptr<QMDDNode> QMDDEdge::getStartNode() const {
-    return (uniqueTableKey == 0) ? nullptr : UniqueTable::getInstance().find(uniqueTableKey);
+    // return (uniqueTableKey == 0) ? nullptr : UniqueTable::getInstance().find(uniqueTableKey);
+    return (this->uniqueTableKey == 0) ? nullptr : convertFromFFI(*find(this->uniqueTableKey));
 }
 
 vector<complex<double>> QMDDEdge::getAllElementsForKet() {
@@ -111,7 +175,6 @@ bool QMDDEdge::operator==(const QMDDEdge& other) const {
     if (this->weight != other.weight) return false;
     if (this->isTerminal != other.isTerminal) return false;
     if (this->uniqueTableKey != other.uniqueTableKey) return false;
-    if (this->getStartNode() != other.getStartNode()) return false;
     return true;
 }
 
@@ -132,16 +195,17 @@ ostream& operator<<(ostream& os, const QMDDEdge& edge) {
 }
 
 void QMDDEdge::calculateDepth() {
-    if (this->isTerminal || this->uniqueTableKey ==  0) {
+    if (this->isTerminal || this->uniqueTableKey == 0) {
         this->depth = 0;
     } else {
+        shared_ptr<QMDDNode> startNode = this->getStartNode();
+        
         vector<int> depths;
-        for (const auto& edgeRow : this->getStartNode()->edges) {
+        for (const auto& edgeRow : startNode->edges) {
             for (const auto& edge : edgeRow) {
                 depths.push_back(edge.depth);
             }
         }
-        // return 1 + this->getStartNode()->edges[0][0].depth;
         this->depth = 1 + *max_element(depths.begin(), depths.end());
     }
     return;

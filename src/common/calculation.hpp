@@ -12,7 +12,7 @@
 using namespace std;
 
 namespace calculation {
-    int64_t generateUniqueTableKey(const shared_ptr<QMDDNode>& node);
+    uint64_t generateUniqueTableKey(const shared_ptr<QMDDNode>& node);
     int64_t generateOperationCacheKey(const OperationKey& key);
 }
 #endif

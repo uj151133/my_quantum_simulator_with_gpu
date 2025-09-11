@@ -245,5 +245,9 @@ add_custom_target(build_rust_lib
     COMMAND cargo build --release
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/src/rust
     BYPRODUCTS ${CMAKE_SOURCE_DIR}/src/rust/target/release/libunique_table.dylib
+    DEPENDS 
+        ${CMAKE_SOURCE_DIR}/src/rust/Cargo.toml
+        ${CMAKE_SOURCE_DIR}/src/rust/lib.rs
+        ${CMAKE_SOURCE_DIR}/src/rust/unique_table.rs
     COMMENT "Building Rust UniqueTable library -> libunique_table.dylib"
 )

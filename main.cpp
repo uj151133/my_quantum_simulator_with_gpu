@@ -12,8 +12,6 @@
 #include "src/common/constant.hpp"
 #include "src/models/gate.hpp"
 #include "src/models/state.hpp"
-#include "src/models/uniqueTable.hpp"
-#include "src/common/mathUtils.hpp"
 #include "src/common/calculation.hpp"
 #include "src/models/circuit.hpp"
 #include "src/common/monitor.hpp"
@@ -42,12 +40,12 @@ void execute() {
     // OperationCache& cache = OperationCache::getInstance();
     // cout << state::Ket0().getInitialEdge().getStartNode()->edges.size() << endl;
     // cout << state::Ket0().getInitialEdge().getStartNode()->edges[0].size() << endl;
-    init_unique_table();
-    shutdown_unique_table();
-    // int numQubits = 2;
-    // int numGates = 200;
+    
+    
+    int numQubits = 9;
+    int numGates = 200;
 
-    // randomRotate(numQubits, numGates);
+    randomRotate(numQubits, numGates);
 
     // QuantumCircuit circuit(numQubits);
     // for ([[maybe_unused]] int _ = 0; _ < numGates; ++_) {
@@ -62,8 +60,6 @@ void execute() {
     // int omega = std::pow(2, numQubits) - 1;
 
     // grover(numQubits, omega);
-    
-    // UniqueTable::getInstance().printNodeNum();
 
 
 }
@@ -120,9 +116,13 @@ int main(int argc, char* argv[]) {
     } else {
         // 従来のシミュレーションモード
         cout << "Starting QMDD Simulator in standalone mode..." << endl;
+        init_unique_table();
+
         measureExecutionTime(execute);
 
-        cout << "Total entries: " << UniqueTable::getInstance().getTotalEntryCount() << endl;
+        shutdown_unique_table();
+
+        // cout << "Total entries: " << UniqueTable::getInstance().getTotalEntryCount() << endl;
         
         // シミュレーション完了後にキャッシュをSQLiteに保存
         // cout << "Saving cache to SQLite database..." << endl;

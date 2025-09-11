@@ -48,13 +48,11 @@ extern "C" {
     struct CQMDDEdge {
         CComplex weight;
         uint64_t uniqueTableKey;
-        bool isTerminal;
-        int depth;
     };
     struct CQMDDNode {
         CQMDDEdge* edges_ptr;
-        uint rows;
-        uint cols;
+        uint32_t rows;
+        uint32_t cols;
     };
 
     const CQMDDNode* find(uint64_t unique_id);
@@ -64,9 +62,12 @@ extern "C" {
     void shutdown_unique_table();
 }
 
+CQMDDNode* convertToFFI(const shared_ptr<QMDDNode>& node);
+shared_ptr<QMDDNode> convertFromFFI(const CQMDDNode& cNode);
+
 struct QMDDEdge{
     complex<double> weight;
-    int64_t uniqueTableKey;
+    uint64_t uniqueTableKey;
     bool isTerminal;
     int depth;
 

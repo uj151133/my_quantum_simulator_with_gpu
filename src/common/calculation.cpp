@@ -1,7 +1,6 @@
 #include "calculation.hpp"
-#include "../models/uniqueTable.hpp"
 
-int64_t calculation::generateUniqueTableKey(const shared_ptr<QMDDNode>& node) {
+uint64_t calculation::generateUniqueTableKey(const shared_ptr<QMDDNode>& node) {
     vector<uint8_t> buffer;
     size_t rowIdx = 0;
     for (const auto& edgeRow : node->edges) {
@@ -20,7 +19,7 @@ int64_t calculation::generateUniqueTableKey(const shared_ptr<QMDDNode>& node) {
             buffer.insert(buffer.end(), imag_bytes, imag_bytes + sizeof(double));
 
             const uint8_t* key_bytes = reinterpret_cast<const uint8_t*>(&edge.uniqueTableKey);
-            buffer.insert(buffer.end(), key_bytes, key_bytes + sizeof(size_t));
+            buffer.insert(buffer.end(), key_bytes, key_bytes + sizeof(uint64_t));
             colIdx++;
         }
         rowIdx++;
