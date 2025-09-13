@@ -45,21 +45,25 @@ void QuantumCircuit::normalizeLayer() {
 QuantumCircuit::QuantumCircuit(int numQubits, QMDDState initialState) : numQubits(numQubits), finalState(initialState) {
     call_once(initExtendedEdgeFlag, initExtendedEdge);
     this->wires.resize(numQubits);
-    if (numQubits < 1) {
+    if (this->numQubits < 1) {
         throw std::invalid_argument("Number of qubits must be at least 1.");
     }
+    // this->quantumRegister.resize(1);
+    // this->setRegister(0, this->numQubits);
 }
 
 QuantumCircuit::QuantumCircuit(int numQubits) : numQubits(numQubits), finalState(state::Ket0()) {
     this->wires.resize(numQubits);
     call_once(initExtendedEdgeFlag, initExtendedEdge);
-    if (numQubits < 1) {
+    if (this->numQubits < 1) {
         throw std::invalid_argument("Number of qubits must be at least 1.");
     }
 
-    for (int i = 1; i < numQubits; i++) {
+    for (int i = 1; i < this->numQubits; i++) {
         this->finalState = mathUtils::kron(state::Ket0().getInitialEdge(), this->finalState.getInitialEdge());
     }
+    // this->quantumRegister.resize(1);
+    // this->setRegister(0, this->numQubits);
 }
 
 queue<QMDDGate> QuantumCircuit::getLayer() const {
@@ -69,6 +73,14 @@ queue<QMDDGate> QuantumCircuit::getLayer() const {
 QMDDState QuantumCircuit::getFinalState() const {
     return this->finalState;
 }
+
+// void QuantumCircuit::setRegister(int registerIdx, int size) {
+//     if (registerIdx < 0) {
+//         throw out_of_range("Invalid register index.");
+//     }
+//     this->quantumRegister[registerIdx].resize(size);
+//     iota(this->quantumRegister[registerIdx].begin(), this->quantumRegister[registerIdx].end() + size, registerIdx == 0 ? 0 : this->quantumRegister[registerIdx - 1].back() + 1);
+// }
 
 void QuantumCircuit::addI(int qubitIndex) {
     return;
@@ -769,41 +781,28 @@ void QuantumCircuit::addQFT() {
 }
 
 void QuantumCircuit::addOracle(int omega) {
-    size_t numIndex;
-    if (omega == 0) {
-        numIndex = 1;
-    } else {
-        numIndex = static_cast<size_t>(log2(omega)) + 1;
-    }
+    size_t numIndex = omega == 0 ? 1 : static_cast<size_t>(ceil(log2(omega + 1)));
 
     bitset<64> bits(omega);
-    vector<int> xIndicies;
+    vector<QMDDEdge> customBrkt;
     for (int i = 0; i < numIndex; ++i) {
-        if (bits[i] == 0) xIndicies.push_back(i);
-    }
-    if (!xIndicies.empty()) {
-        this->addX(xIndicies);
+        customBrkt.push_back(bits[i] ? braketOne : braketZero);
     }
 
     vector<QMDDEdge> customI(numIndex, identityEdge);
     QMDDEdge partialCZ1 = accumulate(customI.rbegin() + 1, customI.rend(), customI.back(), [](const QMDDEdge& accumulated, const QMDDEdge& current) {
         return mathUtils::kron(current, accumulated);
     });
-    vector<QMDDEdge> customBrkt(numIndex, braketZero);
     QMDDEdge partialCZ2 = QMDDEdge(-2.0, accumulate(customBrkt.rbegin() + 1, customBrkt.rend(), customBrkt.back(), [](const QMDDEdge& accumulated, const QMDDEdge& current) {
         return mathUtils::kron(current, accumulated);
     }).uniqueTableKey);
     QMDDEdge customCZ = mathUtils::add(partialCZ1, partialCZ2);
     // this->gateQueue.push(QMDDGate(customCZ));
 
-    if (!xIndicies.empty()) {
-        this->addX(xIndicies);
-    }
-
     return;
 }
 
-void QuantumCircuit::addIAM() {
+void QuantumCircuit::addDiffuser() {
     this->addAllH();
     this->addAllX();
 
