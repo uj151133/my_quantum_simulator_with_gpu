@@ -20,6 +20,10 @@ gradle-app.setting
 !gradle-wrapper.jar
 !gradle-wrapper.properties
 
+# Rust
+target/
+Cargo.lock
+
 # IDE
 .idea/
 *.iml
@@ -27,4 +31,3 @@ gradle-app.setting
 
 # Environment variables
 .env
-bible.db
