@@ -20,7 +20,8 @@ void UniqueTable::insert(int64_t hashKey, shared_ptr<QMDDNode> node) {
     while (true) {
         oldHead = this->table[idx].load(memory_order_acquire);
         for (Entry* p = oldHead; p != nullptr; p = p->next) {
-            if (p->key == hashKey && p->value == node) {
+            if (p == nullptr) break;
+            if (p->key == hashKey) {
                 delete newEntry;
                 return;
             }
@@ -35,6 +36,7 @@ shared_ptr<QMDDNode> UniqueTable::find(int64_t hashKey) const {
     size_t idx = hash(hashKey);
     Entry* head = this->table[idx].load(memory_order_acquire);
     for (Entry* p = head; p != nullptr; p = p->next) {
+        if (p == nullptr) break;
         if (p->key == hashKey) {
             return p->value;
         }
