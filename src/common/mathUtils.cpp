@@ -1,6 +1,6 @@
 #include "mathUtils.hpp"
 
-QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
+QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1) {
     OperationCacheClient& cache = OperationCacheClient::getInstance();
     int64_t operationCacheKey = calculation::generateOperationCacheKey(OperationKey(e0, OperationType::MUL, e1));
     if (auto existingEdge = cache.find(operationCacheKey)) {
@@ -9,7 +9,7 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
             return *existingEdge;
         }
     }
-
+    // cout << "\033[1;35mCache miss!\033[0m" << endl;
     if (e1.isTerminal) {
         std::swap(const_cast<QMDDEdge&>(e0), const_cast<QMDDEdge&>(e1));
     }
@@ -29,7 +29,7 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
     vector<vector<QMDDEdge>> z(n0->edges.size(), vector<QMDDEdge>(n1->edges[0].size(), edgeZero));
     complex<double> tmpWeight = .0;
     bool allWeightsAreZero = true;
-    if (depth < CONFIG.process.parallelism){
+    if ((e0.depth + e1.depth) / 2 < CONFIG.process.parallelism){
         // cout << "\033[1;31mmulti thread mul\033[0m" << endl;
         vector<future<QMDDEdge>> futures;
         size_t futureIdx = 0;
@@ -40,7 +40,7 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
                     for (size_t k = 0; k < n0->edges[0].size(); k++) {
                         QMDDEdge p(e0.weight * n0->edges[i][k].weight, n0->edges[i][k].uniqueTableKey);
                         QMDDEdge q(e1.weight * n1->edges[k][j].weight, n1->edges[k][j].uniqueTableKey);
-                        answer = mathUtils::add(answer, mathUtils::mul(p, q, depth + 1), depth + 1);
+                        answer = mathUtils::add(answer, mathUtils::mul(p, q));
                     }
                     return answer;
                 }));
@@ -63,7 +63,7 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
             }
         }
 
-    } else if (depth < CONFIG.process.parallelism + CONFIG.process.concurrency){
+    } else if ((e0.depth + e1.depth) / 2 < CONFIG.process.parallelism + CONFIG.process.concurrency){
         // cout << "\033[1;34mmulti fiber mul\033[0m" << endl;
 
         vector<boost::fibers::future<QMDDEdge>> futures;
@@ -76,7 +76,7 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
                         for (size_t k = 0; k < n0->edges[0].size(); k++) {
                             QMDDEdge p(e0.weight * n0->edges[i][k].weight, n0->edges[i][k].uniqueTableKey);
                             QMDDEdge q(e1.weight * n1->edges[k][j].weight, n1->edges[k][j].uniqueTableKey);
-                            answer = mathUtils::add(answer, mathUtils::mul(p, q, depth + 1), depth + 1);
+                            answer = mathUtils::add(answer, mathUtils::mul(p, q));
                         }
                         return answer;
                 }));
@@ -108,7 +108,7 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
                 for (size_t k = 0; k < n0->edges[0].size(); k++) {
                     QMDDEdge p(e0.weight * n0->edges[i][k].weight, n0->edges[i][k].uniqueTableKey);
                     QMDDEdge q(e1.weight * n1->edges[k][j].weight, n1->edges[k][j].uniqueTableKey);
-                    z[i][j] = mathUtils::add(z[i][j], mathUtils::mul(p, q, depth + 1), depth + 1);
+                    z[i][j] = mathUtils::add(z[i][j], mathUtils::mul(p, q));
                 }
                 if (z[i][j].weight != .0) {
                     allWeightsAreZero = false;
@@ -570,6 +570,8 @@ QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
 QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1) {
     OperationCacheClient& cache = OperationCacheClient::getInstance();
     int64_t operationCacheKey = calculation::generateOperationCacheKey(OperationKey(e0, OperationType::KRONECKER, e1));
+    auto cachedResult = cache.find(operationCacheKey);
+
     if (auto existingEdge = cache.find(operationCacheKey)) {
         if (existingEdge->weight != .0 && existingEdge->uniqueTableKey != 0) {
             // cout << "\033[1;36mCache hit!\033[0m" << endl;

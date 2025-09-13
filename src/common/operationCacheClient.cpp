@@ -67,13 +67,17 @@ optional<QMDDEdge> OperationCacheClient::find(int64_t key) {
         return nullopt;
     }
 
-    double* data = static_cast<double*>(ptr);
-    auto result = make_optional<QMDDEdge>(
-        complex<double>(data[0], data[1]),
-        data[2]
-    );
+    double* doubleData = static_cast<double*>(ptr);
+    int64_t uniqueTableKey = *reinterpret_cast<int64_t*>(reinterpret_cast<char*>(doubleData) + 16);
 
+    // cout << "Cache find returned data: [" << doubleData[0] << ", " << doubleData[1] << ", " << uniqueTableKey << "]" << endl;
+    auto result = make_optional<QMDDEdge>(
+        complex<double>(doubleData[0], doubleData[1]),
+        uniqueTableKey
+    );
+    // cout << "Cache find returned result: " << *result << endl;
     free(ptr);
+    // cout << "Cache find result freed" << endl;
     return result;
 }
 

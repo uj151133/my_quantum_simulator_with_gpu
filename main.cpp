@@ -40,6 +40,9 @@ void execute() {
 
 
     // OperationCache& cache = OperationCache::getInstance();
+    // cout << mathUtils::kron(state::Ket0().getInitialEdge(), state::Ket0().getInitialEdge()) << endl;
+    // cout << mathUtils::kron(state::Bra0().getInitialEdge(), state::Bra0().getInitialEdge()) << endl;
+    
 
     int numQubits = 9;
     int numGates = 200;
@@ -47,6 +50,10 @@ void execute() {
     randomRotate(numQubits, numGates);
 
     // QuantumCircuit circuit(numQubits);
+    // circuit.addSWAP(1, 2);
+    // circuit.simulate();
+
+    // UniqueTable::getInstance().printAllEntries();
     // for ([[maybe_unused]] int _ = 0; _ < numGates; ++_) {
     //     double randomAngle = dis(gen);
     //     // circuit.addP(numQubits - 1, randomAngle);

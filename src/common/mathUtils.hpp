@@ -27,7 +27,7 @@ using namespace std;
 // using namespace Eigen;
 
 namespace mathUtils {
-    QMDDEdge mul(const QMDDEdge& e0, const QMDDEdge& e1, int depth = 0);
+    QMDDEdge mul(const QMDDEdge& e0, const QMDDEdge& e1);
     QMDDEdge mulForDiagonal(const QMDDEdge& e0, const QMDDEdge& e1);
     QMDDEdge add(const QMDDEdge& e0, const QMDDEdge& e1, int depth = 0);
     QMDDEdge addForDiagonal(const QMDDEdge& e0, const QMDDEdge& e1);
