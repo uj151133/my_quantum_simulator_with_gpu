@@ -329,73 +329,70 @@ void QuantumCircuit::addCZ(int controlIndex, int targetIndex) {
 }
 
 void QuantumCircuit::addSWAP(int qubitIndex1, int qubitIndex2) {
-    if (numQubits == 1) {
-        throw invalid_argument("Cannot add SWAP gate to single qubit circuit.");
-    }else if (qubitIndex1 == qubitIndex2) {
-        throw invalid_argument("qubitIndexes indices must be different.");
-    }else if(numQubits == 2 && ((qubitIndex1 == 0 && qubitIndex2 == 1) || (qubitIndex1 == 1 && qubitIndex2 == 0))) {
-        // this->gateQueue.push(gate::SWAP());
-        cout << "" << endl;
-    }else {
-        int minIndex = min(qubitIndex1, qubitIndex2);
-        int maxIndex = max(qubitIndex1, qubitIndex2);
-        vector<QMDDEdge> edges(minIndex, identityEdge);
-        QMDDEdge customSWAP;
-        size_t numIndex =  maxIndex - minIndex + 1;
-        if (numIndex == 2){
-            customSWAP = gate::SWAP().getInitialEdge();
-        } else {
-            vector<vector<QMDDEdge>> partialPreSWAP(pow(2, numIndex), vector<QMDDEdge>(2, identityEdge));
-            vector<QMDDEdge> partialSWAP(pow(2, numIndex));
-            for (size_t i = 0; i < partialPreSWAP.size(); i++){
-                int highestBit = (i >> (numIndex - 1)) & 1;
-                int lowestBit = i & 1;
-                int basedIndex = i;
-                int swappedIndex = (i & ~(1ULL << (numIndex - 1))) | (lowestBit << (numIndex - 1));
-                swappedIndex = (swappedIndex & ~1ULL) | highestBit;
-                for ([[maybe_unused]] int _ = numIndex - 1; _ >= 0; _--) {
-                    bool msbBased = (basedIndex >> (numIndex - 1)) & 1;
-                    bool msbSwapped = (swappedIndex >> (numIndex - 1)) & 1;
-                    if (msbBased){
-                        if (_ == numIndex - 1){
-                            partialPreSWAP[i][0] = state::Ket1().getInitialEdge();
-                        }else {
-                            partialPreSWAP[i][0] = mathUtils::kron(state::Ket1().getInitialEdge(), partialPreSWAP[i][0]);
-                        }
-                    }else {
-                        if (_ == numIndex - 1){
-                            partialPreSWAP[i][0] = state::Ket0().getInitialEdge();
-                        }else {
-                            partialPreSWAP[i][0] = mathUtils::kron(state::Ket0().getInitialEdge(), partialPreSWAP[i][0]);
-                        }
-                    }
-                    if (msbSwapped){
-                        if (_ == numIndex - 1){
-                            partialPreSWAP[i][1] = state::Bra1().getInitialEdge();
-                        }else {
-                            partialPreSWAP[i][1] = mathUtils::kron(state::Bra1().getInitialEdge(), partialPreSWAP[i][1]);
-                        }
-                    } else {
-                        if (_ == numIndex - 1){
-                            partialPreSWAP[i][1] = state::Bra0().getInitialEdge();
-                        }else {
-                            partialPreSWAP[i][1] = mathUtils::kron(state::Bra0().getInitialEdge(), partialPreSWAP[i][1]);
-                        }
-                    }
-                    basedIndex <<= 1;
-                    swappedIndex <<= 1;
-                }
-                partialSWAP[i] = mathUtils::mul(partialPreSWAP[i][0], partialPreSWAP[i][1]);
-            }
-            customSWAP = accumulate(partialSWAP.begin() + 1, partialSWAP.end(), partialSWAP[0], [](const QMDDEdge& accumulated, const QMDDEdge& current) {
-                return mathUtils::add(accumulated, current);
-            });
+    int minIndex = min(qubitIndex1, qubitIndex2);
+    int maxIndex = max(qubitIndex1, qubitIndex2);
+    int maxDepth = this->getMaxDepth(qubitIndex1, qubitIndex2);
+    for (int index = minIndex; index <= maxIndex; index++) {
+        while (this->wires[index].size() < maxDepth) {
+            this->wires[index].push_back({Type::I, gate::I()});
         }
-        edges.push_back(customSWAP);
-        QMDDGate result = accumulate(edges.rbegin() + 1, edges.rend(), edges.back(), [](const QMDDEdge& accumulated, const QMDDEdge& current) {
-            return mathUtils::kron(current, accumulated);
+    }
+    QMDDEdge customSWAP;
+    if(maxIndex - minIndex == 0) {
+        cout << "Adding SWAP gate between adjacent qubits " << minIndex << " and " << maxIndex << endl;
+        customSWAP= gate::SWAP().getInitialEdge();
+    }else {
+        size_t numIndex =  maxIndex - minIndex + 1;
+        vector<vector<QMDDEdge>> partialPreSWAP(pow(2, numIndex), vector<QMDDEdge>(2, identityEdge));
+        vector<QMDDEdge> partialSWAP(pow(2, numIndex));
+        for (size_t i = 0; i < partialPreSWAP.size(); i++){
+            int highestBit = (i >> (numIndex - 1)) & 1;
+            int lowestBit = i & 1;
+            int basedIndex = i;
+            int swappedIndex = (i & ~(1ULL << (numIndex - 1))) | (lowestBit << (numIndex - 1));
+            swappedIndex = (swappedIndex & ~1ULL) | highestBit;
+            for ([[maybe_unused]] int _ = numIndex - 1; _ >= 0; _--) {
+                bool msbBased = (basedIndex >> (numIndex - 1)) & 1;
+                bool msbSwapped = (swappedIndex >> (numIndex - 1)) & 1;
+                if (msbBased){
+                    if (_ == numIndex - 1){
+                        partialPreSWAP[i][0] = state::Ket1().getInitialEdge();
+                    }else {
+                        partialPreSWAP[i][0] = mathUtils::kron(state::Ket1().getInitialEdge(), partialPreSWAP[i][0]);
+                    }
+                }else {
+                    if (_ == numIndex - 1){
+                        partialPreSWAP[i][0] = state::Ket0().getInitialEdge();
+                    }else {
+                        partialPreSWAP[i][0] = mathUtils::kron(state::Ket0().getInitialEdge(), partialPreSWAP[i][0]);
+                    }
+                }
+                if (msbSwapped){
+                    if (_ == numIndex - 1){
+                        partialPreSWAP[i][1] = state::Bra1().getInitialEdge();
+                    }else {
+                        partialPreSWAP[i][1] = mathUtils::kron(state::Bra1().getInitialEdge(), partialPreSWAP[i][1]);
+                    }
+                } else {
+                    if (_ == numIndex - 1){
+                        partialPreSWAP[i][1] = state::Bra0().getInitialEdge();
+                    }else {
+                        partialPreSWAP[i][1] = mathUtils::kron(state::Bra0().getInitialEdge(), partialPreSWAP[i][1]);
+                    }
+                }
+                basedIndex <<= 1;
+                swappedIndex <<= 1;
+            }
+            partialSWAP[i] = mathUtils::mul(partialPreSWAP[i][0], partialPreSWAP[i][1]);
+        }
+        customSWAP = accumulate(partialSWAP.begin() + 1, partialSWAP.end(), partialSWAP[0], [](const QMDDEdge& accumulated, const QMDDEdge& current) {
+            return mathUtils::add(accumulated, current);
         });
-        // this->gateQueue.push(result);
+    }
+    this->wires[minIndex].push_back({Type::SWAP, customSWAP});
+    cout << "Added SWAP gate: " << *customSWAP.getStartNode() << endl;
+    for (int index = minIndex + 1; index <= maxIndex; index++) {
+        this->wires[index].push_back({Type::VOID, QMDDGate()});
     }
     return;
 }
