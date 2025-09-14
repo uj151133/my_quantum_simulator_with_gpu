@@ -1,6 +1,8 @@
 #ifndef ATOMIC_H
 #define ATOMIC_H
 
+#include <stddef.h>
+#include <stdio.h>
 #include <stdbool.h>
 // #include <stdatomic.h>
 

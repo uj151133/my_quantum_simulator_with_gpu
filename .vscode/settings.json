@@ -95,6 +95,7 @@
         "*.tpp": "cpp",
         "filesystem": "cpp",
         "atomic.h": "c",
+        "stdio.h": "c"
         "source_location": "cpp",
         "span": "cpp"
     },
