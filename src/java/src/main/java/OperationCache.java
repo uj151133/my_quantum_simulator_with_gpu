@@ -1,12 +1,10 @@
-import java.util.concurrent.ForkJoinPool;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.Statement;
 
 import org.graalvm.nativeimage.IsolateThread;
 import org.graalvm.nativeimage.UnmanagedMemory;
@@ -109,6 +107,30 @@ public class OperationCache {
     public void printStats() {
         System.out.println("Cache size: " + CACHE.estimatedSize());
     }
+
+    public static void printAllEntries() {
+        System.out.println("=== OperationCache All Entries ===");
+        System.out.println("Total entries: " + CACHE.estimatedSize());
+        System.out.println("----------------------------------------");
+        
+        long count = 0;
+        for (var entry : CACHE.asMap().entrySet()) {
+            Long key = entry.getKey();
+            OperationResult result = entry.getValue();
+            
+            System.out.printf("Entry %d: Key=%d, Real=%.6f, Imag=%.6f, UniqueTableKey=%d%n", 
+                ++count, key, result.real(), result.imag(), result.uniqueTableKey());
+        }
+        
+        if (count == 0) {
+            System.out.println("Cache is empty.");
+        }
+        
+        System.out.println("----------------------------------------");
+        System.out.println("Cache statistics:");
+        System.out.println(CACHE.stats());
+    }
+
 
     public static void main(String[] args) {
         System.out.println("OperationCache initialized");
