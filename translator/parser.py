@@ -124,7 +124,7 @@ class QasmCustomListener(qasmListener):
         c_idx = ctx.INT(1).getText()
         q_name = ctx.ID(0).getText()
         q_idx = ctx.INT(0).getText()
-        self.lines.append(f"{c_name}[{c_idx}] = {q_name}.read({q_idx});")
+        self.lines.append(f"{c_name}[{c_idx}] = {q_name}.measure({q_idx});")
 
 def format_expr(expr):
     expr = expr.replace('pi', 'M_PI')

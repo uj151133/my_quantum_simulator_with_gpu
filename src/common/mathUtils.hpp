@@ -27,9 +27,9 @@ using namespace std;
 // using namespace Eigen;
 
 namespace mathUtils {
-    QMDDEdge mul(const QMDDEdge& e0, const QMDDEdge& e1, int depth = 0);
+    QMDDEdge mul(const QMDDEdge& e0, const QMDDEdge& e1, bool done = false);
     QMDDEdge mulForDiagonal(const QMDDEdge& e0, const QMDDEdge& e1);
-    QMDDEdge add(const QMDDEdge& e0, const QMDDEdge& e1, int depth = 0);
+    QMDDEdge add(const QMDDEdge& e0, const QMDDEdge& e1, bool done = false);
     QMDDEdge addForDiagonal(const QMDDEdge& e0, const QMDDEdge& e1);
     QMDDEdge kron(const QMDDEdge& e0, const QMDDEdge& e1, int depth);
     QMDDEdge kronForDiagonal(const QMDDEdge& e0, const QMDDEdge& e1);
@@ -45,6 +45,8 @@ namespace mathUtils {
     complex<double> cot(complex<double> theta);
 
     double sumOfSquares(const vector<complex<double>>& vec);
+
+    vector<int> createRange(int start, int end);
 }
 
 #endif // MATH_UTILS_HPP
