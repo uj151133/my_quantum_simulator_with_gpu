@@ -593,12 +593,16 @@ QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1) {
 // }
 
 QMDDEdge mathUtils::dyad(const QMDDEdge& e0, const QMDDEdge& e1) {
+    if (e0.isTerminal || e1.isTerminal) {
+        return QMDDEdge(e0.weight * e1.weight, 0);
+    }
     shared_ptr<QMDDNode> n0 = e0.getStartNode();
     shared_ptr<QMDDNode> n1 = e1.getStartNode();
     vector<vector<QMDDEdge>> z(n0->edges.size(), vector<QMDDEdge>(n1->edges[0].size()));
     for (size_t i = 0; i < n0->edges.size(); i++) {
         for (size_t j = 0; j < n1->edges[0].size(); j++) {
-            z[i][j] = QMDDEdge(n0->edges[i][0].weight * n1->edges[0][j].weight, 0);
+            z[i][j] = mathUtils::dyad(n0->edges[i][0], n1->edges[0][j]);
+            // z[i][j] = QMDDEdge(n0->edges[i][0].weight * n1->edges[0][j].weight, 0);
         }
     }
     QMDDEdge result;
