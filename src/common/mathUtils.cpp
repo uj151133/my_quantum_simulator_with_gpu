@@ -5,11 +5,11 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, bool done) {
     int64_t operationCacheKey = calculation::generateOperationCacheKey(OperationKey(e0, OperationType::MUL, e1));
     if (auto existingEdge = cache.find(operationCacheKey)) {
         if (existingEdge->weight != .0 && existingEdge->uniqueTableKey != 0) {
-            cout << "\033[1;36mCache hit!\033[0m" << endl;
+            // cout << "\033[1;36mCache hit!\033[0m" << endl;
             return *existingEdge;
         }
     }
-    cout << "\033[1;35mCache miss!\033[0m" << endl;
+    // cout << "\033[1;35mCache miss!\033[0m" << endl;
     if (e1.isTerminal) {
         std::swap(const_cast<QMDDEdge&>(e0), const_cast<QMDDEdge&>(e1));
     }
@@ -33,20 +33,9 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, bool done) {
     vector<future<pair<pair<size_t, size_t>, QMDDEdge>>> futures;
     vector<pair<size_t, size_t>> parallelTasks;
     vector<pair<size_t, size_t>> sequentialTasks;
-    cout << "n0 depth: " << n0->edges[0][0].depth << ", n1 depth: " << n1->edges[0][0].depth << endl;
-    cout << "n0 edges size: " << n0->edges.size() << endl;
     for (size_t i = 0; i < n0->edges.size(); i++) {
-        cout << "n0[i][1] depth: " << n0->edges[i][1].depth << endl;
-        cout << "n1[i] edges size: " << n1->edges[i].size() << endl;
         for (size_t j = 0; j < n1->edges[i].size(); j++) {
-            // cout << "n0[i][0] depth: " << n0->edges[i][0].depth << endl;
-            // cout << "n0[i][1] depth: " << n0->edges[i][1].depth << endl;
-            // cout << "n1[0][j] depth: " << n1->edges[0][j].depth << endl;
-            // // cout << "n1[1][j]: " << n1->edges[1][j] << endl;
-            // cout << "n1[1][j] depth: " << n1->edges[1][j].depth << endl;
-            // int indicator = min({n0->edges[i][0].depth, n0->edges[i][1].depth, n1->edges[0][j].depth, n1->edges[1][j].depth});
-            int indicator = (e0.depth + e1.depth) / 2;
-            if (done == false && indicator >= CONFIG.process.parallelism) {
+            if (done == false && min({n0->edges[i][0].depth, n0->edges[i][1].depth, n1->edges[0][j].depth, n1->edges[1][j].depth}) >= CONFIG.process.parallelism) {
                 parallelTasks.push_back({i, j});
             } else {
                 sequentialTasks.push_back({i, j});
