@@ -338,8 +338,7 @@ void QuantumCircuit::addSWAP(int qubitIndex1, int qubitIndex2) {
         }
     }
     QMDDEdge customSWAP;
-    if(maxIndex - minIndex == 0) {
-        cout << "Adding SWAP gate between adjacent qubits " << minIndex << " and " << maxIndex << endl;
+    if(maxIndex - minIndex == 1) {
         customSWAP= gate::SWAP().getInitialEdge();
     }else {
         size_t numIndex =  maxIndex - minIndex + 1;
