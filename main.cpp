@@ -44,7 +44,7 @@ void execute() {
     // cout << mathUtils::kron(state::Bra0().getInitialEdge(), state::Bra0().getInitialEdge()) << endl;
     
 
-    int numQubits = 9;
+    int numQubits = 7;
     int numGates = 200;
 
     randomRotate(numQubits, numGates);
