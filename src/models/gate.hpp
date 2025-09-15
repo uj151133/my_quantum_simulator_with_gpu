@@ -50,7 +50,6 @@ enum class Type {
 };
 
 ostream& operator<<(ostream& os, Type type);
-
 namespace gate {
     /* Identity gate and global phase */
     QMDDGate I();

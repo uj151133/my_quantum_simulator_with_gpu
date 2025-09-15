@@ -45,7 +45,7 @@ QMDDEdge::QMDDEdge(double w, shared_ptr<QMDDNode> n)
 }
 
 QMDDEdge::QMDDEdge(complex<double> w, int64_t key)
-    : weight(w), uniqueTableKey(w != complex<double>(.0, .0) ? key : 0), isTerminal(key == 0) {
+    : weight(w), uniqueTableKey(w != complex<double>(.0, .0) ? key : 0), isTerminal(this->uniqueTableKey == 0) {
     #ifdef __APPLE__
         CONFIG.loadFromFile("/Users/mitsuishikaito/my_quantum_simulator_with_gpu/config.yaml");
     #elif __linux__
@@ -58,7 +58,7 @@ QMDDEdge::QMDDEdge(complex<double> w, int64_t key)
 }
 
 QMDDEdge::QMDDEdge(double w, int64_t key)
-    : weight(complex<double>(w, .0)), uniqueTableKey(w != .0 ? key : 0), isTerminal(key == 0) {
+    : weight(complex<double>(w, .0)), uniqueTableKey(w != .0 ? key : 0), isTerminal(this->uniqueTableKey == 0) {
     #ifdef __APPLE__
         CONFIG.loadFromFile("/Users/mitsuishikaito/my_quantum_simulator_with_gpu/config.yaml");
     #elif __linux__
@@ -208,7 +208,6 @@ vector<complex<double>> QMDDNode::getWeights() const {
 
 QMDDGate::QMDDGate(QMDDEdge edge)
     : initialEdge(std::move(edge)){}
-
 
 shared_ptr<QMDDNode> QMDDGate::getStartNode() const {
     return this->initialEdge.getStartNode();

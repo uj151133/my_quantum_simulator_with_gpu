@@ -99,8 +99,8 @@ include_directories(SYSTEM
     ${Python3_INCLUDE_DIRS}
     ${YAML_CPP_INCLUDE_DIR}
     /opt/homebrew/include
-    /opt/homebrew/opt/openjdk/include
-    /opt/homebrew/opt/openjdk/include/darwin
+    ${JAVA_HOME_ENV}/include
+    ${JAVA_HOME_ENV}/include/darwin
     ${CMAKE_SOURCE_DIR}/src
     ${GRAALVM_NATIVE_LIB_PATH}
 )
