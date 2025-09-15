@@ -382,7 +382,7 @@ void QuantumCircuit::addSWAP(int qubitIndex1, int qubitIndex2) {
                 basedIndex <<= 1;
                 swappedIndex <<= 1;
             }
-            partialSWAP[i] = mathUtils::mul(partialPreSWAP[i][0], partialPreSWAP[i][1]);
+            partialSWAP[i] = mathUtils::dyad(partialPreSWAP[i][0], partialPreSWAP[i][1]);
         }
         customSWAP = accumulate(partialSWAP.begin() + 1, partialSWAP.end(), partialSWAP[0], [](const QMDDEdge& accumulated, const QMDDEdge& current) {
             return mathUtils::add(accumulated, current);
