@@ -29,13 +29,6 @@ void QuantumCircuit::normalizeLayer() {
         }
     }
 
-    cout << "Before sorting - cancerCount: ";
-    for (int i = 0; i < numQubits; i++) {
-        cout << cancerCount[i] << " ";
-    }
-    cout << endl;
-
-    int swapCount = 0;
     vector<pair<int, int>> cancerKarte;
     for (int i = 0; i < numQubits - 1; i++) {
         auto it = ranges::max_element(ranges::subrange(cancerCount.begin() + i, cancerCount.end()));
@@ -45,16 +38,9 @@ void QuantumCircuit::normalizeLayer() {
             swap(cancerCount[i], cancerCount[maxIndex]);
             this->addSWAP(i, maxIndex);
             cancerKarte.push_back({i, maxIndex});
-            swapCount++;
         }
     }
 
-    cout << "After sorting - cancerCount: ";
-    for (int i = 0; i < numQubits; i++) {
-        cout << cancerCount[i] << " ";
-    }
-    cout << endl;
-    cout << "Total SWAP gates inserted: " << swapCount << endl;
 
     for (int depth = 0; depth < maxDepth; depth++) {
         vector<Part> parts;
@@ -78,13 +64,11 @@ void QuantumCircuit::normalizeLayer() {
         }
     }
 
-    cout << "Adding inverse SWAP gates at the end..." << endl;
     for (auto it = cancerKarte.rbegin(); it != cancerKarte.rend(); ++it) {
         int qubit1 = it->first;
         int qubit2 = it->second;
         
         this->addSWAP(qubit1, qubit2);
-        cout << "Added inverse SWAP between qubit " << qubit1 << " and " << qubit2 << endl;
     }
 }
 
@@ -386,7 +370,6 @@ void QuantumCircuit::addSWAP(int qubitIndex1, int qubitIndex2) {
     }
     QMDDEdge customSWAP;
     if(maxIndex - minIndex == 0) {
-        cout << "Adding SWAP gate between adjacent qubits " << minIndex << " and " << maxIndex << endl;
         customSWAP= gate::SWAP().getInitialEdge();
     }else {
         size_t numIndex =  maxIndex - minIndex + 1;
@@ -437,7 +420,6 @@ void QuantumCircuit::addSWAP(int qubitIndex1, int qubitIndex2) {
         });
     }
     this->wires[minIndex].push_back({Type::SWAP, customSWAP});
-    cout << "Added SWAP gate: " << *customSWAP.getStartNode() << endl;
     for (int index = minIndex + 1; index <= maxIndex; index++) {
         this->wires[index].push_back({Type::VOID, QMDDGate()});
     }
