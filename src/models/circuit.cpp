@@ -20,7 +20,7 @@ void QuantumCircuit::normalizeLayer() {
     for (int depth = 0; depth < maxDepth; depth++) {
         vector<Part> parts;
         for (int q = 0; q < numQubits; q++) {
-            cout << "depth: " << depth << ", q: " << q << ", type: " << this->wires[q][depth].type << endl;
+            // cout << "depth: " << depth << ", q: " << q << ", type: " << this->wires[q][depth].type << endl;
             parts.push_back(this->wires[q][depth]);
         }
         while (!parts.empty() && parts.back().type == Type::I || parts.back().type == Type::VOID) {
@@ -389,7 +389,7 @@ void QuantumCircuit::addSWAP(int qubitIndex1, int qubitIndex2) {
         });
     }
     this->wires[minIndex].push_back({Type::SWAP, customSWAP});
-    cout << "Added SWAP gate: " << *customSWAP.getStartNode() << endl;
+    // cout << "Added SWAP gate: " << *customSWAP.getStartNode() << endl;
     for (int index = minIndex + 1; index <= maxIndex; index++) {
         this->wires[index].push_back({Type::VOID, QMDDGate()});
     }
