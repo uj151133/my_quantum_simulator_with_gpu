@@ -123,7 +123,7 @@ void measureExecutionTime(function<void()> func) {
         logFile << "[" << timestamp << "] "
                 << "Host: " << hostname << " | "
                 << "Branch: " << branchName << " | "
-                << "Execution time: " << duration.count() << " ms" 
+                << "Execution time: " << duration.count() << " ms"
                 << endl;
         logFile.close();
     }

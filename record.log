@@ -5732,6 +5732,386 @@
 [Thu Sep  4 09:32:10 2025] Host: sota | Execution time: 37198.4 ms
 [Thu Sep  4 09:33:20 2025] Host: sota | Execution time: 56923.6 ms
 [Thu Sep  4 09:34:42 2025] Host: sota | Execution time: 57848 ms
+[Thu Sep  4 22:41:52 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: full/wire2 | Execution time: 8094.49 ms
+[Fri May 30 14:19:20 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 152.289 ms
+[Fri May 30 14:19:23 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 72.0583 ms
+[Fri May 30 14:19:25 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 87.2178 ms
+[Fri May 30 14:20:24 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 185.709 ms
+[Fri May 30 14:20:33 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 217.326 ms
+[Fri May 30 14:20:35 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 103.784 ms
+[Fri May 30 14:20:36 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 92.3393 ms
+[Fri May 30 14:20:37 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 95.848 ms
+[Fri May 30 14:20:38 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 86.4499 ms
+[Fri May 30 14:20:39 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 288.324 ms
+[Fri May 30 14:20:41 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 93.8077 ms
+[Fri May 30 14:20:43 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 95.7779 ms
+[Fri May 30 14:21:17 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 261.491 ms
+[Fri May 30 14:21:18 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 92.5899 ms
+[Fri May 30 14:21:19 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 250.74 ms
+[Fri May 30 14:21:20 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 109.52 ms
+[Fri May 30 14:21:21 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 94.7575 ms
+[Fri May 30 14:21:23 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 90.7584 ms
+[Fri May 30 14:21:24 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 111.049 ms
+[Fri May 30 14:21:25 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 90.2823 ms
+[Fri May 30 14:21:26 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 84.8645 ms
+[Fri May 30 14:21:28 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 101.15 ms
+[Fri May 30 14:21:29 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 87.1114 ms
+[Fri May 30 14:21:30 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 88.6802 ms
+[Fri May 30 14:21:31 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 89.0929 ms
+[Fri May 30 14:21:33 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 96.6975 ms
+[Fri May 30 14:22:55 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 276.751 ms
+[Fri May 30 14:22:57 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 277.917 ms
+[Fri May 30 14:22:59 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 252.15 ms
+[Fri May 30 14:23:00 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 280.716 ms
+[Fri May 30 14:23:01 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 268.41 ms
+[Fri May 30 14:23:02 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 302.02 ms
+[Fri May 30 14:23:04 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 462.103 ms
+[Fri May 30 14:23:05 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 295.664 ms
+[Fri May 30 14:23:07 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 321.258 ms
+[Fri May 30 14:23:09 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 241.023 ms
+[Fri May 30 14:25:05 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 792.168 ms
+[Fri May 30 14:25:08 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 1453.06 ms
+[Fri May 30 14:25:23 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 290.371 ms
+[Fri May 30 14:25:25 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 305.401 ms
+[Fri May 30 14:25:27 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 242.639 ms
+[Fri May 30 14:25:31 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 275.562 ms
+[Fri May 30 14:25:33 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 288.581 ms
+[Fri May 30 14:25:35 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 284.364 ms
+[Fri May 30 14:25:51 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 311.068 ms
+[Fri May 30 14:25:53 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 227.818 ms
+[Fri May 30 14:25:54 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 255.288 ms
+[Fri May 30 14:25:55 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 231.467 ms
+[Fri May 30 14:25:56 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 231.279 ms
+[Fri May 30 14:25:58 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 327.533 ms
+[Fri May 30 14:25:59 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 354.792 ms
+[Fri May 30 14:26:00 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 313.157 ms
+[Fri May 30 14:26:01 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 220.23 ms
+[Fri May 30 14:26:03 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 218.99 ms
+[Fri May 30 14:26:06 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 208.96 ms
+[Wed Jun  4 23:18:10 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 160.46 ms
+[Wed Jun  4 23:18:18 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 82.5102 ms
+[Wed Jun  4 23:18:19 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 92.382 ms
+[Wed Jun  4 23:18:20 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 81.4725 ms
+[Wed Jun  4 23:18:22 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 91.1953 ms
+[Wed Jun  4 23:18:23 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 85.0038 ms
+[Wed Jun  4 23:18:24 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 90.674 ms
+[Thu Jun  5 20:29:48 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 26.462 ms
+[Sat Jun  7 17:18:32 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 30.8394 ms
+[Sat Jun  7 17:19:17 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 48.1281 ms
+[Sat Jun  7 17:19:59 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 28.4793 ms
+[Sat Jun  7 17:47:07 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 30.2503 ms
+[Sat Jun  7 17:47:27 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 28.4152 ms
+[Sat Jun  7 17:47:29 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 28.0383 ms
+[Sat Jun  7 17:47:31 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 31.2723 ms
+[Sat Jun  7 17:48:04 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 77.2995 ms
+[Sat Jun  7 17:48:19 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 75.1878 ms
+[Sat Jun  7 17:48:20 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 80.2995 ms
+[Sat Jun  7 17:48:22 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 80.6441 ms
+[Sat Jun  7 17:50:09 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 71.7758 ms
+[Sat Jun  7 17:53:12 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 30.8804 ms
+[Sat Jun  7 17:53:16 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 27.1338 ms
+[Sat Jun  7 17:53:18 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 91.2138 ms
+[Sat Jun  7 17:53:24 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 33.9999 ms
+[Sat Jun  7 17:53:27 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 40.7917 ms
+[Sat Jun  7 17:53:29 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 32.3386 ms
+[Sat Jun  7 17:53:31 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 27.3858 ms
+[Thu Jun  5 11:35:09 2025] Host: sota | Execution time: 29.4117 ms
+[Thu Jun  5 11:35:11 2025] Host: sota | Execution time: 30.0834 ms
+[Thu Jun  5 11:35:12 2025] Host: sota | Execution time: 30.5024 ms
+[Thu Jun  5 11:35:14 2025] Host: sota | Execution time: 30.21 ms
+[Thu Jun  5 11:35:33 2025] Host: sota | Execution time: 30.0486 ms
+[Thu Jun  5 11:35:38 2025] Host: sota | Execution time: 29.7054 ms
+[Thu Jun  5 11:35:43 2025] Host: sota | Execution time: 29.9983 ms
+[Thu Jun  5 11:35:52 2025] Host: sota | Execution time: 30.4106 ms
+[Thu Jun  5 11:36:25 2025] Host: sota | Execution time: 30.2969 ms
+[Thu Jun  5 11:36:30 2025] Host: sota | Execution time: 30.557 ms
+[Thu Jun  5 11:36:34 2025] Host: sota | Execution time: 30.0877 ms
+[Thu Jun  5 11:36:39 2025] Host: sota | Execution time: 30.5792 ms
+[Thu Jun  5 11:36:46 2025] Host: sota | Execution time: 30.5289 ms
+[Thu Jun  5 11:37:24 2025] Host: sota | Execution time: 29.5622 ms
+[Thu Jun  5 11:37:29 2025] Host: sota | Execution time: 29.4853 ms
+[Thu Jun  5 11:37:33 2025] Host: sota | Execution time: 30.9691 ms
+[Thu Jun  5 11:37:38 2025] Host: sota | Execution time: 30.2415 ms
+[Thu Jun  5 11:37:42 2025] Host: sota | Execution time: 30.2341 ms
+[Thu Jun  5 11:38:22 2025] Host: sota | Execution time: 30.7867 ms
+[Thu Jun  5 11:38:27 2025] Host: sota | Execution time: 31.1235 ms
+[Thu Jun  5 11:38:31 2025] Host: sota | Execution time: 29.9504 ms
+[Thu Jun  5 11:38:36 2025] Host: sota | Execution time: 30.1389 ms
+[Thu Jun  5 11:38:43 2025] Host: sota | Execution time: 29.814 ms
+[Thu Jun  5 11:41:26 2025] Host: sota | Execution time: 29.7413 ms
+[Thu Jun  5 11:41:35 2025] Host: sota | Execution time: 29.2857 ms
+[Thu Jun  5 11:41:40 2025] Host: sota | Execution time: 30.3178 ms
+[Thu Jun  5 11:41:45 2025] Host: sota | Execution time: 30.5892 ms
+[Thu Jun  5 11:41:50 2025] Host: sota | Execution time: 29.8897 ms
+[Thu Jun  5 11:42:28 2025] Host: sota | Execution time: 31.3959 ms
+[Thu Jun  5 11:42:38 2025] Host: sota | Execution time: 30.1763 ms
+[Thu Jun  5 11:42:43 2025] Host: sota | Execution time: 30.3852 ms
+[Thu Jun  5 11:42:48 2025] Host: sota | Execution time: 30.3744 ms
+[Thu Jun  5 11:42:54 2025] Host: sota | Execution time: 30.3297 ms
+[Thu Jun  5 11:43:30 2025] Host: sota | Execution time: 30.1698 ms
+[Thu Jun  5 11:43:35 2025] Host: sota | Execution time: 30.2739 ms
+[Thu Jun  5 11:43:43 2025] Host: sota | Execution time: 30.8566 ms
+[Thu Jun  5 11:43:48 2025] Host: sota | Execution time: 30.992 ms
+[Thu Jun  5 11:43:54 2025] Host: sota | Execution time: 29.7696 ms
+[Thu Jun  5 11:45:56 2025] Host: sota | Execution time: 29.5076 ms
+[Thu Jun  5 11:46:01 2025] Host: sota | Execution time: 30.5303 ms
+[Thu Jun  5 11:46:05 2025] Host: sota | Execution time: 30.9564 ms
+[Thu Jun  5 11:46:09 2025] Host: sota | Execution time: 30.0291 ms
+[Thu Jun  5 11:46:14 2025] Host: sota | Execution time: 30.3688 ms
+[Thu Jun  5 11:47:09 2025] Host: sota | Execution time: 30.6146 ms
+[Thu Jun  5 11:47:15 2025] Host: sota | Execution time: 30.7106 ms
+[Thu Jun  5 11:47:19 2025] Host: sota | Execution time: 30.6581 ms
+[Thu Jun  5 11:47:24 2025] Host: sota | Execution time: 30.8273 ms
+[Thu Jun  5 11:47:30 2025] Host: sota | Execution time: 31.8231 ms
+[Thu Jun  5 11:49:18 2025] Host: sota | Execution time: 29.8837 ms
+[Thu Jun  5 11:49:25 2025] Host: sota | Execution time: 31.4485 ms
+[Thu Jun  5 11:49:30 2025] Host: sota | Execution time: 30.6248 ms
+[Thu Jun  5 11:49:37 2025] Host: sota | Execution time: 31.0598 ms
+[Thu Jun  5 11:49:41 2025] Host: sota | Execution time: 30.4262 ms
+[Thu Jun  5 11:50:17 2025] Host: sota | Execution time: 31.0915 ms
+[Thu Jun  5 11:50:19 2025] Host: sota | Execution time: 31.5032 ms
+[Thu Jun  5 11:50:24 2025] Host: sota | Execution time: 30.963 ms
+[Thu Jun  5 11:50:28 2025] Host: sota | Execution time: 30.0797 ms
+[Thu Jun  5 11:50:35 2025] Host: sota | Execution time: 30.9291 ms
+[Thu Jun  5 11:50:43 2025] Host: sota | Execution time: 31.447 ms
+[Thu Jun  5 11:53:23 2025] Host: sota | Execution time: 31.9134 ms
+[Thu Jun  5 11:53:30 2025] Host: sota | Execution time: 30.5519 ms
+[Thu Jun  5 11:53:39 2025] Host: sota | Execution time: 31.6042 ms
+[Thu Jun  5 11:53:43 2025] Host: sota | Execution time: 32.0951 ms
+[Thu Jun  5 11:53:51 2025] Host: sota | Execution time: 30.0383 ms
+[Thu Jun  5 11:56:09 2025] Host: sota | Execution time: 29.762 ms
+[Thu Jun  5 11:56:15 2025] Host: sota | Execution time: 31.6446 ms
+[Thu Jun  5 11:56:20 2025] Host: sota | Execution time: 31.1495 ms
+[Thu Jun  5 11:56:28 2025] Host: sota | Execution time: 30.772 ms
+[Thu Jun  5 11:56:36 2025] Host: sota | Execution time: 31.4729 ms
+[Thu Jun  5 11:57:23 2025] Host: sota | Execution time: 30.4501 ms
+[Thu Jun  5 11:57:28 2025] Host: sota | Execution time: 30.9794 ms
+[Thu Jun  5 11:57:32 2025] Host: sota | Execution time: 31.2893 ms
+[Thu Jun  5 11:57:37 2025] Host: sota | Execution time: 31.6911 ms
+[Thu Jun  5 11:57:45 2025] Host: sota | Execution time: 31.1669 ms
+[Thu Jun  5 11:58:31 2025] Host: sota | Execution time: 34.0071 ms
+[Thu Jun  5 11:58:36 2025] Host: sota | Execution time: 34.0012 ms
+[Thu Jun  5 11:58:41 2025] Host: sota | Execution time: 33.8874 ms
+[Thu Jun  5 11:58:46 2025] Host: sota | Execution time: 33.4796 ms
+[Thu Jun  5 11:58:51 2025] Host: sota | Execution time: 33.0286 ms
+[Thu Jun  5 11:59:25 2025] Host: sota | Execution time: 45.3439 ms
+[Thu Jun  5 11:59:36 2025] Host: sota | Execution time: 45.0259 ms
+[Thu Jun  5 11:59:40 2025] Host: sota | Execution time: 45.0335 ms
+[Thu Jun  5 11:59:45 2025] Host: sota | Execution time: 44.3652 ms
+[Thu Jun  5 11:59:52 2025] Host: sota | Execution time: 44.0755 ms
+[Thu Jun  5 12:00:33 2025] Host: sota | Execution time: 82.8706 ms
+[Thu Jun  5 12:00:40 2025] Host: sota | Execution time: 82.3914 ms
+[Thu Jun  5 12:00:47 2025] Host: sota | Execution time: 80.476 ms
+[Thu Jun  5 12:00:52 2025] Host: sota | Execution time: 82.3184 ms
+[Thu Jun  5 12:00:56 2025] Host: sota | Execution time: 81.6488 ms
+[Thu Jun  5 12:01:06 2025] Host: sota | Execution time: 80.1402 ms
+[Thu Jun  5 12:01:28 2025] Host: sota | Execution time: 187.788 ms
+[Thu Jun  5 12:01:34 2025] Host: sota | Execution time: 193.991 ms
+[Thu Jun  5 12:01:38 2025] Host: sota | Execution time: 176.797 ms
+[Thu Jun  5 12:01:46 2025] Host: sota | Execution time: 198.008 ms
+[Thu Jun  5 12:01:52 2025] Host: sota | Execution time: 178.672 ms
+[Thu Jun  5 12:02:49 2025] Host: sota | Execution time: 554.496 ms
+[Thu Jun  5 12:02:56 2025] Host: sota | Execution time: 618.91 ms
+[Thu Jun  5 12:03:01 2025] Host: sota | Execution time: 570.524 ms
+[Thu Jun  5 12:03:06 2025] Host: sota | Execution time: 520.915 ms
+[Thu Jun  5 12:03:11 2025] Host: sota | Execution time: 559.363 ms
+[Thu Jun  5 12:03:59 2025] Host: sota | Execution time: 1738.36 ms
+[Thu Jun  5 12:04:13 2025] Host: sota | Execution time: 1778.14 ms
+[Thu Jun  5 12:04:34 2025] Host: sota | Execution time: 1871.71 ms
+[Thu Jun  5 12:05:05 2025] Host: sota | Execution time: 1833.9 ms
+[Thu Jun  5 12:05:15 2025] Host: sota | Execution time: 1952.99 ms
+[Thu Jun  5 12:06:11 2025] Host: sota | Execution time: 7038.1 ms
+[Thu Jun  5 12:06:42 2025] Host: sota | Execution time: 8608.35 ms
+[Thu Jun  5 12:06:56 2025] Host: sota | Execution time: 7850.25 ms
+[Thu Jun  5 12:07:15 2025] Host: sota | Execution time: 7016.03 ms
+[Thu Jun  5 12:07:44 2025] Host: sota | Execution time: 7983.76 ms
+[Thu Jun  5 12:09:03 2025] Host: sota | Execution time: 28023.1 ms
+[Thu Jun  5 12:10:51 2025] Host: sota | Execution time: 98165.2 ms
+[Thu Jun  5 12:14:38 2025] Host: sota | Execution time: 212448 ms
+[Thu Jun  5 12:18:23 2025] Host: sota | Execution time: 212500 ms
+[Thu Jun  5 12:19:32 2025] Host: sota | Execution time: 25078.7 ms
+[Thu Jun  5 12:20:19 2025] Host: sota | Execution time: 28182.1 ms
+[Thu Jun  5 12:22:43 2025] Host: sota | Execution time: 136878 ms
+[Thu Jun  5 12:27:08 2025] Host: sota | Execution time: 24291.7 ms
+[Thu Jun  5 12:27:57 2025] Host: sota | Execution time: 25907.9 ms
+[Thu Jun  5 12:33:55 2025] Host: sota | Execution time: 120211 ms
+[Thu Jun  5 12:46:43 2025] Host: sota | Execution time: 214944 ms
+[Sat Jun  7 05:14:31 2025] Host: sota | Execution time: 30.1417 ms
+[Sat Jun  7 05:14:55 2025] Host: sota | Execution time: 30.3279 ms
+[Sat Jun  7 05:15:41 2025] Host: sota | Execution time: 31.1838 ms
+[Sat Jun  7 05:15:49 2025] Host: sota | Execution time: 30.8067 ms
+[Sat Jun  7 05:15:58 2025] Host: sota | Execution time: 30.41 ms
+[Sat Jun  7 05:16:04 2025] Host: sota | Execution time: 30.8006 ms
+[Sat Jun  7 05:16:09 2025] Host: sota | Execution time: 30.1918 ms
+[Sat Jun  7 05:17:01 2025] Host: sota | Execution time: 32.6347 ms
+[Sat Jun  7 05:17:13 2025] Host: sota | Execution time: 32.6913 ms
+[Sat Jun  7 05:17:21 2025] Host: sota | Execution time: 33.4424 ms
+[Sat Jun  7 05:17:27 2025] Host: sota | Execution time: 32.5906 ms
+[Sat Jun  7 05:17:34 2025] Host: sota | Execution time: 33.5494 ms
+[Sat Jun  7 05:18:08 2025] Host: sota | Execution time: 40.3342 ms
+[Sat Jun  7 05:18:11 2025] Host: sota | Execution time: 39.3994 ms
+[Sat Jun  7 05:18:16 2025] Host: sota | Execution time: 39.0578 ms
+[Sat Jun  7 05:18:23 2025] Host: sota | Execution time: 40.0329 ms
+[Sat Jun  7 05:18:29 2025] Host: sota | Execution time: 40.6143 ms
+[Sat Jun  7 05:18:36 2025] Host: sota | Execution time: 40.3188 ms
+[Sat Jun  7 05:19:27 2025] Host: sota | Execution time: 62.5954 ms
+[Sat Jun  7 05:19:30 2025] Host: sota | Execution time: 56.555 ms
+[Sat Jun  7 05:19:40 2025] Host: sota | Execution time: 58.7089 ms
+[Sat Jun  7 05:19:47 2025] Host: sota | Execution time: 59.7795 ms
+[Sat Jun  7 05:19:50 2025] Host: sota | Execution time: 58.0618 ms
+[Sat Jun  7 05:20:00 2025] Host: sota | Execution time: 56.3008 ms
+[Sat Jun  7 05:22:38 2025] Host: sota | Execution time: 120.454 ms
+[Sat Jun  7 05:22:49 2025] Host: sota | Execution time: 107.658 ms
+[Sat Jun  7 05:22:56 2025] Host: sota | Execution time: 101.604 ms
+[Sat Jun  7 05:23:03 2025] Host: sota | Execution time: 117.367 ms
+[Sat Jun  7 05:23:09 2025] Host: sota | Execution time: 95.485 ms
+[Sat Jun  7 05:23:16 2025] Host: sota | Execution time: 118.567 ms
+[Sat Jun  7 05:24:04 2025] Host: sota | Execution time: 298.365 ms
+[Sat Jun  7 05:24:14 2025] Host: sota | Execution time: 273.605 ms
+[Sat Jun  7 05:24:21 2025] Host: sota | Execution time: 206.552 ms
+[Sat Jun  7 05:24:28 2025] Host: sota | Execution time: 232.137 ms
+[Sat Jun  7 05:24:36 2025] Host: sota | Execution time: 219.992 ms
+[Sat Jun  7 05:25:06 2025] Host: sota | Execution time: 714.319 ms
+[Sat Jun  7 05:25:19 2025] Host: sota | Execution time: 697.778 ms
+[Sat Jun  7 05:25:27 2025] Host: sota | Execution time: 809.523 ms
+[Sat Jun  7 05:25:33 2025] Host: sota | Execution time: 556.542 ms
+[Sat Jun  7 05:25:44 2025] Host: sota | Execution time: 705.126 ms
+[Sat Jun  7 05:26:30 2025] Host: sota | Execution time: 1368.99 ms
+[Sat Jun  7 05:26:43 2025] Host: sota | Execution time: 1923.03 ms
+[Sat Jun  7 06:30:41 2025] Host: sota | Execution time: 2063.35 ms
+[Sat Jun  7 06:30:52 2025] Host: sota | Execution time: 2308.13 ms
+[Sat Jun  7 06:31:03 2025] Host: sota | Execution time: 1921.38 ms
+[Sat Jun  7 06:31:17 2025] Host: sota | Execution time: 1579.32 ms
+[Sat Jun  7 06:32:01 2025] Host: sota | Execution time: 8561.89 ms
+[Sat Jun  7 06:32:10 2025] Host: sota | Execution time: 4317.24 ms
+[Sat Jun  7 06:32:28 2025] Host: sota | Execution time: 8098.28 ms
+[Sat Jun  7 06:32:43 2025] Host: sota | Execution time: 4945.32 ms
+[Sat Jun  7 06:32:55 2025] Host: sota | Execution time: 3327.28 ms
+[Sat Jun  7 06:34:23 2025] Host: sota | Execution time: 14499.2 ms
+[Sat Jun  7 06:34:57 2025] Host: sota | Execution time: 19729.4 ms
+[Sat Jun  7 06:36:01 2025] Host: sota | Execution time: 21032.2 ms
+[Sat Jun  7 06:37:10 2025] Host: sota | Execution time: 28495.9 ms
+[Sat Jun  7 06:37:51 2025] Host: sota | Execution time: 22840.3 ms
+[Sat Jun  7 06:42:43 2025] Host: sota | Execution time: 84195.4 ms
+[Sat Jun  7 06:45:38 2025] Host: sota | Execution time: 42528.6 ms
+[Sat Jun  7 06:47:31 2025] Host: sota | Execution time: 109868 ms
+[Sat Jun  7 06:49:58 2025] Host: sota | Execution time: 47490.3 ms
+[Sat Jun  7 06:51:46 2025] Host: sota | Execution time: 76020 ms
+[Sat Jun  7 06:53:33 2025] Host: sota | Execution time: 79614.1 ms
+[Sat Jun  7 07:00:32 2025] Host: sota | Execution time: 313214 ms
+[Sat Jun  7 07:08:17 2025] Host: sota | Execution time: 353633 ms
+[Sat Jun  7 07:14:09 2025] Host: sota | Execution time: 334338 ms
+[Sat Jun  7 07:18:01 2025] Host: sota | Execution time: 199480 ms
+[Sat Jun  7 07:53:50 2025] Host: sota | Execution time: 1.10118e+06 ms
+[Sat Jun  7 07:58:58 2025] Host: sota | Execution time: 278140 ms
+[Sat Jun  7 10:08:14 2025] Host: sota | Execution time: 30.2669 ms
+[Sat Jun  7 10:08:16 2025] Host: sota | Execution time: 30.1284 ms
+[Sat Jun  7 10:08:28 2025] Host: sota | Execution time: 29.6135 ms
+[Sat Jun  7 10:08:34 2025] Host: sota | Execution time: 29.5335 ms
+[Sat Jun  7 10:08:41 2025] Host: sota | Execution time: 29.8744 ms
+[Sat Jun  7 10:08:47 2025] Host: sota | Execution time: 29.7527 ms
+[Sat Jun  7 10:09:22 2025] Host: sota | Execution time: 33.0586 ms
+[Sat Jun  7 10:09:24 2025] Host: sota | Execution time: 34.0429 ms
+[Sat Jun  7 10:09:31 2025] Host: sota | Execution time: 33.7438 ms
+[Sat Jun  7 10:09:39 2025] Host: sota | Execution time: 34.0278 ms
+[Sat Jun  7 10:09:45 2025] Host: sota | Execution time: 33.5255 ms
+[Sat Jun  7 10:09:51 2025] Host: sota | Execution time: 33.6129 ms
+[Sat Jun  7 10:11:01 2025] Host: sota | Execution time: 39.7695 ms
+[Sat Jun  7 10:11:04 2025] Host: sota | Execution time: 38.7944 ms
+[Sat Jun  7 10:11:10 2025] Host: sota | Execution time: 39.3964 ms
+[Sat Jun  7 10:11:17 2025] Host: sota | Execution time: 39.1195 ms
+[Sat Jun  7 10:11:22 2025] Host: sota | Execution time: 39.4946 ms
+[Sat Jun  7 10:12:30 2025] Host: sota | Execution time: 48.2694 ms
+[Sat Jun  7 10:12:33 2025] Host: sota | Execution time: 49.5463 ms
+[Sat Jun  7 10:12:40 2025] Host: sota | Execution time: 51.3109 ms
+[Sat Jun  7 10:12:52 2025] Host: sota | Execution time: 48.7988 ms
+[Sat Jun  7 10:12:58 2025] Host: sota | Execution time: 52.0928 ms
+[Sat Jun  7 10:13:43 2025] Host: sota | Execution time: 64.4004 ms
+[Sat Jun  7 10:13:55 2025] Host: sota | Execution time: 67.1313 ms
+[Sat Jun  7 10:14:01 2025] Host: sota | Execution time: 66.0742 ms
+[Sat Jun  7 10:14:08 2025] Host: sota | Execution time: 68.5767 ms
+[Sat Jun  7 10:14:16 2025] Host: sota | Execution time: 67.4068 ms
+[Sat Jun  7 10:14:53 2025] Host: sota | Execution time: 98.0032 ms
+[Sat Jun  7 10:14:55 2025] Host: sota | Execution time: 99.3132 ms
+[Sat Jun  7 10:15:03 2025] Host: sota | Execution time: 100.708 ms
+[Sat Jun  7 10:15:09 2025] Host: sota | Execution time: 100.182 ms
+[Sat Jun  7 10:15:17 2025] Host: sota | Execution time: 97.9073 ms
+[Sat Jun  7 10:16:04 2025] Host: sota | Execution time: 163.106 ms
+[Sat Jun  7 10:16:08 2025] Host: sota | Execution time: 140.972 ms
+[Sat Jun  7 10:16:14 2025] Host: sota | Execution time: 155.086 ms
+[Sat Jun  7 10:16:22 2025] Host: sota | Execution time: 169.582 ms
+[Sat Jun  7 10:16:28 2025] Host: sota | Execution time: 165.541 ms
+[Sat Jun  7 10:16:34 2025] Host: sota | Execution time: 152.991 ms
+[Sat Jun  7 10:17:08 2025] Host: sota | Execution time: 272.253 ms
+[Sat Jun  7 10:17:12 2025] Host: sota | Execution time: 287.209 ms
+[Sat Jun  7 10:17:19 2025] Host: sota | Execution time: 299.782 ms
+[Sat Jun  7 10:17:24 2025] Host: sota | Execution time: 274.419 ms
+[Sat Jun  7 10:17:31 2025] Host: sota | Execution time: 266.629 ms
+[Sat Jun  7 10:17:44 2025] Host: sota | Execution time: 297.149 ms
+[Sat Jun  7 10:17:46 2025] Host: sota | Execution time: 282.429 ms
+[Sat Jun  7 10:17:48 2025] Host: sota | Execution time: 229.999 ms
+[Sat Jun  7 10:18:28 2025] Host: sota | Execution time: 516.14 ms
+[Sat Jun  7 10:18:32 2025] Host: sota | Execution time: 545.624 ms
+[Sat Jun  7 10:18:39 2025] Host: sota | Execution time: 467.922 ms
+[Sat Jun  7 10:18:45 2025] Host: sota | Execution time: 530.365 ms
+[Sat Jun  7 10:18:51 2025] Host: sota | Execution time: 513.07 ms
+[Sat Jun  7 10:18:59 2025] Host: sota | Execution time: 465.868 ms
+[Sat Jun  7 10:19:38 2025] Host: sota | Execution time: 786.142 ms
+[Sat Jun  7 10:19:49 2025] Host: sota | Execution time: 861.958 ms
+[Sat Jun  7 10:19:57 2025] Host: sota | Execution time: 865.172 ms
+[Sat Jun  7 10:20:04 2025] Host: sota | Execution time: 1010.84 ms
+[Sat Jun  7 10:20:12 2025] Host: sota | Execution time: 979.433 ms
+[Sat Jun  7 10:20:46 2025] Host: sota | Execution time: 1577.58 ms
+[Sat Jun  7 10:20:51 2025] Host: sota | Execution time: 1947.39 ms
+[Sat Jun  7 10:20:57 2025] Host: sota | Execution time: 1908.88 ms
+[Sat Jun  7 10:21:02 2025] Host: sota | Execution time: 1779.96 ms
+[Sat Jun  7 10:21:12 2025] Host: sota | Execution time: 1755.47 ms
+[Sat Jun  7 10:21:24 2025] Host: sota | Execution time: 1843.6 ms
+[Sat Jun  7 10:21:29 2025] Host: sota | Execution time: 1664.44 ms
+[Sat Jun  7 10:22:18 2025] Host: sota | Execution time: 3506.69 ms
+[Sat Jun  7 10:22:24 2025] Host: sota | Execution time: 3329.36 ms
+[Sat Jun  7 10:22:40 2025] Host: sota | Execution time: 3584.14 ms
+[Sat Jun  7 10:22:51 2025] Host: sota | Execution time: 3625.45 ms
+[Sat Jun  7 10:23:01 2025] Host: sota | Execution time: 3002.63 ms
+[Sat Jun  7 10:23:47 2025] Host: sota | Execution time: 5378.07 ms
+[Sat Jun  7 10:24:04 2025] Host: sota | Execution time: 7537.22 ms
+[Sat Jun  7 10:24:15 2025] Host: sota | Execution time: 7066.21 ms
+[Sat Jun  7 10:24:25 2025] Host: sota | Execution time: 6829.19 ms
+[Sat Jun  7 10:24:39 2025] Host: sota | Execution time: 6741.83 ms
+[Sat Jun  7 10:24:58 2025] Host: sota | Execution time: 7769.03 ms
+[Sat Jun  7 10:25:06 2025] Host: sota | Execution time: 6723.66 ms
+[Sat Jun  7 10:25:13 2025] Host: sota | Execution time: 4967.34 ms
+[Sat Jun  7 10:26:08 2025] Host: sota | Execution time: 12645.3 ms
+[Sat Jun  7 10:26:52 2025] Host: sota | Execution time: 11631.9 ms
+[Sat Jun  7 10:27:51 2025] Host: sota | Execution time: 12335.8 ms
+[Sat Jun  7 10:28:17 2025] Host: sota | Execution time: 20834 ms
+[Sat Jun  7 10:28:35 2025] Host: sota | Execution time: 15978.4 ms
+[Sat Jun  7 10:28:49 2025] Host: sota | Execution time: 9859.07 ms
+[Sat Jun  7 10:30:50 2025] Host: sota | Execution time: 30435.4 ms
+[Sat Jun  7 10:31:21 2025] Host: sota | Execution time: 24004.2 ms
+[Sat Jun  7 10:32:40 2025] Host: sota | Execution time: 27906.6 ms
+[Sat Jun  7 10:33:16 2025] Host: sota | Execution time: 23018.3 ms
+[Sat Jun  7 10:34:18 2025] Host: sota | Execution time: 26048.2 ms
+[Sat Jun  7 10:37:14 2025] Host: sota | Execution time: 82715 ms
+[Sat Jun  7 10:38:57 2025] Host: sota | Execution time: 57136.3 ms
+[Sat Jun  7 10:39:56 2025] Host: sota | Execution time: 53015.1 ms
+[Sat Jun  7 10:41:30 2025] Host: sota | Execution time: 57277.4 ms
+[Sat Jun  7 10:42:30 2025] Host: sota | Execution time: 51994 ms
+[Sat Jun  7 10:44:26 2025] Host: sota | Execution time: 95572.4 ms
+[Sat Jun  7 10:45:37 2025] Host: sota | Execution time: 65682.6 ms
+[Sat Jun  7 10:48:41 2025] Host: sota | Execution time: 118258 ms
+[Sat Jun  7 10:50:42 2025] Host: sota | Execution time: 115165 ms
+[Sat Jun  7 11:00:27 2025] Host: sota | Execution time: 401715 ms
+[Sat Jun  7 11:23:22 2025] Host: sota | Execution time: 130310 ms
+[Sat Jun  7 11:26:28 2025] Host: sota | Execution time: 181517 ms
+[Sat Jun  7 11:28:08 2025] Host: sota | Execution time: 93424 ms
+[Sat Jun  7 11:37:53 2025] Host: sota | Execution time: 493408 ms
+[Sat Jun  7 11:42:18 2025] Host: sota | Execution time: 222781 ms
+[Sat Jun  7 11:46:51 2025] Host: sota | Execution time: 98847.1 ms
+[Tue Sep  2 17:53:51 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: born/wire | Execution time: 29.9778 ms
+[Tue Sep  2 17:55:51 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: born/wire | Execution time: 29.898 ms
+[Tue Sep  2 17:56:07 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: born/wire | Execution time: 37.2449 ms
+[Thu Sep  4 19:21:22 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: born/wire | Execution time: 14358.5 ms[Fri Sep  5 04:18:52 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wire2 | Execution time: 8397.15 ms
 [Mon Sep  8 11:31:08 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 86.2039 ms
 [Mon Sep  8 12:21:01 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 79.9617 ms
 [Mon Sep  8 14:37:40 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 47.1998 ms
@@ -5793,6 +6173,76 @@
 [Fri Sep 12 03:09:25 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 293.647 ms
 [Fri Sep 12 04:17:42 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 370.202 ms
 [Fri Sep 12 04:18:42 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 367.399 ms
+[Sat Sep 13 11:28:32 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wire2 | Execution time: 1023.96 ms
+[Sat Sep 13 11:28:36 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wire2 | Execution time: 357.256 ms
+[Sat Sep 13 11:28:39 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wire2 | Execution time: 361.135 ms
+[Fri Sep  5 13:49:28 2025] Host: sota | Branch: part/wire2 | Execution time: 81.509 ms
+[Fri Sep  5 13:50:34 2025] Host: sota | Branch: part/wire2 | Execution time: 78.2335 ms
+[Fri Sep  5 13:50:52 2025] Host: sota | Branch: part/wire2 | Execution time: 74.5222 ms
+[Fri Sep  5 13:51:02 2025] Host: sota | Branch: part/wire2 | Execution time: 71.6719 ms
+[Fri Sep  5 13:51:12 2025] Host: sota | Branch: part/wire2 | Execution time: 70.473 ms
+[Fri Sep  5 13:51:28 2025] Host: sota | Branch: part/wire2 | Execution time: 74.6654 ms
+[Fri Sep  5 13:52:03 2025] Host: sota | Branch: part/wire2 | Execution time: 78.0424 ms
+[Fri Sep  5 13:52:19 2025] Host: sota | Branch: part/wire2 | Execution time: 81.2189 ms
+[Fri Sep  5 13:52:46 2025] Host: sota | Branch: part/wire2 | Execution time: 81.1343 ms
+[Fri Sep  5 13:53:02 2025] Host: sota | Branch: part/wire2 | Execution time: 81.3425 ms
+[Fri Sep  5 13:53:19 2025] Host: sota | Branch: part/wire2 | Execution time: 81.2886 ms
+[Fri Sep  5 13:54:11 2025] Host: sota | Branch: part/wire2 | Execution time: 82.7845 ms
+[Fri Sep  5 13:54:39 2025] Host: sota | Branch: part/wire2 | Execution time: 84.7263 ms
+[Fri Sep  5 13:55:01 2025] Host: sota | Branch: part/wire2 | Execution time: 85.8616 ms
+[Fri Sep  5 13:55:18 2025] Host: sota | Branch: part/wire2 | Execution time: 87.8338 ms
+[Fri Sep  5 13:55:36 2025] Host: sota | Branch: part/wire2 | Execution time: 86.828 ms
+[Fri Sep  5 14:25:06 2025] Host: sota | Branch: part/wire2 | Execution time: 96.985 ms
+[Fri Sep  5 14:25:50 2025] Host: sota | Branch: part/wire2 | Execution time: 101.101 ms
+[Fri Sep  5 14:26:29 2025] Host: sota | Branch: part/wire2 | Execution time: 99.5128 ms
+[Fri Sep  5 14:26:48 2025] Host: sota | Branch: part/wire2 | Execution time: 99.3939 ms
+[Fri Sep  5 14:27:33 2025] Host: sota | Branch: part/wire2 | Execution time: 98.3855 ms
+[Fri Sep  5 14:27:55 2025] Host: sota | Branch: part/wire2 | Execution time: 97.8135 ms
+[Fri Sep  5 14:28:55 2025] Host: sota | Branch: part/wire2 | Execution time: 110.006 ms
+[Fri Sep  5 14:30:25 2025] Host: sota | Branch: part/wire2 | Execution time: 111.193 ms
+[Fri Sep  5 14:31:04 2025] Host: sota | Branch: part/wire2 | Execution time: 108.29 ms
+[Fri Sep  5 14:31:33 2025] Host: sota | Branch: part/wire2 | Execution time: 119.69 ms
+[Fri Sep  5 14:31:58 2025] Host: sota | Branch: part/wire2 | Execution time: 116.779 ms
+[Fri Sep  5 14:33:20 2025] Host: sota | Branch: part/wire2 | Execution time: 147.568 ms
+[Fri Sep  5 14:33:42 2025] Host: sota | Branch: part/wire2 | Execution time: 150.902 ms
+[Fri Sep  5 14:33:58 2025] Host: sota | Branch: part/wire2 | Execution time: 157.113 ms
+[Fri Sep  5 14:34:25 2025] Host: sota | Branch: part/wire2 | Execution time: 158.488 ms
+[Fri Sep  5 14:34:51 2025] Host: sota | Branch: part/wire2 | Execution time: 157.349 ms
+[Fri Sep  5 14:37:01 2025] Host: sota | Branch: part/wire2 | Execution time: 214.889 ms
+[Fri Sep  5 14:40:08 2025] Host: sota | Branch: part/wire2 | Execution time: 247.385 ms
+[Fri Sep  5 14:40:27 2025] Host: sota | Branch: part/wire2 | Execution time: 215.917 ms
+[Fri Sep  5 14:40:50 2025] Host: sota | Branch: part/wire2 | Execution time: 243.003 ms
+[Fri Sep  5 14:42:31 2025] Host: sota | Branch: part/wire2 | Execution time: 234.71 ms
+[Fri Sep  5 14:44:15 2025] Host: sota | Branch: part/wire2 | Execution time: 416.699 ms
+[Fri Sep  5 14:44:45 2025] Host: sota | Branch: part/wire2 | Execution time: 371.919 ms
+[Fri Sep  5 14:45:03 2025] Host: sota | Branch: part/wire2 | Execution time: 369.172 ms
+[Fri Sep  5 14:45:46 2025] Host: sota | Branch: part/wire2 | Execution time: 373.279 ms
+[Fri Sep  5 14:46:24 2025] Host: sota | Branch: part/wire2 | Execution time: 365.442 ms
+[Fri Sep  5 14:47:35 2025] Host: sota | Branch: part/wire2 | Execution time: 610.472 ms
+[Fri Sep  5 14:47:57 2025] Host: sota | Branch: part/wire2 | Execution time: 662.587 ms
+[Fri Sep  5 14:48:32 2025] Host: sota | Branch: part/wire2 | Execution time: 687.42 ms
+[Fri Sep  5 14:51:14 2025] Host: sota | Branch: part/wire2 | Execution time: 641.435 ms
+[Fri Sep  5 14:51:59 2025] Host: sota | Branch: part/wire2 | Execution time: 689.274 ms
+[Fri Sep  5 14:53:01 2025] Host: sota | Branch: part/wire2 | Execution time: 1331.27 ms
+[Fri Sep  5 14:55:27 2025] Host: sota | Branch: part/wire2 | Execution time: 1194.55 ms
+[Fri Sep  5 14:55:46 2025] Host: sota | Branch: part/wire2 | Execution time: 1105.37 ms
+[Fri Sep  5 14:56:18 2025] Host: sota | Branch: part/wire2 | Execution time: 1354.2 ms
+[Fri Sep  5 14:57:01 2025] Host: sota | Branch: part/wire2 | Execution time: 1513.82 ms
+[Fri Sep  5 14:58:41 2025] Host: sota | Branch: part/wire2 | Execution time: 2469.6 ms
+[Fri Sep  5 14:59:25 2025] Host: sota | Branch: part/wire2 | Execution time: 2395.95 ms
+[Fri Sep  5 15:02:57 2025] Host: sota | Branch: part/wire2 | Execution time: 2334.36 ms
+[Fri Sep  5 15:03:18 2025] Host: sota | Branch: part/wire2 | Execution time: 2366.74 ms
+[Fri Sep  5 15:06:47 2025] Host: sota | Branch: part/wire2 | Execution time: 2404.14 ms
+[Fri Sep  5 15:09:50 2025] Host: sota | Branch: part/wire2 | Execution time: 4889.24 ms
+[Fri Sep  5 15:10:56 2025] Host: sota | Branch: part/wire2 | Execution time: 4374.28 ms
+[Fri Sep  5 15:11:25 2025] Host: sota | Branch: part/wire2 | Execution time: 4710.03 ms
+[Fri Sep  5 15:12:34 2025] Host: sota | Branch: part/wire2 | Execution time: 4401.87 ms
+[Fri Sep  5 15:13:03 2025] Host: sota | Branch: part/wire2 | Execution time: 4228.24 ms
+[Fri Sep  5 15:16:05 2025] Host: sota | Branch: part/wire2 | Execution time: 7682.13 ms
+[Fri Sep  5 15:16:48 2025] Host: sota | Branch: part/wire2 | Execution time: 7969.4 ms
+[Fri Sep  5 15:17:26 2025] Host: sota | Branch: part/wire2 | Execution time: 7983.6 ms
+[Fri Sep  5 15:17:52 2025] Host: sota | Branch: part/wire2 | Execution time: 6865.7 ms
+[Fri Sep  5 15:18:23 2025] Host: sota | Branch: part/wire2 | Execution time: 7247.51 ms
 [Wed Jun  4 23:18:10 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 160.46 ms
 [Wed Jun  4 23:18:18 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 82.5102 ms
 [Wed Jun  4 23:18:19 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Execution time: 92.382 ms
