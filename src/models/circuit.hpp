@@ -40,7 +40,7 @@ private:
 public:
     QuantumCircuit(int numQubitits, QMDDState initialState);
     QuantumCircuit(int numQubitits);
-    // vector<vector<int>> quantumRegister;
+    vector<vector<int>> quantumRegister;
     ~QuantumCircuit() = default;
     queue<QMDDGate> getGateQueue() const;
     QMDDState getFinalState() const;
@@ -49,7 +49,7 @@ public:
     QuantumCircuit(QuantumCircuit&& other) = default;
     QuantumCircuit& operator=(QuantumCircuit&& other) = default;
 
-    // void setRegister(int registerIdx, int size);
+    void setRegister(int registerIdx, int size);
 
     void addI(int qubitIndex);
     void addPh(int qubitIndex, double delta);
