@@ -21,6 +21,7 @@
 #include "src/test/random/randomRotate.hpp"
 #include "src/common/ipc_shared_memory.hpp"
 #include "src/common/operationCacheClient.hpp"
+#include "src/test/Shor/shor.hpp"
 
 using namespace std;
 
@@ -41,10 +42,12 @@ void execute() {
 
     // OperationCache& cache = OperationCache::getInstance();
 
-    int numQubits = 15;
+    int numQubits = 13;
     int numGates = 200;
 
     randomRotate(numQubits, numGates);
+
+    // shor(8);
 
     // QuantumCircuit circuit(numQubits);
     // for ([[maybe_unused]] int _ = 0; _ < numGates; ++_) {
