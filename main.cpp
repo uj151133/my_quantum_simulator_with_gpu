@@ -45,9 +45,9 @@ void execute() {
     int numQubits = 13;
     int numGates = 200;
 
-    randomRotate(numQubits, numGates);
+    // randomRotate(numQubits, numGates);
 
-    // shor(8);
+    shor(8);
 
     // QuantumCircuit circuit(numQubits);
     // for ([[maybe_unused]] int _ = 0; _ < numGates; ++_) {

@@ -18,10 +18,11 @@ void shor(size_t N) {
 
     circuit.setRegister(0, n);
     circuit.setRegister(1, m);
-
     for (size_t i = 0; i < n; i++) {
         circuit.addH(circuit.quantumRegister[0][i]);
     }
+
+    
     
     circuit.simulate();
 
