@@ -36,6 +36,11 @@ void QuantumCircuit::setRegister(int registerIdx, int size) {
     if (registerIdx < 0) {
         throw out_of_range("Invalid register index.");
     }
+
+    if (registerIdx >= static_cast<int>(this->quantumRegister.size())) {
+        this->quantumRegister.resize(registerIdx + 1);
+    }
+
     this->quantumRegister[registerIdx].resize(size);
     iota(this->quantumRegister[registerIdx].begin(), this->quantumRegister[registerIdx].end(), registerIdx == 0 ? 0 : this->quantumRegister[registerIdx - 1].back() + 1);
 }
