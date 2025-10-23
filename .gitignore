@@ -31,3 +31,4 @@ Cargo.lock
 
 # Environment variables
 .env
+run.sh
