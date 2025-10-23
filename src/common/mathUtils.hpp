@@ -5,6 +5,7 @@
 #include <boost/fiber/algo/work_stealing.hpp>
 #include <boost/fiber/mutex.hpp>
 #include <cmath>
+#include <random>
 #include <numeric>
 #include <queue>
 #include <stack>
@@ -47,6 +48,7 @@ namespace mathUtils {
     double sumOfSquares(const vector<complex<double>>& vec);
 
     vector<int> createRange(int start, int end);
+    int findCoprimeBelow(int N);
 }
 
 #endif // MATH_UTILS_HPP

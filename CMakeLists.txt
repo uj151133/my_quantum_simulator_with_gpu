@@ -55,11 +55,27 @@ if(NOT Boost_FOUND)
 endif()
 find_package(Threads REQUIRED)
 find_package(TBB REQUIRED)
-
+find_package(antlr4-runtime REQUIRED)
 # GNUライブラリのインクルードとリンク
 find_package(GSL REQUIRED)
+
 if(APPLE)
     # MacOS (Homebrew) settings
+    find_path(ANTLR4_RUNTIME_INCLUDE_DIR antlr4-runtime.h
+        HINTS
+            /opt/homebrew/opt/antlr4-cpp-runtime/include
+            /opt/homebrew/include
+            /usr/local/include
+        PATH_SUFFIXES
+            antlr4-runtime
+    )
+
+    find_library(ANTLR4_RUNTIME_LIB NAMES antlr4-runtime
+        HINTS
+            /opt/homebrew/opt/antlr4-cpp-runtime/lib
+            /opt/homebrew/lib
+            /usr/local/lib
+    )
     find_library(GMP_LIB
         NAMES gmp
         PATHS /opt/homebrew/lib
@@ -162,13 +178,17 @@ if(NOT GRAALVM_NATIVE_LIB)
 endif()
 
 
-file(GLOB SOURCES "src/models/*.cpp" "src/common/*.cpp" "src/modules/*.cpp" "src/test/*/*.cpp" )
+file(GLOB SOURCES "src/models/*.cpp" "src/common/*.cpp" "src/modules/*.cpp" "src/test/*/*.cpp" "src/translator/*/*.cpp")
 
 
-# 通常のC++実行ファイルを追加
-add_executable(qmdd_sim main.cpp ${SOURCES} ${C_SRC} ${ASM_SRC})
+set(OPENQASM3_GEN_DIR ${CMAKE_SOURCE_DIR}/src/translator/OpenQASM3/gen)
+file(GLOB OPENQASM3_GEN_SRC "${OPENQASM3_GEN_DIR}/*.cpp")
+
+
+
+add_executable(qmdd_sim main.cpp ${SOURCES} ${C_SRC} ${ASM_SRC} ${OPENQASM3_GEN_SRC})
 add_dependencies(qmdd_sim copy_config build_java_lib)
-target_include_directories(qmdd_sim PRIVATE ${GSL_INCLUDE_DIRS})
+target_include_directories(qmdd_sim PRIVATE ${GSL_INCLUDE_DIRS} ${OPENQASM3_GEN_DIR} ${ANTLR4_RUNTIME_INCLUDE_DIR})
 target_link_libraries(qmdd_sim PRIVATE
     pthread
     yaml-cpp::yaml-cpp
@@ -180,8 +200,20 @@ target_link_libraries(qmdd_sim PRIVATE
     Threads::Threads
     xxhash
     TBB::tbb
+    antlr4-runtime
+    ${ANTLR4_RUNTIME_LIB}
     $<$<BOOL:${GRAALVM_NATIVE_LIB}>:${GRAALVM_NATIVE_LIB}>
 )
+
+if(APPLE)
+    set(LIB_PATH_PREFIX "DYLD_LIBRARY_PATH=/opt/homebrew/Cellar/openjdk@21/21.0.7/libexec/openjdk.jdk/Contents/Home/lib/server:\$DYLD_LIBRARY_PATH")
+elseif(UNIX AND NOT APPLE)
+    set(LIB_PATH_PREFIX "LD_LIBRARY_PATH=/home/ark/.sdkman/candidates/java/current/lib/server:/home/ark/.sdkman/candidates/java/current/lib:\$LD_LIBRARY_PATH")
+else()
+    set(LIB_PATH_PREFIX "")
+endif()
+
+
 
 # make run ターゲットの追加（通常モード）
 if(APPLE)
@@ -251,4 +283,45 @@ add_custom_target(build_java_lib
     COMMAND cd ${CMAKE_SOURCE_DIR}/src/java && ./gradlew nativeCompile
     BYPRODUCTS ${GRAALVM_NATIVE_LIB_PATH}/${GRAALVM_NATIVE_LIB_NAME}
     COMMENT "Building GraalVM Native Image library -> ${GRAALVM_NATIVE_LIB_NAME}"
+)
+
+if(APPLE)
+    add_custom_target(run-translate
+        COMMAND DYLD_LIBRARY_PATH=/opt/homebrew/Cellar/openjdk@21/21.0.7/libexec/openjdk.jdk/Contents/Home/lib/server:$ENV{DYLD_LIBRARY_PATH} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qmdd_sim -translate "$ENV{QASM_FILE}"
+        DEPENDS qmdd_sim
+        WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
+        COMMENT "Running QASM translation for file: $ENV{QASM_FILE}"
+    )
+elseif(UNIX AND NOT APPLE)
+    add_custom_target(run-translate
+        COMMAND LD_LIBRARY_PATH=/home/ark/.sdkman/candidates/java/current/lib/server:/home/ark/.sdkman/candidates/java/current/lib:$ENV{LD_LIBRARY_PATH} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qmdd_sim -translate "$ENV{QASM_FILE}"
+        DEPENDS qmdd_sim
+        WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
+        COMMENT "Running QASM translation for file: $ENV{QASM_FILE}"
+    )
+else()
+    add_custom_target(run-translate
+        COMMAND ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qmdd_sim -translate "$ENV{QASM_FILE}"
+        DEPENDS qmdd_sim
+        WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
+        COMMENT "Running QASM translation for file: $ENV{QASM_FILE}"
+    )
+endif()
+
+configure_file(
+    ${CMAKE_SOURCE_DIR}/scripts/run.sh.template
+    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/run.sh
+    @ONLY
+)
+
+# 実行権限を付与
+add_custom_target(generate-scripts
+    COMMAND chmod +x ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/run.sh
+    DEPENDS ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/run.sh
+    COMMENT "Setting executable permission for run.sh"
+)
+
+add_custom_target(all-with-scripts ALL
+    DEPENDS qmdd_sim generate-scripts
+    COMMENT "Building executable and generating scripts"
 )

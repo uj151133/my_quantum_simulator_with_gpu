@@ -23,6 +23,10 @@
 #include "src/common/operationCacheClient.hpp"
 #include "src/test/Shor/shor.hpp"
 
+#include "src/translator/OpenQASM3/fallen.hpp"
+#include "src/translator/OpenQASM3/gen/OpenQASM3Lexer.h"
+#include "src/translator/OpenQASM3/gen/OpenQASM3Parser.h"
+
 using namespace std;
 
 // グローバルな共有メモリIPCサーバーインスタンス
@@ -45,27 +49,62 @@ void execute() {
     int numQubits = 13;
     int numGates = 200;
 
-    // randomRotate(numQubits, numGates);
 
     shor(8);
+}
 
-    // QuantumCircuit circuit(numQubits);
-    // for ([[maybe_unused]] int _ = 0; _ < numGates; ++_) {
-    //     double randomAngle = dis(gen);
-    //     // circuit.addP(numQubits - 1, randomAngle);
-    //     circuit.addRz(numQubits - 1, randomAngle);
-    // }
-    // // circuit.addToff({0, 1}, 3);
-    // circuit.simulate();
+bool translateAndExecuteQASM(const string& qasm_file) {
+    try {
+        cout << "Translating and executing QASM file: " << qasm_file << endl;
+        
+        ifstream file(qasm_file);
+        if (!file.is_open()) {
+            cerr << "Error: Cannot open file " << qasm_file << std::endl;
+            return false;
+        }
+        
+        string qasm_content((istreambuf_iterator<char>(file)), istreambuf_iterator<char>());
+        file.close();
+        
+        cout << "QASM content loaded successfully" << endl;
+        
+        antlr4::ANTLRInputStream input(qasm_content);
+        OpenQASM3Lexer lexer(&input);
+        antlr4::CommonTokenStream tokens(&lexer);
+        OpenQASM3Parser parser(&tokens);
+        
+        // 3. パースツリーを取得
+        OpenQASM3Parser::ProgramContext* tree = parser.program();
+        
+        // 4. 翻訳器を作成して訪問
+        CircuitGenerator generator;
+        generator.visit(tree);
+        
+        string circuit_operations = generator.getCircuitCode();
+        
+        cout << "Translation completed. Generated operations:" << endl;
+        cout << circuit_operations << endl;
+        
+        int max_qubit = generator.getMaxQubitIndex();  // この関数を追加する必要がある
+        int num_qubits = max_qubit + 1;
 
-    // randomRotate4(numQubits, numGates);
-    // int omega = std::pow(2, numQubits) - 1;
+        cout << "Creating circuit with " << num_qubits << " qubits" << endl;
+        QuantumCircuit circuit(num_qubits);
 
-    // grover(numQubits, omega);
-    
-    // UniqueTable::getInstance().printNodeNum();
-
-
+        generator.applyToCircuit(circuit);
+        
+        cout << "Starting simulation..." << endl;
+        measureExecutionTime([&circuit]() {
+            circuit.simulate();
+        });
+        
+        cout << "Simulation completed successfully!" << endl;
+        return true;
+        
+    } catch (const exception& e) {
+        cerr << "Error during translation and execution: " << e.what() << endl;
+        return false;
+    }
 }
 
 
@@ -85,11 +124,15 @@ int main(int argc, char* argv[]) {
 
     // コマンドライン引数を解析
     bool startSharedMemoryServer = false;
+    string translateFile = "";
     int opt;
     while ((opt = getopt(argc, argv, "sh")) != -1) {
         switch (opt) {
             case 's':
                 startSharedMemoryServer = true;
+                break;
+            case 't':
+                translateFile = optarg;
                 break;
             case 'h':
                 cout << "Usage: " << argv[0] << " [-s] [-h]" << endl;
@@ -102,7 +145,24 @@ int main(int argc, char* argv[]) {
         }
     }
 
-    if (startSharedMemoryServer) {
+    if (argc > 1 && std::string(argv[1]) == "-translate") {
+        if (argc < 3) {
+            std::cerr << "Usage: " << argv[0] << " -translate <qasm_file>" << std::endl;
+            return 1;
+        }
+        translateFile = argv[2];
+    }
+
+    if (!translateFile.empty()) {
+        if (translateAndExecuteQASM(translateFile)) {
+            cout << "Translation and execution completed successfully!" << endl;
+            cout << "Total entries: " << UniqueTable::getInstance().getTotalEntryCount() << endl;
+            return 0;
+        } else {
+            cerr << "Translation and execution failed!" << endl;
+            return 1;
+        }
+    } else if (startSharedMemoryServer) {
         // 共有メモリIPCサーバーモードで起動
         cout << "Starting QMDD Simulator in Shared Memory IPC server mode..." << endl;
         

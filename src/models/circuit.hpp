@@ -37,6 +37,9 @@ private:
     QMDDState finalState;
     int numQubits;
 
+    void compute();
+    void uncompute();
+
 public:
     QuantumCircuit(int numQubitits, QMDDState initialState);
     QuantumCircuit(int numQubitits);
@@ -71,6 +74,7 @@ public:
     void addAllH();
     void addCX(int controlIndex, int targetIndex);
     void addVarCX(int controlIndex, int targetIndex);
+    void addCY(int controlIndex, int targetIndex);
     void addCZ(int controlIndex, int targetIndex);
     void addDCNOT(int controlIndex, int targetIndex);
     void addSWAP(int qubitIndex1, int qubitIndex2);
@@ -80,6 +84,7 @@ public:
     void addTdg(int qubitIndex);
     void addCP(int controlIndex, int targetIndex, double phi);
     void addCS(int controlIndex, int targetIndex);
+    void addCH(int controlIndex, int targetIndex);
     void addRx(int qubitIndex, double theta);
     void addRy(int qubitIndex, double theta);
     void addRz(int qubitIndex, double theta);
@@ -92,7 +97,13 @@ public:
     void addSWAPalpha(int qubitIndex1, int qubitIndex2, double alpha);
     void addFREDKIN(int controlIndex, int targetIndex1, int targetIndex2);
     void addU(int qubitIndex, double theta, double phi, double lambda);
+    void addU1(int qubitIndex, double theta);
+    void addU2(int qubitIndex, double phi, double lambda);
     void addU3(int qubitIndex, double theta, double phi, double lambda);
+    void addCRx(int controlIndex, int targetIndex, double theta);
+    void addCRy(int controlIndex, int targetIndex, double theta);
+    void addCRz(int controlIndex, int targetIndex, double theta);
+    void addCU(int controlIndex, int targetIndex, double theta, double phi, double lambda);
     void addBARENCO(int qubitIndex, double alpha, double phi, double theta);
     void addB(int qubitIndex);
     void addCSX(int controlIndex, int targetIndex);
@@ -122,6 +133,9 @@ public:
 
     void addOracle(int omega);
     void addDiffuser();
+
+    void reset(int qubitIndex);
+    void globalPhase(double lamda);
 
     void simulate();
     int measure(int qubitIndex);
