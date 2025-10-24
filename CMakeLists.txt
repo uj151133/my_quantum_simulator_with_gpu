@@ -55,7 +55,6 @@ if(NOT Boost_FOUND)
 endif()
 find_package(Threads REQUIRED)
 find_package(TBB REQUIRED)
-find_package(antlr4-runtime REQUIRED)
 # GNUライブラリのインクルードとリンク
 find_package(GSL REQUIRED)
 
@@ -117,6 +116,16 @@ elseif(UNIX AND NOT APPLE)
         message(FATAL_ERROR "antlr4-runtime headers not found. Install libantlr4-runtime 4.13.1+ or set ANTLR4_RUNTIME_INCLUDE_DIR")
     endif()
     include_directories(${ANTLR4_RUNTIME_INCLUDE_DIR})
+endif()
+
+if(ANTLR4_RUNTIME_INCLUDE_DIR AND ANTLR4_RUNTIME_LIB)
+    add_library(antlr4_runtime UNKNOWN IMPORTED GLOBAL)
+    set_target_properties(antlr4_runtime PROPERTIES
+        IMPORTED_LOCATION "${ANTLR4_RUNTIME_LIB}"
+        INTERFACE_INCLUDE_DIRECTORIES "${ANTLR4_RUNTIME_INCLUDE_DIR}"
+    )
+else()
+    message(FATAL_ERROR "antlr4-runtime not configured correctly")
 endif()
 
 
@@ -213,10 +222,13 @@ target_link_libraries(qmdd_sim PRIVATE
     Threads::Threads
     xxhash
     TBB::tbb
-    antlr4-runtime
-    ${ANTLR4_RUNTIME_LIB}
+    antlr4_runtime
     $<$<BOOL:${GRAALVM_NATIVE_LIB}>:${GRAALVM_NATIVE_LIB}>
 )
+
+if(UNIX AND NOT APPLE)
+    set_target_properties(qmdd_sim PROPERTIES BUILD_RPATH "/usr/local/lib")
+endif()
 
 if(APPLE)
     set(LIB_PATH_PREFIX "DYLD_LIBRARY_PATH=/opt/homebrew/Cellar/openjdk@21/21.0.7/libexec/openjdk.jdk/Contents/Home/lib/server:\$DYLD_LIBRARY_PATH")
