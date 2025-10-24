@@ -87,16 +87,16 @@ elseif(UNIX AND NOT APPLE)
     find_library(GMP_LIB
         NAMES gmp
         PATHS
-        /usr/lib
         /usr/local/lib
+        /usr/lib
         /usr/lib/x86_64-linux-gnu  # Ubuntu特有のパスを追加
         REQUIRED
     )
     find_path(GMP_INCLUDE_DIRS
         NAMES gmp.h
         PATHS
-        /usr/include
         /usr/local/include
+        /usr/include
         REQUIRED
     )
     if(GMP_LIB AND GMP_INCLUDE_DIRS)
@@ -106,15 +106,15 @@ elseif(UNIX AND NOT APPLE)
     endif()
     find_path(ANTLR4_RUNTIME_INCLUDE_DIR
         NAMES antlr4-runtime.h
-        PATHS /usr/include /usr/local/include
+        PATHS /usr/local/include /usr/include
         PATH_SUFFIXES antlr4-runtime
     )
     find_library(ANTLR4_RUNTIME_LIB
         NAMES antlr4-runtime
-        PATHS /usr/lib /usr/local/lib /usr/lib/x86_64-linux-gnu
+        PATHS /usr/local/lib /usr/lib /usr/lib/x86_64-linux-gnu
     )
     if(NOT ANTLR4_RUNTIME_INCLUDE_DIR)
-        message(FATAL_ERROR "antlr4-runtime headers not found. Install libantlr4-runtime-dev or set ANTLR4_RUNTIME_INCLUDE_DIR")
+        message(FATAL_ERROR "antlr4-runtime headers not found. Install libantlr4-runtime 4.13.1+ or set ANTLR4_RUNTIME_INCLUDE_DIR")
     endif()
     include_directories(${ANTLR4_RUNTIME_INCLUDE_DIR})
 endif()
