@@ -833,3 +833,15 @@ vector<int> mathUtils::createRange(int start, int end) {
     }
     return range;
 }
+
+int mathUtils::findCoprimeBelow(int N) {
+    static thread_local mt19937 gen(random_device{}());
+    uniform_int_distribution<int> dis(2, N - 1);
+
+    while (true) {
+        int x = dis(gen);
+        if (gcd(x, N) == 1) {
+            return x;
+        }
+    }
+}
