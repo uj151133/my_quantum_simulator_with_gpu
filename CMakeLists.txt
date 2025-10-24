@@ -104,6 +104,19 @@ elseif(UNIX AND NOT APPLE)
     else()
         message(FATAL_ERROR "GMP library not found. Please install libgmp-dev")
     endif()
+    find_path(ANTLR4_RUNTIME_INCLUDE_DIR
+        NAMES antlr4-runtime.h
+        PATHS /usr/include /usr/local/include
+        PATH_SUFFIXES antlr4-runtime
+    )
+    find_library(ANTLR4_RUNTIME_LIB
+        NAMES antlr4-runtime
+        PATHS /usr/lib /usr/local/lib /usr/lib/x86_64-linux-gnu
+    )
+    if(NOT ANTLR4_RUNTIME_INCLUDE_DIR)
+        message(FATAL_ERROR "antlr4-runtime headers not found. Install libantlr4-runtime-dev or set ANTLR4_RUNTIME_INCLUDE_DIR")
+    endif()
+    include_directories(${ANTLR4_RUNTIME_INCLUDE_DIR})
 endif()
 
 
