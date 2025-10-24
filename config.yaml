@@ -2,7 +2,7 @@ gui:
   enabled: false
 
 process:
-  concurrency: 0 #並行性
+  concurrency: 6 #並行性
   parallelism: 7 #並列性
 
 table:
