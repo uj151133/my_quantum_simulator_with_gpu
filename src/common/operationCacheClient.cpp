@@ -4,6 +4,7 @@
 // static auto alienCacheFind = cacheFind;
 
 thread_local graal_isolatethread_t* OperationCacheClient::thread_local_thread = nullptr;
+thread_local unordered_map<int64_t, QMDDEdge> OperationCacheClient::TLSCache;
 mutex OperationCacheClient::isolate_mutex;
 
 OperationCacheClient::OperationCacheClient() : isolate(nullptr) {
@@ -52,14 +53,31 @@ graal_isolatethread_t* OperationCacheClient::initializeNewThread() {
     return thread_local_thread;
 }
 
+optional<QMDDEdge> OperationCacheClient::find(int64_t key, bool useTLS) {
+    if (useTLS) {
+        auto it = this->TLSCache.find(key);
+        if (it != this->TLSCache.end()) return it->second;
+        return nullopt;
+    }
+    return this->findGlobal(key);
+}
+
+void OperationCacheClient::insert(int64_t key, const QMDDEdge& edge, bool useTLS) {
+    if (useTLS) {
+        this->TLSCache.insert_or_assign(key, edge);
+        return;
+    }
+    this->insertGlobal(key, edge);
+}
+
 __attribute__((hot, flatten, always_inline))
-void OperationCacheClient::insert(int64_t key, const QMDDEdge& edge) {
+void OperationCacheClient::insertGlobal(int64_t key, const QMDDEdge& edge) {
     graal_isolatethread_t* thread = this->getThreadLocalThread();
     cacheInsert(thread, key, edge.weight.real(), edge.weight.imag(), edge.uniqueTableKey);
 }
 
 __attribute__((hot, flatten, always_inline))
-optional<QMDDEdge> OperationCacheClient::find(int64_t key) {
+optional<QMDDEdge> OperationCacheClient::findGlobal(int64_t key) {
     graal_isolatethread_t* thread = this->getThreadLocalThread();
     void* ptr = cacheFind(thread, key);
 
@@ -99,6 +117,14 @@ void OperationCacheClient::cleanup() {
 OperationCacheClient& OperationCacheClient::getInstance() {
     static OperationCacheClient* instance = new OperationCacheClient();
     return *instance;
+}
+
+void OperationCacheClient::flushThreadLocalToGlobal() {
+    if (this->TLSCache.empty()) return;
+    for (const auto& kv : this->TLSCache) {
+        insertGlobal(kv.first, kv.second);
+    }
+    this->TLSCache.clear();
 }
 
 void OperationCacheClient::saveCacheToSQLite() {

@@ -50,7 +50,11 @@ void execute() {
     int numGates = 200;
 
 
-    shor(8);
+    // shor(8);
+
+    // QMDDEdge edge = mathUtils::kron(gate::H().getInitialEdge(), gate::Toff().getInitialEdge());
+    // cout << "Kron result: " << edge.depth << endl;
+    randomRotate(numQubits, numGates);
 }
 
 bool translateAndExecuteQASM(const string& qasm_file) {
