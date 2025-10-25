@@ -48,6 +48,23 @@ namespace mathUtils {
 
     vector<int> createRange(int start, int end);
     int findCoprimeBelow(int N);
+
+    template <class T, size_t N>
+    double median(const array<T, N>& a) {
+        static_assert(N > 0, "median: array must be non-empty");
+        auto b = a;
+        const size_t mid1 = (N - 1) / 2;
+        const size_t mid2 = N / 2;
+        nth_element(b.begin(), b.begin() + mid1, b.end());
+        const T x = b[mid1];
+        nth_element(b.begin(), b.begin() + mid2, b.end());
+        const T y = b[mid2];
+        if constexpr (N % 2 == 1) {
+            return static_cast<double>(x);
+        } else {
+            return 0.5 * (static_cast<double>(x) + static_cast<double>(y));
+        }
+    }
 }
 
 #endif // MATH_UTILS_HPP
