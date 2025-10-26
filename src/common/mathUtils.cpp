@@ -48,8 +48,8 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, bool parallelism
                 n1->edges[0][j].depth,
                 n1->edges[1][j].depth
             };
-            double medianDepth = median(depths);
-            if (!parallelism && medianDepth >= CONFIG.process.parallelism) {
+            double calculatedDepth = mathUtils::median(depths);
+            if (!parallelism && calculatedDepth >= CONFIG.process.parallelism) {
                 parallelTasks.push_back({i, j});
             } else if (parallelism && !concurrency) {
                 concurrencyTasks.push_back({i, j});
@@ -215,6 +215,7 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, bool parallelism
 QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1, bool parallelism, bool concurrency) {
     OperationCacheClient& cache = OperationCacheClient::getInstance();
     int64_t operationCacheKey = calculation::generateOperationCacheKey(OperationKey(e0, OperationType::ADD, e1));
+        // cout << "concurrency: " << concurrency << endl;
         if (auto existingEdge = cache.find(operationCacheKey, concurrency)) {
             if (existingEdge->weight != .0 && existingEdge->uniqueTableKey != 0) {
                 // cout << "\033[1;36mCache hit!\033[0m" << endl;
@@ -250,8 +251,13 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1, bool parallelism
 
     for (size_t i = 0; i < n0->edges.size(); i++) {
         for (size_t j = 0; j < n0->edges[i].size(); j++) {
-            size_t minDepth = std::min(n0->edges[i][j].depth, n1->edges[i][j].depth);
-            if (!parallelism && minDepth >= CONFIG.process.parallelism) {
+            array<int, 4> depths{
+                n0->edges[i][j].depth,
+                n1->edges[i][j].depth
+            };
+            size_t calculatedDepth = mathUtils::min(depths);
+            if (!parallelism && calculatedDepth >= CONFIG.process.parallelism) {
+                cout << "Adding to parallelTasks: (" << i << ", " << j << "), depth: " << calculatedDepth << endl;
                 parallelTasks.push_back({i, j});
             } else if (parallelism && !concurrency) {
                 concurrencyTasks.push_back({i, j});

@@ -65,6 +65,22 @@ namespace mathUtils {
             return 0.5 * (static_cast<double>(x) + static_cast<double>(y));
         }
     }
+
+    template <class T, size_t N>
+    double mean(const array<T, N>& a) {
+        static_assert(N > 0, "mean: array must be non-empty");
+        double sum = accumulate(a.begin(), a.end(), 0.0, [](double acc, const T& v) {
+            return acc + static_cast<double>(v);
+        });
+        return sum / static_cast<double>(N);
+    }
+
+    template <class T, size_t N>
+    double min(const array<T, N>& a) {
+        static_assert(N > 0, "min: array must be non-empty");
+        const T& m = *min_element(a.begin(), a.end());
+        return static_cast<double>(m);
+    }
 }
 
 #endif // MATH_UTILS_HPP
