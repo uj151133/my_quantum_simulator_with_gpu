@@ -637,7 +637,8 @@ void QuantumCircuit::addFREDKIN(int controlIndex, int targetIndex1, int targetIn
     }else if (controlIndex == targetIndex1 || controlIndex == targetIndex2 || targetIndex1 == targetIndex2) {
         throw invalid_argument("Control and target indices must be different.");
     }else if(numQubits == 3 && ((controlIndex == 0 && targetIndex1 == 1 && targetIndex2 == 2) || (controlIndex == 0 && targetIndex1 == 2 && targetIndex2 == 1))) {
-        this->gateQueue.push(gate::FREDKIN());
+        // this->gateQueue.push(gate::FREDKIN());
+        // TODO: wire method
     }else {
         int minTargetIndex = min(targetIndex1, targetIndex2);
         int maxTargetIndex = max(targetIndex1, targetIndex2);
@@ -702,33 +703,6 @@ void QuantumCircuit::addU2(vector<pair<int, pair<double, double>>>& qubitParams)
     return;
 }
 
-void QuantumCircuit::addU1(int qubitIndex, double theta) {
-    if (numQubits == 1) {
-        this->gateQueue.push(gate::U1(theta));
-    } else {
-        vector<QMDDEdge> edges(qubitIndex, identityEdge);
-        edges.push_back(gate::U1(theta).getInitialEdge());
-        QMDDGate result = accumulate(edges.rbegin() + 1, edges.rend(), edges.back(), [](const QMDDEdge& accumulated, const QMDDEdge& current) {
-            return mathUtils::kron(current, accumulated);
-        });
-        this->gateQueue.push(result);
-    }
-    return;
-}
-
-void QuantumCircuit::addU2(int qubitIndex, double phi, double lambda) {
-    if (numQubits == 1) {
-        this->gateQueue.push(gate::U2(phi, lambda));
-    } else {
-        vector<QMDDEdge> edges(qubitIndex, identityEdge);
-        edges.push_back(gate::U2(phi, lambda).getInitialEdge());
-        QMDDGate result = accumulate(edges.rbegin() + 1, edges.rend(), edges.back(), [](const QMDDEdge& accumulated, const QMDDEdge& current) {
-            return mathUtils::kron(current, accumulated);
-        });
-        this->gateQueue.push(result);
-    }
-    return;
-}
 
 void QuantumCircuit::addU3(int qubitIndex, double theta, double phi, double lambda) {
     this->wires[qubitIndex].push_back({Type::U3, gate::U3(theta, phi, lambda)});
@@ -891,45 +865,6 @@ void QuantumCircuit::addCU(int controlIndex, int targetIndex, double theta, doub
     return;
 }
 
-
-void QuantumCircuit::addCU(int controlIndex, int targetIndex, double theta, double phi, double lambda) {
-    if (numQubits == 1) {
-        throw invalid_argument("Cannot add CU gate to single qubit circuit.");
-    }else if (controlIndex == targetIndex) {
-        throw invalid_argument("Control and target indices must be different.");
-    }else {
-        int minIndex = min(controlIndex, targetIndex);
-        int maxIndex = max(controlIndex, targetIndex);
-        vector<QMDDEdge> edges(minIndex, identityEdge);
-        array<QMDDEdge, 2> partialCU;
-        if (maxIndex == controlIndex) {
-            partialCU[0] = braketZero;
-            partialCU[1] = braketOne;
-        } else {
-            partialCU[0] = identityEdge;
-            partialCU[1] = gate::U(theta, phi, lambda).getInitialEdge();
-        }
-        for (int index = maxIndex - 1; index >= minIndex; index--) {
-            if (index == controlIndex) {
-                partialCU[0] = mathUtils::kron(braketZero, partialCU[0]);
-                partialCU[1] = mathUtils::kron(braketOne, partialCU[1]);
-            } else if (index == targetIndex) {
-                partialCU[0] = mathUtils::kron(identityEdge, partialCU[0]);
-                partialCU[1] = mathUtils::kron(gate::U(theta, phi, lambda).getInitialEdge(), partialCU[1]);
-            } else {
-                partialCU[0] = mathUtils::kron(identityEdge, partialCU[0]);
-                partialCU[1] = mathUtils::kron(identityEdge, partialCU[1]);
-            }
-        }
-        QMDDEdge customCU = mathUtils::add(partialCU[0], partialCU[1]);
-        edges.push_back(customCU);
-        QMDDGate result = accumulate(edges.rbegin() + 1, edges.rend(), edges.back(), [](const QMDDEdge& accumulated, const QMDDEdge& current) {
-            return mathUtils::kron(current, accumulated);
-        });
-        this->gateQueue.push(result);
-    }
-    return;
-}
 
 void QuantumCircuit::addToff(const array<int, 2>& controlIndexes, int targetIndex) {
     if (controlIndexes.size() == 0) {
@@ -1151,9 +1086,9 @@ void QuantumCircuit::reset(int qubitIndex) {
 }
 
 void QuantumCircuit::globalPhase(double lamda) {
-    QMDDEdge result = QMDDEdge(exp(i * lamda), nullptr);
-    this->gateQueue.push(result);
-    return;
+    // QMDDEdge result = QMDDEdge(exp(i * lamda), nullptr);
+    // this->gateQueue.push(result);
+    // return;
 }
 
 void QuantumCircuit::simulate() {

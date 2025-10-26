@@ -46,7 +46,7 @@ void execute() {
 
     // OperationCache& cache = OperationCache::getInstance();
 
-    int numQubits = 13;
+    int numQubits = 11;
     int numGates = 200;
 
 
