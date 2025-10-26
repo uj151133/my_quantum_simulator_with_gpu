@@ -16,6 +16,8 @@
 
 using namespace std;
 
+
+
 extern "C" {
     void cacheInsert(graal_isolatethread_t* thread, int64_t key, double real, double imag, int64_t uniqueTableKey);
     void* cacheFind(graal_isolatethread_t* thread, int64_t key);
@@ -28,16 +30,23 @@ private:
     thread_local static graal_isolatethread_t* thread_local_thread;
     static mutex isolate_mutex;
     inline graal_isolatethread_t* getThreadLocalThread();
-
     graal_isolatethread_t* initializeNewThread();
+
+    static thread_local unordered_map<int64_t, QMDDEdge> TLSCache;
+
+    optional<QMDDEdge> findGlobal(int64_t key);
+    void insertGlobal(int64_t key, const QMDDEdge& edge);
 
 public:
     OperationCacheClient();
     ~OperationCacheClient();
-    void insert(int64_t key, const QMDDEdge& edge);
-    optional<QMDDEdge> find(int64_t key);
+
+    optional<QMDDEdge> find(int64_t key, bool useTLS);
+    void insert(int64_t key, const QMDDEdge& edge, bool useTLS);
+
     static OperationCacheClient& getInstance();
     void cleanup();
+    void flushThreadLocalToGlobal();
     void saveCacheToSQLite();
 };
 
