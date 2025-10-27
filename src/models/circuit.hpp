@@ -47,10 +47,13 @@ private:
     void smartInsert(int qubitIndex, const Part& part);
     int searchJOKER(int qubitIndex);
 
+    void compute();
+    void uncompute();
+
 public:
     QuantumCircuit(int numQubitits, QMDDState initialState);
     QuantumCircuit(int numQubitits);
-    // vector<vector<int>> quantumRegister;
+    vector<vector<int>> quantumRegister;
     ~QuantumCircuit() = default;
     queue<QMDDGate> getLayer() const;
     QMDDState getFinalState() const;
@@ -59,7 +62,7 @@ public:
     QuantumCircuit(QuantumCircuit&& other) = default;
     QuantumCircuit& operator=(QuantumCircuit&& other) = default;
 
-    // void setRegister(int registerIdx, int size);
+    void setRegister(int registerIdx, int size);
 
     void addI(int qubitIndex);
     void addPh(int qubitIndex, double delta);
@@ -82,6 +85,7 @@ public:
     void addAllH();
     void addCX(int controlIndex, int targetIndex);
     void addVarCX(int controlIndex, int targetIndex);
+    void addCY(int controlIndex, int targetIndex);
     void addCZ(int controlIndex, int targetIndex);
     void addDCNOT(int controlIndex, int targetIndex);
     void addSWAP(int qubitIndex1, int qubitIndex2);
@@ -96,6 +100,7 @@ public:
     void addCS(int controlIndex, int targetIndex);
     void addR(int qubitIndex, double theta, double phi);
     void addR(vector<pair<int, pair<double, double>>>& qubitParams);
+    void addCH(int controlIndex, int targetIndex);
     void addRx(int qubitIndex, double theta);
     // void addRx(vector<pair<int, double>>& qubitParams);
     void addRy(int qubitIndex, double theta);
@@ -118,6 +123,11 @@ public:
     void addU2(vector<pair<int, pair<double, double>>>& qubitParams);
     void addU3(int qubitIndex, double theta, double phi, double lambda);
     void addU3(vector<pair<int, tuple<double, double, double>>>& qubitParams);
+
+    void addCRx(int controlIndex, int targetIndex, double theta);
+    void addCRy(int controlIndex, int targetIndex, double theta);
+    void addCRz(int controlIndex, int targetIndex, double theta);
+    void addCU(int controlIndex, int targetIndex, double theta, double phi, double lambda);
     void addBARENCO(int qubitIndex, double alpha, double phi, double theta);
     void addB(int qubitIndex);
     void addCSX(int controlIndex, int targetIndex);
@@ -149,6 +159,8 @@ public:
     void addDiffuser();
 
     void addBarrier();
+    void reset(int qubitIndex);
+    void globalPhase(double lamda);
 
     void simulate();
     int measure(int qubitIndex);

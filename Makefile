@@ -23,7 +23,7 @@ ifeq ($(shell uname), Darwin)
 	xcode-select --install || (sudo xcode-select --switch /Applications/Xcode.app/Contents/Developer && sudo xcodebuild -runFirstLaunch)
 	xcrun simctl create "iOS17.2" "iPhone 15" "iOS17.2" 2>/dev/null || true
 	brew update
-	brew install mpfr libmpc gh git libomp yaml-cpp gmp gsl cmake boost openjdk@17 git-lfs xxhash tbb 
+	brew install mpfr libmpc gh git libomp yaml-cpp gmp gsl cmake boost openjdk@17 git-lfs xxhash tbb antlr4-cpp-runtime
 	# $(MAKE) android-setup-mac
 else ifeq ($(shell uname), Linux)
 	if [ -f /etc/fedora-release ]; then \
@@ -40,7 +40,7 @@ else ifeq ($(shell uname), Linux)
 		sudo snap install cmake --classic; \
 		export PATH=$$PATH:/snap/bin; \
 		sudo apt-get update; \
-		sudo apt-get install -y libomp-dev libyaml-cpp-dev libgmp-dev libgsl-dev cmake libboost-all-dev; \
+		sudo apt-get install -y libomp-dev libyaml-cpp-dev libgmp-dev libgsl-dev cmake libboost-all-dev libantlr4-runtime-dev; \
 	fi
 	# $(MAKE) android-setup-linux
 endif
