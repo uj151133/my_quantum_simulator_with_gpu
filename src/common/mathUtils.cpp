@@ -1,14 +1,15 @@
 #include "mathUtils.hpp"
 
-QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, bool done) {
+QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, bool parallelism, bool concurrency) {
     OperationCacheClient& cache = OperationCacheClient::getInstance();
     int64_t operationCacheKey = calculation::generateOperationCacheKey(OperationKey(e0, OperationType::MUL, e1));
-    if (auto existingEdge = cache.find(operationCacheKey)) {
+    if (auto existingEdge = cache.find(operationCacheKey, concurrency)) {
         if (existingEdge->weight != .0 && existingEdge->uniqueTableKey != 0) {
             // cout << "\033[1;36mCache hit!\033[0m" << endl;
             return *existingEdge;
         }
     }
+    // cout << "\033[1;35mCache miss!\033[0m" << endl;
 
     if (e1.isTerminal) {
         std::swap(const_cast<QMDDEdge&>(e0), const_cast<QMDDEdge&>(e1));
@@ -30,14 +31,28 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, bool done) {
     complex<double> tmpWeight = .0;
     bool allWeightsAreZero = true;
 
-    vector<future<pair<pair<size_t, size_t>, QMDDEdge>>> futures;
+    vector<future<pair<pair<size_t, size_t>, QMDDEdge>>> threadFutures;
+    vector<boost::fibers::future<pair<pair<size_t, size_t>, QMDDEdge>>> fiberFutures;
     vector<pair<size_t, size_t>> parallelTasks;
+    vector<pair<size_t, size_t>> concurrencyTasks;
     vector<pair<size_t, size_t>> sequentialTasks;
+
+    // cout << "Preparing tasks for multiplication: " << n0->edges.size() << " x " << n1->edges[0].size() << endl;
+    // cout << "CONFIG.process.parallelism: " << CONFIG.process.parallelism << ", CONFIG.process.concurrency: " << CONFIG.process.concurrency << endl;
 
     for (size_t i = 0; i < n0->edges.size(); i++) {
         for (size_t j = 0; j < n1->edges[i].size(); j++) {
-            if (done == false && min({n0->edges[i][0].depth, n0->edges[i][1].depth, n1->edges[0][j].depth, n1->edges[1][j].depth}) >= CONFIG.process.parallelism) {
+            array<int, 4> depths{
+                n0->edges[i][0].depth,
+                n0->edges[i][1].depth,
+                n1->edges[0][j].depth,
+                n1->edges[1][j].depth
+            };
+            double calculatedDepth = mathUtils::median(depths);
+            if (!parallelism && calculatedDepth >= CONFIG.process.parallelism) {
                 parallelTasks.push_back({i, j});
+            } else if (parallelism && !concurrency) {
+                concurrencyTasks.push_back({i, j});
             } else {
                 sequentialTasks.push_back({i, j});
             }
@@ -45,7 +60,7 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, bool done) {
     }
 
     for (const auto& [i, j] : parallelTasks) {
-        futures.push_back(threadPool.enqueue([&, i, j]() -> pair<pair<size_t, size_t>, QMDDEdge> {
+        threadFutures.push_back(threadPool.enqueue([&, i, j]() -> pair<pair<size_t, size_t>, QMDDEdge> {
             QMDDEdge answer = edgeZero;
             for (size_t k = 0; k < n0->edges[0].size(); k++) {
                 QMDDEdge p(e0.weight * n0->edges[i][k].weight, n0->edges[i][k].uniqueTableKey);
@@ -56,25 +71,42 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, bool done) {
         }));
     }
 
-    // 4. 逐次処理（直接z配列に格納）
+    for (const auto& [i, j] : concurrencyTasks) {
+        fiberFutures.emplace_back(
+            boost::fibers::async([&, i, j]() -> pair<pair<size_t, size_t>, QMDDEdge> {
+                QMDDEdge answer = edgeZero;
+                for (size_t k = 0; k < n0->edges[0].size(); k++) {
+                    QMDDEdge p(e0.weight * n0->edges[i][k].weight, n0->edges[i][k].uniqueTableKey);
+                    QMDDEdge q(e1.weight * n1->edges[k][j].weight, n1->edges[k][j].uniqueTableKey);
+                    answer = mathUtils::add(answer, mathUtils::mul(p, q, parallelism, true), parallelism, true);
+                }
+                return {{i, j}, answer};
+            })
+        );
+    }
+
     for (const auto& [i, j] : sequentialTasks) {
         QMDDEdge answer = edgeZero;
         for (size_t k = 0; k < n0->edges[0].size(); k++) {
             QMDDEdge p(e0.weight * n0->edges[i][k].weight, n0->edges[i][k].uniqueTableKey);
             QMDDEdge q(e1.weight * n1->edges[k][j].weight, n1->edges[k][j].uniqueTableKey);
-            answer = mathUtils::add(answer, mathUtils::mul(p, q, true), true);
+            answer = mathUtils::add(answer, mathUtils::mul(p, q, parallelism, concurrency), parallelism, concurrency);
         }
         z[i][j] = answer;
     }
 
-    // 5. 並列処理の結果を回収
-    for (auto& future : futures) {
+    for (auto& future : threadFutures) {
         const auto& [indices, result] = future.get();
         const auto& [i, j] = indices;
         z[i][j] = result;
     }
 
-    // 6. 全て揃った後で重み処理
+    for (auto& ff : fiberFutures) {
+        const auto& [indices, result] = ff.get();
+        const auto& [i, j] = indices;
+        z[i][j] = result;
+    }
+
     for (size_t i = 0; i < z.size(); i++) {
         for (size_t j = 0; j < z[i].size(); j++) {
             if (z[i][j].weight != .0) {
@@ -89,109 +121,13 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, bool done) {
         }
     }
 
-
-    // if (depth < CONFIG.process.parallelism){
-        // cout << "\033[1;31mmulti thread mul\033[0m" << endl;
-        // vector<future<QMDDEdge>> futures;
-        // size_t futureIdx = 0;
-        // for (size_t i = 0; i < n0->edges.size(); i++) {
-        //     for (size_t j = 0; j < n1->edges[i].size(); j++) {
-        //         futures.push_back(threadPool.enqueue([&, i, j]() {
-        //             QMDDEdge answer = QMDDEdge(.0, 0);
-        //             for (size_t k = 0; k < n0->edges[0].size(); k++) {
-        //                 QMDDEdge p(e0.weight * n0->edges[i][k].weight, n0->edges[i][k].uniqueTableKey);
-        //                 QMDDEdge q(e1.weight * n1->edges[k][j].weight, n1->edges[k][j].uniqueTableKey);
-        //                 answer = mathUtils::add(answer, mathUtils::mul(p, q, depth + 1), depth + 1);
-        //             }
-        //             return answer;
-        //         }));
-        //     }
-        // }
-
-        // futureIdx = 0;
-        // for (size_t i = 0; i < z.size(); i++) {
-        //     for (size_t j = 0; j < z[i].size(); j++) {
-        //         z[i][j] = futures[futureIdx++].get();
-        //         if (z[i][j].weight != .0) {
-        //             allWeightsAreZero = false;
-        //             if (tmpWeight == .0) {
-        //                 tmpWeight = z[i][j].weight;
-        //                 z[i][j].weight = 1.0;
-        //             } else {
-        //                 z[i][j].weight /= tmpWeight;
-        //             }
-        //         }
-        //     }
-        // }
-
-    // } else if (depth < CONFIG.process.parallelism + CONFIG.process.concurrency){
-    //     // cout << "\033[1;34mmulti fiber mul\033[0m" << endl;
-
-    //     vector<boost::fibers::future<QMDDEdge>> futures;
-
-    //     for (int i = 0; i < n0->edges.size(); i++) {
-    //         for (int j = 0; j < n1->edges[0].size(); j++) {
-    //             futures.emplace_back(
-    //                 boost::fibers::async([&, i, j]() {
-    //                     QMDDEdge answer = QMDDEdge(.0, 0);
-    //                     for (size_t k = 0; k < n0->edges[0].size(); k++) {
-    //                         QMDDEdge p(e0.weight * n0->edges[i][k].weight, n0->edges[i][k].uniqueTableKey);
-    //                         QMDDEdge q(e1.weight * n1->edges[k][j].weight, n1->edges[k][j].uniqueTableKey);
-    //                         answer = mathUtils::add(answer, mathUtils::mul(p, q, depth + 1), depth + 1);
-    //                     }
-    //                     return answer;
-    //             }));
-    //         }
-    //     }
-
-    //     size_t futureIdx = 0;
-    //     for (size_t i = 0; i < z.size(); i++) {
-    //         for (size_t j = 0; j < z[i].size(); j++) {
-    //             z[i][j] = futures[futureIdx++].get();
-    //             if (z[i][j].weight != .0) {
-    //                 allWeightsAreZero = false;
-    //                 if (tmpWeight == .0) {
-    //                     tmpWeight = z[i][j].weight;
-    //                     z[i][j].weight = 1.0;
-    //                 }else if (tmpWeight != .0) {
-    //                     z[i][j].weight /= tmpWeight;
-    //                 } else {
-    //                     cout << "⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️" << endl;
-    //                 }
-    //             }
-    //         }
-    //     }
-
-    // } else{
-    //     // cout << "sequential mul" << endl;
-    //     for (size_t i = 0; i < n0->edges.size(); i++) {
-    //         for (size_t j = 0; j < n1->edges[0].size(); j++){
-    //             for (size_t k = 0; k < n0->edges[0].size(); k++) {
-    //                 QMDDEdge p(e0.weight * n0->edges[i][k].weight, n0->edges[i][k].uniqueTableKey);
-    //                 QMDDEdge q(e1.weight * n1->edges[k][j].weight, n1->edges[k][j].uniqueTableKey);
-    //                 z[i][j] = mathUtils::add(z[i][j], mathUtils::mul(p, q, depth + 1), depth + 1);
-    //             }
-    //             if (z[i][j].weight != .0) {
-    //                 allWeightsAreZero = false;
-    //                 if (tmpWeight == .0) {
-    //                     tmpWeight = z[i][j].weight;
-    //                     z[i][j].weight = 1.0;
-    //                 }else if (tmpWeight != .0) {
-    //                     z[i][j].weight /= tmpWeight;
-    //                 } else {
-    //                     cout << "⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️" << endl;
-    //                 }
-    //             }
-    //         }
-    //     }
-    // }
     QMDDEdge result;
     if (allWeightsAreZero) {
         result = edgeZero;
     } else {
         result = QMDDEdge(tmpWeight, make_shared<QMDDNode>(z));
     }
-    cache.insert(operationCacheKey, result);
+    cache.insert(operationCacheKey, result, concurrency);
     return result;
 }
 
@@ -276,15 +212,16 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, bool done) {
 //     }
 // }
 
-QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1, bool done) {
+QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1, bool parallelism, bool concurrency) {
     OperationCacheClient& cache = OperationCacheClient::getInstance();
     int64_t operationCacheKey = calculation::generateOperationCacheKey(OperationKey(e0, OperationType::ADD, e1));
-    if (auto existingEdge = cache.find(operationCacheKey)) {
-        if (existingEdge->weight != .0 && existingEdge->uniqueTableKey != 0) {
-            // cout << "\033[1;36mCache hit!\033[0m" << endl;
-            return *existingEdge;
+        // cout << "concurrency: " << concurrency << endl;
+        if (auto existingEdge = cache.find(operationCacheKey, concurrency)) {
+            if (existingEdge->weight != .0 && existingEdge->uniqueTableKey != 0) {
+                // cout << "\033[1;36mCache hit!\033[0m" << endl;
+                return *existingEdge;
+            }
         }
-    }
     // cout << "\033[1;35mCache miss!\033[0m" << endl;
 
     if (e1.isTerminal) {
@@ -306,15 +243,24 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1, bool done) {
     vector<vector<QMDDEdge>> z(n0->edges.size(), vector<QMDDEdge>(n0->edges[0].size(), edgeZero));
     complex<double> tmpWeight = .0;
 
-    vector<future<pair<pair<size_t, size_t>, QMDDEdge>>> futures;
+    vector<future<pair<pair<size_t, size_t>, QMDDEdge>>> threadFutures;
+    vector<boost::fibers::future<pair<pair<size_t, size_t>, QMDDEdge>>> fiberFutures;
     vector<pair<size_t, size_t>> parallelTasks;
+    vector<pair<size_t, size_t>> concurrencyTasks;
     vector<pair<size_t, size_t>> sequentialTasks;
 
-    // 2. タスク分類
     for (size_t i = 0; i < n0->edges.size(); i++) {
         for (size_t j = 0; j < n0->edges[i].size(); j++) {
-            if (done == false && min(n0->edges[i][j].depth, n1->edges[i][j].depth) >= CONFIG.process.parallelism) {
+            array<int, 4> depths{
+                n0->edges[i][j].depth,
+                n1->edges[i][j].depth
+            };
+            size_t calculatedDepth = mathUtils::min(depths);
+            if (!parallelism && calculatedDepth >= CONFIG.process.parallelism) {
+                cout << "Adding to parallelTasks: (" << i << ", " << j << "), depth: " << calculatedDepth << endl;
                 parallelTasks.push_back({i, j});
+            } else if (parallelism && !concurrency) {
+                concurrencyTasks.push_back({i, j});
             } else {
                 sequentialTasks.push_back({i, j});
             }
@@ -322,7 +268,7 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1, bool done) {
     }
 
     for (const auto& [i, j] : parallelTasks) {
-        futures.push_back(threadPool.enqueue([&, i, j]() -> pair<pair<size_t, size_t>, QMDDEdge> {
+        threadFutures.push_back(threadPool.enqueue([&, i, j]() -> pair<pair<size_t, size_t>, QMDDEdge> {
             QMDDEdge p(e0.weight * n0->edges[i][j].weight, n0->edges[i][j].uniqueTableKey);
             QMDDEdge q(e1.weight * n1->edges[i][j].weight, n1->edges[i][j].uniqueTableKey);
             QMDDEdge result = mathUtils::add(p, q, true);
@@ -330,21 +276,36 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1, bool done) {
         }));
     }
 
-    // 4. 逐次処理（直接z配列に格納）
+    for (const auto& [i, j] : concurrencyTasks) {
+        fiberFutures.emplace_back(
+            boost::fibers::async([&, i, j]() -> pair<pair<size_t, size_t>, QMDDEdge> {
+                QMDDEdge p(e0.weight * n0->edges[i][j].weight, n0->edges[i][j].uniqueTableKey);
+                QMDDEdge q(e1.weight * n1->edges[i][j].weight, n1->edges[i][j].uniqueTableKey);
+                QMDDEdge result = mathUtils::add(p, q, parallelism, true);
+                return {{i, j}, result};
+            })
+        );
+    }
+
+
     for (const auto& [i, j] : sequentialTasks) {
         QMDDEdge p(e0.weight * n0->edges[i][j].weight, n0->edges[i][j].uniqueTableKey);
         QMDDEdge q(e1.weight * n1->edges[i][j].weight, n1->edges[i][j].uniqueTableKey);
-        z[i][j] = mathUtils::add(p, q, true);
+        z[i][j] = mathUtils::add(p, q, parallelism, concurrency);
     }
 
-    // 5. 並列処理の結果を回収
-    for (auto& future : futures) {
+    for (auto& future : threadFutures) {
         const auto& [indices, result] = future.get();
         const auto& [i, j] = indices;
         z[i][j] = result;
     }
 
-    // 6. 全て揃った後で重み処理
+    for (auto& ff : fiberFutures) {
+        const auto& [indices, result] = ff.get();
+        const auto& [i, j] = indices;
+        z[i][j] = result;
+    }
+
     for (size_t i = 0; i < z.size(); i++) {
         for (size_t j = 0; j < z[i].size(); j++) {
             if (z[i][j].weight != .0) {
@@ -359,97 +320,13 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1, bool done) {
         }
     }
 
-    // if (depth < CONFIG.process.parallelism){
-    //     // cout << "\033[1;31mmulti thread add\033[0m" << endl;
-    //     vector<future<QMDDEdge>> futures;
-    //     size_t futureIdx = 0;
-    //     for (size_t i = 0; i < n0->edges.size(); i++) {
-    //         for (size_t j = 0; j < n0->edges[i].size(); j++) {
-    //             futures.push_back(threadPool.enqueue([&, i, j]() {
-    //                 QMDDEdge p(e0.weight * n0->edges[i][j].weight, n0->edges[i][j].uniqueTableKey);
-    //                 QMDDEdge q(e1.weight * n1->edges[i][j].weight, n1->edges[i][j].uniqueTableKey);
-    //                 return mathUtils::add(p, q, depth + 1);
-    //             }));
-    //         }
-    //     }
-
-    //     futureIdx = 0;
-    //     for (size_t i = 0; i < z.size(); i++) {
-    //         for (size_t j = 0; j < z[i].size(); j++) {
-    //             z[i][j] = futures[futureIdx++].get();
-    //             if (z[i][j].weight != .0) {
-    //                 allWeightsAreZero = false;
-    //                 if (tmpWeight == .0) {
-    //                     tmpWeight = z[i][j].weight;
-    //                     z[i][j].weight = 1.0;
-    //                 } else {
-    //                     z[i][j].weight /= tmpWeight;
-    //                 }
-    //             }
-    //         }
-    //     }
-    // } else if (depth < CONFIG.process.parallelism + CONFIG.process.concurrency){
-    //     // cout << "\033[1;34mmulti fiber add\033[0m" << endl;
-
-    //     vector<boost::fibers::future<QMDDEdge>> futures;
-
-    //     for (int i = 0; i < n0->edges.size(); i++) {
-    //         for (int j = 0; j < n0->edges[i].size(); j++) {
-    //             futures.emplace_back(
-    //                 boost::fibers::async([&, i, j]() {
-    //                     QMDDEdge p(e0.weight * n0->edges[i][j].weight, n0->edges[i][j].uniqueTableKey);
-    //                     QMDDEdge q(e1.weight * n1->edges[i][j].weight, n1->edges[i][j].uniqueTableKey);
-    //                     return mathUtils::add(p, q, depth + 1);
-    //             }));
-    //         }
-    //     }
-
-    //     size_t futureIdx = 0;
-    //     for (size_t i = 0; i < z.size(); i++) {
-    //         for (size_t j = 0; j < z[i].size(); j++) {
-    //             z[i][j] = futures[futureIdx++].get();
-    //             if (z[i][j].weight != .0) {
-    //                 allWeightsAreZero = false;
-    //                 if (tmpWeight == .0) {
-    //                     tmpWeight = z[i][j].weight;
-    //                     z[i][j].weight = 1.0;
-    //                 }else if (tmpWeight != .0) {
-    //                     z[i][j].weight /= tmpWeight;
-    //                 } else {
-    //                     cout << "⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️" << endl;
-    //                 }
-    //             }
-    //         }
-    //     }
-
-    // } else{
-    //     // cout << "sequential add" << endl;
-    //     for (size_t i = 0; i < n0->edges.size(); i++) {
-    //         for (size_t j = 0; j < n0->edges[i].size(); j++) {
-    //             QMDDEdge p(e0.weight * n0->edges[i][j].weight, n0->edges[i][j].uniqueTableKey);
-    //             QMDDEdge q(e1.weight * n1->edges[i][j].weight, n1->edges[i][j].uniqueTableKey);
-    //             z[i][j] = mathUtils::add(p, q, depth + 1);
-    //             if (z[i][j].weight != .0) {
-    //                 allWeightsAreZero = false;
-    //                 if (tmpWeight == .0) {
-    //                     tmpWeight = z[i][j].weight;
-    //                     z[i][j].weight = 1.0;
-    //                 }else if (tmpWeight != .0) {
-    //                     z[i][j].weight /= tmpWeight;
-    //                 } else {
-    //                     cout << "⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️" << endl;
-    //                 }
-    //             }
-    //         }
-    //     }
-    // }
     QMDDEdge result;
     if (allWeightsAreZero) {
         result = edgeZero;
     } else {
         result = QMDDEdge(tmpWeight, make_shared<QMDDNode>(z));
     }
-    cache.insert(operationCacheKey, result);
+    cache.insert(operationCacheKey, result, concurrency);
     return result;
 }
 
@@ -535,7 +412,7 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1, bool done) {
 QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
     OperationCacheClient& cache = OperationCacheClient::getInstance();
     int64_t operationCacheKey = calculation::generateOperationCacheKey(OperationKey(e0, OperationType::KRONECKER, e1));
-    if (auto existingEdge = cache.find(operationCacheKey)) {
+    if (auto existingEdge = cache.find(operationCacheKey, false)) {
         if (existingEdge->weight != .0 && existingEdge->uniqueTableKey != 0) {
             // cout << "\033[1;36mCache hit!\033[0m" << endl;
             return *existingEdge;
@@ -639,14 +516,14 @@ QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
     } else {
         result = QMDDEdge(e0.weight * tmpWeight, make_shared<QMDDNode>(z));
     }
-    cache.insert(operationCacheKey, result);
+    cache.insert(operationCacheKey, result, false);
     return result;
 }
 
 QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1) {
     OperationCacheClient& cache = OperationCacheClient::getInstance();
     int64_t operationCacheKey = calculation::generateOperationCacheKey(OperationKey(e0, OperationType::KRONECKER, e1));
-    if (auto existingEdge = cache.find(operationCacheKey)) {
+    if (auto existingEdge = cache.find(operationCacheKey, false)) {
         if (existingEdge->weight != .0 && existingEdge->uniqueTableKey != 0) {
             // cout << "\033[1;36mCache hit!\033[0m" << endl;
             return *existingEdge;
@@ -673,7 +550,7 @@ QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1) {
     }
 
     QMDDEdge result = QMDDEdge(e0.weight * e1.weight, make_shared<QMDDNode>(z));
-    cache.insert(operationCacheKey, result);
+    cache.insert(operationCacheKey, result, false);
     return result;
 }
 
@@ -766,7 +643,6 @@ QMDDEdge mathUtils::dyad(const QMDDEdge& e0, const QMDDEdge& e1) {
     for (size_t i = 0; i < n0->edges.size(); i++) {
         for (size_t j = 0; j < n1->edges[0].size(); j++) {
             z[i][j] = mathUtils::dyad(n0->edges[i][0], n1->edges[0][j]);
-            // z[i][j] = QMDDEdge(n0->edges[i][0].weight * n1->edges[0][j].weight, 0);
         }
     }
     QMDDEdge result;
@@ -832,4 +708,16 @@ vector<int> mathUtils::createRange(int start, int end) {
         range.push_back(i);
     }
     return range;
+}
+
+int mathUtils::findCoprimeBelow(int N) {
+    static thread_local mt19937 gen(random_device{}());
+    uniform_int_distribution<int> dis(2, N - 1);
+
+    while (true) {
+        int x = dis(gen);
+        if (gcd(x, N) == 1) {
+            return x;
+        }
+    }
 }

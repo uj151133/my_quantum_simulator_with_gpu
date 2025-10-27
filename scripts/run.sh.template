@@ -1,0 +1,79 @@
+#!/bin/bash
+
+# QMDD Simulator Runner
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+# Parse arguments
+MODE="run"
+INPUT_FILE=""
+EXTRA_ARGS=""
+
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        -s|--server)
+            MODE="server"
+            shift
+            ;;
+        -d|--debug)
+            MODE="debug"
+            shift
+            ;;
+        --input)
+            if [[ -z "$2" ]]; then
+                echo "Error: --input requires a file path"
+                exit 1
+            fi
+            MODE="translate"
+            INPUT_FILE="$2"
+            shift 2
+            ;;
+        -h|--help)
+            echo "Usage: $0 [OPTIONS]"
+            echo "Options:"
+            echo "  (no args)     Run in normal mode (equivalent to 'make run')"
+            echo "  -s, --server  Run in server mode (equivalent to 'make run-server')"
+            echo "  -d, --debug   Run in debug mode (equivalent to 'make debug')"
+            echo "  --input FILE  Run in translate mode with input file (equivalent to 'make run-translate')"
+            echo "  -h, --help    Show this help message"
+            echo ""
+            echo "Examples:"
+            echo "  $0                              # Normal run"
+            echo "  $0 -s                          # Server mode"
+            echo "  $0 -d                          # Debug mode"
+            echo "  $0 --input examples/bell.qasm  # Translate mode"
+            exit 0
+            ;;
+        *)
+            EXTRA_ARGS="$EXTRA_ARGS $1"
+            shift
+            ;;
+    esac
+done
+
+# Execute based on mode
+case "$MODE" in
+    run)
+        echo "Running in normal mode..."
+        @LIB_PATH_PREFIX@ $SCRIPT_DIR/qmdd_sim $EXTRA_ARGS
+        ;;
+    server)
+        echo "Running in server mode..."
+        @LIB_PATH_PREFIX@ $SCRIPT_DIR/qmdd_sim -s $EXTRA_ARGS
+        ;;
+    debug)
+        echo "Starting debug session..."
+        lldb --file $SCRIPT_DIR/qmdd_sim
+        ;;
+    translate)
+        if [[ ! -f "$INPUT_FILE" ]]; then
+            echo "Error: Input file '$INPUT_FILE' not found"
+            exit 1
+        fi
+        echo "Translating QASM file: $INPUT_FILE"
+        @LIB_PATH_PREFIX@ $SCRIPT_DIR/qmdd_sim -translate "$INPUT_FILE" $EXTRA_ARGS
+        ;;
+    *)
+        echo "Unknown mode: $MODE"
+        exit 1
+        ;;
+esac

@@ -14,6 +14,7 @@ ostream& operator<<(ostream& os, Type type) {
         case Type::H: os << "H"; break;
         case Type::CX: os << "CX"; break;
         case Type::varCX: os << "varCX"; break;
+        case Type::CY: os << "CY"; break;
         case Type::CZ: os << "CZ"; break;
         case Type::SWAP: os << "SWAP"; break;
         case Type::P: os << "P"; break;
@@ -21,6 +22,7 @@ ostream& operator<<(ostream& os, Type type) {
         case Type::Tdg: os << "Tdg"; break;
         case Type::CP: os << "CP"; break;
         case Type::CS: os << "CS"; break;
+        case Type::CH: os << "CH"; break;
         case Type::R: os << "R"; break;
         case Type::Rx: os << "Rx"; break;
         case Type::Ry: os << "Ry"; break;
@@ -33,6 +35,10 @@ ostream& operator<<(ostream& os, Type type) {
         case Type::U1: os << "U1"; break;
         case Type::U2: os << "U2"; break;
         case Type::U3: os << "U3"; break;
+        case Type::CRx: os << "CRx"; break;
+        case Type::CRy: os << "CRy"; break;
+        case Type::CRz: os << "CRz"; break;
+        case Type::CU: os << "CU"; break;
         case Type::Other: os << "Other"; break;
         case Type::VOID: os << "🌑"; break;
         case Type::BAN: os << "🚫"; break;
