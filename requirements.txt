@@ -13,3 +13,7 @@ pyqt5
 # tensorflow-macos
 # tensorflow-metal
 
+torch==2.9.0
+gymnasium==1.2.1
+numpy==2.3.4
+tqdm==4.67.1
