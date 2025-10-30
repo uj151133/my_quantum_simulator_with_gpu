@@ -1,5 +1,6 @@
 import torch
 import torch.nn as nn
+from typing import Tuple, Dict
 
 class PointerPolicy(nn.Module):
     """
@@ -22,19 +23,33 @@ class PointerPolicy(nn.Module):
         self.pointer = nn.Linear(D, 1)
         self.value_head = nn.Sequential(nn.Linear(D, 128), nn.ReLU(), nn.Linear(128, 1))
 
-    def forward(self, obs):
+    @torch.jit.ignore
+    def forward(self, obs: Dict[str, torch.Tensor]):
+        """
+        学習時（Python）用: dictを受け取るAPI
+        TorchScriptでは無視（exportは forward_tensors を使う）
+        """
         sig = obs["sig"]        # [B,K,sd]
         win = obs["win"]        # [B,W,F]
         mask = obs["mask"]      # [B,W]
+        return self.forward_tensors(sig, win, mask)
 
+    @torch.jit.export
+    def forward_tensors(self, sig: torch.Tensor, win: torch.Tensor, mask: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
+        """
+        TorchScript/ONNXエクスポート用: dictを使わないAPI
+        sig:  [B,K,sd]
+        win:  [B,W,F]
+        mask: [B,W]
+        """
         B = sig.shape[0]
-        sig_flat = sig.reshape(B, -1)               # [B, K*sd]
-        sig_emb = self.sig_proj(sig_flat)[:,None,:] # [B,1,D]
-        win_emb = self.win_proj(win)                # [B,W,D]
-        x = torch.cat([sig_emb, win_emb], dim=1)    # [B,1+W,D]
-        enc = self.encoder(x)
-        win_enc = enc[:,1:,:]                       # [B,W,D]
-        logits = self.pointer(win_enc).squeeze(-1)  # [B,W]
-        logits = logits + torch.log(mask + 1e-8)    # マスク
-        value = self.value_head(enc[:,0,:]).squeeze(-1)
+        sig_flat = sig.reshape(B, -1)                  # [B, K*sd]
+        sig_emb  = self.sig_proj(sig_flat)[:, None, :] # [B,1,D]
+        win_emb  = self.win_proj(win)                  # [B,W,D]
+        x = torch.cat([sig_emb, win_emb], dim=1)       # [B,1+W,D]
+        enc = self.encoder(x)                          # [B,1+W,D]
+        win_enc = enc[:, 1:, :]                        # [B,W,D]
+        logits = self.pointer(win_enc).squeeze(-1)     # [B,W]
+        logits = logits + torch.log(mask + 1e-8)       # マスク
+        value  = self.value_head(enc[:, 0, :]).squeeze(-1)  # [B]
         return logits, value

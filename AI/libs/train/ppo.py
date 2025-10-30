@@ -1,9 +1,14 @@
-import os, numpy as np, torch, torch.nn as nn, torch.optim as optim
+import os
+import numpy as np
+import torch
+import torch.nn as nn
+import torch.optim as optim
 from torch.distributions.categorical import Categorical
+from typing import Optional
 from ..cfg import Config
 from ..envs.qmdd_fusion_env import QMDDFusionEnv
 from ..models.pointer_policy import PointerPolicy
-from ..io.checkpoint import save_checkpoint
+from ..io.checkpoint import save_checkpoint, load_checkpoint, export_torchscript, export_onnx
 
 def _compute_adv(rew, val, done, gamma, lam):
     T = len(rew)
@@ -20,14 +25,22 @@ def _compute_adv(rew, val, done, gamma, lam):
     adv = (adv - adv.mean()) / (adv.std() + 1e-8)
     return adv, ret
 
-def run_ppo(cfg: Config, save_dir: str = "ckpts", save_every_steps: int = 50_000):
+def run_ppo(cfg: Config, save_dir: str = "ckpts", save_every_steps: int = 50_000,
+            init_ckpt: Optional[str] = None, export_dir: str = "exports", export_final: bool = True):
+    os.makedirs(save_dir, exist_ok=True)
+    os.makedirs(export_dir, exist_ok=True)
+
     env = QMDDFusionEnv(cfg)
     policy = PointerPolicy(cfg).to(cfg.device)
+
+    # ウォームスタート（模倣学習の重みを流用）
+    if init_ckpt and os.path.isfile(init_ckpt):
+        load_checkpoint(policy, init_ckpt, map_location=cfg.device)
+
     opt = optim.Adam(policy.parameters(), lr=cfg.lr)
 
-    os.makedirs(save_dir, exist_ok=True)
-
     steps = 0
+    last_ckpt = None
     while steps < cfg.total_steps:
         # rollout
         buf = {"sig":[], "win":[], "mask":[], "act":[], "logp":[], "rew":[], "val":[], "done":[]}
@@ -47,7 +60,7 @@ def run_ppo(cfg: Config, save_dir: str = "ckpts", save_every_steps: int = 50_000
             obs = obs2
             if done: obs,_ = env.reset()
 
-        # stack tensors (on device)
+        # stack
         S = len(buf["act"])
         obs_sig = torch.tensor(np.stack(buf["sig"],0), dtype=torch.float32, device=cfg.device)
         obs_win = torch.tensor(np.stack(buf["win"],0), dtype=torch.float32, device=cfg.device)
@@ -82,8 +95,21 @@ def run_ppo(cfg: Config, save_dir: str = "ckpts", save_every_steps: int = 50_000
                 opt.step()
 
         steps += cfg.rollout_steps
-        print(f"[PPO] steps={steps} avgR={torch.tensor(buf['rew']).float().mean().item():.3f}")
+        avgR = float(np.mean(buf["rew"])) if len(buf["rew"]) else 0.0
+        print(f"[PPO] steps={steps} avgR={avgR:.3f}")
 
         if steps % save_every_steps == 0 or steps >= cfg.total_steps:
-            save_checkpoint(policy.cpu(), cfg, os.path.join(save_dir, f"pointer_policy_ppo_steps{steps}.pt"), step=steps)
+            ckpt_path = os.path.join(save_dir, f"pointer_policy_ppo_steps{steps}.pt")
+            save_checkpoint(policy.cpu(), cfg, ckpt_path, step=steps)
+            last_ckpt = ckpt_path
             policy.to(cfg.device)
+
+    # 自動エクスポート（最後のチェックポイントで）
+    if export_final and last_ckpt is not None:
+        cpu_model = PointerPolicy(cfg)
+        cpu_model.load_state_dict(torch.load(last_ckpt, map_location="cpu")["state_dict"])
+        cpu_model.eval()
+        ts_path = os.path.join(export_dir, f"pointer_policy_ppo_steps{steps}.ts.pt")
+        onnx_path = os.path.join(export_dir, f"pointer_policy_ppo_steps{steps}.onnx")
+        export_torchscript(cpu_model, ts_path)
+        export_onnx(cpu_model, onnx_path, cfg.top_k_levels, cfg.window_size, cfg.sig_dim, cfg.gate_feat_dim)
