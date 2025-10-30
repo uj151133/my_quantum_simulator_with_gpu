@@ -1,8 +1,8 @@
-# qiskit==0.45.0
-qiskit
-qiskit-aer
-qiskit-ibm-runtime
-qiskit-ibm-provider
+qiskit==2.2.2
+# qiskit-aer==0.17.2
+qiskit-ibm-provider==0.11.0
+qiskit-ibm-runtime==0.43.1
+qiskit-terra==0.46.3
 sympy
 pybind11
 python-dotenv
@@ -21,3 +21,6 @@ torch==2.9.0
 gymnasium==1.2.1
 numpy==2.3.4
 tqdm==4.67.1
+
+PyYAML==6.0.3
+wheel==0.45.1

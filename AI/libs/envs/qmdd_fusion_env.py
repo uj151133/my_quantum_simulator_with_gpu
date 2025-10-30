@@ -24,7 +24,7 @@ class QMDDFusionEnv(gym.Env):
     def __init__(self, cfg: Config, cpp: CppClient = None):
         super().__init__()
         self.cfg = cfg
-        self.cpp = cpp or CppClient()
+        self.cpp = cpp or CppClient(cfg.max_qubits)
         self.cost = HeuristicCostEstimator(cfg)
 
         W, K, sd, fd = cfg.window_size, cfg.top_k_levels, cfg.sig_dim, cfg.gate_feat_dim

@@ -1,9 +1,13 @@
-#pragma once
+#ifndef QMDDCORE_HPP
+#define QMDDCORE_HPP
 
 #include <string>
 #include <vector>
 #include <chrono>
 #include <pybind11/pybind11.h>
+#include <pybind11/stl.h>
+#include "../models/circuit.hpp"
+#include "../models/uniqueTable.hpp"
 
 using namespace std;
 namespace py = pybind11;
@@ -26,3 +30,5 @@ public:
 private:
     int nq_{0};
 };
+
+#endif

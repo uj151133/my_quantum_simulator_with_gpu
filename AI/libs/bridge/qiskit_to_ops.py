@@ -1,82 +1,88 @@
+# Qiskit circuit -> ops(list[dict]) 変換（Qiskit 2.x 対応）
 from __future__ import annotations
+
 from typing import List, Tuple, Dict, Any
 
-def _to_float(x) -> float:
+try:
+    # 新系（推奨）
+    from qiskit.circuit import QuantumCircuit, Qubit
+except Exception:  # フォールバック（環境によっては __init__ で再エクスポートされない）
+    from qiskit.circuit.quantumcircuit import QuantumCircuit  # type: ignore
+    from qiskit.circuit import Qubit  # type: ignore
+
+
+def _qubit_index(circ: QuantumCircuit, qb: Qubit) -> int:
+    # Qiskit 2.x 推奨
+    try:
+        return circ.find_bit(qb).index  # type: ignore[attr-defined]
+    except Exception:
+        # フォールバック（古い挙動に近い）
+        return circ.qubits.index(qb)
+
+
+def _as_float(x: Any) -> float:
     try:
         return float(x)
     except Exception:
-        return 0.0  # 未束縛パラメータは 0.0 にフォールバック（必要なら事前 bind）
+        # ParameterExpression など
+        v = getattr(x, "value", None)
+        if v is not None:
+            try:
+                return float(v)
+            except Exception:
+                pass
+    # 最後の手段（未解決パラメータ等）
+    return 0.0
 
-# Qiskit命名 → シミュレータ側 gate_type へ正規化
-_NAME_MAP = {
-    "id": "ID",
-    "x": "X",
-    "y": "Y",
-    "z": "Z",
-    "h": "H",
-    "s": "S",
-    "sdg": "SDG",
-    "t": "T",
-    "tdg": "TDG",
-    "sx": "SX",   # C++では addV に対応させる
-    "rx": "RX",
-    "ry": "RY",
-    "rz": "RZ",
-    "p":  "P",
-    "u":  "U3",   # Qiskit の U は一般に U3(θ,φ,λ)
-    "u1": "U1",
-    "u2": "U2",
-    "u3": "U3",
-    "cx": "CX",
-    "cy": "CY",
-    "cz": "CZ",
-    "cp": "CP",
-    "ch": "CH",
-    "crx": "CRX",
-    "cry": "CRY",
-    "crz": "CRZ",
-    "swap": "SWAP",
-}
 
-# 対角ゲートの簡易判定（必要に応じて拡張）
-_DIAG = {"Z", "RZ", "P", "U1", "CZ", "CP"}
-
-def circuit_to_ops(qc) -> Tuple[int, List[Dict[str, Any]]]:
+def circuit_to_ops(circ: QuantumCircuit) -> Tuple[int, List[Dict[str, Any]]]:
     """
-    Qiskit QuantumCircuit -> (num_qubits, ops list)
-    ops 要素:
-      {"gate_type":str, "qubits":[...], "theta":float, "phi":float, "lam":float, "is_diag":int}
+    Convert a Qiskit QuantumCircuit to a list of ops dictionaries that CppClient understands.
+    Returns:
+      (num_qubits, ops)
+    Each op is a dict like:
+      { "gate_type": "H"|"CX"|"RZ"|..., "qubits": [int,...], "theta": float, "phi": float, "lam": float }
     """
-    n = qc.num_qubits
+    n_qubits = len(circ.qubits)
     ops: List[Dict[str, Any]] = []
-    for inst, qargs, _ in qc.data:
-        name = inst.name.lower()
-        if name not in _NAME_MAP:
+
+    for item in circ.data:
+        # Qiskit 2.x: item は CircuitInstruction
+        # 旧系: (operation, qargs, cargs) のタプル
+        if hasattr(item, "operation"):
+            operation = item.operation
+            qargs = item.qubits
+        else:
+            operation, qargs, _cargs = item  # type: ignore[misc]
+
+        name = getattr(operation, "name", "").lower()
+        # 非ユニタリはスキップ
+        if name in ("measure", "barrier", "delay", "snapshot", "reset"):
             continue
-        g = _NAME_MAP[name]
 
-        qubits = [qb.index for qb in qargs]
-        theta = phi = lam = 0.0
-        params = getattr(inst, "params", [])
+        qidxs = [_qubit_index(circ, qb) for qb in qargs]
+        params = getattr(operation, "params", []) or []
 
-        if g in ("RX", "RY", "RZ", "P", "U1", "CRX", "CRY", "CRZ", "CP"):
-            if len(params) >= 1: theta = _to_float(params[0])
-        if g in ("U2",):
-            if len(params) >= 1: phi = _to_float(params[0])
-            if len(params) >= 2: lam = _to_float(params[1])
-        if g in ("U3", "U"):
-            if len(params) >= 1: theta = _to_float(params[0])
-            if len(params) >= 2: phi   = _to_float(params[1])
-            if len(params) >= 3: lam   = _to_float(params[2])
+        op: Dict[str, Any] = {"gate_type": name.upper(), "qubits": qidxs}
 
-        is_diag = 1 if g in _DIAG else 0
+        # 代表的な回転系
+        if name in ("rz", "rx", "ry"):
+            if len(params) >= 1:
+                op["theta"] = _as_float(params[0])
+        # U, U3（Qiskit 2.x の UGate は name=="u"）
+        elif name in ("u", "u3"):
+            if len(params) >= 3:
+                op["theta"] = _as_float(params[0])
+                op["phi"] = _as_float(params[1])
+                op["lam"] = _as_float(params[2])
+            op["gate_type"] = "U3"
 
-        ops.append({
-            "gate_type": g,
-            "qubits": qubits,
-            "theta": float(theta),
-            "phi":   float(phi),
-            "lam":   float(lam),
-            "is_diag": int(is_diag),
-        })
-    return n, ops
+        # そのまま渡す代表例（実装側が対応している想定）
+        # X, H, CX, CZ, SX などは gate_type=上記でOK
+
+        # 未知ゲート名の扱い（必要ならここでマッピング/分解）
+        # 例: 'sx' を RX(pi/2) に分解 など
+        # 今はそのまま C++ 側に委譲
+        ops.append(op)
+
+    return n_qubits, ops

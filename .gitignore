@@ -32,3 +32,4 @@ Cargo.lock
 # Environment variables
 .env
 run.sh
+AI/qmdd_core.so
