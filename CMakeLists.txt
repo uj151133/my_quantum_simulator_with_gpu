@@ -35,6 +35,7 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(Python3 REQUIRED COMPONENTS Interpreter Development)
+find_package(pybind11 CONFIG REQUIRED)
 
 # インクルードディレクトリとリンクディレクトリの設定
 include_directories(${Python3_INCLUDE_DIRS})
@@ -55,7 +56,6 @@ if(NOT Boost_FOUND)
 endif()
 find_package(Threads REQUIRED)
 find_package(TBB REQUIRED)
-# GNUライブラリのインクルードとリンク
 find_package(GSL REQUIRED)
 
 if(APPLE)
@@ -236,6 +236,54 @@ elseif(UNIX AND NOT APPLE)
     set(LIB_PATH_PREFIX "LD_LIBRARY_PATH=/home/ark/.sdkman/candidates/java/current/lib/server:/home/ark/.sdkman/candidates/java/current/lib:\$LD_LIBRARY_PATH")
 else()
     set(LIB_PATH_PREFIX "")
+endif()
+
+# === Python拡張モジュール: qmdd_core ===
+
+file(GLOB CORE_SOURCES
+    "src/models/*.cpp"
+    "src/common/*.cpp"
+    "src/modules/*.cpp"
+)
+
+add_library(qmdd_core MODULE
+    src/bindings/qmddCore.cpp
+    ${CORE_SOURCES}
+)
+
+set_target_properties(qmdd_core PROPERTIES
+    PREFIX ""
+    OUTPUT_NAME "qmdd_core"
+    LIBRARY_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/AI"
+)
+
+target_include_directories(qmdd_core PRIVATE
+    ${GSL_INCLUDE_DIRS}
+    ${OPENQASM3_GEN_DIR}
+    ${ANTLR4_RUNTIME_INCLUDE_DIR}
+    ${CMAKE_SOURCE_DIR}/src
+    ${Python3_INCLUDE_DIRS}
+    ${Boost_INCLUDE_DIRS}
+)
+
+target_link_libraries(qmdd_core PRIVATE
+    Python3::Python
+    pybind11::module
+    pthread
+    yaml-cpp::yaml-cpp
+    nlohmann_json::nlohmann_json
+    ${Boost_LIBRARIES}
+    GSL::gsl
+    ${GMP_LIB}
+    Threads::Threads
+    xxhash
+    TBB::tbb
+    antlr4_runtime
+    $<$<BOOL:${GRAALVM_NATIVE_LIB}>:${GRAALVM_NATIVE_LIB}>
+)
+
+if(UNIX AND NOT APPLE)
+    set_target_properties(qmdd_core PROPERTIES BUILD_RPATH "/usr/local/lib")
 endif()
 
 

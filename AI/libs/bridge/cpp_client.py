@@ -1,15 +1,23 @@
-import time, random
-from typing import List, Dict, Any
+import importlib
 
 class CppClient:
-    """
-    C++ QMDD へのブリッジ（今はスタブ）。
-    後で pybind11 / RPC に置き換え。
-    """
-    def evaluate_chunk_runtime(self, circuit_id: str, chunk_ops: List[Dict[str,Any]]) -> Dict[str, Any]:
-        # ダミー: 非対角が多いほど遅いというモデル
-        time.sleep(0.001)
-        n_nondiag = sum(1 for op in chunk_ops if op.get("is_diag",0)==0)
-        wall = 0.05 * n_nondiag + 0.001 * random.random()
-        nodes_peak = 100 + 10 * n_nondiag
-        return {"wall_time_ms": wall*1000.0, "nodes_peak": nodes_peak, "nodes_delta": 10*n_nondiag}
+    def __init__(self, num_qubits: int):
+        self.core = importlib.import_module("qmdd_core")
+        self.sess = self.core.Session(num_qubits)
+
+    def evaluate_chunk_runtime(self, circuit_id: str, ops):
+        # ops: list of dicts produced by circuit_to_ops
+        native_ops = []
+        for op in ops:
+            o = self.core.Op()
+            o.gate_type = op.get("gate_type", "")
+            o.qubits    = op.get("qubits", [])
+            o.theta     = float(op.get("theta", 0.0))
+            o.phi       = float(op.get("phi",   0.0))
+            o.lam       = float(op.get("lam",   0.0))
+            o.is_diag   = int(op.get("is_diag", 0))
+            native_ops.append(o)
+        res = self.sess.profile_chunk(native_ops)
+        return {"wall_time_ms": float(res["wall_time_ms"]),
+                "nodes_peak":   int(res["nodes_peak"]),
+                "nodes_delta":  int(res["nodes_delta"])}
