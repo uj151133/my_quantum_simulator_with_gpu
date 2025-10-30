@@ -249,6 +249,8 @@ file(GLOB CORE_SOURCES
 add_library(qmdd_core MODULE
     src/bindings/qmddCore.cpp
     ${CORE_SOURCES}
+    ${C_SRC}
+    ${ASM_SRC}
 )
 
 set_target_properties(qmdd_core PROPERTIES
@@ -267,7 +269,7 @@ target_include_directories(qmdd_core PRIVATE
 )
 
 target_link_libraries(qmdd_core PRIVATE
-    Python3::Python
+    # Python3::Python
     pybind11::module
     pthread
     yaml-cpp::yaml-cpp
@@ -283,7 +285,7 @@ target_link_libraries(qmdd_core PRIVATE
 )
 
 if(UNIX AND NOT APPLE)
-    set_target_properties(qmdd_core PROPERTIES BUILD_RPATH "/usr/local/lib")
+    set_target_properties(qmdd_core PRIVATE "-undefined" "dynamic_lookup")
 endif()
 
 

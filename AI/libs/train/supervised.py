@@ -1,6 +1,5 @@
-import os
+import os, time, torch
 import numpy as np
-import torch
 import torch.nn as nn
 import torch.optim as optim
 from ..cfg import Config
@@ -28,11 +27,12 @@ def run_supervised(cfg: Config, epochs: int = 200, batch_size: int = 1024,
     os.makedirs(export_dir, exist_ok=True)
 
     env = QMDDFusionEnv(cfg)
-    model = PointerPolicy(cfg)
+    model = PointerPolicy(cfg).to(cfg.device)
     opt = optim.Adam(model.parameters(), lr=3e-4)
 
     last_ckpt = None
     for ep in range(epochs):
+        t0 = time.time()
         obs, _ = env.reset()
         Xsig, Xwin, Xmask, y = [], [], [], []
         for _ in range(batch_size):
@@ -42,30 +42,34 @@ def run_supervised(cfg: Config, epochs: int = 200, batch_size: int = 1024,
             obs, r, done, _, _ = env.step(a)
             if done: obs,_ = env.reset()
 
-        Xsig = torch.tensor(np.stack(Xsig,0), dtype=torch.float32)
-        Xwin = torch.tensor(np.stack(Xwin,0), dtype=torch.float32)
-        Xmask= torch.tensor(np.stack(Xmask,0), dtype=torch.float32)
-        y    = torch.tensor(np.array(y), dtype=torch.long)
+        # numpy -> torch
 
-        logits, _ = model({"sig":Xsig, "win":Xwin, "mask":Xmask})
-        logits = logits + torch.log(Xmask + 1e-8)
+        Xsig = torch.tensor(np.stack(Xsig,0), dtype=torch.float32, device=cfg.device)
+        Xwin = torch.tensor(np.stack(Xwin,0), dtype=torch.float32, device=cfg.device)
+        Xmask= torch.tensor(np.stack(Xmask,0), dtype=torch.float32, device=cfg.device)
+        y    = torch.tensor(np.array(y), dtype=torch.long, device=cfg.device)
+
+        model.train()
+        opt.zero_grad()
+        logits, _ = model({"sig": Xsig, "win": Xwin, "mask": Xmask})
         loss = nn.CrossEntropyLoss()(logits, y)
-
-        opt.zero_grad(); loss.backward(); opt.step()
+        loss.backward()
+        opt.step()
+        t1 = time.time()
         if ep % 10 == 0:
-            print(f"[SL] epoch={ep} loss={loss.item():.4f}")
+            print(f"[SL] epoch={ep} loss={loss.item():.4f} time/epoch={(t1-t0)*1000:.1f}ms")
 
         if (ep+1) % save_every == 0 or ep == epochs-1:
             ckpt_path = os.path.join(save_dir, f"pointer_policy_sl_ep{ep+1}.pt")
-            save_checkpoint(model, cfg, ckpt_path, step=ep+1)
+            save_checkpoint(model.cpu(), cfg, ckpt_path, step=ep+1)
             last_ckpt = ckpt_path
+            model.to(cfg.device)
 
-    # 自動エクスポート（最後のチェックポイントで）
     if export_final and last_ckpt is not None:
-        model_cpu = PointerPolicy(cfg)
-        model_cpu.load_state_dict(torch.load(last_ckpt, map_location="cpu")["state_dict"])
-        model_cpu.eval()
+        cpu_model = PointerPolicy(cfg)
+        cpu_model.load_state_dict(torch.load(last_ckpt, map_location="cpu")["state_dict"])
+        cpu_model.eval()
         ts_path = os.path.join(export_dir, f"pointer_policy_sl_ep{epochs}.ts.pt")
         onnx_path = os.path.join(export_dir, f"pointer_policy_sl_ep{epochs}.onnx")
-        export_torchscript(model_cpu, ts_path)
-        export_onnx(model_cpu, onnx_path, cfg.top_k_levels, cfg.window_size, cfg.sig_dim, cfg.gate_feat_dim)
+        export_torchscript(cpu_model, ts_path)
+        export_onnx(cpu_model, onnx_path, cfg.top_k_levels, cfg.window_size, cfg.sig_dim, cfg.gate_feat_dim)

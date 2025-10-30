@@ -1,11 +1,6 @@
 #include "qmddCore.hpp"
 
 
-
-
-#include "src/models/circuit.hpp"
-#include "src/models/uniqueTable.hpp"
-
 namespace {
 
 // Ops -> QuantumCircuit の適用
@@ -48,21 +43,21 @@ static inline void apply_op(QuantumCircuit& qc, const Op& op) {
 // ===== Session =====
 Session::Session(int num_qubits) : nq_(num_qubits) {}
 
-py::dict Session::profile_chunk(const std::vector<Op>& ops) {
+py::dict Session::profile_chunk(const vector<Op>& ops) {
     QuantumCircuit qc(nq_);
     for (const auto& op : ops) apply_op(qc, op);
 
     auto nodes_before = UniqueTable::getInstance().getTotalEntryCount();
-    auto t0 = std::chrono::high_resolution_clock::now();
+    auto t0 = chrono::high_resolution_clock::now();
     {
         // simulate中はGIL解放（Python側の他スレッドをブロックしない）
         py::gil_scoped_release release;
         qc.simulate();
     }
-    auto t1 = std::chrono::high_resolution_clock::now();
+    auto t1 = chrono::high_resolution_clock::now();
     auto nodes_after = UniqueTable::getInstance().getTotalEntryCount();
 
-    double wall_ms = std::chrono::duration<double, std::milli>(t1 - t0).count();
+    double wall_ms = chrono::duration<double, milli>(t1 - t0).count();
     long long delta = static_cast<long long>(nodes_after) - static_cast<long long>(nodes_before);
     if (delta < 0) delta = 0;
 
