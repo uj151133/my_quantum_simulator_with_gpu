@@ -6,7 +6,7 @@ import torch.optim as optim
 from torch.distributions.categorical import Categorical
 from typing import Optional
 from ..cfg import Config
-from ..envs.qmdd_fusion_env import QMDDFusionEnv
+from ..envs.qmdd_scheduling_env import QMDDFusionEnv
 from ..models.pointer_policy import PointerPolicy
 from ..io.checkpoint import save_checkpoint, load_checkpoint, export_torchscript, export_onnx
 
