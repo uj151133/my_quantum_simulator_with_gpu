@@ -44,6 +44,8 @@ void QuantumCircuit::setRegister(int registerIdx, int size) {
     iota(this->quantumRegister_[registerIdx].begin(), this->quantumRegister_[registerIdx].end(), registerIdx == 0 ? 0 : this->quantumRegister_[registerIdx - 1].back() + 1);
 }
 
+string QuantumCircuit::upper(string s){ for(auto& c:s) c=(char)std::toupper((unsigned char)c); return s; }
+bool QuantumCircuit::isDiagTag(const string& t){ return Core::isDiagTag(t); }
 void QuantumCircuit::enableIR(bool on){this->irEnabled_ = on; if(on) { while(!gateQueue.empty()) gateQueue.pop(); } }
 void QuantumCircuit::clearIR(){this->irLog_.clear(); }
 
@@ -71,6 +73,84 @@ void QuantumCircuit::compileIRWithLaw(const law::Options& opt){
     }
 }
 
+void QuantumCircuit::buildMetaFromIR(const std::vector<Core>& ops){
+    this->metaQueue_.clear(); this->metaQueue_.reserve(ops.size());
+    for(auto x : ops){
+        Core d = x; d.normalize();
+        d.is_fused = false; d.handle = 0; d.edge_nodes = 0;
+        this->metaQueue_.push_back(std::move(d));
+    }
+}
+
+void QuantumCircuit::moveQueueToPending(){
+    this->pending_.clear(); this->execIdx_ = 0;
+    auto q = this->gateQueue_; // コピー
+    while(!q.empty()){ this->pending_.push_back(q.front()); q.pop(); }
+    if (this->metaQueue_.size() != this->pending_.size()){
+        this->metaQueue_.assign(this->pending_.size(), Core{.tag="FUSED", .is_diag=false, .is_fused=true});
+    }
+    // edge_nodes を埋めたい場合はここで pending_[i].getInitialEdge() から取得
+}
+
+vector<Core> QuantumCircuit::snapshotQueueWindow(size_t max_items) const{
+    vector<Core> out;
+    if (this->execIdx_ >= this->metaQueue_.size()) return out;
+    size_t end = std::min(this->metaQueue_.size(), this->execIdx_ + max_items);
+    out.reserve(end - this->execIdx_);
+    for (size_t i=this->execIdx_; i<end; ++i) out.push_back(this->metaQueue_[i]);
+    return out;
+}
+
+void QuantumCircuit::fuseRanges(const vector<pair<int,int>>& ranges){
+    if (this->execIdx_ >= this->pending_.size()) return;
+    vector<pair<size_t,size_t>> norm;
+    for (auto [s,e] : ranges){
+        if (s<0 || e<0) continue;
+        size_t ss = this->execIdx_ + (size_t)s, ee = this->execIdx_ + (size_t)e;
+        if (ss >= this->pending_.size()) continue;
+        if (ee >= this->pending_.size()) ee = this->pending_.size()-1;
+        if (ss > ee) std::swap(ss, ee);
+        if (ss == ee) continue;
+        norm.push_back({ss, ee});
+    }
+    if (norm.empty()) return;
+    sort(norm.begin(), norm.end());
+    vector<pair<size_t,size_t>> disjoint;
+    for (auto seg : norm){
+        if (disjoint.empty() || seg.first > disjoint.back().second) disjoint.push_back(seg);
+        else disjoint.back().second = max(disjoint.back().second, seg.second);
+    }
+    for (int i=(int)disjoint.size()-1; i>=0; --i){
+        size_t s = disjoint[i].first, e = disjoint[i].second;
+        QMDDEdge acc = this->pending_[s].getInitialEdge();
+        for (size_t k=s+1; k<=e; ++k){
+            acc = mathUtils::mul(this->pending_[k].getInitialEdge(), acc);
+        }
+        QMDDGate fused(acc);
+        Core d; d.tag="FUSED"; d.is_fused=true; d.handle=nextFusedId_++;
+        // qubits 集合
+        vector<int> tmp;
+        for(size_t k=s; k<=e; ++k){
+            const auto& qs = this->metaQueue_[k].qubits;
+            tmp.insert(tmp.end(), qs.begin(), qs.end());
+        }
+        sort(tmp.begin(), tmp.end());
+        tmp.erase(std::unique(tmp.begin(), tmp.end()), tmp.end());
+        d.qubits = std::move(tmp);
+        // 全て対角なら対角扱い
+        bool all_diag=true; for(size_t k=s; k<=e; ++k) if(!this->metaQueue_[k].is_diag){ all_diag=false; break; }
+        d.is_diag = all_diag;
+        // d.edge_nodes = fused.getInitialEdge().getNodeCount(); // 実装があれば設定
+
+        this->fusedStore_[d.handle] = fused;
+
+        this->pending_.erase(this->pending_.begin()+s, this->pending_.begin()+e+1);
+        this->metaQueue_.erase(this->metaQueue_.begin()+s, this->metaQueue_.begin()+e+1);
+        this->pending_.insert(this->pending_.begin()+s, fused);
+        this->metaQueue_.insert(this->metaQueue_.begin()+s, std::move(d));
+    }
+}
+
 void QuantumCircuit::addI(int qubitIndex) {
     return;
 }
@@ -92,7 +172,7 @@ void QuantumCircuit::addPh(int qubitIndex, double delta) {
 }
 
 void QuantumCircuit::addX(int qubitIndex) {
-    if(this->irEnabled_){ this->irLog_.push_back(law::Op{"X",{qubitIndex}}); return; }
+    if(this->irEnabled_){ this->irLog_.push_back(Core{.tag="X", .qubits={qubitIndex}}); return; }
     if (this->numQubits_ == 1 || qubitIndex == 0) {
         this->gateQueue_.push(gate::X());
     } else {
@@ -136,7 +216,7 @@ void QuantumCircuit::addAllX() {
 }
 
 void QuantumCircuit::addY(int qubitIndex) {
-    if(this->irEnabled_){ this->irLog_.push_back(law::Op{"Y",{qubitIndex}}); return; }
+    if(this->irEnabled_){ this->irLog_.push_back(Core{.tag="Y", .qubits={qubitIndex}}); return; }
     if (this->numQubits_ == 1 || qubitIndex == 0) {
         this->gateQueue_.push(gate::Y());
     } else {
@@ -171,7 +251,7 @@ void QuantumCircuit::addY(vector<int> qubitIndices) {
 }
 
 void QuantumCircuit::addZ(int qubitIndex) {
-    if(this->irEnabled_){ this->irLog_.push_back(law::Op{"Z",{qubitIndex}}); return; }
+    if(this->irEnabled_){ this->irLog_.push_back(Core{.tag="Z", .qubits={qubitIndex}}); return; }
     if (this->numQubits_ == 1 || qubitIndex == 0) {
         this->gateQueue_.push(gate::Z());
     } else {
@@ -206,7 +286,7 @@ void QuantumCircuit::addZ(vector<int> qubitIndices) {
 }
 
 void QuantumCircuit::addS(int qubitIndex) {
-    if(this->irEnabled_){ this->irLog_.push_back(law::Op{"S",{qubitIndex}}); return; }
+    if(this->irEnabled_){ this->irLog_.push_back(Core{.tag="S", .qubits={qubitIndex}}); return; }
     if (this->numQubits_ == 1 || qubitIndex == 0) {
         this->gateQueue_.push(gate::S());
     } else {
@@ -275,7 +355,7 @@ void QuantumCircuit::addSdg(vector<int> qubitIndices) {
 }
 
 void QuantumCircuit::addV(int qubitIndex) {
-    if(this->irEnabled_){ this->irLog_.push_back(law::Op{"V",{qubitIndex}}); return; }
+    if(this->irEnabled_){ this->irLog_.push_back(Core{.tag="V", .qubits={qubitIndex}}); return; }
     if (this->numQubits_ == 1 || qubitIndex == 0) {
         this->gateQueue_.push(gate::V());
     } else {
@@ -310,7 +390,7 @@ void QuantumCircuit::addV(vector<int> qubitIndices) {
 }
 
 void QuantumCircuit::addH(int qubitIndex) {
-    if(this->irEnabled_){ this->irLog_.push_back(law::Op{"H",{qubitIndex}}); return; }
+    if(this->irEnabled_){ this->irLog_.push_back(Core{.tag="H", .qubits={qubitIndex}}); return; }
     if (this->numQubits_ == 1 || qubitIndex == 0) {
         this->gateQueue_.push(gate::H());
     } else {
@@ -352,7 +432,7 @@ void QuantumCircuit::addAllH() {
 }
 
 void QuantumCircuit::addCX(int controlIndex, int targetIndex) {
-    if(this->irEnabled_){ this->irLog_.push_back(law::Op{"CX",{controlIndex, targetIndex}}); return; }
+    if(this->irEnabled_){ this->irLog_.push_back(Core{.tag="CX", .qubits={controlIndex, targetIndex}}); return; }
     if (this->numQubits_ == 1) {
         throw invalid_argument("Cannot add CX gate to single qubit circuit.");
     }else if (controlIndex == targetIndex) {
@@ -437,7 +517,7 @@ void QuantumCircuit::addVarCX(int controlIndex, int targetIndex) {
 }
 
 void QuantumCircuit::addCY(int controlIndex, int targetIndex) {
-    if(this->irEnabled_){ this->irLog_.push_back(law::Op{"CY",{controlIndex, targetIndex}}); return; }
+    if(this->irEnabled_){ this->irLog_.push_back(Core{.tag="CY", .qubits={controlIndex, targetIndex}}); return; }
     if (this->numQubits_ == 1) {
         throw invalid_argument("Cannot add CY gate to single qubit circuit.");
     }else if (controlIndex == targetIndex) {
@@ -477,7 +557,7 @@ void QuantumCircuit::addCY(int controlIndex, int targetIndex) {
 }
 
 void QuantumCircuit::addCZ(int controlIndex, int targetIndex) {
-    if(this->irEnabled_){ this->irLog_.push_back(law::Op{"CZ",{controlIndex, targetIndex}}); return; }
+    if(this->irEnabled_){ this->irLog_.push_back(Core{.tag="CZ", .qubits={controlIndex, targetIndex}}); return; }
     if (this->numQubits_ == 1) {
         throw invalid_argument("Cannot add CZ gate to single qubit circuit.");
     }else if (controlIndex == targetIndex) {
@@ -523,7 +603,7 @@ void QuantumCircuit::addCZ(int controlIndex, int targetIndex) {
 }
 
 void QuantumCircuit::addSWAP(int qubitIndex1, int qubitIndex2) {
-    if(this->irEnabled_){ this->irLog_.push_back(law::Op{"SWAP",{qubitIndex1, qubitIndex2}}); return; }
+    if(this->irEnabled_){ this->irLog_.push_back(Core{.tag="SWAP", .qubits={qubitIndex1, qubitIndex2}}); return; }
     if (this->numQubits_ == 1) {
         throw invalid_argument("Cannot add SWAP gate to single qubit circuit.");
     }else if (qubitIndex1 == qubitIndex2) {
@@ -595,7 +675,7 @@ void QuantumCircuit::addSWAP(int qubitIndex1, int qubitIndex2) {
 }
 
 void QuantumCircuit::addP(int qubitIndex, double phi) {
-    if(this->irEnabled_){ this->irLog_.push_back(law::Op{"P",{qubitIndex}, phi}); return; }
+    if(this->irEnabled_){ this->irLog_.push_back(Core{.tag="P", .qubits={qubitIndex}, .phi={phi}}); return; }
     if (this->numQubits_ == 1) {
         this->gateQueue_.push(gate::P(phi));
     } else {
@@ -610,7 +690,7 @@ void QuantumCircuit::addP(int qubitIndex, double phi) {
 }
 
 void QuantumCircuit::addT(int qubitIndex) {
-    if(this->irEnabled_){ this->irLog_.push_back(law::Op{"T",{qubitIndex}}); return; }
+    if(this->irEnabled_){ this->irLog_.push_back(Core{.tag="T", .qubits={qubitIndex}}); return; }
     if (this->numQubits_ == 1) {
         this->gateQueue_.push(gate::T());
     } else {
@@ -639,7 +719,7 @@ void QuantumCircuit::addTdg(int qubitIndex) {
 }
 
 void QuantumCircuit::addCP(int controlIndex, int targetIndex, double phi) {
-    if(this->irEnabled_){ this->irLog_.push_back(law::Op{"CP",{controlIndex, targetIndex}, phi}); return; }
+    if(this->irEnabled_){ this->irLog_.push_back(Core{.tag="CP", .qubits={controlIndex, targetIndex}, .phi={phi}}); return; }
     if (this->numQubits_ == 1) {
         throw invalid_argument("Cannot add CP gate to single qubit circuit.");
     }else if (controlIndex == targetIndex) {
@@ -685,7 +765,7 @@ void QuantumCircuit::addCP(int controlIndex, int targetIndex, double phi) {
 }
 
 void QuantumCircuit::addCS(int controlIndex, int targetIndex) {
-    if(this->irEnabled_){ this->irLog_.push_back(law::Op{"CS",{controlIndex, targetIndex}}); return; }
+    if(this->irEnabled_){ this->irLog_.push_back(Core{.tag="CS", .qubits={controlIndex, targetIndex}}); return; }
     if (this->numQubits_ == 1) {
         throw invalid_argument("Cannot add CS gate to single qubit circuit.");
     }else if (controlIndex == targetIndex) {
@@ -731,7 +811,7 @@ void QuantumCircuit::addCS(int controlIndex, int targetIndex) {
 }
 
 void QuantumCircuit::addCH(int controlIndex, int targetIndex) {
-    if(this->irEnabled_){ this->irLog_.push_back(law::Op{"CH",{controlIndex, targetIndex}}); return; }
+    if(this->irEnabled_){ this->irLog_.push_back(Core{.tag="CH", .qubits={controlIndex, targetIndex}}); return; }
     if (this->numQubits_ == 1) {
         throw invalid_argument("Cannot add CH gate to single qubit circuit.");
     }else if (controlIndex == targetIndex) {
@@ -771,7 +851,7 @@ void QuantumCircuit::addCH(int controlIndex, int targetIndex) {
 }
 
 void QuantumCircuit::addRx(int qubitIndex, double theta) {
-    if(this->irEnabled_){ this->irLog_.push_back(law::Op{"RX",{qubitIndex}, theta}); return; }
+    if(this->irEnabled_){ this->irLog_.push_back(Core{.tag="RX", .qubits={qubitIndex}, .theta={theta}}); return; }
     if (this->numQubits_ == 1) {
         this->gateQueue_.push(gate::Rx(theta));
     } else {
@@ -786,7 +866,7 @@ void QuantumCircuit::addRx(int qubitIndex, double theta) {
 }
 
 void QuantumCircuit::addRy(int qubitIndex, double theta) {
-    if(this->irEnabled_){ this->irLog_.push_back(law::Op{"RY",{qubitIndex}, theta}); return; }
+    if(this->irEnabled_){ this->irLog_.push_back(Core{.tag="RY", .qubits={qubitIndex}, .theta={theta}}); return; }
     if (this->numQubits_ == 1) {
         this->gateQueue_.push(gate::Ry(theta));
     } else {
@@ -801,7 +881,7 @@ void QuantumCircuit::addRy(int qubitIndex, double theta) {
 }
 
 void QuantumCircuit::addRz(int qubitIndex, double theta) {
-    if(this->irEnabled_){ this->irLog_.push_back(law::Op{"RZ",{qubitIndex}, theta}); return; }
+    if(this->irEnabled_){ this->irLog_.push_back(Core{.tag="RZ", .qubits={qubitIndex}, .theta={theta}}); return; }
     if (this->numQubits_ == 1) {
         this->gateQueue_.push(gate::Rz(theta));
     } else {
@@ -1286,26 +1366,40 @@ void QuantumCircuit::globalPhase(double lamda) {
     return;
 }
 
-void QuantumCircuit::simulate() {
+bool QuantumCircuit::simulateStep(){
+    if (this->pending_.empty() && !this->gateQueue_.empty()){
+        this->moveQueueToPending();
+    }
+    if (this->execIdx_ >= this->pending_.size()) return false;
+    QMDDGate currentGate = this->pending_[this->execIdx_];
+    this->finalState_ = QMDDState(mathUtils::mul(currentGate.getInitialEdge(), this->finalState_.getInitialEdge()));
+    this->execIdx_++;
+    return this->execIdx_ < this->pending_.size();
+}
 
+void QuantumCircuit::simulate() {
     // OperationCache::getInstance().clearAllCaches();
     if(this->irEnabled_){
-        law::Options opt = law::options_from_env(law::Options{});
-        this->compileIRWithLaw(opt);
+        law::Options opt = law::optionsFromEnv(law::Options{});
         this->irEnabled_ = false;
+        this->compileIRWithLaw(opt);
         this->irLog_.clear();
     }
-    int i = 0;
-    while (!this->gateQueue_.empty()) {
-        cout << "number of gates: " << i++ << endl;
-        QMDDGate currentGate = this->gateQueue_.front();
-        cout << "Current gate: " << currentGate << endl;
-        cout << "Current state: " << this->finalState_ << endl;
-
-        cout << "============================================================\n" << endl;
-        this->gateQueue_.pop();
-        this->finalState_ = QMDDState(mathUtils::mul(currentGate.getInitialEdge(), this->finalState_.getInitialEdge()));
+    if (pending_.empty() && !gateQueue.empty()){
+        moveQueueToPending();
     }
+    // int i = 0;
+    // while (!this->gateQueue_.empty()) {
+    //     cout << "number of gates: " << i++ << endl;
+    //     QMDDGate currentGate = this->gateQueue_.front();
+    //     cout << "Current gate: " << currentGate << endl;
+    //     cout << "Current state: " << this->finalState_ << endl;
+
+    //     cout << "============================================================\n" << endl;
+    //     this->gateQueue_.pop();
+    //     this->finalState_ = QMDDState(mathUtils::mul(currentGate.getInitialEdge(), this->finalState_.getInitialEdge()));
+    // }
+    while (this->simulateStep()){ /* 協調融合しない場合は最後まで */ }
     cout << "Final state: " << this->finalState_ << endl;
     return;
 }

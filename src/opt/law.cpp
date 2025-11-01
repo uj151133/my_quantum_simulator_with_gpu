@@ -1,15 +1,11 @@
 #include "law.hpp"
-#include <algorithm>
-#include <cctype>
-#include <cstdlib>
-#include <string>
-#include <cmath>
+
 
 namespace law {
 static inline string upper(string s){for(auto& c:s) c=(char)toupper((unsigned char)c); return s;}
-static inline bool isGate(const Op& o, const char* n){ return upper(o.gate_type)==n; }
-static inline bool samePair(const Op& a,const Op& b){return a.qubits.size()==2 && b.qubits.size()==2 && a.qubits==b.qubits; }
-static inline bool isSingleOn(const Op& o,int q){return o.qubits.size()==1 && o.qubits[0]==q;}
+static inline bool isGate(const Core& o, const char* n){ return upper(o.tag)==n; }
+static inline bool samePair(const Core& a,const Core& b){return a.qubits.size()==2 && b.qubits.size()==2 && a.qubits==b.qubits; }
+static inline bool isSingleOn(const Core& o,int q){return o.qubits.size()==1 && o.qubits[0]==q;}
 static inline bool nearZero(double x){return abs(x) < 1e-12; }
 static inline bool envOn(const char* key, bool deflt){
     if(const char* v=getenv(key)){ string s(v);
@@ -36,65 +32,65 @@ Options optionsFromEnv(const Options& d){
 }
 
 // R5
-static void desugarSwap(vector<Op>& ops){vector<Op> out; out.reserve(ops.size());
+static void desugarSwap(vector<Core>& ops){vector<Core> out; out.reserve(ops.size());
     for(const auto& o: ops){
-        if(is_gate(o,"SWAP") && o.qubits.size()==2){
+        if(isGate(o,"SWAP") && o.qubits.size()==2){
             int a=o.qubits[0], b=o.qubits[1];
-            out.push_back(Op{"CX",{a,b}});
-            out.push_back(Op{"CX",{b,a}});
-            out.push_back(Op{"CX",{a,b}});
+            out.push_back(Core{.tag="CX", .qubits={a,b}});
+            out.push_back(Core{.tag="CX", .qubits={b,a}});
+            out.push_back(Core{.tag="CX", .qubits={a,b}});
         }else out.push_back(o);
     }
     ops.swap(out);
 }
 
 // R6
-static void CXtoCZviaH(vector<Op>& ops){vector<Op> out; out.reserve(ops.size());
+static void CXtoCZviaH(vector<Core>& ops){vector<Core> out; out.reserve(ops.size());
     for(const auto& o: ops){
         if((isGate(o,"CX")||isGate(o,"CNOT")) && o.qubits.size()==2){
             int c=o.qubits[0], t=o.qubits[1];
-            out.push_back(Op{"H",{t}});
-            out.push_back(Op{"CZ",{c,t}});
-            out.push_back(Op{"H",{t}});
+            out.push_back(Core{.tag="H", .qubits={t}});
+            out.push_back(Core{.tag="CZ", .qubits={c,t}});
+            out.push_back(Core{.tag="H", .qubits={t}});
         }else out.push_back(o);
     }
     ops.swap(out);
 }
 
 // R1(角度合成) + 1Q相殺 + R9(共役恒等)
-static void cancelOneQubit(vector<Op>& ops, bool doAngle){
-    vector<Op> out; out.reserve(ops.size()); size_t i=0;
+static void cancelOneQubit(vector<Core>& ops, bool doAngle){
+    vector<Core> out; out.reserve(ops.size()); size_t i=0;
     while(i<ops.size()){
-        Op a=ops[i]; string an=upper(a.gate_type);
+        Core a=ops[i]; string an=upper(a.tag);
         // angle fuse
         if(doAngle && (an=="RX"||an=="RY"||an=="RZ") && i+1<ops.size()){
             size_t j=i+1; double acc=a.theta;
             while(j<ops.size()){
-                const Op& b=ops[j];
-                if(upper(b.gate_type)==an && isSingleOn(b, a.qubits[0])){ acc+=b.theta; j++; } else break;
+                const Core& b=ops[j];
+                if(upper(b.tag)==an && isSingleOn(b, a.qubits[0])){ acc+=b.theta; j++; } else break;
             }
             if(!nearZero(acc)){ a.theta=acc; out.push_back(a); }
             i=j; continue;
         }
         // 1Q相殺
         if((an=="X"||an=="Z"||an=="H") && i+1<ops.size()){
-            const Op& b=ops[i+1];
-            if(upper(b.gate_type)==an && isSingleOn(b, a.qubits[0])){ i+=2; continue; }
+            const Core& b=ops[i+1];
+            if(upper(b.tag)==an && isSingleOn(b, a.qubits[0])){ i+=2; continue; }
         }
         // R9: H Z H = X, H X H = Z
         if(an=="H" && i+2<ops.size()){
-            const Op& b=ops[i+1]; const Op& c=ops[i+2];
-            if(isSingleOn(a,a.qubits[0]) && isSingleOn(c,a.qubits[0]) && upper(c.gate_type)=="H"){
-                if(isGate(b,"Z") && isSingleOn(b,a.qubits[0])){ out.push_back(Op{"X",{a.qubits[0]}}); i+=3; continue; }
-                if(isGate(b,"X") && isSingleOn(b,a.qubits[0])){ out.push_back(Op{"Z",{a.qubits[0]}}); i+=3; continue; }
+            const Core& b=ops[i+1]; const Core& c=ops[i+2];
+            if(isSingleOn(a,a.qubits[0]) && isSingleOn(c,a.qubits[0]) && upper(c.tag)=="H"){
+                if(isGate(b,"Z") && isSingleOn(b,a.qubits[0])){ out.push_back(Core{.tag="X",.qubits={a.qubits[0]}}); i+=3; continue; }
+                if(isGate(b,"X") && isSingleOn(b,a.qubits[0])){ out.push_back(Core{.tag="Z",.qubits={a.qubits[0]}}); i+=3; continue; }
             }
         }
         // R9: X RZ X = RZ(-θ), Z RX Z = RX(-θ)
         if((an=="X"||an=="Z") && i+2<ops.size()){
-            const Op& b=ops[i+1]; const Op& c=ops[i+2];
-            if(isSingleOn(a,a.qubits[0]) && isSingleOn(c,a.qubits[0]) && upper(c.gate_type)==an){
-                if(an=="X" && isGate(b,"RZ") && isSingleOn(b,a.qubits[0])){ Op rz=b; rz.theta=-rz.theta; out.push_back(rz); i+=3; continue; }
-                if(an=="Z" && isGate(b,"RX") && isSingleOn(b,a.qubits[0])){ Op rx=b; rx.theta=-rx.theta; out.push_back(rx); i+=3; continue; }
+            const Core& b=ops[i+1]; const Core& c=ops[i+2];
+            if(isSingleOn(a,a.qubits[0]) && isSingleOn(c,a.qubits[0]) && upper(c.tag)==an){
+                if(an=="X" && isGate(b,"RZ") && isSingleOn(b,a.qubits[0])){ Core rz=b; rz.theta=-rz.theta; out.push_back(rz); i+=3; continue; }
+                if(an=="Z" && isGate(b,"RX") && isSingleOn(b,a.qubits[0])){ Core rx=b; rx.theta=-rx.theta; out.push_back(rx); i+=3; continue; }
             }
         }
         out.push_back(a); i++;
@@ -103,11 +99,11 @@ static void cancelOneQubit(vector<Op>& ops, bool doAngle){
 }
 
 // R2(2Q)
-static void cancelTwoQubits(vector<Op>& ops){vector<Op> out; out.reserve(ops.size()); size_t i=0;
+static void cancelTwoQubits(vector<Core>& ops){vector<Core> out; out.reserve(ops.size()); size_t i=0;
     while(i<ops.size()){
-        const Op& a=ops[i];
+        const Core& a=ops[i];
         if(i+1<ops.size()){
-            const Op& b=ops[i+1];
+            const Core& b=ops[i+1];
             if(((isGate(a,"CX")||isGate(a,"CNOT")) && (isGate(b,"CX")||isGate(b,"CNOT")) && samePair(a,b)) ||
                 (isGate(a,"CZ") && isGate(b,"CZ") && samePair(a,b))){ i+=2; continue; }
         }
@@ -117,14 +113,14 @@ static void cancelTwoQubits(vector<Op>& ops){vector<Op> out; out.reserve(ops.siz
 }
 
 // R3
-static void sandwich_crz(vector<Op>& ops){vector<Op> out; out.reserve(ops.size()); size_t i=0;
+static void sandwich_crz(vector<Core>& ops){vector<Core> out; out.reserve(ops.size()); size_t i=0;
     while(i<ops.size()){
         if(i+2<ops.size()){
-            const Op& a=ops[i]; const Op& b=ops[i+1]; const Op& c=ops[i+2];
+            const Core& a=ops[i]; const Core& b=ops[i+1]; const Core& c=ops[i+2];
             bool a_cx=(isGate(a,"CX")||isGate(a,"CNOT"));
             bool c_cx=(isGate(c,"CX")||isGate(c,"CNOT"));
             if(a_cx && c_cx && samePair(a,c) && isGate(b,"RZ") && isSingleOn(b, a.qubits[1])){
-                out.push_back(Op{"CRZ",{a.qubits[0], a.qubits[1]}, b.theta});
+                out.push_back(Core{.tag="CRZ", .qubits={a.qubits[0], a.qubits[1]}, .theta=b.theta});
                 i+=3; continue;
             }
         }
@@ -134,22 +130,22 @@ static void sandwich_crz(vector<Op>& ops){vector<Op> out; out.reserve(ops.size()
 }
 
 // R4
-static void commute_rz_control_with_cx(std::vector<Op>& ops){
+static void commute_rz_control_with_cx(vector<Core>& ops){
     for(size_t i=0;i+1<ops.size();++i){
-        Op& a=ops[i]; Op& b=ops[i+1];
+    Core& a=ops[i]; Core& b=ops[i+1];
         if(isGate(a,"RZ") && (isGate(b,"CX")||isGate(b,"CNOT")) && isSingleOn(a, b.qubits[0])) swap(ops[i], ops[i+1]);
     }
 }
 
 // R7
-static void merge_diagonal_angles(vector<Op>& ops){vector<Op> out; out.reserve(ops.size()); size_t i=0;
+static void merge_diagonal_angles(vector<Core>& ops){vector<Core> out; out.reserve(ops.size()); size_t i=0;
     while(i<ops.size()){
-        Op a=ops[i]; std::string an=upper(a.gate_type);
+        Core a=ops[i]; std::string an=upper(a.tag);
         if((an=="CRZ"||an=="CP") && i+1<ops.size()){
             size_t j=i+1; double acc=a.theta;
             while(j<ops.size()){
-                const Op& b=ops[j];
-                if(upper(b.gate_type)==an && samePair(a,b)){ acc+=b.theta; j++; } else break;
+                const Core& b=ops[j];
+                if(upper(b.tag)==an && samePair(a,b)){ acc+=b.theta; j++; } else break;
             }
             if(!nearZero(acc)){ a.theta=acc; out.push_back(a); }
             i=j; continue;
@@ -160,29 +156,29 @@ static void merge_diagonal_angles(vector<Op>& ops){vector<Op> out; out.reserve(o
 }
 
 // R10（安全な可換則：対角×対角、または不交差でのみ交換）
-static inline bool is_diag_1q(const Op& o){ auto n=upper(o.gate_type); return (n=="RZ"||n=="U1"||n=="P"||n=="S"||n=="T"||n=="Z"); }
-static inline bool is_diag_2q(const Op& o){ auto n=upper(o.gate_type); return (n=="CZ"||n=="CP"||n=="CRZ"||n=="RZZ"); }
-static inline bool is_diag(const Op& o){ return is_diag_1q(o) || is_diag_2q(o); }
-static inline bool disjoint(const Op& a,const Op& b){
+static inline bool is_diag_1q(const Core& o){ auto n=upper(o.tag); return (n=="RZ"||n=="U1"||n=="P"||n=="S"||n=="T"||n=="Z"); }
+static inline bool is_diag_2q(const Core& o){ auto n=upper(o.tag); return (n=="CZ"||n=="CP"||n=="CRZ"||n=="RZZ"); }
+static inline bool is_diag(const Core& o){ return is_diag_1q(o) || is_diag_2q(o); }
+static inline bool disjoint(const Core& a,const Core& b){
     for(int qa: a.qubits) for(int qb: b.qubits) if(qa==qb) return false;
     return true;
 }
 
-static void bubble_diagonals(vector<Op>& ops){
+static void bubble_diagonals(vector<Core>& ops){
     if(ops.size()<2) return;
     bool changed=true; int passes=0;
     while(changed && passes<2){
         changed=false; passes++;
         for(size_t i=0;i+1<ops.size();++i){
-            const Op& a=ops[i]; const Op& b=ops[i+1];
+            const Core& a=ops[i]; const Core& b=ops[i+1];
             if(!is_diag(b)) continue;
             if(is_diag(a) || disjoint(a,b)){swap(ops[i], ops[i+1]); changed=true; }
         }
     }
 }
 
-vector<Op> optimize(const vector<Op>& in, const Options& o){
-    vector<Op> ops=in;
+vector<Core> optimize(const vector<Core>& in, const Options& o){
+    vector<Core> ops=in;
     if(o.rule_R5_desugar_swap)    desugarSwap(ops);
     if(o.rule_R6_cx_to_cz_via_h)  CXtoCZviaH(ops);
     for(int k=0;k<o.iters;k++){
