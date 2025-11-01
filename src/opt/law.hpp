@@ -3,15 +3,15 @@
 
 #include <string>
 #include <vector>
+#include <algorithm>
+#include <cctype>
+#include <cstdlib>
+#include <string>
+#include <cmath>
+#include "../common/Core.hpp"
 
 using namespace std;
 namespace law {
-
-struct Op {
-    string gate_type;
-    vector<int> qubits;
-    double theta = .0, phi = .0, lamda = .0;
-};
 
 struct Options {
     bool rule_R1_single_axis_fuse = false; // 連続RX/RY/RZの角度合成（既定OFF）
@@ -27,7 +27,7 @@ struct Options {
     int  iters = 2;                        // 固定点反復回数（QMDD_REWRITE_ITERSで上書き可）
 };
 
-vector<Op> optimize(const vector<Op>& in, const Options& opt);
+vector<Core> optimize(const vector<Core>& in, const Options& opt);
 Options optionsFromEnv(const Options& defaults = Options());
 
 }

@@ -15,6 +15,7 @@
 #include "../common/mathUtils.hpp"
 #include "../common/constant.hpp"
 #include "../opt/law.hpp"
+#include "../common/Core.hpp"
 
 using namespace std;
 
@@ -39,7 +40,7 @@ private:
     int numQubits_;
 
     bool irEnabled_ = false;
-    vector<law::Op> irLog_;
+    vector<Core> irLog_;
 
     vector<QMDDGate> pending_;
     vector<GateDesc> metaQueue_;
