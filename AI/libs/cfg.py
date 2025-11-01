@@ -32,4 +32,9 @@ class Config:
     rollout_steps: int = 4096
 
     # Device
-    device: str = "cpu"   # 初期はCPU。CUDA環境なら "cuda" に変更
+    device: str = "cpu"   # 初期はCPU。MPSやCUDAを使いたいならここを 'mps' や 'cuda' に変更
+
+    # CPP 実測報酬ミックス
+    use_cpp_reward: bool = True     # True で混入
+    cpp_reward_prob: float = 0.02   # エピソード終端での混入確率（2%）
+    cpp_reward_alpha: float = 0.2   # 報酬ブレンド係数（0〜1）

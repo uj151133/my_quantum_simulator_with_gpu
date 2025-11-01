@@ -4,12 +4,12 @@
 // static auto alienCacheFind = cacheFind;
 
 thread_local graal_isolatethread_t* OperationCacheClient::thread_local_thread = nullptr;
-thread_local unordered_map<int64_t, QMDDEdge> OperationCacheClient::TLSCache;
-mutex OperationCacheClient::isolate_mutex;
+thread_local unordered_map<int64_t, QMDDEdge> OperationCacheClient::TLSCache_;
+mutex OperationCacheClient::isolateMutex_;
 
-OperationCacheClient::OperationCacheClient() : isolate(nullptr) {
-    lock_guard<mutex> lock(isolate_mutex);
-    if (graal_create_isolate(nullptr, &isolate, nullptr) != 0) {
+OperationCacheClient::OperationCacheClient() : isolate_(nullptr) {
+    lock_guard<mutex> lock(this->isolateMutex_);
+    if (graal_create_isolate(nullptr, &this->isolate_, nullptr) != 0) {
         throw runtime_error("Failed to create GraalVM isolate for OperationCache");
     }
 }
@@ -20,12 +20,12 @@ OperationCacheClient::~OperationCacheClient() {
         thread_local_thread = nullptr;
     }
 
-    if (isolate) {
+    if (this->isolate_) {
         graal_isolatethread_t* main_thread = nullptr;
-        if (graal_attach_thread(isolate, &main_thread) == 0) {
+        if (graal_attach_thread(this->isolate_, &main_thread) == 0) {
             graal_tear_down_isolate(main_thread);
         }
-        isolate = nullptr;
+        this->isolate_ = nullptr;
     }
 }
 
@@ -41,8 +41,8 @@ graal_isolatethread_t* OperationCacheClient::initializeNewThread() {
     if (isolate == nullptr) {
         throw runtime_error("GraalVM isolate is not initialized");
     }
-    
-    if (graal_attach_thread(isolate, &thread_local_thread) != 0) {
+
+    if (graal_attach_thread(this->isolate_, &thread_local_thread) != 0) {
         throw runtime_error("Failed to attach thread to GraalVM isolate");
     }
     
@@ -55,8 +55,8 @@ graal_isolatethread_t* OperationCacheClient::initializeNewThread() {
 
 optional<QMDDEdge> OperationCacheClient::find(int64_t key, bool useTLS) {
     if (useTLS) {
-        auto it = this->TLSCache.find(key);
-        if (it != this->TLSCache.end()) return it->second;
+        auto it = this->TLSCache_ =.find(key);
+        if (it != this->TLSCache_ =.end()) return it->second;
         return nullopt;
     }
     return this->findGlobal(key);
@@ -64,7 +64,7 @@ optional<QMDDEdge> OperationCacheClient::find(int64_t key, bool useTLS) {
 
 void OperationCacheClient::insert(int64_t key, const QMDDEdge& edge, bool useTLS) {
     if (useTLS) {
-        this->TLSCache.insert_or_assign(key, edge);
+        this->TLSCache_ =.insert_or_assign(key, edge);
         return;
     }
     this->insertGlobal(key, edge);
@@ -98,19 +98,19 @@ optional<QMDDEdge> OperationCacheClient::findGlobal(int64_t key) {
 }
 
 void OperationCacheClient::cleanup() {
-    lock_guard<mutex> lock(isolate_mutex);
+    lock_guard<mutex> lock(this->isolateMutex_);
     
     if (thread_local_thread != nullptr) {
         graal_detach_thread(thread_local_thread);
         thread_local_thread = nullptr;
     }
     
-    if (isolate) {
+    if (this->isolate_) {
         graal_isolatethread_t* main_thread = nullptr;
-        if (graal_attach_thread(isolate, &main_thread) == 0) {
+        if (graal_attach_thread(this->isolate_, &main_thread) == 0) {
             graal_tear_down_isolate(main_thread);
         }
-        isolate = nullptr;
+        this->isolate_ = nullptr;
     }
 }
 
@@ -120,11 +120,11 @@ OperationCacheClient& OperationCacheClient::getInstance() {
 }
 
 void OperationCacheClient::flushThreadLocalToGlobal() {
-    if (this->TLSCache.empty()) return;
-    for (const auto& kv : this->TLSCache) {
+    if (this->TLSCache_ =.empty()) return;
+    for (const auto& kv : this->TLSCache_ =) {
         insertGlobal(kv.first, kv.second);
     }
-    this->TLSCache.clear();
+    this->TLSCache_ =.clear();
 }
 
 void OperationCacheClient::saveCacheToSQLite() {
@@ -136,7 +136,7 @@ void OperationCacheClient::saveCacheToSQLite() {
         }
     }
 
-    lock_guard<mutex> lock(isolate_mutex);
+    lock_guard<mutex> lock(this->isolateMutex_);
     
     try {
         ::saveCacheToSQLite(thread);

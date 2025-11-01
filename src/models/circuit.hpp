@@ -14,6 +14,7 @@
 #include "state.hpp"
 #include "../common/mathUtils.hpp"
 #include "../common/constant.hpp"
+#include "../opt/law.hpp"
 
 using namespace std;
 
@@ -33,17 +34,25 @@ array<T, N> sorted(const array<T, N>& arr) {
 
 class QuantumCircuit {
 private:
-    queue<QMDDGate> gateQueue;
-    QMDDState finalState;
-    int numQubits;
+    queue<QMDDGate> gateQueue_;
+    QMDDState finalState_;
+    int numQubits_;
+
+    bool irEnabled_ = false;
+    vector<law::Op> irLog_;
 
     void compute();
     void uncompute();
 
 public:
+
+    void enableIR(bool on);
+    void clearIR();
+    void compileIRWithLaw(const law::Options& opt);
+
     QuantumCircuit(int numQubitits, QMDDState initialState);
     QuantumCircuit(int numQubitits);
-    vector<vector<int>> quantumRegister;
+    vector<vector<int>> quantumRegister_;
     ~QuantumCircuit() = default;
     queue<QMDDGate> getGateQueue() const;
     QMDDState getFinalState() const;

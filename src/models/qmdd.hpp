@@ -78,7 +78,7 @@ struct QMDDNode {
 
 class QMDDGate{
 private:
-    QMDDEdge initialEdge;
+    QMDDEdge initialEdge_;
 public:
     QMDDGate(QMDDEdge edge = QMDDEdge());
     QMDDGate(const QMDDGate& other) = default;
@@ -93,7 +93,7 @@ public:
 
 class QMDDState{
 private:
-    QMDDEdge initialEdge;
+    QMDDEdge initialEdge_;
 public:
     QMDDState(QMDDEdge edge);
     QMDDState(const QMDDState& other) = default;

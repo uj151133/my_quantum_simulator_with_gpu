@@ -3,7 +3,7 @@ import numpy as np
 import torch.nn as nn
 import torch.optim as optim
 from ..cfg import Config
-from ..envs.qmdd_fusion_env import QMDDFusionEnv
+from ..envs.qmdd_scheduling_env import QMDDFusionEnv
 from ..models.pointer_policy import PointerPolicy
 from ..signatures import gate_to_signature_stub, signature_cost, simulate_update
 from ..io.checkpoint import save_checkpoint, export_torchscript, export_onnx

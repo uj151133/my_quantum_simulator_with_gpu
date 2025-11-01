@@ -207,18 +207,18 @@ vector<complex<double>> QMDDNode::getWeights() const {
 /////////////////////////////////////
 
 QMDDGate::QMDDGate(QMDDEdge edge)
-    : initialEdge(std::move(edge)){}
+    : initialEdge_(std::move(edge)){}
 
 shared_ptr<QMDDNode> QMDDGate::getStartNode() const {
-    return this->initialEdge.getStartNode();
+    return this->initialEdge_.getStartNode();
 }
 
 QMDDEdge QMDDGate::getInitialEdge() const {
-    return this->initialEdge;
+    return this->initialEdge_;
 }
 
 bool QMDDGate::operator==(const QMDDGate& other) const {
-    return this->initialEdge == other.initialEdge;
+    return this->initialEdge_ == other.initialEdge_;
 }
 
 bool QMDDGate::operator!=(const QMDDGate& other) const {
@@ -226,7 +226,7 @@ bool QMDDGate::operator!=(const QMDDGate& other) const {
 }
 
 ostream& operator<<(ostream& os, const QMDDGate& gate) {
-    os << "QMDDGate with initial edge:\n" << gate.initialEdge;
+    os << "QMDDGate with initial edge:\n" << gate.initialEdge_;
     return os;
 }
 
@@ -237,18 +237,18 @@ ostream& operator<<(ostream& os, const QMDDGate& gate) {
 /////////////////////////////////////
 
 QMDDState::QMDDState(QMDDEdge edge)
-    : initialEdge(std::move(edge)) {}
+    : initialEdge_(std::move(edge)) {}
 
 shared_ptr<QMDDNode> QMDDState::getStartNode() const {
-    return this->initialEdge.getStartNode();
+    return this->initialEdge_.getStartNode();
 }
 
 QMDDEdge QMDDState::getInitialEdge() const {
-    return this->initialEdge;
+    return this->initialEdge_;
 }
 
 bool QMDDState::operator==(const QMDDState& other) const {
-    return this->initialEdge == other.initialEdge;
+    return this->initialEdge_ == other.initialEdge_;
 }
 
 bool QMDDState::operator!=(const QMDDState& other) const {
@@ -256,7 +256,7 @@ bool QMDDState::operator!=(const QMDDState& other) const {
 }
 
 ostream& operator<<(ostream& os, const QMDDState& state) {
-    os << "QMDDState with initial edge:\n" << state.initialEdge;
+    os << "QMDDState with initial edge:\n" << state.initialEdge_;
     return os;
 }
 

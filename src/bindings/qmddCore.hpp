@@ -8,6 +8,7 @@
 #include <pybind11/stl.h>
 #include "../models/circuit.hpp"
 #include "../models/uniqueTable.hpp"
+#include "../opt/law.hpp"
 
 using namespace std;
 namespace py = pybind11;

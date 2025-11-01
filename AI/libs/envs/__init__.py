@@ -1,1 +1,1 @@
-__all__ = ["qmdd_fusion_env"]
+__all__ = ["qmdd_scheduling_env"]

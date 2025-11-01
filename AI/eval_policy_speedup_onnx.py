@@ -1,10 +1,9 @@
 import argparse, time, statistics as stats
 import numpy as np
+import onnxruntime as ort
 import torch
 from qiskit.circuit import QuantumCircuit
 from libs.cfg import Config
-from libs.models.pointer_policy import PointerPolicy
-from libs.io.checkpoint import load_checkpoint
 from libs.bridge.qiskit_to_ops import circuit_to_ops
 from libs.bridge.cpp_client import CppClient
 
@@ -33,32 +32,27 @@ def build_ready_dag(ops):
     ready = {i for i in range(len(ops)) if not preds[i]}
     return preds, succs, ready
 
-def schedule_with_policy(ops, model: PointerPolicy, cfg: Config, device: str):
+def schedule_with_onnx(ops, sess: ort.InferenceSession, cfg: Config):
     W, K, sd, F = cfg.window_size, cfg.top_k_levels, cfg.sig_dim, cfg.gate_feat_dim
     preds, succs, ready = build_ready_dag(ops)
     scheduled, done = [], set()
-    sig = torch.zeros(1, K, sd, dtype=torch.float32, device=device)
-    model.eval()
+    sig = np.zeros((1, K, sd), dtype=np.float32)
 
     while len(scheduled) < len(ops):
         rlist = sorted(list(ready - done))
         if not rlist:
             left = [i for i in range(len(ops)) if i not in done]
             rlist = [left[0]]
-        wfeat = np.zeros((W, F), dtype=np.float32)
-        mask = np.zeros((W,), dtype=np.float32)
+        wfeat = np.zeros((1, W, F), dtype=np.float32)
+        mask  = np.zeros((1, W), dtype=np.float32)
         for i, idx in enumerate(rlist[:W]):
-            wfeat[i] = gate_one_hot(ops[idx]["gate_type"], F)
-            mask[i] = 1.0
-        win = torch.tensor(wfeat[None, ...], dtype=torch.float32, device=device)
-        msk = torch.tensor(mask[None, ...], dtype=torch.float32, device=device)
+            wfeat[0, i] = gate_one_hot(ops[idx]["gate_type"], F)
+            mask[0, i] = 1.0
 
-        with torch.no_grad():
-            logits, _ = model({"sig": sig, "win": win, "mask": msk})
-            logits = logits + torch.log(msk + 1e-8)
-            a = torch.argmax(logits, dim=-1).item()
-
-        pick_pos = int(a) if a < len(rlist) else 0
+        logits, _ = sess.run(["logits","value"], {"sig":sig, "win":wfeat, "mask":mask})
+        logits = logits + np.log(mask + 1e-8)
+        a = int(np.argmax(logits, axis=-1)[0])
+        pick_pos = a if a < len(rlist) else 0
         pick_idx = rlist[pick_pos]
         scheduled.append(pick_idx); done.add(pick_idx)
         for nxt in list(succs[pick_idx]):
@@ -72,40 +66,33 @@ def gen_ring(n=6, depth=40):
         qc.h(i % n); qc.cx(i % n, (i+1) % n); qc.rz(0.7, (i+2) % n)
     return qc
 
-def run_once(model, cfg, device, n, depth, trials=10):
-    qc = gen_ring(n, depth)
-    nq, ops = circuit_to_ops(qc)
-    client = CppClient(nq)
-
-    base_times = []
-    for _ in range(trials):
-        t0 = time.perf_counter(); client.evaluate_chunk_runtime("base", ops); t1 = time.perf_counter()
-        base_times.append((t1-t0)*1000)
-
-    sch_ops = schedule_with_policy(ops, model, cfg, device)
-    pol_times = []
-    for _ in range(trials):
-        t0 = time.perf_counter(); client.evaluate_chunk_runtime("pol", sch_ops); t1 = time.perf_counter()
-        pol_times.append((t1-t0)*1000)
-
-    base_mean = stats.mean(base_times); pol_mean = stats.mean(pol_times)
-    speedup = (base_mean - pol_mean) / base_mean * 100.0
-    print(f"n={n}, depth={depth}, trials={trials} -> baseline {base_mean:.2f} ms, policy {pol_mean:.2f} ms, speedup {speedup:.1f}%")
-    return base_mean, pol_mean, speedup
-
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--ckpt", required=True)
-    ap.add_argument("--device", default="cpu")
+    ap.add_argument("--onnx", required=True)
     ap.add_argument("--n", type=int, default=6)
     ap.add_argument("--depth", type=int, default=40)
     ap.add_argument("--trials", type=int, default=10)
     args = ap.parse_args()
 
-    cfg = Config(); cfg.device = args.device
-    model = PointerPolicy(cfg).to(cfg.device)
-    load_checkpoint(model, args.ckpt, map_location=cfg.device)
-    run_once(model, cfg, cfg.device, args.n, args.depth, args.trials)
+    cfg = Config()
+    sess = ort.InferenceSession(args.onnx, providers=["CPUExecutionProvider"])
+
+    qc = gen_ring(args.n, args.depth)
+    nq, ops = circuit_to_ops(qc)
+    client = CppClient(nq)
+
+    base_times, pol_times = [], []
+    for _ in range(args.trials):
+        t0 = time.perf_counter(); client.evaluate_chunk_runtime("base", ops); t1 = time.perf_counter()
+        base_times.append((t1-t0)*1000)
+    sch_ops = schedule_with_onnx(ops, sess, cfg)
+    for _ in range(args.trials):
+        t0 = time.perf_counter(); client.evaluate_chunk_runtime("pol", sch_ops); t1 = time.perf_counter()
+        pol_times.append((t1-t0)*1000)
+
+    base_mean, pol_mean = float(np.mean(base_times)), float(np.mean(pol_times))
+    speedup = (base_mean - pol_mean)/base_mean*100.0
+    print(f"baseline {base_mean:.2f} ms, policy {pol_mean:.2f} ms, speedup {speedup:.1f}%")
 
 if __name__ == "__main__":
     main()
