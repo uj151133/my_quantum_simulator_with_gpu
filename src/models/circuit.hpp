@@ -41,6 +41,16 @@ private:
     bool irEnabled_ = false;
     vector<law::Op> irLog_;
 
+    vector<QMDDGate> pending_;
+    vector<GateDesc> metaQueue_;
+    size_t execIdx_ = 0;
+    unordered_map<uint64_t, QMDDGate> fusedStore_;
+    uint64_t nextFusedId_ = 1;
+    static string upper(string s);
+    static bool isDiagTag(const string& tagU);
+    void moveQueueToPending();
+    void buildMetaFromIR(const vector<law::Op>& ops);
+
     void compute();
     void uncompute();
 
@@ -49,6 +59,9 @@ public:
     void enableIR(bool on);
     void clearIR();
     void compileIRWithLaw(const law::Options& opt);
+
+    vector<GateDesc> snapshotQueueWindow(size_t max_items) const;
+    void fuseRanges(const vector<pair<int,int>>& ranges);
 
     QuantumCircuit(int numQubitits, QMDDState initialState);
     QuantumCircuit(int numQubitits);
@@ -145,9 +158,9 @@ public:
 
     void reset(int qubitIndex);
     void globalPhase(double lamda);
-
-    void simulate();
     int measure(int qubitIndex);
+    bool simulateStep();
+    void simulate();
 
 };
 

@@ -28,8 +28,6 @@ class QMDDSchedulingEnv(gym.Env):
         super().__init__()
         self.cfg = cfg
         self.cost = HeuristicCostEstimator(cfg)
-
-        # C++クライアントは nq ごとにキャッシュして使い回し
         self._client_cache: Dict[int, CppClient] = {}
         if cpp is not None:
             self._client_cache[cfg.max_qubits] = cpp
@@ -45,7 +43,6 @@ class QMDDSchedulingEnv(gym.Env):
         self.action_history: List[int] = []
         self.reset()
 
-    # ---------- utils ----------
     def _get_client(self, nq: int) -> CppClient:
         cli = self._client_cache.get(nq)
         if cli is None:
@@ -54,9 +51,6 @@ class QMDDSchedulingEnv(gym.Env):
         return cli
 
     def _make_dummy_window(self) -> List[GateItem]:
-        """
-        デモ用のダミー・ウィンドウ（本番は実回路ベースに差し替え）
-        """
         types = ["Rz","Rx","H","CZ","CX","CP","Z","X"]
         W, K = self.cfg.window_size, self.cfg.top_k_levels
         win: List[GateItem] = []
@@ -68,13 +62,12 @@ class QMDDSchedulingEnv(gym.Env):
             win.append(GateItem(gt, act, is_diag, is_perm))
         return win
 
-    # ---------- gym api ----------
     def reset(self, *, seed: int | None = None, options: Dict[str, Any] | None = None):
         if seed is not None:
             random.seed(seed)
             np.random.seed(seed % (2**32 - 1))
         self.action_history = []
-        self.prefix_sig = Signature([])   # 既定: 全てDIAG扱いから開始
+        self.prefix_sig = Signature([])
         self.window = self._make_dummy_window()
         self.t = 0
         return self._obs(), {}
@@ -89,9 +82,7 @@ class QMDDSchedulingEnv(gym.Env):
             if g is None:
                 continue
             feat = np.zeros((cfg.gate_feat_dim,), dtype=np.float32)
-            # 位置のライトな符号化（簡易）。本番はゲートone-hot等に差し替え可
             feat[min(i, cfg.gate_feat_dim-3)] = 1.0
-            # 作用レベルの粗い要約（最小レベルを0..1に正規化）
             feat[-3] = float(min(g.acting_levels)) / max(1, cfg.top_k_levels-1) if g.acting_levels else 0.0
             feat[-2] = float(g.is_diag)
             feat[-1] = float(g.is_perm)
@@ -115,12 +106,10 @@ class QMDDSchedulingEnv(gym.Env):
         after = signature_cost(self.prefix_sig, cfg)
         reward = -float(after - before)
 
-        # 消化
         self.window[action] = None
         self.t += 1
         done = self.t >= cfg.window_size or all(x is None for x in self.window)
 
-        # 終端でCPP実測ボーナス（低確率）
         if done and cfg.use_cpp_reward and random.random() < cfg.cpp_reward_prob and len(self.action_history) > 0:
             try:
                 cpp_bonus = self._cpp_reward_bonus(self.action_history)
@@ -130,11 +119,7 @@ class QMDDSchedulingEnv(gym.Env):
 
         return self._obs(), reward, done, False, {}
 
-    # ---------- C++ 実測混入 ----------
     def _cpp_reward_bonus(self, history: List[int]) -> float:
-        """
-        小回路で baseline vs policy 順の C++ 実測を比較し、[-0.5,+0.5] ボーナスを返す
-        """
         from qiskit.circuit import QuantumCircuit
         from ..bridge.qiskit_to_ops import circuit_to_ops
 
@@ -162,7 +147,6 @@ class QMDDSchedulingEnv(gym.Env):
         speedup = (base - pol) / base
         return float(np.clip(speedup, -0.5, 0.5))
 
-    # ---------- ready DAG（安全な可換則込み） ----------
     @staticmethod
     def _is_diag_op(op: Dict[str, Any]) -> bool:
         t = op.get("gate_type","").upper()
@@ -174,12 +158,6 @@ class QMDDSchedulingEnv(gym.Env):
         return False
 
     def _build_ready_dag(self, ops: List[Dict[str, Any]]) -> Tuple[List[set], List[set], set]:
-        """
-        安全な可換則:
-          - 対角×対角は依存を張らない
-          - 同一control・別target の CX 同士は依存を張らない
-        それ以外は「同じ量子ビットに触れた直前ゲート」に依存を張る
-        """
         N = len(ops)
         preds = [set() for _ in range(N)]
         succs = [set() for _ in range(N)]
@@ -198,7 +176,6 @@ class QMDDSchedulingEnv(gym.Env):
                         len(a.get("qubits",[]))==2 and len(b.get("qubits",[]))==2 and
                         a["qubits"][0] == b["qubits"][0] and a["qubits"][1] != b["qubits"][1]
                     )
-                    # 安全可換でなければ依存を張る
                     if not (both_diag or cx_same_ctrl_diff_tgt):
                         preds[i].add(j)
                         succs[j].add(i)
@@ -222,7 +199,6 @@ class QMDDSchedulingEnv(gym.Env):
                 idx_in_ready = len(rlist) - 1
             pick_idx = rlist[idx_in_ready]
             scheduled.append(pick_idx); done.add(pick_idx)
-            # update successors
             for nxt in list(succs[pick_idx]):
                 preds[nxt].discard(pick_idx)
                 if not preds[nxt]:
