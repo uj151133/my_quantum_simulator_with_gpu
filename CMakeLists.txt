@@ -34,8 +34,22 @@ endif()
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+set(Python3_FIND_STRATEGY LOCATION)
+set(Python3_FIND_UNVERSIONED_NAMES FIRST)
+
+if(UNIX AND NOT APPLE)
+  # Ubuntu/Linux: Python 3.12系のみを許可（-DPython3_EXECUTABLE=... で上書き可）
+  message(STATUS "Requiring Python 3.12.x on Linux. Override with -DPython3_EXECUTABLE=/path/to/python3.12")
+  find_package(Python3 3.12 EXACT COMPONENTS Interpreter Development.Module REQUIRED)
+else()
+  # 他OSは既定（埋め込みは不要なので Module のみ）
+  find_package(Python3 COMPONENTS Interpreter Development.Module REQUIRED)
+endif()
+
 find_package(Python3 COMPONENTS Interpreter Development.Module Development.Embed REQUIRED)
 find_package(pybind11 CONFIG REQUIRED)
+
+message(STATUS "Using Python: ${Python3_EXECUTABLE} (${Python3_VERSION})")
 
 execute_process(
   COMMAND ${Python3_EXECUTABLE} -c "import site,sys;print(site.getusersitepackages())"
