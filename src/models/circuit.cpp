@@ -1,5 +1,78 @@
 #include "circuit.hpp"
 
+static inline bool isCancer(const string& gU) {
+    return (gU == "H" || gU == "RX" || gU == "RY" || gU == "V" || gU == "VDG");
+}
+
+vector<int> QuantumCircuit::countCancer() const {
+    vector<int> score(this->numQubits, 0);
+    for (const auto& o : irLog_) {
+        const string g = Core::upper(o.tag);
+        if (o.qubits.size() == 1) {
+            if (isCancer(g)) {
+                score[o.qubits[0]] += 2;
+            }
+        } else if (o.qubits.size() == 2) {
+            score[o.qubits[0]] += 1;
+            score[o.qubits[1]] += 1;
+        }
+    }
+    return score;
+}
+
+void QuantumCircuit::consult() {
+    auto score = this->countCancer();
+
+    vector<int> order(this->numQubits);
+    iota(order.begin(), order.end(), 0); // logical indices
+
+    stable_sort(order.begin(), order.end(),
+        [&](int a, int b){
+            if (score[a] != score[b]) return score[a] < score[b]; // 昇順
+            return a < b; // タイブレーク安定化
+        });
+
+    this->phy2log_.resize(this->numQubits);
+    this->log2phy_.resize(this->numQubits);
+    for (int p = 0; p < this->numQubits; ++p) {
+        int l = order[p];
+        this->phy2log_[p] = l;
+        this->log2phy_[l] = p;
+    }
+}
+
+void QuantumCircuit::emitIR(const vector<Core>& ops){
+    bool saved = this->irEnabled_;
+    this->irEnabled_ = false;
+
+    // 再構築
+    this->wires.assign(numQubits, {});
+    while (!this->layer.empty()) this->layer.pop();
+
+    for (auto o : ops){
+        o.normalize();
+        for (auto& q : o.qubits) q = this->log2phy_[q];
+
+        const string g = Core::upper(o.tag);
+        if(g=="H") this->addH(o.qubits.at(0));
+        else if(g=="X") this->addX(o.qubits.at(0));
+        else if(g=="Y") this->addY(o.qubits.at(0));
+        else if(g=="Z") this->addZ(o.qubits.at(0));
+        else if(g=="P"||g=="U1") this->addP(o.qubits.at(0), (o.phi!=0.0? o.phi : o.theta));
+        else if(g=="RX") this->addRx(o.qubits.at(0), o.theta);
+        else if(g=="RY") this->addRy(o.qubits.at(0), o.theta);
+        else if(g=="RZ") this->addRz(o.qubits.at(0), o.theta);
+        else if(g=="CX"||g=="CNOT") this->addCX(o.qubits.at(0), o.qubits.at(1));
+        else if(g=="CZ") this->addCZ(o.qubits.at(0), o.qubits.at(1));
+        else if(g=="CP") this->addCP(o.qubits.at(0), o.qubits.at(1), (o.phi!=0.0? o.phi : o.theta));
+        else if(g=="CRZ") this->addCP(o.qubits.at(0), o.qubits.at(1), o.theta); // 仮: CPで代用
+        else if(g=="SWAP") this->addSWAP(o.qubits.at(0), o.qubits.at(1));
+        // 必要に応じて追加
+    }
+
+    this->irEnabled_ = saved;
+}
+
 int QuantumCircuit::getMaxDepth(optional<int> start, optional<int> end) const {
     int maxDepth = 0;
     int rangeStart = start.value_or(0);
@@ -22,7 +95,7 @@ void QuantumCircuit::normalizeLayer() {
         for (int q = 0; q < numQubits; q++) {
             parts.push_back(this->wires[q][depth]);
         }
-        while (!parts.empty() && parts.back().type == Type::I || parts.back().type == Type::VOID || parts.back().type == Type::BAN || parts.back().type == Type::JOKER) {
+        while (!parts.empty() && (parts.back().type == Type::I || parts.back().type == Type::VOID || parts.back().type == Type::BAN || parts.back().type == Type::JOKER)) {
             parts.pop_back();
         }
         vector<QMDDEdge> edges;
@@ -46,6 +119,7 @@ void QuantumCircuit::smartInsert(int qubitIndex, const Part& part) {
     } else {
         this->wires[qubitIndex].push_back(part);
     }
+    return;
 }
 
 int QuantumCircuit::searchJOKER(int qubitIndex) {
@@ -127,6 +201,7 @@ void QuantumCircuit::addPh(int qubitIndex, double delta) {
 }
 
 void QuantumCircuit::addX(int qubitIndex) {
+    if(this->irEnabled_){ this->irLog_.push_back(Core{.tag="X", .qubits={qubitIndex}}); return; }
     this->smartInsert(qubitIndex, {Type::X, gate::X()});
     return;
 }
@@ -628,6 +703,10 @@ void QuantumCircuit::addCH(int controlIndex, int targetIndex) {
 }
 
 void QuantumCircuit::addRx(int qubitIndex, double theta) {
+    if(this->irEnabled_){
+        Core c; c.tag="RX"; c.qubits={qubitIndex}; c.theta=theta; c.normalize();
+        this->irLog_.push_back(std::move(c)); return;
+    }
     int maxDepth = this->getMaxDepth(qubitIndex, this->numQubits - 1);
     for (int index = qubitIndex; index <= this->numQubits - 1; index++) {
         while (this->wires[index].size() < maxDepth) {
@@ -642,6 +721,10 @@ void QuantumCircuit::addRx(int qubitIndex, double theta) {
 }
 
 void QuantumCircuit::addRy(int qubitIndex, double theta) {
+    if(this->irEnabled_){
+        Core c; c.tag="RY"; c.qubits={qubitIndex}; c.theta=theta; c.normalize();
+        this->irLog_.push_back(std::move(c)); return;
+    }
     int maxDepth = this->getMaxDepth(qubitIndex, this->numQubits - 1);
     for (int index = qubitIndex; index <= this->numQubits - 1; index++) {
         while (this->wires[index].size() < maxDepth) {
@@ -656,6 +739,10 @@ void QuantumCircuit::addRy(int qubitIndex, double theta) {
 }
 
 void QuantumCircuit::addRz(int qubitIndex, double theta) {
+    if(this->irEnabled_){
+        Core c; c.tag="RZ"; c.qubits={qubitIndex}; c.theta=theta; c.normalize();
+        this->irLog_.push_back(std::move(c)); return;
+    }
     this->smartInsert(qubitIndex, {Type::Rz, gate::Rz(theta)});
     return;
 }
@@ -1126,6 +1213,10 @@ void QuantumCircuit::globalPhase(double lamda) {
 }
 
 void QuantumCircuit::simulate() {
+    if (this->irEnabled_) {
+        this->consult();
+        this->emitIR(this->irLog_);
+    }
     this->normalizeLayer();
     int i = 0;
     while (!this->layer.empty()) {

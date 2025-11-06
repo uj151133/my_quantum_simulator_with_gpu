@@ -3,7 +3,7 @@ gui:
 
 process:
   concurrency: 6 #並行性
-  parallelism: 4 #並列性
+  parallelism: 100 #並列性
 
 table:
   size: 1048576
