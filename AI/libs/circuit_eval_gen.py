@@ -1,5 +1,6 @@
 from typing import List
-from qiskit.circuit import QuantumCircuit
+# from qiskit.circuit import QuantumCircuit
+from qiskit import QuantumCircuit
 import numpy as np
 
 def make_eval_circuits(num: int = 3, num_qubits: int = 6, depth: int = 60) -> List[QuantumCircuit]:

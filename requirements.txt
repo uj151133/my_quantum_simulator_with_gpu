@@ -1,8 +1,8 @@
 qiskit==2.2.2
 # qiskit-aer==0.17.2
-qiskit-ibm-provider==0.11.0
-qiskit-ibm-runtime==0.43.1
-qiskit-terra==0.46.3
+# qiskit-ibm-provider==0.11.0
+# qiskit-ibm-runtime==0.43.1
+# qiskit-terra==0.46.3
 sympy
 pybind11
 python-dotenv
