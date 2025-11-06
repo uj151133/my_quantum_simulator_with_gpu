@@ -1457,22 +1457,22 @@ void QuantumCircuit::simulate() {
         // this->compileIRWithLaw(opt);
         this->irLog_.clear();
     }
-    if (this->pending_.empty() && !this->gateQueue_.empty()){
-        this->moveQueueToPending();
-    }
-    // int i = 0;
-    // while (!this->gateQueue_.empty()) {
-    //     cout << "number of gates: " << i++ << endl;
-    //     QMDDGate currentGate = this->gateQueue_.front();
-    //     cout << "Current gate: " << currentGate << endl;
-    //     cout << "Current state: " << this->finalState_ << endl;
-
-    //     cout << "============================================================\n" << endl;
-    //     this->gateQueue_.pop();
-    //     this->finalState_ = QMDDState(mathUtils::mul(currentGate.getInitialEdge(), this->finalState_.getInitialEdge()));
+    // if (this->pending_.empty() && !this->gateQueue_.empty()){
+    //     this->moveQueueToPending();
     // }
-    while (this->simulateStep()){ /* 協調融合しない場合は最後まで */ }
-    cout << "Final state: " << this->finalState_ << endl;
+    int i = 0;
+    while (!this->gateQueue_.empty()) {
+        cout << "number of gates: " << i++ << endl;
+        QMDDGate currentGate = this->gateQueue_.front();
+        cout << "Current gate: " << currentGate << endl;
+        cout << "Current state: " << this->finalState_ << endl;
+
+        cout << "============================================================\n" << endl;
+        this->gateQueue_.pop();
+        this->finalState_ = QMDDState(mathUtils::mul(currentGate.getInitialEdge(), this->finalState_.getInitialEdge()));
+    }
+    // while (this->simulateStep()){ /* 協調融合しない場合は最後まで */ }
+    // cout << "Final state: " << this->finalState_ << endl;
     return;
 }
 

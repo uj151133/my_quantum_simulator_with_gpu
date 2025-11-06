@@ -38,7 +38,6 @@ struct Core {
     inline bool is2Q() const { return qubits.size()==2; }
     pair<int,int> orderedPair() const;
     pair<int,int> unorderedKey() const;
-s
     void normalize();
 };
 
