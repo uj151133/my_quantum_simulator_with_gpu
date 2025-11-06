@@ -12,6 +12,7 @@
 #include "qmdd.hpp"
 #include "gate.hpp"
 #include "state.hpp"
+#include "../common/Core.hpp"
 #include "../common/mathUtils.hpp"
 #include "../common/constant.hpp"
 
@@ -42,6 +43,12 @@ private:
     queue<QMDDGate> layer;
     QMDDState finalState;
     int numQubits;
+    vector<Core> irLog_;
+    vector<int> phy2log_;
+    vector<int> log2phy_;
+    vector<int> countCancer() const;
+    void consult();
+    void emitIR(const vector<Core>& ops);
     int getMaxDepth(optional<int> start, optional<int> end) const;
     void normalizeLayer();
     void smartInsert(int qubitIndex, const Part& part);
@@ -49,11 +56,13 @@ private:
 
     void compute();
     void uncompute();
+    
 
 public:
     QuantumCircuit(int numQubitits, QMDDState initialState);
     QuantumCircuit(int numQubitits);
     vector<vector<int>> quantumRegister;
+    bool irEnabled_ = true;
     ~QuantumCircuit() = default;
     queue<QMDDGate> getLayer() const;
     QMDDState getFinalState() const;
