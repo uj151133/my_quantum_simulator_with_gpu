@@ -1,21 +1,75 @@
 import argparse
-from libs.cfg import Config
-from libs.train.supervised import run_supervised
-from libs.train.ppo import run_ppo
+from AI.libs.config import Config
+from AI.libs.circuit_train_gen import make_training_circuits
+from AI.libs.circuit_eval_gen import make_eval_circuits
+from AI.libs.scheduler import SchedulerModel, train_supervised_scheduler, train_ppo_scheduler
+from AI.libs.fuser import FuserModel, train_supervised_fuser, train_ppo_fuser
+from AI.libs.exporter import export_models
+from AI.libs.eval_speed import evaluate_policy_speedup_for_qiskit
+from AI.libs.bridge import Bridge
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--mode", choices=["sl", "ppo"], default="ppo")
-    parser.add_argument("--init-ckpt", default=None, help="PPO warm start checkpoint (.pt)")
-    parser.add_argument("--no-export", action="store_true", help="disable final TorchScript/ONNX export")
+    parser.add_argument("--mode", choices=["train", "eval"], default="eval")
+    parser.add_argument("--algo", choices=["sup", "ppo"], default="sup")
+    parser.add_argument("--episodes", type=int, default=50)
+    parser.add_argument("--window", type=int, default=32)
+    parser.add_argument("--trials", type=int, default=3)
+    parser.add_argument("--max_outer_iters", type=int, default=4)
+    parser.add_argument("--device", default=None)
     args = parser.parse_args()
 
-    cfg = Config()  # すべての設定は cfg.py にハードコード
+    cfg = Config()
+    if args.device: cfg.device = args.device
+    cfg.window_size = args.window
 
-    if args.mode == "sl":
-        run_supervised(cfg, export_final=not args.no_export)
+    in_dim = cfg.gate_feat_dim + cfg.sig_dim * cfg.top_k_levels
+    bridge = Bridge()
+
+    if args.mode == "train":
+        train_qcs = make_training_circuits(num=20, num_qubits=6, depth=80)
+        sched = SchedulerModel(input_dim=in_dim, hidden=128, use_transformer=False, device=cfg.device)
+        fuse  = FuserModel(input_dim=in_dim,  hidden=128, use_transformer=False, device=cfg.device)
+        if args.algo == "sup":
+            train_supervised_scheduler(sched, train_qcs, cfg, epochs=5)
+            train_supervised_fuser(fuse, train_qcs, cfg, epochs=5)
+        else:
+            train_ppo_scheduler(sched, bridge, train_qcs, cfg, episodes=args.episodes)
+            train_ppo_fuser(fuse, bridge, train_qcs, cfg, episodes=args.episodes)
+        export_models(sched, fuse)
+        # エクスポート直後に速度比較も自動実行（fusion セッションは使わず pre-stage 比較）
+        eval_qcs = make_eval_circuits(num=3, num_qubits=10, depth=200)
+        for i, qc in enumerate(eval_qcs):
+            print(f"=== Speed Eval after export: Circuit {i} ===")
+            evaluate_policy_speedup_for_qiskit(
+                qc=qc,
+                bridge=bridge,
+                scheduler_model=sched,   # 学習直後のモデル
+                cfg=cfg,
+                trials=args.trials,
+                max_outer_iters=args.max_outer_iters,
+            )
     else:
-        run_ppo(cfg, init_ckpt=args.init_ckpt, export_final=not args.no_export)
+        eval_qcs = make_eval_circuits(num=3, num_qubits=6, depth=60)
+        sched = SchedulerModel(input_dim=in_dim, hidden=128, use_transformer=False, device=cfg.device)
+        fuse  = FuserModel(input_dim=in_dim,  hidden=128, use_transformer=False, device=cfg.device)
+        for i, qc in enumerate(eval_qcs):
+            print(f"=== Circuit {i} ===")
+            def session_factory(nq: int, ops):
+                return bridge.new_session(nq, ops)
+            def runtime_eval(session) -> float:
+                return bridge.evaluate_session_runtime(session)
+            evaluate_policy_speedup_for_qiskit(
+                qc=qc,
+                bridge=bridge,
+                scheduler_model=sched,
+                session_factory=session_factory,
+                runtime_eval=runtime_eval,
+                fusion_model=fuse,
+                cfg=cfg,
+                trials=args.trials,
+                max_outer_iters=args.max_outer_iters,
+            )
 
 if __name__ == "__main__":
     main()

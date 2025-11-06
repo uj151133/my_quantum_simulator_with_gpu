@@ -46,13 +46,13 @@ shared_ptr<QMDDNode> UniqueTable::find(int64_t hashKey) const {
 
 // 実装ファイル
 int64_t UniqueTable::hash(int64_t key) const {
-    return key & (this->table_Size - 1);
+    return key & (this->tableSize_ - 1);
 }
 
 void UniqueTable::printAllEntries() const {
     int validEntries = 0;
     int invalidEntries = 0;
-    for (size_t idx = 0; idx < this->table_Size; ++idx) {
+    for (size_t idx = 0; idx < this->tableSize_; ++idx) {
         Entry* head = this->table_[idx].load(memory_order_acquire);
         if (!head) continue;
         cout << "Index: " << idx << endl;
@@ -70,16 +70,15 @@ void UniqueTable::printAllEntries() const {
         cout << endl;
     }
     cout << "Total entries(unknown in vector mode): "  << validEntries + invalidEntries << endl;
-    cout << "Table size: " << this->table_Size << endl;
+    cout << "Table size: " << this->tableSize_ << endl;
     cout << "Valid entries: " << validEntries << endl;
     cout << "Invalid entries: " << invalidEntries << endl;
-    cout << "Table bucket count: " << this->table_Size << endl;
 }
 
 void UniqueTable::printNodeNum() const {
     int validEntries = 0;
     int invalidEntries = 0;
-    for (size_t idx = 0; idx < this->table_Size; ++idx) {
+    for (size_t idx = 0; idx < this->tableSize_; ++idx) {
         Entry* head = this->table_[idx].load(memory_order_acquire);
         if (!head) continue;
         for (Entry* p = head; p != nullptr; p = p->next) {
@@ -91,15 +90,15 @@ void UniqueTable::printNodeNum() const {
         }
     }
     cout << "Total entries(unknown in vector mode): "  << validEntries + invalidEntries << endl;
-    cout << "Table size: " << this->table_Size << endl;
+    cout << "Table size: " << this->tableSize_ << endl;
     cout << "Valid entries: " << validEntries << endl;
     cout << "Invalid entries: " << invalidEntries << endl;
-    cout << "Table bucket count: " << this->table_Size << endl;
+    cout << "Table bucket count: " << this->tableSize_ << endl;
 }
 
 int UniqueTable::getTotalEntryCount() const {
     int totalEntries = 0;
-    for (size_t idx = 0; idx < this->table_Size; ++idx) {
+    for (size_t idx = 0; idx < this->tableSize_; ++idx) {
         Entry* head = this->table_[idx].load(memory_order_acquire);
         for (Entry* p = head; p != nullptr; p = p->next) {
             totalEntries++;

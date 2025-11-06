@@ -38,7 +38,7 @@ inline graal_isolatethread_t* OperationCacheClient::getThreadLocalThread() {
 }
 
 graal_isolatethread_t* OperationCacheClient::initializeNewThread() {
-    if (isolate == nullptr) {
+    if (this->isolate_ == nullptr) {
         throw runtime_error("GraalVM isolate is not initialized");
     }
 
@@ -55,8 +55,8 @@ graal_isolatethread_t* OperationCacheClient::initializeNewThread() {
 
 optional<QMDDEdge> OperationCacheClient::find(int64_t key, bool useTLS) {
     if (useTLS) {
-        auto it = this->TLSCache_ =.find(key);
-        if (it != this->TLSCache_ =.end()) return it->second;
+        auto it = this->TLSCache_.find(key);
+        if (it != this->TLSCache_.end()) return it->second;
         return nullopt;
     }
     return this->findGlobal(key);
@@ -64,7 +64,7 @@ optional<QMDDEdge> OperationCacheClient::find(int64_t key, bool useTLS) {
 
 void OperationCacheClient::insert(int64_t key, const QMDDEdge& edge, bool useTLS) {
     if (useTLS) {
-        this->TLSCache_ =.insert_or_assign(key, edge);
+        this->TLSCache_.insert_or_assign(key, edge);
         return;
     }
     this->insertGlobal(key, edge);
@@ -120,11 +120,11 @@ OperationCacheClient& OperationCacheClient::getInstance() {
 }
 
 void OperationCacheClient::flushThreadLocalToGlobal() {
-    if (this->TLSCache_ =.empty()) return;
-    for (const auto& kv : this->TLSCache_ =) {
+    if (this->TLSCache_.empty()) return;
+    for (const auto& kv : this->TLSCache_) {
         insertGlobal(kv.first, kv.second);
     }
-    this->TLSCache_ =.clear();
+    this->TLSCache_.clear();
 }
 
 void OperationCacheClient::saveCacheToSQLite() {

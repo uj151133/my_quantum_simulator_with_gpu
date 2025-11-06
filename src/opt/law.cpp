@@ -5,6 +5,12 @@ namespace law {
 static inline string upper(string s){for(auto& c:s) c=(char)toupper((unsigned char)c); return s;}
 static inline bool isGate(const Core& o, const char* n){ return upper(o.tag)==n; }
 static inline bool samePair(const Core& a,const Core& b){return a.qubits.size()==2 && b.qubits.size()==2 && a.qubits==b.qubits; }
+static inline bool sameUnorderedPair(const Core& a, const Core& b){
+    if (a.qubits.size()!=2 || b.qubits.size()!=2) return false;
+    int a0=min(a.qubits[0],a.qubits[1]), a1=max(a.qubits[0],a.qubits[1]);
+    int b0=min(b.qubits[0],b.qubits[1]), b1=max(b.qubits[0],b.qubits[1]);
+    return a0==b0 && a1==b1;
+}
 static inline bool isSingleOn(const Core& o,int q){return o.qubits.size()==1 && o.qubits[0]==q;}
 static inline bool nearZero(double x){return abs(x) < 1e-12; }
 static inline bool envOn(const char* key, bool deflt){
@@ -20,13 +26,11 @@ Options optionsFromEnv(const Options& d){
     o.rule_R1_single_axis_fuse = envOn("QMDD_RULE_R1", d.rule_R1_single_axis_fuse);
     o.rule_R2_pair_cancel      = envOn("QMDD_RULE_R2", d.rule_R2_pair_cancel);
     o.rule_R3_phase_gadget     = envOn("QMDD_RULE_R3", d.rule_R3_phase_gadget);
-    o.rule_R4_commute_rz_ctrl  = envOn("QMDD_RULE_R4", d.rule_R4_commute_rz_ctrl);
     o.rule_R5_desugar_swap     = envOn("QMDD_RULE_R5", d.rule_R5_desugar_swap);
     o.rule_R6_cx_to_cz_via_h   = envOn("QMDD_PREFER_DIAG", d.rule_R6_cx_to_cz_via_h);
     o.rule_R7_merge_diag_angle = envOn("QMDD_RULE_R7", d.rule_R7_merge_diag_angle);
     o.rule_R8_hcxh_to_cz       = envOn("QMDD_RULE_R8", d.rule_R8_hcxh_to_cz);
     o.rule_R9_conjugation_ids  = envOn("QMDD_RULE_R9", d.rule_R9_conjugation_ids);
-    o.rule_R10_bubble_diagonals= envOn("QMDD_RULE_R10", d.rule_R10_bubble_diagonals);
     if(const char* e=getenv("QMDD_REWRITE_ITERS")){ try{ o.iters=max(1, stoi(e)); }catch(...){} }
     return o;
 }
@@ -49,10 +53,33 @@ static void CXtoCZviaH(vector<Core>& ops){vector<Core> out; out.reserve(ops.size
     for(const auto& o: ops){
         if((isGate(o,"CX")||isGate(o,"CNOT")) && o.qubits.size()==2){
             int c=o.qubits[0], t=o.qubits[1];
-            out.push_back(Core{.tag="H", .qubits={t}});
-            out.push_back(Core{.tag="CZ", .qubits={c,t}});
-            out.push_back(Core{.tag="H", .qubits={t}});
-        }else out.push_back(o);
+            if(t < c){
+                out.push_back(Core{.tag="H", .qubits={t}});
+                out.push_back(Core{.tag="CZ", .qubits={c,t}});
+                out.push_back(Core{.tag="H", .qubits={t}});
+            }else{
+                out.push_back(o);
+            }
+        }else{
+            out.push_back(o);
+        }
+    }
+    ops.swap(out);
+}
+
+// R8: H - CX - H（target一致）→ CZ
+static void CXviaHtoCZ(vector<Core>& ops){vector<Core> out; out.reserve(ops.size()); size_t i=0;
+    while(i<ops.size()){
+        if(i+2<ops.size()){
+            const Core& h1=ops[i]; const Core& cx=ops[i+1]; const Core& h2=ops[i+2];
+            bool cxok = (isGate(cx,"CX")||isGate(cx,"CNOT")) && cx.qubits.size()==2;
+            if(isGate(h1,"H") && cxok && isGate(h2,"H")
+               && isSingleOn(h1, cx.qubits[1]) && isSingleOn(h2, cx.qubits[1])){
+                out.push_back(Core{.tag="CZ", .qubits={cx.qubits[0], cx.qubits[1]}});
+                i+=3; continue;
+            }
+        }
+        out.push_back(ops[i]); ++i;
     }
     ops.swap(out);
 }
@@ -104,8 +131,17 @@ static void cancelTwoQubits(vector<Core>& ops){vector<Core> out; out.reserve(ops
         const Core& a=ops[i];
         if(i+1<ops.size()){
             const Core& b=ops[i+1];
-            if(((isGate(a,"CX")||isGate(a,"CNOT")) && (isGate(b,"CX")||isGate(b,"CNOT")) && samePair(a,b)) ||
-                (isGate(a,"CZ") && isGate(b,"CZ") && samePair(a,b))){ i+=2; continue; }
+            const auto ta = upper(a.tag);
+            const auto tb = upper(b.tag);
+            if(ta==tb){
+                bool cancel=false;
+                if(ta=="CX" || ta=="CNOT"){
+                    cancel = samePair(a,b);
+                }else if(ta=="CZ" || ta=="RZZ" || ta=="SWAP"){
+                    cancel = sameUnorderedPair(a,b);
+                }
+                if(cancel){ i+=2; continue; }
+            }
         }
         out.push_back(a); i++;
     }
@@ -120,7 +156,7 @@ static void sandwich_crz(vector<Core>& ops){vector<Core> out; out.reserve(ops.si
             bool a_cx=(isGate(a,"CX")||isGate(a,"CNOT"));
             bool c_cx=(isGate(c,"CX")||isGate(c,"CNOT"));
             if(a_cx && c_cx && samePair(a,c) && isGate(b,"RZ") && isSingleOn(b, a.qubits[1])){
-                out.push_back(Core{.tag="CRZ", .qubits={a.qubits[0], a.qubits[1]}, .theta=b.theta});
+                out.push_back(Core{.tag="RZZ", .qubits={a.qubits[0], a.qubits[1]}, .theta=b.theta});
                 i+=3; continue;
             }
         }
@@ -129,23 +165,18 @@ static void sandwich_crz(vector<Core>& ops){vector<Core> out; out.reserve(ops.si
     ops.swap(out);
 }
 
-// R4
-static void commute_rz_control_with_cx(vector<Core>& ops){
-    for(size_t i=0;i+1<ops.size();++i){
-    Core& a=ops[i]; Core& b=ops[i+1];
-        if(isGate(a,"RZ") && (isGate(b,"CX")||isGate(b,"CNOT")) && isSingleOn(a, b.qubits[0])) swap(ops[i], ops[i+1]);
-    }
-}
-
 // R7
 static void merge_diagonal_angles(vector<Core>& ops){vector<Core> out; out.reserve(ops.size()); size_t i=0;
     while(i<ops.size()){
-        Core a=ops[i]; std::string an=upper(a.tag);
-        if((an=="CRZ"||an=="CP") && i+1<ops.size()){
+        Core a=ops[i]; string an=upper(a.tag);
+        if((an=="CRZ"||an=="CP"||an=="RZZ") && i+1<ops.size()){
             size_t j=i+1; double acc=a.theta;
             while(j<ops.size()){
                 const Core& b=ops[j];
-                if(upper(b.tag)==an && samePair(a,b)){ acc+=b.theta; j++; } else break;
+                if(upper(b.tag)==an &&
+                    ((an=="RZZ") ? sameUnorderedPair(a,b) : samePair(a,b))){ // RZZは無向一致
+                    acc+=b.theta; j++;
+                } else break;
             }
             if(!nearZero(acc)){ a.theta=acc; out.push_back(a); }
             i=j; continue;
@@ -164,31 +195,19 @@ static inline bool disjoint(const Core& a,const Core& b){
     return true;
 }
 
-static void bubble_diagonals(vector<Core>& ops){
-    if(ops.size()<2) return;
-    bool changed=true; int passes=0;
-    while(changed && passes<2){
-        changed=false; passes++;
-        for(size_t i=0;i+1<ops.size();++i){
-            const Core& a=ops[i]; const Core& b=ops[i+1];
-            if(!is_diag(b)) continue;
-            if(is_diag(a) || disjoint(a,b)){swap(ops[i], ops[i+1]); changed=true; }
-        }
-    }
-}
-
 vector<Core> optimize(const vector<Core>& in, const Options& o){
     vector<Core> ops=in;
-    if(o.rule_R5_desugar_swap)    desugarSwap(ops);
-    if(o.rule_R6_cx_to_cz_via_h)  CXtoCZviaH(ops);
+    if(o.rule_R5_desugar_swap) desugarSwap(ops);
     for(int k=0;k<o.iters;k++){
         cancelOneQubit(ops, o.rule_R1_single_axis_fuse);
         if(o.rule_R2_pair_cancel)      cancelTwoQubits(ops);
-        if(o.rule_R4_commute_rz_ctrl)  commute_rz_control_with_cx(ops);
-        if(o.rule_R3_phase_gadget)     sandwich_crz(ops);
+
+        if(o.rule_R3_phase_gadget)     sandwich_crz(ops);   // CXが残っているうちに
+        if(o.rule_R8_hcxh_to_cz)       CXviaHtoCZ(ops);     // H-CX-H→CZ
+        if(o.rule_R6_cx_to_cz_via_h)   CXtoCZviaH(ops);     // 最後にCX→H-CZ-H
+
         if(o.rule_R7_merge_diag_angle) merge_diagonal_angles(ops);
-        if(o.rule_R8_hcxh_to_cz)       /*already included as separate*/ (void)0;
-        if(o.rule_R10_bubble_diagonals)bubble_diagonals(ops);
+
         cancelOneQubit(ops, o.rule_R1_single_axis_fuse);
         if(o.rule_R2_pair_cancel)      cancelTwoQubits(ops);
     }

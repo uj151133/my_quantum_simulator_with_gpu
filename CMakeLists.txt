@@ -34,29 +34,31 @@ endif()
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(Python3 REQUIRED COMPONENTS Interpreter Development)
+find_package(Python3 COMPONENTS Interpreter Development.Module Development.Embed REQUIRED)
 find_package(pybind11 CONFIG REQUIRED)
 
-# インクルードディレクトリとリンクディレクトリの設定
-include_directories(${Python3_INCLUDE_DIRS})
-
-find_package(yaml-cpp REQUIRED)
-find_package(nlohmann_json REQUIRED)
-find_package(Boost ${BOOST_MIN_VERSION} REQUIRED COMPONENTS 
-    system
-    thread
-    fiber
-    context
-    filesystem
-    program_options
+execute_process(
+  COMMAND ${Python3_EXECUTABLE} -c "import site,sys;print(site.getusersitepackages())"
+  OUTPUT_VARIABLE PY_USER_SITE
+  OUTPUT_STRIP_TRAILING_WHITESPACE
 )
 
-if(NOT Boost_FOUND)
-    message(FATAL_ERROR "Boost not found")
-endif()
-find_package(Threads REQUIRED)
-find_package(TBB REQUIRED)
-find_package(GSL REQUIRED)
+include_directories(${Python3_INCLUDE_DIRS})
+
+include(cmake/Dependencies.cmake)
+# find_package(yaml-cpp REQUIRED)
+# find_package(nlohmann_json REQUIRED)
+# find_package(Boost ${BOOST_MIN_VERSION} REQUIRED COMPONENTS 
+#     system
+#     thread
+#     fiber
+#     context
+#     filesystem
+#     program_options
+# )
+# find_package(Threads REQUIRED)
+# find_package(TBB REQUIRED)
+# find_package(GSL REQUIRED)
 
 if(APPLE)
     # MacOS (Homebrew) settings
@@ -128,6 +130,34 @@ else()
     message(FATAL_ERROR "antlr4-runtime not configured correctly")
 endif()
 
+if(APPLE)
+    find_path(ONNXRUNTIME_INCLUDE_DIR
+        NAMES onnxruntime_cxx_api.h
+        HINTS /opt/homebrew/include /usr/local/include /usr/include
+        PATH_SUFFIXES onnxruntime
+    )
+    find_library(ONNXRUNTIME_LIB
+        NAMES onnxruntime
+        HINTS /opt/homebrew/lib /usr/local/lib /usr/lib
+    )
+else()
+    find_path(ONNXRUNTIME_INCLUDE_DIR
+        NAMES onnxruntime_cxx_api.h
+        PATHS /usr/local/include /usr/include
+        PATH_SUFFIXES onnxruntime
+    )
+    find_library(ONNXRUNTIME_LIB
+        NAMES onnxruntime
+        PATHS /usr/local/lib /usr/lib /usr/lib/x86_64-linux-gnu
+    )
+endif()
+
+if(ONNXRUNTIME_INCLUDE_DIR AND ONNXRUNTIME_LIB)
+    message(STATUS "ONNX Runtime found: ${ONNXRUNTIME_LIB}")
+    include_directories(${ONNXRUNTIME_INCLUDE_DIR})
+else()
+    message(WARNING "ONNX Runtime not found. SchedulerONNX will fall back to identity perm.")
+endif()
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
 
@@ -178,7 +208,7 @@ else()
 endif()
 
 configure_file(${CMAKE_SOURCE_DIR}/config.yaml ${CMAKE_BINARY_DIR}/config.yaml COPYONLY)
-
+configure_file(${CMAKE_SOURCE_DIR}/cmake/qmdd_project.pth.in ${CMAKE_BINARY_DIR}/qmdd_project.pth @ONLY)
 find_library(GRAALVM_NATIVE_LIB
     NAMES ${GRAALVM_NATIVE_LIB_SEARCH_NAME}
     PATHS ${GRAALVM_NATIVE_LIB_PATH}
@@ -200,7 +230,7 @@ if(NOT GRAALVM_NATIVE_LIB)
 endif()
 
 
-file(GLOB SOURCES "src/models/*.cpp" "src/common/*.cpp" "src/modules/*.cpp" "src/test/*/*.cpp" "src/translator/*/*.cpp")
+file(GLOB SOURCES "src/models/*.cpp" "src/common/*.cpp" "src/modules/*.cpp" "src/test/*/*.cpp" "src/translator/*/*.cpp" "src/opt/*.cpp")
 
 
 set(OPENQASM3_GEN_DIR ${CMAKE_SOURCE_DIR}/src/translator/OpenQASM3/gen)
@@ -215,7 +245,8 @@ target_link_libraries(qmdd_sim PRIVATE
     pthread
     yaml-cpp::yaml-cpp
     nlohmann_json::nlohmann_json
-    Python3::Python
+    # Python3::Python
+    # Python3::Embed
     ${Boost_LIBRARIES}
     GSL::gsl
     ${GMP_LIB}
@@ -224,7 +255,16 @@ target_link_libraries(qmdd_sim PRIVATE
     TBB::tbb
     antlr4_runtime
     $<$<BOOL:${GRAALVM_NATIVE_LIB}>:${GRAALVM_NATIVE_LIB}>
+    $<$<BOOL:${ONNXRUNTIME_LIB}>:${ONNXRUNTIME_LIB}>
 )
+
+if(APPLE AND ONNXRUNTIME_LIB)
+    get_filename_component(ONNX_LIB_DIR "${ONNXRUNTIME_LIB}" DIRECTORY)
+    set_target_properties(qmdd_sim PROPERTIES
+        BUILD_RPATH "${ONNX_LIB_DIR}"
+        INSTALL_RPATH "@loader_path;${ONNX_LIB_DIR}"
+    )
+endif()
 
 if(UNIX AND NOT APPLE)
     set_target_properties(qmdd_sim PROPERTIES BUILD_RPATH "/usr/local/lib")
@@ -244,10 +284,11 @@ file(GLOB CORE_SOURCES
     "src/models/*.cpp"
     "src/common/*.cpp"
     "src/modules/*.cpp"
+    "src/bindings/*.cpp"
+    "src/opt/*.cpp"
 )
 
 add_library(qmdd_core MODULE
-    src/bindings/qmddCore.cpp
     ${CORE_SOURCES}
     ${C_SRC}
     ${ASM_SRC}
@@ -282,10 +323,20 @@ target_link_libraries(qmdd_core PRIVATE
     TBB::tbb
     antlr4_runtime
     $<$<BOOL:${GRAALVM_NATIVE_LIB}>:${GRAALVM_NATIVE_LIB}>
+    $<$<BOOL:${ONNXRUNTIME_LIB}>:${ONNXRUNTIME_LIB}>
 )
 
+if(APPLE AND ONNXRUNTIME_LIB)
+    get_filename_component(ONNX_LIB_DIR "${ONNXRUNTIME_LIB}" DIRECTORY)
+    set_target_properties(qmdd_core PROPERTIES
+        BUILD_RPATH "${ONNX_LIB_DIR}"
+        INSTALL_RPATH "@loader_path;${ONNX_LIB_DIR}"
+    )
+endif()
+
 if(UNIX AND NOT APPLE)
-    set_target_properties(qmdd_core PRIVATE "-undefined" "dynamic_lookup")
+    # set_target_properties(qmdd_core PRIVATE "-undefined" "dynamic_lookup")
+    set_target_properties(qmdd_core PROPERTIES BUILD_RPATH "/usr/local/lib")
 endif()
 
 
@@ -399,4 +450,13 @@ add_custom_target(generate-scripts
 add_custom_target(all-with-scripts ALL
     DEPENDS qmdd_sim generate-scripts
     COMMENT "Building executable and generating scripts"
+)
+
+add_custom_target(install_usersite_pth ALL
+  COMMAND ${CMAKE_COMMAND} -E make_directory "${PY_USER_SITE}"
+  COMMAND ${CMAKE_COMMAND} -E copy_if_different
+          "${CMAKE_BINARY_DIR}/qmdd_project.pth"
+          "${PY_USER_SITE}/qmdd_project.pth"
+  BYPRODUCTS "${PY_USER_SITE}/qmdd_project.pth"
+  COMMENT "Installing Python .pth into ${PY_USER_SITE}"
 )
