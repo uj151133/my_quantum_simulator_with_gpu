@@ -4,6 +4,7 @@
 #include <numeric>
 #include <cmath>
 #include <queue>
+#include <deque>
 #include <array>
 #include <random>
 #include <iostream>
@@ -16,6 +17,8 @@
 #include "../common/constant.hpp"
 #include "../opt/law.hpp"
 #include "../common/Core.hpp"
+#include "../modules/importer.hpp"
+#include "../models/dag.hpp"
 
 using namespace std;
 
@@ -43,14 +46,15 @@ private:
     vector<Core> irLog_;
 
     vector<QMDDGate> pending_;
-    vector<GateDesc> metaQueue_;
+    vector<Core> metaQueue_;
     size_t execIdx_ = 0;
     unordered_map<uint64_t, QMDDGate> fusedStore_;
     uint64_t nextFusedId_ = 1;
     static string upper(string s);
     static bool isDiagTag(const string& tagU);
     void moveQueueToPending();
-    void buildMetaFromIR(const vector<law::Op>& ops);
+    void buildMetaFromIR(const vector<Core>& ops);
+    void emitIR(const vector<Core>& ops);
 
     void compute();
     void uncompute();
@@ -59,9 +63,11 @@ public:
 
     void enableIR(bool on);
     void clearIR();
-    void compileIRWithLaw(const law::Options& opt);
+    // void compileIRWithLaw(const law::Options& opt);
+    void scheduleIRWithModel(const string& modelPath = ::SCHEDULER_MODEL_PATH);
+    void preprocess(const law::Options& opt, const string& modelPath = ::SCHEDULER_MODEL_PATH);
 
-    vector<GateDesc> snapshotQueueWindow(size_t max_items) const;
+    vector<Core> snapshotQueueWindow(size_t max_items) const;
     void fuseRanges(const vector<pair<int,int>>& ranges);
 
     QuantumCircuit(int numQubitits, QMDDState initialState);
