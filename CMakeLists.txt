@@ -143,12 +143,22 @@ if(APPLE)
 else()
     find_path(ONNXRUNTIME_INCLUDE_DIR
         NAMES onnxruntime_cxx_api.h
-        PATHS /usr/local/include /usr/include
+        PATHS
+            ${CMAKE_SOURCE_DIR}/../onnxruntime-linux-x64-1.19.0/include
+            ~/onnxruntime-linux-x64-1.19.0/include
+            /usr/local/include
+            /usr/include
         PATH_SUFFIXES onnxruntime
     )
+
     find_library(ONNXRUNTIME_LIB
         NAMES onnxruntime
-        PATHS /usr/local/lib /usr/lib /usr/lib/x86_64-linux-gnu
+        PATHS
+            ${CMAKE_SOURCE_DIR}/../onnxruntime-linux-x64-1.19.0/lib
+            ~/onnxruntime-linux-x64-1.19.0/lib
+            /usr/local/lib
+            /usr/lib
+            /usr/lib/x86_64-linux-gnu
     )
 endif()
 
