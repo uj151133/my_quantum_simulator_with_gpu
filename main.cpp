@@ -6,6 +6,7 @@
 #include <random>
 #include <thread>
 #include <signal.h>
+#include <fstream>
 
 #include "src/common/config.hpp"
 #include "src/models/qmdd.hpp"
@@ -33,127 +34,109 @@ using namespace std;
 IPC::SharedMemoryIPCServer* ipcServer = nullptr;
 
 // シグナルハンドラ
-void signalHandler(int signal) {
-    if (ipcServer) {
-        ipcServer->stop();
-    }
+void signalHandler(int) {
+    if (ipcServer) ipcServer->stop();
     exit(0);
 }
 
-
 void execute() {
-
-
-    // OperationCache& cache = OperationCache::getInstance();
-
     int numQubits = 13;
-    int numGates = 200;
-
-
-    // shor(8);
-
-    // QMDDEdge edge = mathUtils::kron(gate::H().getInitialEdge(), gate::Toff().getInitialEdge());
-    // cout << "Kron result: " << edge.depth << endl;
+    int numGates  = 200;
     randomRotate(numQubits, numGates);
 }
 
 bool translateAndExecuteQASM(const string& qasm_file) {
     try {
         cout << "Translating and executing QASM file: " << qasm_file << endl;
-        
+
         ifstream file(qasm_file);
         if (!file.is_open()) {
-            cerr << "Error: Cannot open file " << qasm_file << std::endl;
+            cerr << "Error: Cannot open file " << qasm_file << endl;
             return false;
         }
-        
         string qasm_content((istreambuf_iterator<char>(file)), istreambuf_iterator<char>());
         file.close();
-        
         cout << "QASM content loaded successfully" << endl;
-        
+
         antlr4::ANTLRInputStream input(qasm_content);
         OpenQASM3Lexer lexer(&input);
         antlr4::CommonTokenStream tokens(&lexer);
         OpenQASM3Parser parser(&tokens);
-        
-        // 3. パースツリーを取得
+
         OpenQASM3Parser::ProgramContext* tree = parser.program();
-        
-        // 4. 翻訳器を作成して訪問
+
         CircuitGenerator generator;
         generator.visit(tree);
-        
+
         string circuit_operations = generator.getCircuitCode();
-        
         cout << "Translation completed. Generated operations:" << endl;
         cout << circuit_operations << endl;
-        
-        int max_qubit = generator.getMaxQubitIndex();  // この関数を追加する必要がある
+
+        int max_qubit = generator.getMaxQubitIndex();
         int num_qubits = max_qubit + 1;
+        if (num_qubits <= 0) {
+            cerr << "Error: no qubits detected from QASM." << endl;
+            return false;
+        }
 
         cout << "Creating circuit with " << num_qubits << " qubits" << endl;
         QuantumCircuit circuit(num_qubits);
 
         generator.applyToCircuit(circuit);
-        
+
         cout << "Starting simulation..." << endl;
-        measureExecutionTime([&circuit]() {
-            circuit.simulate();
-        });
-        
+        measureExecutionTime([&circuit]() { circuit.simulate(); });
+
         cout << "Simulation completed successfully!" << endl;
         return true;
-        
     } catch (const exception& e) {
         cerr << "Error during translation and execution: " << e.what() << endl;
         return false;
     }
 }
 
-
-
 int main(int argc, char* argv[]) {
     // シグナルハンドラを設定
-    signal(SIGINT, signalHandler);
+    signal(SIGINT,  signalHandler);
     signal(SIGTERM, signalHandler);
 
-    #ifdef __APPLE__
-        CONFIG.loadFromFile("/Users/mitsuishikaito/my_quantum_simulator_with_gpu/config.yaml");
-    #elif __linux__
-        CONFIG.loadFromFile("/home/ark/my_quantum_simulator_with_gpu/config.yaml");
-    #else
-        #error "Unsupported operating system"
-    #endif
+#ifdef __APPLE__
+    const char* cfgPath = "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/config.yaml";
+#elif __linux__
+    const char* cfgPath = "/home/ark/my_quantum_simulator_with_gpu/config.yaml";
+#else
+    #error "Unsupported operating system"
+#endif
+
+    // 設定ファイル読み込み（例外ガード）
+    try {
+        cout << "Loading config file: " << cfgPath << endl;
+        CONFIG.loadFromFile(cfgPath);
+    } catch (const exception& e) {
+        cerr << "Config load failed: " << e.what() << endl;
+    }
 
     // コマンドライン引数を解析
     bool startSharedMemoryServer = false;
-    string translateFile = "";
+    string translateFile;
     int opt;
-    while ((opt = getopt(argc, argv, "sh")) != -1) {
+    // -t は引数必須なので「t:」
+    while ((opt = getopt(argc, argv, "sht:")) != -1) {
         switch (opt) {
-            case 's':
-                startSharedMemoryServer = true;
-                break;
-            case 't':
-                translateFile = optarg;
-                break;
+            case 's': startSharedMemoryServer = true; break;
+            case 't': translateFile = optarg ? string(optarg) : string(); break;
             case 'h':
-                cout << "Usage: " << argv[0] << " [-s] [-h]" << endl;
-                cout << "  -s: Start Shared Memory IPC server for GUI communication" << endl;
-                cout << "  -h: Show this help message" << endl;
+                cout << "Usage: " << argv[0] << " [-s] [-t file.qasm] [-h]\n";
+                cout << "  -s: Start Shared Memory IPC server for GUI communication\n";
+                cout << "  -t: Translate and run the given OpenQASM file\n";
                 return 0;
             default:
-                cout << "Use -h for help" << endl;
+                cout << "Use -h for help\n";
                 return 1;
         }
     }
-
-    if (argc > 1 && std::string(argv[1]) == "-translate") {
-        if (argc < 3) {
-            std::cerr << "Usage: " << argv[0] << " -translate <qasm_file>" << std::endl;
-            return 1;
-        }
+    // 旧形式 (-translate) 互換
+    if (translateFile.empty() && argc > 2 && string(argv[1]) == "-translate") {
         translateFile = argv[2];
     }
 
@@ -167,9 +150,8 @@ int main(int argc, char* argv[]) {
             return 1;
         }
     } else if (startSharedMemoryServer) {
-        // 共有メモリIPCサーバーモードで起動
         cout << "Starting QMDD Simulator in Shared Memory IPC server mode..." << endl;
-        
+
         ipcServer = new IPC::SharedMemoryIPCServer();
         if (ipcServer->initialize()) {
             cout << "Shared Memory IPC Server ready. Waiting for GUI connections..." << endl;
@@ -179,23 +161,13 @@ int main(int argc, char* argv[]) {
             delete ipcServer;
             return 1;
         }
-        
         delete ipcServer;
     } else {
-        // 従来のシミュレーションモード
         cout << "Starting QMDD Simulator in standalone mode..." << endl;
         measureExecutionTime(execute);
-
         cout << "Total entries: " << UniqueTable::getInstance().getTotalEntryCount() << endl;
-        
-        // シミュレーション完了後にキャッシュをSQLiteに保存
-        // cout << "Saving cache to SQLite database..." << endl;
-        // auto& client = OperationCacheClient::getInstance();
-        // client.saveCacheToSQLite();
     }
 
-    // OperationCacheClient::getInstance().cleanup(); // ハングするためコメントアウト
     cout << "Program finished successfully." << endl;
     return 0;
 }
-

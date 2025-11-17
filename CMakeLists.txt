@@ -37,14 +37,14 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(Python3_FIND_STRATEGY LOCATION)
 set(Python3_FIND_UNVERSIONED_NAMES FIRST)
 
-if(UNIX AND NOT APPLE)
-  # Ubuntu/Linux: Python 3.12系のみを許可（-DPython3_EXECUTABLE=... で上書き可）
-  message(STATUS "Requiring Python 3.12.x on Linux. Override with -DPython3_EXECUTABLE=/path/to/python3.12")
-  find_package(Python3 3.12 EXACT COMPONENTS Interpreter Development.Module REQUIRED)
-else()
-  # 他OSは既定（埋め込みは不要なので Module のみ）
-  find_package(Python3 COMPONENTS Interpreter Development.Module REQUIRED)
-endif()
+# if(UNIX AND NOT APPLE)
+#   # Ubuntu/Linux: Python 3.12系のみを許可（-DPython3_EXECUTABLE=... で上書き可）
+#   message(STATUS "Requiring Python 3.12.x on Linux. Override with -DPython3_EXECUTABLE=/path/to/python3.12")
+#   find_package(Python3 3.12 EXACT COMPONENTS Interpreter Development.Module REQUIRED)
+# else()
+#   # 他OSは既定（埋め込みは不要なので Module のみ）
+#   find_package(Python3 COMPONENTS Interpreter Development.Module REQUIRED)
+# endif()
 
 find_package(Python3 COMPONENTS Interpreter Development.Module Development.Embed REQUIRED)
 find_package(pybind11 CONFIG REQUIRED)
@@ -60,19 +60,6 @@ execute_process(
 include_directories(${Python3_INCLUDE_DIRS})
 
 include(cmake/Dependencies.cmake)
-# find_package(yaml-cpp REQUIRED)
-# find_package(nlohmann_json REQUIRED)
-# find_package(Boost ${BOOST_MIN_VERSION} REQUIRED COMPONENTS 
-#     system
-#     thread
-#     fiber
-#     context
-#     filesystem
-#     program_options
-# )
-# find_package(Threads REQUIRED)
-# find_package(TBB REQUIRED)
-# find_package(GSL REQUIRED)
 
 if(APPLE)
     # MacOS (Homebrew) settings
@@ -191,8 +178,10 @@ include_directories(SYSTEM
     ${Python3_INCLUDE_DIRS}
     ${YAML_CPP_INCLUDE_DIR}
     /opt/homebrew/include
-    ${JAVA_HOME_ENV}/include
-    ${JAVA_HOME_ENV}/include/darwin
+    # ${JAVA_HOME_ENV}/include
+    # ${JAVA_HOME_ENV}/include/darwin
+    $ENV{JAVA_HOME}/include
+    $ENV{JAVA_HOME}/include/darwin
     ${CMAKE_SOURCE_DIR}/src
     ${GRAALVM_NATIVE_LIB_PATH}
 )
@@ -254,23 +243,79 @@ if(NOT GRAALVM_NATIVE_LIB)
 endif()
 
 
-file(GLOB SOURCES "src/models/*.cpp" "src/common/*.cpp" "src/modules/*.cpp" "src/test/*/*.cpp" "src/translator/*/*.cpp" "src/opt/*.cpp")
+set(OPENQASM3_GRAMMAR_DIR ${CMAKE_SOURCE_DIR}/src/translator/OpenQASM3)
+set(OPENQASM3_GRAMMAR_FILE ${OPENQASM3_GRAMMAR_DIR}/OpenQASM3.g4)
+set(OPENQASM3_GEN_DIR ${OPENQASM3_GRAMMAR_DIR}/gen)
+
+if(NOT ANTLR_JAR)
+    if(DEFINED ENV{ANTLR_JAR} AND EXISTS "$ENV{ANTLR_JAR}")
+        set(ANTLR_JAR "$ENV{ANTLR_JAR}")
+    elseif(EXISTS "/opt/homebrew/Cellar/antlr/4.13.2/antlr-4.13.2-complete.jar")
+        set(ANTLR_JAR "/opt/homebrew/Cellar/antlr/4.13.2/antlr-4.13.2-complete.jar")
+    endif()
+endif()
+
+if(NOT ANTLR_JAR OR NOT EXISTS "${ANTLR_JAR}")
+    message(FATAL_ERROR "ANTLR_JAR not found. export ANTLR_JAR=/opt/homebrew/Cellar/antlr/4.13.2/antlr-4.13.2-complete.jar か -DANTLR_JAR=指定")
+else()
+    message(STATUS "Using ANTLR JAR: ${ANTLR_JAR}")
+endif()
+
+if(NOT EXISTS "${ANTLR_JAR}")
+    message(FATAL_ERROR "ANTLR_JAR not found. 指定してください: -DANTLR_JAR=/path/to/antlr-4.x-complete.jar (現在: '${ANTLR_JAR}')")
+else()
+    message(STATUS "Using ANTLR JAR: ${ANTLR_JAR}")
+endif()
+
+find_package(Java COMPONENTS Runtime REQUIRED)
+
+execute_process(
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${OPENQASM3_GEN_DIR}
+)
+execute_process(
+    COMMAND ${Java_JAVA_EXECUTABLE} -jar ${ANTLR_JAR} -Dlanguage=Cpp -visitor -no-listener -o ${OPENQASM3_GEN_DIR} ${OPENQASM3_GRAMMAR_FILE}
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+    RESULT_VARIABLE ANTLR_CFG_RES
+)
+if(NOT ANTLR_CFG_RES EQUAL 0)
+    message(FATAL_ERROR "ANTLR generate (configure-time) failed")
+endif()
+
+set(OPENQASM3_GEN_SRCS
+    ${OPENQASM3_GEN_DIR}/OpenQASM3Lexer.cpp
+    ${OPENQASM3_GEN_DIR}/OpenQASM3Parser.cpp
+    ${OPENQASM3_GEN_DIR}/OpenQASM3BaseVisitor.cpp
+    ${OPENQASM3_GEN_DIR}/OpenQASM3Visitor.cpp
+)
 
 
-set(OPENQASM3_GEN_DIR ${CMAKE_SOURCE_DIR}/src/translator/OpenQASM3/gen)
-file(GLOB OPENQASM3_GEN_SRC "${OPENQASM3_GEN_DIR}/*.cpp")
+add_custom_command(
+    OUTPUT ${OPENQASM3_GEN_SRCS}
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${OPENQASM3_GEN_DIR}
+    COMMAND ${Java_JAVA_EXECUTABLE} -jar ${ANTLR_JAR} -Dlanguage=Cpp -visitor -no-listener -o ${OPENQASM3_GEN_DIR} ${OPENQASM3_GRAMMAR_FILE}
+    DEPENDS ${OPENQASM3_GRAMMAR_FILE}
+    COMMENT "Generating OpenQASM3 (ANTLR)"
+    VERBATIM
+)
+add_custom_target(generate_qasm3 DEPENDS
+    ${OPENQASM3_GEN_DIR}/OpenQASM3Lexer.cpp
+    ${OPENQASM3_GEN_DIR}/OpenQASM3Parser.cpp
+    ${OPENQASM3_GEN_DIR}/OpenQASM3BaseVisitor.cpp
+    ${OPENQASM3_GEN_DIR}/OpenQASM3Visitor.cpp
+)
 
+# file(GLOB OPENQASM3_GEN_SRC "${OPENQASM3_GEN_DIR}/*.cpp")
+file(GLOB SOURCES CONFIGURE_DEPENDS "src/models/*.cpp" "src/common/*.cpp" "src/modules/*.cpp" "src/test/*/*.cpp" "src/translator/*/*.cpp" "src/opt/*.cpp")
+file(GLOB OPENQASM3_GEN_SRC CONFIGURE_DEPENDS "${OPENQASM3_GEN_DIR}/*.cpp")
 
 
 add_executable(qmdd_sim main.cpp ${SOURCES} ${C_SRC} ${ASM_SRC} ${OPENQASM3_GEN_SRC})
-add_dependencies(qmdd_sim copy_config build_java_lib)
+add_dependencies(qmdd_sim copy_config build_java_lib generate_qasm3)
 target_include_directories(qmdd_sim PRIVATE ${GSL_INCLUDE_DIRS} ${OPENQASM3_GEN_DIR} ${ANTLR4_RUNTIME_INCLUDE_DIR})
 target_link_libraries(qmdd_sim PRIVATE
     pthread
     yaml-cpp::yaml-cpp
     nlohmann_json::nlohmann_json
-    # Python3::Python
-    # Python3::Embed
     ${Boost_LIBRARIES}
     GSL::gsl
     ${GMP_LIB}
@@ -326,15 +371,12 @@ set_target_properties(qmdd_core PROPERTIES
 
 target_include_directories(qmdd_core PRIVATE
     ${GSL_INCLUDE_DIRS}
-    ${OPENQASM3_GEN_DIR}
-    ${ANTLR4_RUNTIME_INCLUDE_DIR}
     ${CMAKE_SOURCE_DIR}/src
     ${Python3_INCLUDE_DIRS}
     ${Boost_INCLUDE_DIRS}
 )
 
 target_link_libraries(qmdd_core PRIVATE
-    # Python3::Python
     pybind11::module
     pthread
     yaml-cpp::yaml-cpp
@@ -345,7 +387,7 @@ target_link_libraries(qmdd_core PRIVATE
     Threads::Threads
     xxhash
     TBB::tbb
-    antlr4_runtime
+    # antlr4_runtime
     $<$<BOOL:${GRAALVM_NATIVE_LIB}>:${GRAALVM_NATIVE_LIB}>
     $<$<BOOL:${ONNXRUNTIME_LIB}>:${ONNXRUNTIME_LIB}>
 )
@@ -368,14 +410,16 @@ endif()
 # make run ターゲットの追加（通常モード）
 if(APPLE)
     add_custom_target(run
-        COMMAND DYLD_LIBRARY_PATH=/opt/homebrew/Cellar/openjdk@21/21.0.7/libexec/openjdk.jdk/Contents/Home/lib/server:$ENV{DYLD_LIBRARY_PATH} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qmdd_sim
+        # COMMAND DYLD_LIBRARY_PATH=/opt/homebrew/Cellar/openjdk@21/21.0.7/libexec/openjdk.jdk/Contents/Home/lib/server:$ENV{DYLD_LIBRARY_PATH} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qmdd_sim
+        COMMAND DYLD_LIBRARY_PATH=$ENV{JAVA_HOME}/lib/server:$ENV{DYLD_LIBRARY_PATH} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qmdd_sim
         DEPENDS qmdd_sim
         WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
         COMMENT "Running the application in standalone mode..."
     )
 elseif(UNIX AND NOT APPLE)
     add_custom_target(run
-        COMMAND LD_LIBRARY_PATH=/home/ark/.sdkman/candidates/java/current/lib/server:/home/ark/.sdkman/candidates/java/current/lib:$ENV{LD_LIBRARY_PATH} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qmdd_sim
+        # COMMAND LD_LIBRARY_PATH=/home/ark/.sdkman/candidates/java/current/lib/server:/home/ark/.sdkman/candidates/java/current/lib:$ENV{LD_LIBRARY_PATH} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qmdd_sim
+        COMMAND LD_LIBRARY_PATH=$ENV{JAVA_HOME}/lib/server:$ENV{JAVA_HOME}/lib:$ENV{LD_LIBRARY_PATH} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qmdd_sim
         DEPENDS qmdd_sim
         WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
         COMMENT "Running the application in standalone mode..."
@@ -392,14 +436,16 @@ endif()
 # make run-server ターゲットの追加（IPCサーバーモード）
 if(APPLE)
     add_custom_target(run-server
-        COMMAND DYLD_LIBRARY_PATH=/opt/homebrew/Cellar/openjdk@21/21.0.7/libexec/openjdk.jdk/Contents/Home/lib/server:$ENV{DYLD_LIBRARY_PATH} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qmdd_sim -s
+        # COMMAND DYLD_LIBRARY_PATH=/opt/homebrew/Cellar/openjdk@21/21.0.7/libexec/openjdk.jdk/Contents/Home/lib/server:$ENV{DYLD_LIBRARY_PATH} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qmdd_sim -s
+        COMMAND DYLD_LIBRARY_PATH=$ENV{JAVA_HOME}/lib/server:$ENV{DYLD_LIBRARY_PATH} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qmdd_sim -s
         DEPENDS qmdd_sim
         WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
         COMMENT "Running the application in IPC server mode for GUI communication..."
     )
 elseif(UNIX AND NOT APPLE)
     add_custom_target(run-server
-        COMMAND LD_LIBRARY_PATH=/home/ark/.sdkman/candidates/java/current/lib/server:/home/ark/.sdkman/candidates/java/current/lib:$ENV{LD_LIBRARY_PATH} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qmdd_sim -s
+        # COMMAND LD_LIBRARY_PATH=/home/ark/.sdkman/candidates/java/current/lib/server:/home/ark/.sdkman/candidates/java/current/lib:$ENV{LD_LIBRARY_PATH} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qmdd_sim -s
+        COMMAND LD_LIBRARY_PATH=$ENV{JAVA_HOME}/lib/server:$ENV{JAVA_HOME}/lib:$ENV{LD_LIBRARY_PATH} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qmdd_sim -s
         DEPENDS qmdd_sim
         WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
         COMMENT "Running the application in IPC server mode for GUI communication..."
@@ -437,21 +483,23 @@ add_custom_target(build_java_lib
 
 if(APPLE)
     add_custom_target(run-translate
-        COMMAND DYLD_LIBRARY_PATH=/opt/homebrew/Cellar/openjdk@21/21.0.7/libexec/openjdk.jdk/Contents/Home/lib/server:$ENV{DYLD_LIBRARY_PATH} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qmdd_sim -translate "$ENV{QASM_FILE}"
+        # COMMAND DYLD_LIBRARY_PATH=/opt/homebrew/Cellar/openjdk@21/21.0.7/libexec/openjdk.jdk/Contents/Home/lib/server:$ENV{DYLD_LIBRARY_PATH} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qmdd_sim -translate "$ENV{QASM_FILE}"
+        COMMAND DYLD_LIBRARY_PATH=$ENV{JAVA_HOME}/lib/server:$ENV{DYLD_LIBRARY_PATH} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qmdd_sim -t "$ENV{QASM_FILE}"
         DEPENDS qmdd_sim
         WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
         COMMENT "Running QASM translation for file: $ENV{QASM_FILE}"
     )
 elseif(UNIX AND NOT APPLE)
     add_custom_target(run-translate
-        COMMAND LD_LIBRARY_PATH=/home/ark/.sdkman/candidates/java/current/lib/server:/home/ark/.sdkman/candidates/java/current/lib:$ENV{LD_LIBRARY_PATH} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qmdd_sim -translate "$ENV{QASM_FILE}"
+        # COMMAND LD_LIBRARY_PATH=/home/ark/.sdkman/candidates/java/current/lib/server:/home/ark/.sdkman/candidates/java/current/lib:$ENV{LD_LIBRARY_PATH} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qmdd_sim -translate "$ENV{QASM_FILE}"
+        COMMAND LD_LIBRARY_PATH=$ENV{JAVA_HOME}/lib/server:$ENV{JAVA_HOME}/lib:$ENV{LD_LIBRARY_PATH} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qmdd_sim -t "$ENV{QASM_FILE}"
         DEPENDS qmdd_sim
         WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
         COMMENT "Running QASM translation for file: $ENV{QASM_FILE}"
     )
 else()
     add_custom_target(run-translate
-        COMMAND ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qmdd_sim -translate "$ENV{QASM_FILE}"
+        COMMAND ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qmdd_sim -t "$ENV{QASM_FILE}"
         DEPENDS qmdd_sim
         WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
         COMMENT "Running QASM translation for file: $ENV{QASM_FILE}"
