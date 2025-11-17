@@ -1,5 +1,5 @@
 
-// Generated from OpenQASM3.g4 by ANTLR 4.13.2
+// Generated from /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/translator/OpenQASM3/OpenQASM3.g4 by ANTLR 4.13.2
 
 #pragma once
 
@@ -13,20 +13,20 @@ class  OpenQASM3Parser : public antlr4::Parser {
 public:
   enum {
     T__0 = 1, T__1 = 2, T__2 = 3, T__3 = 4, T__4 = 5, T__5 = 6, T__6 = 7, 
-    T__7 = 8, T__8 = 9, T__9 = 10, T__10 = 11, GPHASE = 12, ID = 13, P = 14, 
-    X = 15, Y = 16, Z = 17, SX = 18, H = 19, S = 20, SDG = 21, T = 22, TDG = 23, 
-    RX = 24, RY = 25, RZ = 26, CX = 27, CY = 28, CZ = 29, CP = 30, CRX = 31, 
-    CRY = 32, CRZ = 33, CH = 34, CU = 35, SWAP = 36, CCX = 37, CSWAP = 38, 
-    U1 = 39, U2 = 40, U3 = 41, RESET = 42, BARRIER = 43, MEASURE = 44, NUMBER = 45, 
-    IDSTR = 46, STRING = 47, LBRACKET = 48, RBRACKET = 49, LPAREN = 50, 
-    RPAREN = 51, COMMA = 52, SEMICOLON = 53, WS = 54
+    T__7 = 8, T__8 = 9, GPHASE = 10, ID = 11, P = 12, X = 13, Y = 14, Z = 15, 
+    SX = 16, H = 17, S = 18, SDG = 19, T = 20, TDG = 21, RX = 22, RY = 23, 
+    RZ = 24, CX = 25, CY = 26, CZ = 27, CP = 28, CRX = 29, CRY = 30, CRZ = 31, 
+    CH = 32, CU = 33, SWAP = 34, CCX = 35, CSWAP = 36, U1 = 37, U2 = 38, 
+    U3 = 39, RESET = 40, BARRIER = 41, MEASURE = 42, PI = 43, DECIMAL = 44, 
+    NUMBER = 45, IDSTR = 46, STRING = 47, LBRACKET = 48, RBRACKET = 49, 
+    LPAREN = 50, RPAREN = 51, COMMA = 52, SEMICOLON = 53, WS = 54
   };
 
   enum {
-    RuleProgram = 0, RuleIncludeStmt = 1, RuleStatement = 2, RuleQregDecl = 3, 
-    RuleCregDecl = 4, RuleGateStmt = 5, RuleParamList = 6, RuleExpr = 7, 
-    RuleGateName = 8, RuleGateArgs = 9, RuleQubit = 10, RuleMeasureStmt = 11, 
-    RuleBarrierStmt = 12, RuleQubitList = 13
+    RuleProgram = 0, RuleVersion = 1, RuleIncludeStmt = 2, RuleStatement = 3, 
+    RuleQregDecl = 4, RuleCregDecl = 5, RuleGateStmt = 6, RuleParamList = 7, 
+    RuleExpr = 8, RuleGateName = 9, RuleGateArgs = 10, RuleQubit = 11, RuleMeasureStmt = 12, 
+    RuleBarrierStmt = 13, RuleQubitList = 14
   };
 
   explicit OpenQASM3Parser(antlr4::TokenStream *input);
@@ -47,6 +47,7 @@ public:
 
 
   class ProgramContext;
+  class VersionContext;
   class IncludeStmtContext;
   class StatementContext;
   class QregDeclContext;
@@ -65,8 +66,7 @@ public:
   public:
     ProgramContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
-    std::vector<antlr4::tree::TerminalNode *> NUMBER();
-    antlr4::tree::TerminalNode* NUMBER(size_t i);
+    VersionContext *version();
     antlr4::tree::TerminalNode *SEMICOLON();
     std::vector<IncludeStmtContext *> includeStmt();
     IncludeStmtContext* includeStmt(size_t i);
@@ -79,6 +79,20 @@ public:
   };
 
   ProgramContext* program();
+
+  class  VersionContext : public antlr4::ParserRuleContext {
+  public:
+    VersionContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    antlr4::tree::TerminalNode *DECIMAL();
+    antlr4::tree::TerminalNode *NUMBER();
+
+
+    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  VersionContext* version();
 
   class  IncludeStmtContext : public antlr4::ParserRuleContext {
   public:
@@ -183,12 +197,14 @@ public:
   public:
     ExprContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
-    antlr4::tree::TerminalNode *NUMBER();
-    antlr4::tree::TerminalNode *IDSTR();
     antlr4::tree::TerminalNode *LPAREN();
     std::vector<ExprContext *> expr();
     ExprContext* expr(size_t i);
     antlr4::tree::TerminalNode *RPAREN();
+    antlr4::tree::TerminalNode *DECIMAL();
+    antlr4::tree::TerminalNode *NUMBER();
+    antlr4::tree::TerminalNode *PI();
+    antlr4::tree::TerminalNode *IDSTR();
 
 
     virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
