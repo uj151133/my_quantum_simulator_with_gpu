@@ -17,20 +17,21 @@ void Config::loadFromFile(const std::string& filepath) {
             YAML::Node config = YAML::LoadFile(filepath);
             
             if (config["gui"]) {
-                gui.enabled = config["gui"]["enabled"].as<bool>();
+                this->gui.enabled = config["gui"]["enabled"].as<bool>();
             }
 
             if (config["process"]) {
-                process.concurrency = config["process"]["concurrency"].as<int>();
-                process.parallelism = config["process"]["parallelism"].as<int>();
+                this->process.concurrency = config["process"]["concurrency"].as<int>();
+                this->process.parallelism = config["process"]["parallelism"].as<int>();
             }
 
             if (config["table"]) {
-                table.size = config["table"]["size"].as<int>();
+                this->table.size = config["table"]["size"].as<int>();
             }
 
             if (config["cache"]) {
-                cache.size = config["cache"]["size"].as<int>();
+                this->cache.alive = config["cache"]["alive"].as<bool>();
+                this->cache.size = config["cache"]["size"].as<int>();
             }
         } catch (const YAML::Exception& e) {
             std::cerr << "設定ファイルの読み込みに失敗: " << e.what() << std::endl;

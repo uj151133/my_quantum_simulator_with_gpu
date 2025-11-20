@@ -11,7 +11,7 @@ class Config:
 
     # Scheduler bias
     cost_diag: float = 2.0
-    cost_anti: float = 2.0
+    cost_anti: float = 2.5
     cost_perm: float = 3.0
     cost_general: float = 4.0
 

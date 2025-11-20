@@ -40,9 +40,41 @@ void signalHandler(int) {
 }
 
 void execute() {
-    int numQubits = 13;
-    int numGates  = 200;
-    randomRotate(numQubits, numGates);
+    // int numQubits = 13;
+    // int numGates  = 200;
+    // randomRotate(numQubits, numGates);
+    QMDDEdge state = mathUtils::kron(state::Ket0().getInitialEdge(), state::Ket0().getInitialEdge());
+    // QMDDEdge gate1 = mathUtils::kron(gate::X().getInitialEdge(), gate::H().getInitialEdge());
+    // QMDDEdge gate2 = mathUtils::kron(mathUtils::kron(gate::I().getInitialEdge(), gate::I().getInitialEdge()), gate::X().getInitialEdge());
+    // QMDDEdge gate3 = mathUtils::kron(mathUtils::kron(gate::X().getInitialEdge(), gate::X().getInitialEdge()), gate::H().getInitialEdge());
+    // QMDDEdge gate4 = gate::H().getInitialEdge();
+    // QMDDEdge gate5 = mathUtils::kron(gate::I().getInitialEdge(), gate::H().getInitialEdge());
+    // QMDDEdge gate6 = mathUtils::kron(mathUtils::kron(gate::X().getInitialEdge(), gate::X().getInitialEdge()), gate::X().getInitialEdge());
+    // QMDDEdge gate7 = mathUtils::kron(gate::X().getInitialEdge(), gate::H().getInitialEdge());
+    // QMDDEdge gate8 = mathUtils::kron(mathUtils::kron(gate::I().getInitialEdge(), gate::X().getInitialEdge()), gate::H().getInitialEdge());
+    // QMDDEdge gate9 = gate::CX1().getInitialEdge();
+    // QMDDEdge gate10 = mathUtils::kron(gate::I().getInitialEdge(), gate::H().getInitialEdge());
+    QMDDEdge gate11 = gate::CZ().getInitialEdge();
+    // QMDDEdge gate12 = gate::CX2().getInitialEdge();
+    QMDDEdge gate13 = gate::H().getInitialEdge();
+
+
+    for ([[maybe_unused]] int _ = 0; _ < 100000; ++_) {
+        // state = mathUtils::mul(state, gate1);
+        // state = mathUtils::mul(state, gate2);
+        // state = mathUtils::mul(state, gate3);
+        // state = mathUtils::mul(state, gate7);
+        // state = mathUtils::mul(state, gate8);
+        // state = mathUtils::mul(state, gate2);
+        // state = mathUtils::mul(state, gate9);
+        // state = mathUtils::mul(state, gate10);
+        // state = mathUtils::mul(state, gate11);
+        // state = mathUtils::mul(state, gate10);
+        // state = mathUtils::mul(state, gate12);
+        state = mathUtils::mul(state, gate13);
+        state = mathUtils::mul(state, gate11);
+        state = mathUtils::mul(state, gate13);
+    }
 }
 
 bool translateAndExecuteQASM(const string& qasm_file) {

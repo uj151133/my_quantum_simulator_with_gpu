@@ -21,6 +21,7 @@ public:
     } table;
 
     struct CacheSettings {
+        bool alive;
         int size;
     } cache;
 

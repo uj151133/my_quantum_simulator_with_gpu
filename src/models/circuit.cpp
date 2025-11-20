@@ -1,6 +1,5 @@
 #include "circuit.hpp"
 
-
 QuantumCircuit::QuantumCircuit(int numQubits, QMDDState initialState) : numQubits_(numQubits), finalState_(initialState) {
     call_once(initExtendedEdgeFlag, initExtendedEdge);
     if (this->numQubits_ < 1) {
@@ -87,21 +86,42 @@ void QuantumCircuit::preprocess(const law::Options& opt, const string& modelPath
 
     // 2) モデルで順序提案（perm）
     aiinfer::SchedulerONNX sched(modelPath);
-    auto perm = sched.propose_order(after_law);
+    auto perm = sched.predict(after_law);
     if (perm.size() != after_law.size())
         throw std::runtime_error("scheduler perm size mismatch");
+    
+    // 2.5) モデル順位スコア + ヒューリスティック（-cost）を合算
+    const size_t N = after_law.size();
+    vector<int> rank(N, 0);
+    for (size_t pos = 0; pos < N; ++pos) {
+        int idx = perm[pos];
+        if (idx < 0 || (size_t)idx >= N) throw runtime_error("scheduler perm out of range");
+        rank[(size_t)idx] = (int)pos;
+    }
+    const float denom = (N > 1) ? float(N - 1) : 1.0f;
+    auto costs = heauristicCosts(after_law);
+    vector<float> combined(N, 0.0f);
+    for (size_t i = 0; i < N; ++i) {
+        float model_score = (N > 1) ? (float(N - 1 - rank[i]) / denom) : 1.0f; // 高いほど良
+        float heur_score  = heauristicScore(costs[i]);                           // = -cost
+        combined[i] = model_score + heur_score;
+    }
+    // 合算スコア降順の希望順を作成
+    vector<int> pref(N); iota(pref.begin(), pref.end(), 0);
+    stable_sort(pref.begin(), pref.end(),
+        [&](int a, int b){ return combined[(size_t)a] > combined[(size_t)b]; });
 
-    // 3) DAG による合法化（perm をトポ順へ投影）
-    auto order = dag::tuneDAG(after_law, perm);
+    // 3) DAG による合法化（合算順をトポ順へ投影）
+    auto order = dag::tuneDAG(after_law, pref);
     if (order.size() != after_law.size())
-        throw std::runtime_error("failed to legalize order by DAG");
+        throw runtime_error("failed to legalize order by DAG");
 
     // 4) 並べ替え
     vector<Core> reordered(after_law.size());
     for(size_t i=0;i<order.size();++i){
         int idx = order[i];
         if(idx<0 || (size_t)idx>=after_law.size())
-            throw std::runtime_error("legalized index out of range");
+            throw runtime_error("legalized index out of range");
         reordered[i] = after_law[(size_t)idx];
     }
 
@@ -115,11 +135,11 @@ void QuantumCircuit::scheduleIRWithModel(const string& modelPath){
     // importer を使って順列を取得（既存: 非合法化）
     aiinfer::SchedulerONNX sched(modelPath);
     auto perm = sched.propose_order(this->irLog_);
-    if(perm.size() != this->irLog_.size()) throw std::runtime_error("scheduler perm size mismatch");
+    if(perm.size() != this->irLog_.size()) throw runtime_error("scheduler perm size mismatch");
     vector<Core> reordered(this->irLog_.size());
     for(size_t i=0;i<perm.size();++i){
         int idx = perm[i];
-        if(idx<0 || (size_t)idx>=this->irLog_.size()) throw std::runtime_error("scheduler perm out of range");
+        if(idx<0 || (size_t)idx>=this->irLog_.size()) throw runtime_error("scheduler perm out of range");
         reordered[i] = this->irLog_[(size_t)idx];
     }
     this->irLog_.swap(reordered);

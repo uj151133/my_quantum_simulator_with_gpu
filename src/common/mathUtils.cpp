@@ -3,10 +3,12 @@
 QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, bool parallelism, bool concurrency) {
     OperationCacheClient& cache = OperationCacheClient::getInstance();
     int64_t operationCacheKey = calculation::generateOperationCacheKey(OperationKey(e0, OperationType::MUL, e1));
-    if (auto existingEdge = cache.find(operationCacheKey, concurrency)) {
-        if (existingEdge->weight != .0 && existingEdge->uniqueTableKey != 0) {
-            // cout << "\033[1;36mCache hit!\033[0m" << endl;
-            return *existingEdge;
+    if (CONFIG.cache.alive) {
+        if (auto existingEdge = cache.find(operationCacheKey, concurrency)) {
+            if (existingEdge->weight != .0 && existingEdge->uniqueTableKey != 0) {
+                // cout << "\033[1;36mCache hit!\033[0m" << endl;
+                return *existingEdge;
+            }
         }
     }
     // cout << "\033[1;35mCache miss!\033[0m" << endl;
@@ -127,7 +129,9 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, bool parallelism
     } else {
         result = QMDDEdge(tmpWeight, make_shared<QMDDNode>(z));
     }
-    cache.insert(operationCacheKey, result, concurrency);
+    if (CONFIG.cache.alive) {
+        cache.insert(operationCacheKey, result, concurrency);
+    }
     return result;
 }
 
@@ -215,13 +219,14 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, bool parallelism
 QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1, bool parallelism, bool concurrency) {
     OperationCacheClient& cache = OperationCacheClient::getInstance();
     int64_t operationCacheKey = calculation::generateOperationCacheKey(OperationKey(e0, OperationType::ADD, e1));
-        // cout << "concurrency: " << concurrency << endl;
+    if (CONFIG.cache.alive) {
         if (auto existingEdge = cache.find(operationCacheKey, concurrency)) {
             if (existingEdge->weight != .0 && existingEdge->uniqueTableKey != 0) {
                 // cout << "\033[1;36mCache hit!\033[0m" << endl;
                 return *existingEdge;
             }
         }
+    }
     // cout << "\033[1;35mCache miss!\033[0m" << endl;
 
     if (e1.isTerminal) {
@@ -326,7 +331,9 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1, bool parallelism
     } else {
         result = QMDDEdge(tmpWeight, make_shared<QMDDNode>(z));
     }
-    cache.insert(operationCacheKey, result, concurrency);
+    if (CONFIG.cache.alive) {
+        cache.insert(operationCacheKey, result, concurrency);
+    }
     return result;
 }
 
@@ -412,10 +419,12 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1, bool parallelism
 QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1) {
     OperationCacheClient& cache = OperationCacheClient::getInstance();
     int64_t operationCacheKey = calculation::generateOperationCacheKey(OperationKey(e0, OperationType::KRONECKER, e1));
-    if (auto existingEdge = cache.find(operationCacheKey, false)) {
-        if (existingEdge->weight != .0 && existingEdge->uniqueTableKey != 0) {
-            // cout << "\033[1;36mCache hit!\033[0m" << endl;
-            return *existingEdge;
+    if (CONFIG.cache.alive) {
+        if (auto existingEdge = cache.find(operationCacheKey, false)) {
+            if (existingEdge->weight != .0 && existingEdge->uniqueTableKey != 0) {
+                // cout << "\033[1;36mCache hit!\033[0m" << endl;
+                return *existingEdge;
+            }
         }
     }
     // cout << "\033[1;35mCache miss!\033[0m" << endl;
@@ -439,7 +448,9 @@ QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1) {
     }
 
     QMDDEdge result = QMDDEdge(e0.weight * e1.weight, make_shared<QMDDNode>(z));
-    cache.insert(operationCacheKey, result, false);
+    if (CONFIG.cache.alive) {
+        cache.insert(operationCacheKey, result, false);
+    }
     return result;
 }
 
