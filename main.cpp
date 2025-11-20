@@ -46,7 +46,7 @@ void execute() {
 
     // OperationCache& cache = OperationCache::getInstance();
 
-    int numQubits = 13;
+    int numQubits = 10;
     int numGates = 200;
 
 
@@ -184,7 +184,8 @@ int main(int argc, char* argv[]) {
     } else {
         // 従来のシミュレーションモード
         cout << "Starting QMDD Simulator in standalone mode..." << endl;
-        measureExecutionTime(execute);
+        // measureExecutionTime(execute);
+        execute();
 
         cout << "Total entries: " << UniqueTable::getInstance().getTotalEntryCount() << endl;
         
