@@ -9,4 +9,5 @@ table:
   size: 1048576
 
 cache:
+  alive: false
   size: 1048576

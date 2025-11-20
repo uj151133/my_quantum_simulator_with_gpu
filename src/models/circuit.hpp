@@ -10,15 +10,18 @@
 #include <iostream>
 #include <bitset>
 #include <ranges>
+#include <algorithm>
+#include <cctype>
 #include "qmdd.hpp"
 #include "gate.hpp"
 #include "state.hpp"
 #include "../common/mathUtils.hpp"
 #include "../common/constant.hpp"
-#include "../opt/law.hpp"
 #include "../common/Core.hpp"
+#include "../opt/law.hpp"
 #include "../modules/importer.hpp"
 #include "../models/dag.hpp"
+#include "../models/heauristic.hpp"
 
 using namespace std;
 

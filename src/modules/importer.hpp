@@ -14,8 +14,6 @@ static constexpr const char* FUSER_MODEL_PATH     = "AI/exports/חַוָּה.onn
 #include <numeric>
 #include <stdexcept>
 #include <onnxruntime_cxx_api.h>
-
-
 #include "../common/Core.hpp"
 
 using namespace std;
@@ -30,7 +28,7 @@ class SchedulerONNX {
 public:
     explicit SchedulerONNX(const string& modelPath = ::SCHEDULER_MODEL_PATH);
     ~SchedulerONNX();
-    vector<int> propose_order(const vector<Core>& ops);
+    vector<int> predict(const vector<Core>& ops);
 
 private:
     struct Impl;

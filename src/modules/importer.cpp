@@ -1,12 +1,10 @@
 #include "importer.hpp"
 
-
-
 namespace aiinfer {
 
 // 簡易大文字化
 static inline string upper_copy(string s){
-    for (auto& c: s) c = static_cast<char>(std::toupper(static_cast<unsigned char>(c)));
+    for (auto& c: s) c = static_cast<char>(toupper(static_cast<unsigned char>(c)));
     return s;
 }
 
@@ -19,7 +17,7 @@ static inline int feature_dim_from_env(){
 }
 
 // 対角タグ判定（ローカル）
-static inline bool is_diag_tag(const std::string& tagU){
+static inline bool is_diag_tag(const string& tagU){
     return tagU=="RZ"||tagU=="U1"||tagU=="P"||tagU=="S"||tagU=="T"||tagU=="Z"||
            tagU=="CZ"||tagU=="CP"||tagU=="CRZ"||tagU=="RZZ";
 }
@@ -113,12 +111,12 @@ struct SchedulerONNX::Impl {
 };
 
 SchedulerONNX::SchedulerONNX(const std::string& modelPath)
-: impl_(std::make_unique<Impl>(modelPath)) {}
+: impl_(make_unique<Impl>(modelPath)) {}
 
 SchedulerONNX::~SchedulerONNX() = default;
 
-vector<int> SchedulerONNX::propose_order(const vector<Core>& ops){
-    std::vector<Core> nops = ops;
+vector<int> SchedulerONNX::predict(const vector<Core>& ops){
+    vector<Core> nops = ops;
     for (auto& c : nops) { Core cc = c; cc.normalize(); c = std::move(cc); }
     return this->impl_->run(nops);
 }
