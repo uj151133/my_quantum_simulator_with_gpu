@@ -1,5 +1,41 @@
 #include "circuit.hpp"
 
+
+extern "C" void record_time(void (*cb)());
+thread_local QuantumCircuit* g_tls_qc = nullptr;
+
+extern "C" void qc_critical_block() {
+    g_tls_qc->criticalExecute();
+}
+
+QuantumCircuit::QuantumCircuit(int numQubits, QMDDState initialState) : numQubits(numQubits), finalState(initialState) {
+    call_once(initExtendedEdgeFlag, initExtendedEdge);
+    this->wires.resize(numQubits);
+    if (this->numQubits < 1) {
+        throw std::invalid_argument("Number of qubits must be at least 1.");
+    }
+    this->quantumRegister.resize(1);
+    this->setRegister(0, this->numQubits);
+    this->swapTable_.resize(this->numQubits);
+    iota(this->swapTable_.begin(), this->swapTable_.end(), 0);
+}
+
+QuantumCircuit::QuantumCircuit(int numQubits) : numQubits(numQubits), finalState(state::Ket0()) {
+    this->wires.resize(numQubits);
+    call_once(initExtendedEdgeFlag, initExtendedEdge);
+    if (this->numQubits < 1) {
+        throw std::invalid_argument("Number of qubits must be at least 1.");
+    }
+
+    for (int i = 1; i < this->numQubits; i++) {
+        this->finalState = mathUtils::kron(state::Ket0().getInitialEdge(), this->finalState.getInitialEdge());
+    }
+    this->quantumRegister.resize(1);
+    this->setRegister(0, this->numQubits);
+    this->swapTable_.resize(this->numQubits);
+    iota(this->swapTable_.begin(), this->swapTable_.end(), 0);
+}
+
 int QuantumCircuit::getMaxDepth(optional<int> start, optional<int> end) const {
     int maxDepth = 0;
     int rangeStart = start.value_or(0);
@@ -12,31 +48,42 @@ int QuantumCircuit::getMaxDepth(optional<int> start, optional<int> end) const {
 
 void QuantumCircuit::normalizeLayer() {
     int maxDepth = this->getMaxDepth(optional<int>(), optional<int>());
-    for (int q = 0; q < numQubits; q++) {
+
+    this->layer_.clear();
+    this->layer_.resize(maxDepth);
+
+    for (int q = 0; q < this->numQubits; q++) {
         while (this->wires[q].size() < maxDepth) {
             this->wires[q].push_back({Type::I, gate::I()});
         }
     }
     for (int depth = 0; depth < maxDepth; depth++) {
         vector<Part> parts;
-        for (int q = 0; q < numQubits; q++) {
+        for (int q = 0; q < this->numQubits; q++) {
             parts.push_back(this->wires[q][depth]);
         }
         while (!parts.empty() && parts.back().type == Type::I || parts.back().type == Type::VOID || parts.back().type == Type::BAN || parts.back().type == Type::JOKER) {
             parts.pop_back();
         }
-        vector<QMDDEdge> edges;
         while (!parts.empty()) {
-            edges.push_back(parts.front().gate.getInitialEdge());
+            this->layer_[depth].push_back(parts.front().gate.getInitialEdge());
             parts.erase(parts.begin());
         }
-        if (!edges.empty()) {
-            QMDDGate result = accumulate(edges.rbegin() + 1, edges.rend(), edges.back(), [](const QMDDEdge& accumulated, const QMDDEdge& current) {
-                return mathUtils::kron(current, accumulated);
-            });
-            this->layer.push(result);
-        }
     }
+}
+
+void QuantumCircuit::build() {
+    for (auto& layer : this->layer_) {
+        if (layer.empty()) continue;
+        QMDDEdge result = accumulate(
+            layer.rbegin() + 1, layer.rend(), layer.back(),
+            [](const QMDDEdge& accumulated, const QMDDEdge& current) {
+                return mathUtils::kron(current, accumulated);
+            }
+        );
+        this->gateQueue_.push(QMDDGate(result));
+    }
+    this->layer_.clear();
 }
 
 void QuantumCircuit::smartInsert(int qubitIndex, const Part& part) {
@@ -64,33 +111,8 @@ int QuantumCircuit::searchJOKER(int qubitIndex) {
     return JOKERDepth;
 }
 
-
-QuantumCircuit::QuantumCircuit(int numQubits, QMDDState initialState) : numQubits(numQubits), finalState(initialState) {
-    call_once(initExtendedEdgeFlag, initExtendedEdge);
-    this->wires.resize(numQubits);
-    if (this->numQubits < 1) {
-        throw std::invalid_argument("Number of qubits must be at least 1.");
-    }
-    this->quantumRegister.resize(1);
-    this->setRegister(0, this->numQubits);
-}
-
-QuantumCircuit::QuantumCircuit(int numQubits) : numQubits(numQubits), finalState(state::Ket0()) {
-    this->wires.resize(numQubits);
-    call_once(initExtendedEdgeFlag, initExtendedEdge);
-    if (this->numQubits < 1) {
-        throw std::invalid_argument("Number of qubits must be at least 1.");
-    }
-
-    for (int i = 1; i < this->numQubits; i++) {
-        this->finalState = mathUtils::kron(state::Ket0().getInitialEdge(), this->finalState.getInitialEdge());
-    }
-    this->quantumRegister.resize(1);
-    this->setRegister(0, this->numQubits);
-}
-
-queue<QMDDGate> QuantumCircuit::getLayer() const {
-    return this->layer;
+queue<QMDDGate> QuantumCircuit::getGateQueue() const {
+    return this->gateQueue_;
 }
 
 QMDDState QuantumCircuit::getFinalState() const {
@@ -387,74 +409,75 @@ void QuantumCircuit::addCZ(int controlIndex, int targetIndex) {
 }
 
 void QuantumCircuit::addSWAP(int qubitIndex1, int qubitIndex2) {
-    if (numQubits == 1) {
-        throw invalid_argument("Cannot add SWAP gate to single qubit circuit.");
-    }else if (qubitIndex1 == qubitIndex2) {
-        throw invalid_argument("qubitIndexes indices must be different.");
-    }else if(numQubits == 2 && ((qubitIndex1 == 0 && qubitIndex2 == 1) || (qubitIndex1 == 1 && qubitIndex2 == 0))) {
-        // this->gateQueue.push(gate::SWAP());
-        cout << "" << endl;
-    }else {
-        int minIndex = min(qubitIndex1, qubitIndex2);
-        int maxIndex = max(qubitIndex1, qubitIndex2);
-        vector<QMDDEdge> edges(minIndex, identityEdge);
-        QMDDEdge customSWAP;
-        size_t numIndex =  maxIndex - minIndex + 1;
-        if (numIndex == 2){
-            customSWAP = gate::SWAP().getInitialEdge();
-        } else {
-            vector<vector<QMDDEdge>> partialPreSWAP(pow(2, numIndex), vector<QMDDEdge>(2, identityEdge));
-            vector<QMDDEdge> partialSWAP(pow(2, numIndex));
-            for (size_t i = 0; i < partialPreSWAP.size(); i++){
-                int highestBit = (i >> (numIndex - 1)) & 1;
-                int lowestBit = i & 1;
-                int basedIndex = i;
-                int swappedIndex = (i & ~(1ULL << (numIndex - 1))) | (lowestBit << (numIndex - 1));
-                swappedIndex = (swappedIndex & ~1ULL) | highestBit;
-                for ([[maybe_unused]] int _ = numIndex - 1; _ >= 0; _--) {
-                    bool msbBased = (basedIndex >> (numIndex - 1)) & 1;
-                    bool msbSwapped = (swappedIndex >> (numIndex - 1)) & 1;
-                    if (msbBased){
-                        if (_ == numIndex - 1){
-                            partialPreSWAP[i][0] = state::Ket1().getInitialEdge();
-                        }else {
-                            partialPreSWAP[i][0] = mathUtils::kron(state::Ket1().getInitialEdge(), partialPreSWAP[i][0]);
-                        }
-                    }else {
-                        if (_ == numIndex - 1){
-                            partialPreSWAP[i][0] = state::Ket0().getInitialEdge();
-                        }else {
-                            partialPreSWAP[i][0] = mathUtils::kron(state::Ket0().getInitialEdge(), partialPreSWAP[i][0]);
-                        }
-                    }
-                    if (msbSwapped){
-                        if (_ == numIndex - 1){
-                            partialPreSWAP[i][1] = state::Bra1().getInitialEdge();
-                        }else {
-                            partialPreSWAP[i][1] = mathUtils::kron(state::Bra1().getInitialEdge(), partialPreSWAP[i][1]);
-                        }
-                    } else {
-                        if (_ == numIndex - 1){
-                            partialPreSWAP[i][1] = state::Bra0().getInitialEdge();
-                        }else {
-                            partialPreSWAP[i][1] = mathUtils::kron(state::Bra0().getInitialEdge(), partialPreSWAP[i][1]);
-                        }
-                    }
-                    basedIndex <<= 1;
-                    swappedIndex <<= 1;
-                }
-                partialSWAP[i] = mathUtils::dyad(partialPreSWAP[i][0], partialPreSWAP[i][1]);
-            }
-            customSWAP = accumulate(partialSWAP.begin() + 1, partialSWAP.end(), partialSWAP[0], [](const QMDDEdge& accumulated, const QMDDEdge& current) {
-                return mathUtils::add(accumulated, current);
-            });
-        }
-        edges.push_back(customSWAP);
-        QMDDGate result = accumulate(edges.rbegin() + 1, edges.rend(), edges.back(), [](const QMDDEdge& accumulated, const QMDDEdge& current) {
-            return mathUtils::kron(current, accumulated);
-        });
-        // this->gateQueue.push(result);
-    }
+    swap(this->swapTable_[qubitIndex1], this->swapTable_[qubitIndex2]);
+    // if (numQubits == 1) {
+    //     throw invalid_argument("Cannot add SWAP gate to single qubit circuit.");
+    // }else if (qubitIndex1 == qubitIndex2) {
+    //     throw invalid_argument("qubitIndexes indices must be different.");
+    // }else if(numQubits == 2 && ((qubitIndex1 == 0 && qubitIndex2 == 1) || (qubitIndex1 == 1 && qubitIndex2 == 0))) {
+    //     // this->gateQueue.push(gate::SWAP());
+    //     cout << "" << endl;
+    // }else {
+    //     int minIndex = min(qubitIndex1, qubitIndex2);
+    //     int maxIndex = max(qubitIndex1, qubitIndex2);
+    //     vector<QMDDEdge> edges(minIndex, identityEdge);
+    //     QMDDEdge customSWAP;
+    //     size_t numIndex =  maxIndex - minIndex + 1;
+    //     if (numIndex == 2){
+    //         customSWAP = gate::SWAP().getInitialEdge();
+    //     } else {
+    //         vector<vector<QMDDEdge>> partialPreSWAP(pow(2, numIndex), vector<QMDDEdge>(2, identityEdge));
+    //         vector<QMDDEdge> partialSWAP(pow(2, numIndex));
+    //         for (size_t i = 0; i < partialPreSWAP.size(); i++){
+    //             int highestBit = (i >> (numIndex - 1)) & 1;
+    //             int lowestBit = i & 1;
+    //             int basedIndex = i;
+    //             int swappedIndex = (i & ~(1ULL << (numIndex - 1))) | (lowestBit << (numIndex - 1));
+    //             swappedIndex = (swappedIndex & ~1ULL) | highestBit;
+    //             for ([[maybe_unused]] int _ = numIndex - 1; _ >= 0; _--) {
+    //                 bool msbBased = (basedIndex >> (numIndex - 1)) & 1;
+    //                 bool msbSwapped = (swappedIndex >> (numIndex - 1)) & 1;
+    //                 if (msbBased){
+    //                     if (_ == numIndex - 1){
+    //                         partialPreSWAP[i][0] = state::Ket1().getInitialEdge();
+    //                     }else {
+    //                         partialPreSWAP[i][0] = mathUtils::kron(state::Ket1().getInitialEdge(), partialPreSWAP[i][0]);
+    //                     }
+    //                 }else {
+    //                     if (_ == numIndex - 1){
+    //                         partialPreSWAP[i][0] = state::Ket0().getInitialEdge();
+    //                     }else {
+    //                         partialPreSWAP[i][0] = mathUtils::kron(state::Ket0().getInitialEdge(), partialPreSWAP[i][0]);
+    //                     }
+    //                 }
+    //                 if (msbSwapped){
+    //                     if (_ == numIndex - 1){
+    //                         partialPreSWAP[i][1] = state::Bra1().getInitialEdge();
+    //                     }else {
+    //                         partialPreSWAP[i][1] = mathUtils::kron(state::Bra1().getInitialEdge(), partialPreSWAP[i][1]);
+    //                     }
+    //                 } else {
+    //                     if (_ == numIndex - 1){
+    //                         partialPreSWAP[i][1] = state::Bra0().getInitialEdge();
+    //                     }else {
+    //                         partialPreSWAP[i][1] = mathUtils::kron(state::Bra0().getInitialEdge(), partialPreSWAP[i][1]);
+    //                     }
+    //                 }
+    //                 basedIndex <<= 1;
+    //                 swappedIndex <<= 1;
+    //             }
+    //             partialSWAP[i] = mathUtils::dyad(partialPreSWAP[i][0], partialPreSWAP[i][1]);
+    //         }
+    //         customSWAP = accumulate(partialSWAP.begin() + 1, partialSWAP.end(), partialSWAP[0], [](const QMDDEdge& accumulated, const QMDDEdge& current) {
+    //             return mathUtils::add(accumulated, current);
+    //         });
+    //     }
+    //     edges.push_back(customSWAP);
+    //     QMDDGate result = accumulate(edges.rbegin() + 1, edges.rend(), edges.back(), [](const QMDDEdge& accumulated, const QMDDEdge& current) {
+    //         return mathUtils::kron(current, accumulated);
+    //     });
+    //     // this->gateQueue.push(result);
+    // }
     return;
 }
 
@@ -1125,20 +1148,44 @@ void QuantumCircuit::globalPhase(double lamda) {
     return;
 }
 
-void QuantumCircuit::simulate() {
-    this->normalizeLayer();
+// void QuantumCircuit::simulate() {
+//     this->normalizeLayer();
+//     int i = 0;
+//     while (!this->layer.empty()) {
+//         cout << "number of gates: " << i++ << endl;
+//         QMDDGate currentGate = this->layer.front();
+//         cout << "Current gate: " << currentGate << endl;
+//         cout << "Current state: " << this->finalState << endl;
+
+//         cout << "============================================================\n" << endl;
+//         this->layer.pop();
+//         this->finalState = QMDDState(mathUtils::mul(currentGate.getInitialEdge(), this->finalState.getInitialEdge()));
+//     }
+//     cout << "Final state: " << this->finalState << endl;
+//     return;
+// }
+
+void QuantumCircuit::criticalExecute() {
+    this->build();
     int i = 0;
-    while (!this->layer.empty()) {
+    while (!this->gateQueue_.empty()) {
         cout << "number of gates: " << i++ << endl;
-        QMDDGate currentGate = this->layer.front();
+        QMDDGate currentGate = this->gateQueue_.front();
         cout << "Current gate: " << currentGate << endl;
         cout << "Current state: " << this->finalState << endl;
 
         cout << "============================================================\n" << endl;
-        this->layer.pop();
+        this->gateQueue_.pop();
         this->finalState = QMDDState(mathUtils::mul(currentGate.getInitialEdge(), this->finalState.getInitialEdge()));
     }
     cout << "Final state: " << this->finalState << endl;
+    return;
+}
+
+void QuantumCircuit::simulate() {
+    this->normalizeLayer();
+    g_tls_qc = this;
+    record_time(&qc_critical_block);
     return;
 }
 

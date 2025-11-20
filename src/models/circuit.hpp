@@ -39,13 +39,21 @@ array<T, N> sorted(const array<T, N>& arr) {
 class QuantumCircuit {
 private:
     vector<vector<Part>> wires;
-    queue<QMDDGate> layer;
+    // queue<QMDDGate> layer;
+    vector<vector<QMDDEdge>> layer_;
     QMDDState finalState;
     int numQubits;
+    queue<QMDDGate> gateQueue_;
+    vector<int> swapTable_;
+    inline int resolveQubit(int q) const {
+        return (this->irEnabled_ ? this->swapTable_[q] : q);
+    }
     int getMaxDepth(optional<int> start, optional<int> end) const;
     void normalizeLayer();
     void smartInsert(int qubitIndex, const Part& part);
     int searchJOKER(int qubitIndex);
+
+    void build();
 
     void compute();
     void uncompute();
@@ -54,8 +62,10 @@ public:
     QuantumCircuit(int numQubitits, QMDDState initialState);
     QuantumCircuit(int numQubitits);
     vector<vector<int>> quantumRegister;
+    bool irEnabled_ = false;
     ~QuantumCircuit() = default;
-    queue<QMDDGate> getLayer() const;
+    // queue<QMDDGate> getLayer() const;
+    queue<QMDDGate> getGateQueue() const;
     QMDDState getFinalState() const;
     QuantumCircuit(const QuantumCircuit& other) = default;
     QuantumCircuit& operator=(const QuantumCircuit& other) = default;
@@ -165,6 +175,8 @@ public:
     void simulate();
     int measure(int qubitIndex);
 
+
+    void criticalExecute();
 };
 
 #endif
