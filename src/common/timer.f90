@@ -4,51 +4,37 @@ module timer
   private
   public :: record_time
 
-  integer(c_int), parameter :: CLOCK_MONOTONIC = 6  ! macOS の MONOTONIC ID
-
   type, bind(C) :: timespec
     integer(c_long) :: tv_sec
     integer(c_long) :: tv_nsec
   end type timespec
 
-  type, bind(C) :: timeval
-    integer(c_long) :: tv_sec
-    integer(c_long) :: tv_usec
-  end type timeval
-
   interface
-     function c_gethostname(name, len) bind(C, name="gethostname")
-       import :: c_char, c_int
-       character(kind=c_char), dimension(*) :: name
-       integer(c_int), value :: len
-       integer(c_int) :: c_gethostname
-     end function c_gethostname
-
      function clock_gettime(clk_id, tp) bind(C, name="clock_gettime")
-       import :: c_int, c_ptr
+       import :: c_int, timespec
        integer(c_int), value :: clk_id
-       type(c_ptr), value :: tp
+       type(timespec), intent(out) :: tp
        integer(c_int) :: clock_gettime
      end function clock_gettime
 
-     function gettimeofday(tp, tzp) bind(C, name="gettimeofday")
-       import :: c_int, c_ptr
-       type(c_ptr), value :: tp
-       type(c_ptr), value :: tzp
-       integer(c_int) :: gettimeofday
-     end function gettimeofday
+     function c_gethostname(name, len) bind(C, name="gethostname")
+       import :: c_char, c_size_t, c_int
+       character(kind=c_char), dimension(*) :: name
+       integer(c_size_t), value :: len
+       integer(c_int) :: c_gethostname
+     end function c_gethostname
   end interface
 
 contains
 
   subroutine record_time(cb) bind(C, name="record_time")
     type(C_FUNPTR), value :: cb
-    procedure(), pointer  :: fptr
-    type(timespec), target :: m0, m1
-    type(timeval),  target :: w0, w1
-    integer :: rc_m0, rc_m1, rc_w0, rc_w1
+    procedure(), pointer :: fptr
+    type(timespec) :: t0, t1
+    integer(c_int), parameter :: candidates(3) = [6_c_int, 4_c_int, 1_c_int]
+    integer :: i, rc0, rc1, clk_id
     real(8) :: elapsed_ms
-    real(8) :: sec_diff, nsec_diff
+    integer :: rate, cstart, cend
     integer :: ios, u
     character(len=64)  :: ts
     character(len=256) :: hostname
@@ -56,29 +42,33 @@ contains
 
     call c_f_procpointer(cb, fptr)
 
-    ! Monotonic 計測 (優先)
-    rc_m0 = clock_gettime(CLOCK_MONOTONIC, c_loc(m0))
-    call fptr()
-    rc_m1 = clock_gettime(CLOCK_MONOTONIC, c_loc(m1))
+    clk_id = -1
+    do i = 1, size(candidates)
+       rc0 = clock_gettime(candidates(i), t0)
+       if (rc0 == 0) then
+          clk_id = candidates(i)
+          exit
+       end if
+    end do
 
-    if (rc_m0 == 0 .and. rc_m1 == 0) then
-       sec_diff  = dble(m1%tv_sec - m0%tv_sec)
-       nsec_diff = dble(m1%tv_nsec - m0%tv_nsec)
-       elapsed_ms = sec_diff * 1000.0d0 + nsec_diff / 1.0d6
-    else
-       ! フォールバック: gettimeofday
-       rc_w0 = gettimeofday(c_loc(w0), c_null_ptr)
+    if (clk_id /= -1) then
        call fptr()
-       rc_w1 = gettimeofday(c_loc(w1), c_null_ptr)
-       if (rc_w0 == 0 .and. rc_w1 == 0) then
-          elapsed_ms = dble(w1%tv_sec - w0%tv_sec) * 1000.0d0 + &
-                       dble(w1%tv_usec - w0%tv_usec) / 1000.0d0
+       rc1 = clock_gettime(clk_id, t1)
+       if (rc1 == 0) then
+          elapsed_ms = dble(t1%tv_sec - t0%tv_sec) * 1000.0d0 + &
+                       dble(t1%tv_nsec - t0%tv_nsec) / 1.0d6
        else
           elapsed_ms = 0.0d0
        end if
+    else
+       call system_clock(count_rate=rate)
+       call system_clock(count=cstart)
+       call fptr()
+       call system_clock(count=cend)
+       elapsed_ms = dble(cend - cstart) / dble(rate) * 1000.0d0
     end if
 
-    if (elapsed_ms < 0.0d0) elapsed_ms = 0.0d0  ! 負値ガード
+    if (elapsed_ms < 0d0) elapsed_ms = 0d0
 
     call get_timestamp(ts)
     call get_hostname(hostname)
@@ -105,10 +95,13 @@ contains
   subroutine get_hostname(name)
     character(len=*), intent(out) :: name
     character(kind=c_char), dimension(256) :: buf
-    integer :: rc, i
+    integer(c_int) :: rc
+    integer :: i
+    integer(c_size_t) :: nlen
     name = 'unknown'
     buf = c_null_char
-    rc = c_gethostname(buf, size(buf))
+    nlen = size(buf, kind=c_size_t)
+    rc = c_gethostname(buf, nlen)
     if (rc == 0) then
        name = ''
        do i = 1, size(buf)

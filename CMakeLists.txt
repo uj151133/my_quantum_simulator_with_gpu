@@ -150,6 +150,12 @@ link_directories(
     ${GRAALVM_NATIVE_LIB_PATH}
 )
 
+if(APPLE)
+    add_compile_definitions(CLOCK_MONOTONIC_ID=6)
+else()
+    add_compile_definitions(CLOCK_MONOTONIC_ID=1)
+endif()
+
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -I${BOOST_ROOT}/include")
 
