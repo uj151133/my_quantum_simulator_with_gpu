@@ -22,7 +22,7 @@
 #include "src/common/ipc_shared_memory.hpp"
 #include "src/common/operationCacheClient.hpp"
 #include "src/test/Shor/shor.hpp"
-
+#include "src/test/seca_n11/secaN11.hpp"
 #include "src/translator/OpenQASM3/fallen.hpp"
 #include "src/translator/OpenQASM3/gen/OpenQASM3Lexer.h"
 #include "src/translator/OpenQASM3/gen/OpenQASM3Parser.h"
@@ -46,15 +46,17 @@ void execute() {
 
     // OperationCache& cache = OperationCache::getInstance();
 
-    int numQubits = 10;
-    int numGates = 200;
+    secaN11();
+
+    // int numQubits = 10;
+    // int numGates = 200;
 
 
     // shor(8);
 
     // QMDDEdge edge = mathUtils::kron(gate::H().getInitialEdge(), gate::Toff().getInitialEdge());
     // cout << "Kron result: " << edge.depth << endl;
-    randomRotate(numQubits, numGates);
+    // randomRotate(numQubits, numGates);
 }
 
 bool translateAndExecuteQASM(const string& qasm_file) {

@@ -62,7 +62,7 @@ private:
 
     void compute();
     void uncompute();
-    
+    double totalTimeMs_ = 0.0;
 
 
 public:
@@ -162,8 +162,6 @@ public:
     void addfFredkin(int controlIndex1, int controlIndex2, int targetIndex);
 
     void addGate(int qubitIndex, const QMDDGate& gate);
-
-    void addBARRIER();
 
     void addQFT(int numQubits);
     void addQFT();
