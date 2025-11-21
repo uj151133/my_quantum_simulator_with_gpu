@@ -1,6 +1,6 @@
 #include "circuit.hpp"
 
-extern "C" void record_time(void (*cb)());
+extern "C" void record_time(void (*cb)(), double* elapsed_ms);
 thread_local QuantumCircuit* g_tls_qc = nullptr;
 
 extern "C" void qc_critical_block() {
@@ -45,11 +45,18 @@ vector<int> QuantumCircuit::countCancer() const {
         const string g = Core::upper(o.tag);
         if (o.qubits.size() == 1) {
             if (isCancer(g)) {
+                score[o.qubits[0]] += 4;
+            } else {
                 score[o.qubits[0]] += 2;
             }
-        } else if (o.qubits.size() == 2) {
-            score[o.qubits[0]] += 1;
-            score[o.qubits[1]] += 1;
+        } else if (o.qubits.size() >= 2) {
+            for (size_t i = 0; i < o.qubits.size(); ++i) {
+                if (i == o.qubits.size() - 1) {
+                    score[o.qubits[i]] += 3;
+                } else {
+                    score[o.qubits[i]] += 1;
+                }
+            }
         }
     }
     return score;
@@ -104,6 +111,8 @@ void QuantumCircuit::emitIR(const vector<Core>& ops){
         else if(g=="CP") this->addCP(o.qubits.at(0), o.qubits.at(1), (o.phi!=0.0? o.phi : o.theta));
         else if(g=="CRZ") this->addCP(o.qubits.at(0), o.qubits.at(1), o.theta); // 仮: CPで代用
         else if(g=="SWAP") this->addSWAP(o.qubits.at(0), o.qubits.at(1));
+        else if(g=="TOFFOLI"||g=="CCX") this->addToff({o.qubits.at(0), o.qubits.at(1)}, o.qubits.at(2));
+        else if(g=="BARRIER") this->addBarrier();
         // 必要に応じて追加
     }
 
@@ -255,6 +264,10 @@ void QuantumCircuit::addY(vector<int>& qubitIndices) {
 }
 
 void QuantumCircuit::addZ(int qubitIndex) {
+    if(this->irEnabled_){
+        Core c; c.tag="Z"; c.qubits={resolveQubit(qubitIndex)}; c.normalize();
+        this->irLog_.push_back(std::move(c)); return;
+    }
     this->smartInsert(qubitIndex, {Type::Z, gate::Z()});
     return;
 }
@@ -305,6 +318,10 @@ void QuantumCircuit::addV(int qubitIndex) {
 }
 
 void QuantumCircuit::addH(int qubitIndex) {
+    if(this->irEnabled_){
+        Core c; c.tag="H"; c.qubits={resolveQubit(qubitIndex)}; c.normalize();
+        this->irLog_.push_back(std::move(c)); return;
+    }
     int maxDepth = this->getMaxDepth(qubitIndex, this->numQubits - 1);
     for (int index = qubitIndex; index <= this->numQubits - 1; index++) {
         while (this->wires[index].size() < maxDepth) {
@@ -326,6 +343,10 @@ void QuantumCircuit::addAllH() {
 }
 
 void QuantumCircuit::addCX(int controlIndex, int targetIndex) {
+    if(this->irEnabled_){
+        Core c; c.tag="CX"; c.qubits={resolveQubit(controlIndex), resolveQubit(targetIndex)}; c.normalize();
+        this->irLog_.push_back(std::move(c)); return;
+    }
     int minIndex = min(controlIndex, targetIndex);
     int maxIndex = max(controlIndex, targetIndex);
     int maxDepth = this->getMaxDepth(minIndex, maxIndex);
@@ -442,6 +463,10 @@ void QuantumCircuit::addCY(int controlIndex, int targetIndex) {
 }
 
 void QuantumCircuit::addCZ(int controlIndex, int targetIndex) {
+    if(this->irEnabled_){
+        Core c; c.tag="CZ"; c.qubits={resolveQubit(controlIndex), resolveQubit(targetIndex)}; c.normalize();
+        this->irLog_.push_back(std::move(c)); return;
+    }
     int minIndex = min(controlIndex, targetIndex);
     int maxIndex = max(controlIndex, targetIndex);
     int maxDepth = this->getMaxDepth(minIndex, maxIndex);
@@ -943,6 +968,19 @@ void QuantumCircuit::addCU(int controlIndex, int targetIndex, double theta, doub
 }
 
 void QuantumCircuit::addToff(const array<int, 2>& controlIndexes, int targetIndex) {
+    if(this->irEnabled_){
+        Core c; c.tag="TOFFOLI"; c.qubits={resolveQubit(controlIndexes[0]), resolveQubit(controlIndexes[1]), resolveQubit(targetIndex)}; c.normalize();
+        this->irLog_.push_back(std::move(c)); return;
+    }
+    int minIndex = min({controlIndexes[0], controlIndexes[1], targetIndex});
+    int maxIndex = max({controlIndexes[0], controlIndexes[1], targetIndex});
+
+    int maxDepth = this->getMaxDepth(minIndex, maxIndex);
+    for (int index = minIndex; index <= maxIndex; index++) {
+        while (this->wires[index].size() < maxDepth) {
+            this->wires[index].push_back({Type::I, gate::I()});
+        }
+    }
     if (controlIndexes.size() == 0) {
         throw invalid_argument("Control indexes must not be empty.");
     }else if (numQubits < controlIndexes.size() + 1) {
@@ -951,9 +989,10 @@ void QuantumCircuit::addToff(const array<int, 2>& controlIndexes, int targetInde
         addCX(controlIndexes[0], targetIndex);
     }else {
         array<int, 2> sortedControlIndexes = sorted(controlIndexes);
-        int minIndex = min(*min_element(sortedControlIndexes.begin(), sortedControlIndexes.end()), targetIndex);
-        int maxIndex = max(*max_element(sortedControlIndexes.begin(), sortedControlIndexes.end()), targetIndex);
-        vector<QMDDEdge> edges(minIndex, identityEdge);
+        // int minIndex = min(*min_element(sortedControlIndexes.begin(), sortedControlIndexes.end()), targetIndex);
+        // int maxIndex = max(*max_element(sortedControlIndexes.begin(), sortedControlIndexes.end()), targetIndex);
+        // vector<QMDDEdge> edges(minIndex, identityEdge);
+        // vector<QMDDEdge> edges;
         vector<QMDDEdge> partialToff(sortedControlIndexes.size() + 1, identityEdge);
         for (int i = maxIndex; i >= minIndex; i--) {
             if (i == targetIndex) {
@@ -1000,13 +1039,16 @@ void QuantumCircuit::addToff(const array<int, 2>& controlIndexes, int targetInde
         QMDDEdge customToff = accumulate(partialToff.begin() + 1, partialToff.end(), partialToff[0], [](const QMDDEdge& accumulated, const QMDDEdge& current) {
             return mathUtils::add(accumulated, current);
         });
-        edges.push_back(customToff);
-        QMDDGate result = accumulate(edges.rbegin() + 1, edges.rend(), edges.back(), [](const QMDDEdge& accumulated, const QMDDEdge& current) {
-            return mathUtils::kron(current, accumulated);
-        });
-        // this->gateQueue.push(result);
-
+        this->wires[minIndex].push_back({Type::Toff, QMDDGate(customToff)});
+        for (int index = minIndex + 1; index <= maxIndex; index++) {
+            this->wires[index].push_back({Type::VOID, QMDDGate()});
+        }
         return;
+        // edges.push_back(customToff);
+        // QMDDGate result = accumulate(edges.rbegin() + 1, edges.rend(), edges.back(), [](const QMDDEdge& accumulated, const QMDDEdge& current) {
+        //     return mathUtils::kron(current, accumulated);
+        // });
+        // this->gateQueue.push(result);
     }
 }
 
@@ -1146,13 +1188,17 @@ void QuantumCircuit::addDiffuser() {
 }
 
 void QuantumCircuit::addBarrier() {
+    if(this->irEnabled_){
+        Core c; c.tag="BARRIER"; c.normalize();
+        this->irLog_.push_back(std::move(c)); return;
+    }
     int maxDepth = this->getMaxDepth(optional<int>(), optional<int>());
-    for (int q = 0; q < numQubits; q++) {
+    for (int q = 0; q < this->numQubits; q++) {
         while (this->wires[q].size() < maxDepth) {
             this->wires[q].push_back({Type::I, gate::I()});
         }
     }
-    for (int i = 0; i < numQubits; i++) {
+    for (int i = 0; i < this->numQubits; i++) {
         this->wires[i].push_back({Type::VOID, QMDDGate()});
     }
     return;
@@ -1190,13 +1236,19 @@ void QuantumCircuit::simulate() {
         this->emitIR(this->irLog_);
     }
     this->normalizeLayer();
-    // this->criticalExecute();
     g_tls_qc = this;
-    record_time(&qc_critical_block);
+    double elapsed = 0.0;
+    record_time(&qc_critical_block, &elapsed);
+    this->totalTimeMs_ += elapsed;
+    printf("\033[1;36mTotal execution time: %.6f ms\033[0m\n", this->totalTimeMs_);
     return;
 }
 
 int QuantumCircuit::measure(int qubitIndex) {
+    // if(this->irEnabled_){
+    //     Core c; c.tag="MEASURE"; c.qubits= {resolveQubit(qubitIndex)}; c.normalize();
+    //     this->irLog_.push_back(std::move(c)); return;
+    // }
     this->simulate();
     vector<QMDDEdge> edges0(qubitIndex, identityEdge);
     vector<QMDDEdge> edges1(qubitIndex, identityEdge);

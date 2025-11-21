@@ -16,24 +16,38 @@ module timer
        type(timespec), intent(out) :: tp
        integer(c_int) :: clock_gettime
      end function clock_gettime
-
      function c_gethostname(name, len) bind(C, name="gethostname")
        import :: c_char, c_size_t, c_int
        character(kind=c_char), dimension(*) :: name
        integer(c_size_t), value :: len
        integer(c_int) :: c_gethostname
      end function c_gethostname
+     function gettimeofday(tp, tzp) bind(C, name="gettimeofday")
+       import :: c_int, c_ptr
+       type(c_ptr), value :: tp
+       type(c_ptr), value :: tzp
+       integer(c_int) :: gettimeofday
+     end function gettimeofday
   end interface
+
+  type, bind(C) :: timeval
+    integer(c_long) :: tv_sec
+    integer(c_long) :: tv_usec
+  end type timeval
 
 contains
 
-  subroutine record_time(cb) bind(C, name="record_time")
+  subroutine record_time(cb, elapsed_ms_ptr) bind(C, name="record_time")
+    use iso_c_binding
     type(C_FUNPTR), value :: cb
     procedure(), pointer :: fptr
+    real(c_double), intent(out) :: elapsed_ms_ptr
+    integer(c_int), parameter :: CLK(3) = [4_c_int, 1_c_int, 6_c_int] ! Linux RAW, Linux MONOTONIC, mac
     type(timespec) :: t0, t1
-    integer(c_int), parameter :: candidates(3) = [6_c_int, 4_c_int, 1_c_int]
-    integer :: i, rc0, rc1, clk_id
-    real(8) :: elapsed_ms
+    type(timeval), target :: w0, w1
+    real(8) :: elapsed_ns, elapsed_ms
+    real(8) :: elapsed_ns_tv, elapsed_ms_tv
+    integer :: i, rc0, rc1
     integer :: rate, cstart, cend
     integer :: ios, u
     character(len=64)  :: ts
@@ -42,30 +56,44 @@ contains
 
     call c_f_procpointer(cb, fptr)
 
-    clk_id = -1
-    do i = 1, size(candidates)
-       rc0 = clock_gettime(candidates(i), t0)
+    elapsed_ns = -1.0d0
+    ! 高精度クロック探索
+    do i = 1, size(CLK)
+       rc0 = clock_gettime(CLK(i), t0)
        if (rc0 == 0) then
-          clk_id = candidates(i)
-          exit
+          call fptr()
+          rc1 = clock_gettime(CLK(i), t1)
+          if (rc1 == 0) then
+             elapsed_ns = dble(t1%tv_sec - t0%tv_sec)*1.0d9 + dble(t1%tv_nsec - t0%tv_nsec)
+             exit
+          end if
        end if
     end do
 
-    if (clk_id /= -1) then
-       call fptr()
-       rc1 = clock_gettime(clk_id, t1)
-       if (rc1 == 0) then
-          elapsed_ms = dble(t1%tv_sec - t0%tv_sec) * 1000.0d0 + &
-                       dble(t1%tv_nsec - t0%tv_nsec) / 1.0d6
-       else
-          elapsed_ms = 0.0d0
-       end if
-    else
+    if (elapsed_ns < 0d0) then
+       ! フォールバック: system_clock
        call system_clock(count_rate=rate)
        call system_clock(count=cstart)
        call fptr()
        call system_clock(count=cend)
-       elapsed_ms = dble(cend - cstart) / dble(rate) * 1000.0d0
+       elapsed_ns = dble(cend - cstart)/dble(rate)*1.0d9
+    end if
+
+    elapsed_ms = elapsed_ns / 1.0d6
+
+    ! 下3桁が常に 000 (マイクロ秒精度未満) なら gettimeofday で再取得
+    if (abs(elapsed_ms - (floor(elapsed_ms*1000.0d0)/1000.0d0)) < 1.0d-9) then
+       rc0 = gettimeofday(c_loc(w0), c_null_ptr)
+       call fptr()
+       rc1 = gettimeofday(c_loc(w1), c_null_ptr)
+       if (rc0 == 0 .and. rc1 == 0) then
+          elapsed_ns_tv = dble(w1%tv_sec - w0%tv_sec)*1.0d9 + dble(w1%tv_usec - w0%tv_usec)*1.0d3
+          if (elapsed_ns_tv > 0d0) then
+             elapsed_ms_tv = elapsed_ns_tv / 1.0d6
+             ! より細かい差分が得られたら置き換え
+             if (abs(elapsed_ms_tv - elapsed_ms) > 1.0d-6) elapsed_ms = elapsed_ms_tv
+          end if
+       end if
     end if
 
     if (elapsed_ms < 0d0) elapsed_ms = 0d0
@@ -74,15 +102,16 @@ contains
     call get_hostname(hostname)
     call get_git_branch(branch)
 
-    write(*,'(A,F0.6,A)') achar(27)//'[1;32mExecution time: ', elapsed_ms, ' ms'//achar(27)//'[0m'
+    write(*,'(A,F0.6," ms",A)') achar(27)//'[1;32mExecution time: ', elapsed_ms, achar(27)//'[0m'
 
     open(newunit=u, file='record.log', status='unknown', action='write', position='append', iostat=ios)
     if (ios == 0) then
-       write(u,'(A,1X,A,1X,A,1X,A,F0.6,A)') &
-         '['//trim(ts)//']', 'Host: '//trim(hostname)//' |', 'Branch: '//trim(branch)//' |', &
-         'Execution time: ', elapsed_ms, ' ms'
+       write(u,'(A,1X,A,1X,A,1X,A,F0.6," ms")') &
+         '['//trim(ts)//']','Host: '//trim(hostname)//' |','Branch: '//trim(branch)//' |', &
+         'Execution time:', elapsed_ms
        close(u)
     end if
+    elapsed_ms_ptr = elapsed_ms
   end subroutine record_time
 
   subroutine get_timestamp(ts)
