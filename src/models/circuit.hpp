@@ -57,6 +57,7 @@ private:
 
     void compute();
     void uncompute();
+    double totalTimeMs_ = 0.0;
 
 public:
     QuantumCircuit(int numQubitits, QMDDState initialState);

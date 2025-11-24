@@ -49,6 +49,7 @@ enum class Type {
     CRy,
     CRz,
     CU,
+    Toff,
     Other,
     VOID,
     BAN,

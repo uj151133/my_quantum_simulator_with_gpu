@@ -1,7 +1,6 @@
 #include "circuit.hpp"
 
-
-extern "C" void record_time(void (*cb)());
+extern "C" void record_time(void (*cb)(), double* elapsed_ms);
 thread_local QuantumCircuit* g_tls_qc = nullptr;
 
 extern "C" void qc_critical_block() {
@@ -924,6 +923,15 @@ void QuantumCircuit::addCU(int controlIndex, int targetIndex, double theta, doub
 }
 
 void QuantumCircuit::addToff(const array<int, 2>& controlIndexes, int targetIndex) {
+    int minIndex = min({controlIndexes[0], controlIndexes[1], targetIndex});
+    int maxIndex = max({controlIndexes[0], controlIndexes[1], targetIndex});
+
+    int maxDepth = this->getMaxDepth(minIndex, maxIndex);
+    for (int index = minIndex; index <= maxIndex; index++) {
+        while (this->wires[index].size() < maxDepth) {
+            this->wires[index].push_back({Type::I, gate::I()});
+        }
+    }
     if (controlIndexes.size() == 0) {
         throw invalid_argument("Control indexes must not be empty.");
     }else if (numQubits < controlIndexes.size() + 1) {
@@ -981,11 +989,10 @@ void QuantumCircuit::addToff(const array<int, 2>& controlIndexes, int targetInde
         QMDDEdge customToff = accumulate(partialToff.begin() + 1, partialToff.end(), partialToff[0], [](const QMDDEdge& accumulated, const QMDDEdge& current) {
             return mathUtils::add(accumulated, current);
         });
-        edges.push_back(customToff);
-        QMDDGate result = accumulate(edges.rbegin() + 1, edges.rend(), edges.back(), [](const QMDDEdge& accumulated, const QMDDEdge& current) {
-            return mathUtils::kron(current, accumulated);
-        });
-        // this->gateQueue.push(result);
+        this->wires[minIndex].push_back({Type::Toff, QMDDGate(customToff)});
+        for (int index = minIndex + 1; index <= maxIndex; index++) {
+            this->wires[index].push_back({Type::VOID, QMDDGate()});
+        }
 
         return;
     }
@@ -1185,7 +1192,10 @@ void QuantumCircuit::criticalExecute() {
 void QuantumCircuit::simulate() {
     this->normalizeLayer();
     g_tls_qc = this;
-    record_time(&qc_critical_block);
+    double elapsed = 0.0;
+    record_time(&qc_critical_block, &elapsed);
+    this->totalTimeMs_ += elapsed;
+    printf("\033[1;36mTotal execution time: %.6f ms\033[0m\n", this->totalTimeMs_);
     return;
 }
 
