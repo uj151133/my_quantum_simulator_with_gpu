@@ -15,6 +15,7 @@
 #include "../common/Core.hpp"
 #include "../common/mathUtils.hpp"
 #include "../common/constant.hpp"
+#include "../common/config.hpp"
 
 using namespace std;
 
@@ -56,13 +57,13 @@ private:
     void emitIR(const vector<Core>& ops);
     int getMaxDepth(optional<int> start, optional<int> end) const;
     void normalizeLayer();
-    void smartInsert(int qubitIndex, const Part& part);
-    int searchJOKER(int qubitIndex);
+    void smartInsert(const vector<int>& qubitIndices, const Part& part);
+    int searchJOKER(const vector<int>& qubitIndices);
     void build();
 
     void compute();
     void uncompute();
-    double totalTimeMs_ = 0.0;
+    double totalTimeMs_ = .0;
 
 
 public:

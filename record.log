@@ -8329,3 +8329,670 @@
 [2025-11-21 10:26:49] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:12.386250 ms
 [2025-11-21 10:26:49] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:29.121500 ms
 [2025-11-21 10:26:49] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:95.153416 ms
+[2025-11-24 14:39:06] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.529458 ms
+[2025-11-24 14:40:32] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:1.516208 ms
+[2025-11-24 14:49:23] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:1.431833 ms
+[2025-11-24 14:54:03] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.348625 ms
+[2025-11-24 14:54:06] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.390667 ms
+[2025-11-24 14:54:46] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.603000 ms
+[2025-11-24 14:57:15] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.172667 ms
+[2025-11-24 14:57:35] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.107750 ms
+[2025-11-24 14:57:51] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.114958 ms
+[2025-11-24 14:58:25] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.190750 ms
+[2025-11-24 14:58:47] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:1.001042 ms
+[2025-11-24 15:18:06] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:2.030334 ms
+[2025-11-24 15:18:12] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:1.309791 ms
+[2025-11-24 17:03:13] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:1.436208 ms
+[2025-11-24 17:10:22] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.329375 ms
+[2025-11-24 17:10:22] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:5.079500 ms
+[2025-11-24 17:11:14] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:4294967.298000 ms
+[2025-11-24 17:11:14] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:5.091875 ms
+[2025-11-24 17:11:30] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.496667 ms
+[2025-11-24 17:11:30] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:4.943583 ms
+[2025-11-24 17:11:33] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:4294967.299000 ms
+[2025-11-24 17:11:33] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:4.898875 ms
+[2025-11-24 17:11:36] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.200542 ms
+[2025-11-24 17:11:36] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:4.847334 ms
+[2025-11-24 17:11:56] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.337917 ms
+[2025-11-24 17:11:56] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:5.020333 ms
+[2025-11-24 17:12:09] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.212250 ms
+[2025-11-24 17:12:09] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:4.903792 ms
+[2025-11-24 17:12:12] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:4.269375 ms
+[2025-11-24 17:12:12] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:7.567792 ms
+[2025-11-24 17:12:27] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.393125 ms
+[2025-11-24 17:12:27] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:4.958792 ms
+[2025-11-24 17:13:12] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.236583 ms
+[2025-11-24 17:13:12] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:4.948750 ms
+[2025-11-24 17:13:12] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:14.937209 ms
+[2025-11-24 17:13:25] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.593083 ms
+[2025-11-24 17:13:25] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:5.063166 ms
+[2025-11-24 17:13:25] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:15.042625 ms
+[2025-11-24 17:13:25] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:17.259709 ms
+[2025-11-24 17:13:35] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.420250 ms
+[2025-11-24 17:13:35] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:4.966417 ms
+[2025-11-24 17:13:35] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:15.940334 ms
+[2025-11-24 17:14:03] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.316166 ms
+[2025-11-24 17:14:03] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:5.174959 ms
+[2025-11-24 17:14:19] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.338667 ms
+[2025-11-24 17:14:19] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:4.961375 ms
+[2025-11-24 17:14:19] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:17.740708 ms
+[2025-11-24 17:14:31] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.408042 ms
+[2025-11-24 17:14:31] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:5.053500 ms
+[2025-11-24 17:14:44] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.241916 ms
+[2025-11-24 17:14:44] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:4.955250 ms
+[2025-11-24 17:14:44] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:17.842625 ms
+[2025-11-24 17:15:07] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.392416 ms
+[2025-11-24 17:15:07] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:4.938542 ms
+[2025-11-24 17:15:07] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:18.322583 ms
+[2025-11-24 17:18:20] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.002000 ms
+[2025-11-24 17:18:20] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.771291 ms
+[2025-11-24 17:18:20] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:6.226459 ms
+[2025-11-24 17:19:16] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.573375 ms
+[2025-11-24 17:19:16] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.912541 ms
+[2025-11-24 17:19:16] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:6.321917 ms
+[2025-11-24 17:19:42] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.257292 ms
+[2025-11-24 17:19:42] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.763875 ms
+[2025-11-24 17:22:57] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.289416 ms
+[2025-11-24 17:22:57] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.731584 ms
+[2025-11-24 17:24:36] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.240500 ms
+[2025-11-24 17:24:36] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.756041 ms
+[2025-11-24 17:29:40] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.333583 ms
+[2025-11-24 17:29:40] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.775792 ms
+[2025-11-24 17:31:45] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.266291 ms
+[2025-11-24 17:31:45] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.755500 ms
+[2025-11-24 18:21:26] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.284292 ms
+[2025-11-24 18:21:26] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.830875 ms
+[2025-11-24 18:21:26] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:4.919792 ms
+[2025-11-24 18:22:02] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.843291 ms
+[2025-11-24 18:22:02] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.766208 ms
+[2025-11-24 18:22:02] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:12.453833 ms
+[2025-11-24 18:22:05] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.325917 ms
+[2025-11-24 18:22:05] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.754041 ms
+[2025-11-24 18:22:05] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:12.323250 ms
+[2025-11-24 18:24:46] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:7.475417 ms
+[2025-11-24 18:24:46] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:21.097792 ms
+[2025-11-24 18:24:46] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:54.135167 ms
+[2025-11-24 18:24:49] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:7.455625 ms
+[2025-11-24 18:24:49] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:20.699541 ms
+[2025-11-24 18:24:49] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:53.094666 ms
+[2025-11-24 18:24:52] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:8.965916 ms
+[2025-11-24 18:24:52] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:21.239542 ms
+[2025-11-24 18:24:52] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:54.334750 ms
+[2025-11-24 18:36:00] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:7.392833 ms
+[2025-11-24 18:36:00] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:21.116542 ms
+[2025-11-24 18:36:00] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:54.733542 ms
+[2025-11-24 18:36:04] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:7.599166 ms
+[2025-11-24 18:36:04] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:21.205958 ms
+[2025-11-24 18:36:04] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:54.239416 ms
+[2025-11-24 18:36:06] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:7.546959 ms
+[2025-11-24 18:36:06] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:20.793917 ms
+[2025-11-24 18:36:06] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:54.149708 ms
+[2025-11-24 18:36:08] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:7.966334 ms
+[2025-11-24 18:36:08] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:20.931583 ms
+[2025-11-24 18:36:08] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:54.226667 ms
+[2025-11-24 18:36:10] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:8.214416 ms
+[2025-11-24 18:36:10] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:21.206834 ms
+[2025-11-24 18:36:10] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:54.108458 ms
+[2025-11-24 18:39:06] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:7.466208 ms
+[2025-11-24 18:39:06] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.479167 ms
+[2025-11-24 18:39:06] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:16.062583 ms
+[2025-11-24 18:39:09] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:7.611125 ms
+[2025-11-24 18:39:09] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.491792 ms
+[2025-11-24 18:39:09] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:16.347792 ms
+[2025-11-24 18:39:56] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:7.359666 ms
+[2025-11-24 18:39:56] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.481666 ms
+[2025-11-24 18:39:56] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:15.924375 ms
+[2025-11-24 18:39:58] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:7.607334 ms
+[2025-11-24 18:39:58] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.469917 ms
+[2025-11-24 18:39:58] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:16.376416 ms
+[2025-11-24 18:40:00] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:7.228959 ms
+[2025-11-24 18:40:00] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.495250 ms
+[2025-11-24 18:40:00] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:16.429459 ms
+[2025-11-24 18:44:28] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.300792 ms
+[2025-11-24 18:44:28] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.777709 ms
+[2025-11-24 18:44:28] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:12.459042 ms
+[2025-11-24 18:44:31] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.286416 ms
+[2025-11-24 18:44:31] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.750625 ms
+[2025-11-24 18:44:31] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:12.598625 ms
+[2025-11-24 18:44:33] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.213084 ms
+[2025-11-24 18:44:33] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.828291 ms
+[2025-11-24 18:44:33] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:12.701667 ms
+[2025-11-24 18:44:46] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:7.326084 ms
+[2025-11-24 18:44:46] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.459000 ms
+[2025-11-24 18:44:46] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:12.517542 ms
+[2025-11-24 18:44:49] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:7.401500 ms
+[2025-11-24 18:44:49] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.523458 ms
+[2025-11-24 18:44:49] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:16.265500 ms
+[2025-11-24 18:44:52] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:7.513375 ms
+[2025-11-24 18:44:52] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.463000 ms
+[2025-11-24 18:44:52] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:12.740958 ms
+[2025-11-24 18:47:59] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:7.541167 ms
+[2025-11-24 18:47:59] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.494625 ms
+[2025-11-24 18:47:59] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:16.241834 ms
+[2025-11-24 18:48:01] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:7.444125 ms
+[2025-11-24 18:48:01] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.776209 ms
+[2025-11-24 18:48:01] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:16.308375 ms
+[2025-11-24 18:51:09] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:9.323667 ms
+[2025-11-24 18:51:09] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.537958 ms
+[2025-11-24 18:51:09] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:18.218541 ms
+[2025-11-24 18:51:32] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:4.224000 ms
+[2025-11-24 18:51:32] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.539625 ms
+[2025-11-24 18:51:32] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:12.930542 ms
+[2025-11-24 18:56:37] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:7.462500 ms
+[2025-11-24 18:56:37] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:1.082583 ms
+[2025-11-24 18:56:37] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:16.015625 ms
+[2025-11-24 18:56:41] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:7.492584 ms
+[2025-11-24 18:56:41] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:1.035708 ms
+[2025-11-24 18:56:41] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:16.027458 ms
+[2025-11-24 18:57:07] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:7.189167 ms
+[2025-11-24 18:57:07] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.995333 ms
+[2025-11-24 18:57:08] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:15.985333 ms
+[2025-11-24 18:57:27] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.386833 ms
+[2025-11-24 18:57:27] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.786458 ms
+[2025-11-24 18:57:27] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:13.252250 ms
+[2025-11-25 14:07:48] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:4.259000 ms
+[2025-11-25 14:07:48] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.534792 ms
+[2025-11-25 14:07:48] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:13.360666 ms
+[Tue Nov 25 18:39:54 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 206.812 ms
+[Tue Nov 25 18:39:57 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 217.413 ms
+[Tue Nov 25 18:40:00 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 316.239 ms
+[Tue Nov 25 18:40:04 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 293.737 ms
+[Tue Nov 25 18:40:09 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 216.706 ms
+[Tue Nov 25 18:40:53 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 221.781 ms
+[Tue Nov 25 18:40:57 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 233.125 ms
+[Tue Nov 25 18:41:40 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 220.548 ms
+[Tue Nov 25 18:41:54 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 165.402 ms
+[Tue Nov 25 18:41:57 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 181.211 ms
+[Tue Nov 25 18:42:00 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 422.553 ms
+[Tue Nov 25 18:42:03 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 168.249 ms
+[Tue Nov 25 18:42:07 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 223.128 ms
+[Tue Nov 25 18:42:10 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 147.406 ms
+[2025-11-26 15:03:39] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:4.153000 ms
+[2025-11-26 15:03:39] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.506958 ms
+[2025-11-26 15:03:39] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:12.627167 ms
+[Wed Nov 26 15:03:39 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 97.2228 ms
+[2025-11-26 15:03:44] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:5.392625 ms
+[2025-11-26 15:03:44] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.810917 ms
+[2025-11-26 15:03:44] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:21.743000 ms
+[Wed Nov 26 15:03:44 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 112.28 ms
+[2025-11-26 15:03:53] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.158167 ms
+[2025-11-26 15:03:53] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.733458 ms
+[2025-11-26 15:03:53] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:12.359541 ms
+[Wed Nov 26 15:03:53 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 89.599 ms
+[2025-11-26 15:03:55] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.997042 ms
+[2025-11-26 15:03:55] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.750750 ms
+[2025-11-26 15:03:55] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:12.403667 ms
+[Wed Nov 26 15:03:55 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 44.1684 ms
+[2025-11-26 15:03:57] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.231916 ms
+[2025-11-26 15:03:57] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.754792 ms
+[2025-11-26 15:03:57] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:12.457333 ms
+[Wed Nov 26 15:03:57 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 41.3162 ms
+[2025-11-26 15:04:21] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:8.018667 ms
+[2025-11-26 15:04:21] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.509916 ms
+[2025-11-26 15:04:21] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:28.877000 ms
+[Wed Nov 26 15:04:21 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 130.821 ms
+[2025-11-26 15:04:24] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:7.793084 ms
+[2025-11-26 15:04:24] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.486083 ms
+[2025-11-26 15:04:24] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:13.508083 ms
+[Wed Nov 26 15:04:24 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 49.0401 ms
+[2025-11-26 15:04:26] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:7.901708 ms
+[2025-11-26 15:04:26] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.494709 ms
+[2025-11-26 15:04:26] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:13.538834 ms
+[Wed Nov 26 15:04:26 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 51.7271 ms
+[2025-11-26 15:04:28] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:7.943500 ms
+[2025-11-26 15:04:28] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.513834 ms
+[2025-11-26 15:04:28] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:13.756750 ms
+[Wed Nov 26 15:04:28 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 104.477 ms
+[2025-11-26 15:04:45] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:7.951625 ms
+[2025-11-26 15:04:45] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.503458 ms
+[2025-11-26 15:04:45] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:13.520125 ms
+[Wed Nov 26 15:04:45 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 103.361 ms
+[2025-11-26 15:04:47] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:7.783209 ms
+[2025-11-26 15:04:47] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.495250 ms
+[2025-11-26 15:04:47] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:14.218041 ms
+[Wed Nov 26 15:04:47 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 49.7358 ms
+[2025-11-26 15:04:49] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:7.883417 ms
+[2025-11-26 15:04:49] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.501667 ms
+[2025-11-26 15:04:49] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:13.831750 ms
+[Wed Nov 26 15:04:49 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 48.4583 ms
+[2025-11-26 15:07:31] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:9.232459 ms
+[2025-11-26 15:07:31] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.541833 ms
+[2025-11-26 15:07:31] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:30.477292 ms
+[Wed Nov 26 15:07:31 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 122.307 ms
+[2025-11-26 15:07:33] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:11.937792 ms
+[2025-11-26 15:07:33] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.555500 ms
+[2025-11-26 15:07:33] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:31.184584 ms
+[Wed Nov 26 15:07:33 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 77.9795 ms
+[2025-11-26 15:07:35] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:9.311583 ms
+[2025-11-26 15:07:35] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.529666 ms
+[2025-11-26 15:07:35] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:33.101250 ms
+[Wed Nov 26 15:07:35 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 71.7398 ms
+[2025-11-26 15:07:38] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:10.460375 ms
+[2025-11-26 15:07:38] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.585208 ms
+[2025-11-26 15:07:38] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:34.757667 ms
+[Wed Nov 26 15:07:38 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 83.9779 ms
+[2025-11-26 15:07:53] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:7.836709 ms
+[2025-11-26 15:07:53] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.483500 ms
+[2025-11-26 15:07:53] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:13.996417 ms
+[Wed Nov 26 15:07:53 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 98.0577 ms
+[2025-11-26 15:07:55] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:8.301708 ms
+[2025-11-26 15:07:55] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.517125 ms
+[2025-11-26 15:07:55] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:16.042708 ms
+[Wed Nov 26 15:07:55 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 57.7137 ms
+[2025-11-26 15:07:58] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:8.021125 ms
+[2025-11-26 15:07:58] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.579125 ms
+[2025-11-26 15:07:58] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:13.685666 ms
+[Wed Nov 26 15:07:58 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 54.443 ms
+[2025-11-26 15:40:59] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:10.251416 ms
+[2025-11-26 15:40:59] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.495500 ms
+[2025-11-26 15:40:59] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:13.889291 ms
+[Wed Nov 26 15:40:59 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 124.326 ms
+[2025-11-26 15:41:02] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:12.803083 ms
+[2025-11-26 15:41:02] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.605166 ms
+[2025-11-26 15:41:02] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:15.883792 ms
+[Wed Nov 26 15:41:02 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 119.695 ms
+[2025-11-26 15:41:05] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:11.301917 ms
+[2025-11-26 15:41:05] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.504209 ms
+[2025-11-26 15:41:05] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:18.573875 ms
+[Wed Nov 26 15:41:05 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 126.757 ms
+[2025-11-26 15:41:08] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:9.798917 ms
+[2025-11-26 15:41:08] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.535125 ms
+[2025-11-26 15:41:08] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:22.383958 ms
+[Wed Nov 26 15:41:08 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 157.335 ms
+[2025-11-26 15:41:17] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:9.883042 ms
+[2025-11-26 15:41:17] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.499083 ms
+[2025-11-26 15:41:17] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:13.546625 ms
+[Wed Nov 26 15:41:18 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 88.1956 ms
+[2025-11-26 15:41:21] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:7.707250 ms
+[2025-11-26 15:41:21] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.509542 ms
+[2025-11-26 15:41:21] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:13.800250 ms
+[Wed Nov 26 15:41:21 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 49.8547 ms
+[2025-11-26 15:41:23] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:8.869167 ms
+[2025-11-26 15:41:23] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.503459 ms
+[2025-11-26 15:41:23] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:13.583167 ms
+[Wed Nov 26 15:41:23 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 53.0472 ms
+[2025-11-26 15:41:26] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:7.833792 ms
+[2025-11-26 15:41:26] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.489125 ms
+[2025-11-26 15:41:26] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:13.693750 ms
+[Wed Nov 26 15:41:26 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 49.8807 ms
+[2025-11-26 15:41:28] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:7.988042 ms
+[2025-11-26 15:41:28] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.558958 ms
+[2025-11-26 15:41:28] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:13.569125 ms
+[Wed Nov 26 15:41:28 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 97.7662 ms
+[2025-11-26 15:42:10] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:7.455250 ms
+[2025-11-26 15:42:10] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.468000 ms
+[2025-11-26 15:42:10] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:12.696292 ms
+[Wed Nov 26 15:42:10 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 97.5277 ms
+[2025-11-26 15:42:13] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:8.532209 ms
+[2025-11-26 15:42:13] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.438584 ms
+[2025-11-26 15:42:13] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:15.999250 ms
+[Wed Nov 26 15:42:13 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 58.9683 ms
+[2025-11-26 15:42:19] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:7.395791 ms
+[2025-11-26 15:42:19] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.470584 ms
+[2025-11-26 15:42:19] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:16.249125 ms
+[Wed Nov 26 15:42:19 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 86.61 ms
+[2025-11-26 15:42:21] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:7.642291 ms
+[2025-11-26 15:42:21] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.493834 ms
+[2025-11-26 15:42:21] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:16.055625 ms
+[Wed Nov 26 15:42:21 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 51.0868 ms
+[2025-11-26 15:42:23] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:10.405583 ms
+[2025-11-26 15:42:23] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.537666 ms
+[2025-11-26 15:42:23] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:22.541333 ms
+[Wed Nov 26 15:42:23 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 70.4305 ms
+[2025-11-26 15:42:24] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:9.911959 ms
+[2025-11-26 15:42:24] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.500708 ms
+[2025-11-26 15:42:24] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:16.894625 ms
+[Wed Nov 26 15:42:24 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 61.6432 ms
+[2025-11-26 15:42:27] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:8.222250 ms
+[2025-11-26 15:42:27] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.472292 ms
+[2025-11-26 15:42:27] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:16.145292 ms
+[Wed Nov 26 15:42:27 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 52.7143 ms
+[2025-11-26 15:42:29] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:7.744416 ms
+[2025-11-26 15:42:29] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.480375 ms
+[2025-11-26 15:42:29] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:16.106375 ms
+[Wed Nov 26 15:42:29 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 54.2289 ms
+[2025-11-26 15:42:31] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:7.724500 ms
+[2025-11-26 15:42:31] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.480625 ms
+[2025-11-26 15:42:31] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:16.768542 ms
+[Wed Nov 26 15:42:31 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 54.491 ms
+[2025-11-26 15:42:34] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:7.575375 ms
+[2025-11-26 15:42:34] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.482333 ms
+[2025-11-26 15:42:34] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:17.071917 ms
+[Wed Nov 26 15:42:34 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 59.7312 ms
+[2025-11-26 15:42:39] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:7.674583 ms
+[2025-11-26 15:42:39] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.471459 ms
+[2025-11-26 15:42:39] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:16.078667 ms
+[Wed Nov 26 15:42:39 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 52.4149 ms
+[2025-11-26 15:42:43] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:7.704417 ms
+[2025-11-26 15:42:43] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.500167 ms
+[2025-11-26 15:42:43] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:16.438958 ms
+[Wed Nov 26 15:42:43 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 54.051 ms
+[2025-11-26 15:43:50] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.391458 ms
+[2025-11-26 15:43:50] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.068750 ms
+[2025-11-26 15:43:50] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:21.698750 ms
+[Wed Nov 26 15:43:50 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 96.8125 ms
+[2025-11-26 15:43:52] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.248333 ms
+[2025-11-26 15:43:52] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.057625 ms
+[2025-11-26 15:43:52] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:22.189875 ms
+[Wed Nov 26 15:43:52 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 53.5091 ms
+[2025-11-26 15:43:54] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.405625 ms
+[2025-11-26 15:43:54] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.063875 ms
+[2025-11-26 15:43:54] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:22.839666 ms
+[Wed Nov 26 15:43:54 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 53.857 ms
+[2025-11-26 15:43:56] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.502917 ms
+[2025-11-26 15:43:56] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.069209 ms
+[2025-11-26 15:43:56] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:22.767625 ms
+[Wed Nov 26 15:43:56 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 53.3422 ms
+[2025-11-26 15:43:58] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.166208 ms
+[2025-11-26 15:43:58] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.053583 ms
+[2025-11-26 15:43:58] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:21.080666 ms
+[Wed Nov 26 15:43:58 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 51.0308 ms
+[2025-11-26 15:44:00] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.325416 ms
+[2025-11-26 15:44:00] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.063084 ms
+[2025-11-26 15:44:00] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:23.104125 ms
+[Wed Nov 26 15:44:00 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 55.9562 ms
+[2025-11-26 15:44:02] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.670875 ms
+[2025-11-26 15:44:02] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.146791 ms
+[2025-11-26 15:44:02] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:22.468459 ms
+[Wed Nov 26 15:44:02 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 54.462 ms
+[2025-11-26 15:44:04] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.420125 ms
+[2025-11-26 15:44:04] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.072500 ms
+[2025-11-26 15:44:04] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:21.580833 ms
+[Wed Nov 26 15:44:04 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 54.1118 ms
+[2025-11-26 15:51:43] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:5.071042 ms
+[2025-11-26 15:51:43] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.545500 ms
+[2025-11-26 15:51:43] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:11.069208 ms
+[Wed Nov 26 15:51:43 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 92.3176 ms
+[2025-11-26 15:51:45] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:4.954250 ms
+[2025-11-26 15:51:45] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.520083 ms
+[2025-11-26 15:51:45] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:11.090875 ms
+[Wed Nov 26 15:51:45 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 43.9263 ms
+[2025-11-26 15:52:15] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:5.410209 ms
+[2025-11-26 15:52:15] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.534458 ms
+[2025-11-26 15:52:15] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:11.119417 ms
+[Wed Nov 26 15:52:15 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 104.513 ms
+[2025-11-26 15:52:33] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.328625 ms
+[2025-11-26 15:52:33] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.766084 ms
+[2025-11-26 15:52:33] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:12.376709 ms
+[Wed Nov 26 15:52:33 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 81.3967 ms
+[2025-11-26 15:52:36] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.143208 ms
+[2025-11-26 15:52:36] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.749584 ms
+[2025-11-26 15:52:36] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:12.858209 ms
+[Wed Nov 26 15:52:36 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 42.8805 ms
+[2025-11-26 15:52:38] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.714583 ms
+[2025-11-26 15:52:38] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.765250 ms
+[2025-11-26 15:52:38] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:13.255125 ms
+[Wed Nov 26 15:52:38 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 103.539 ms
+[2025-11-26 15:52:40] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.250667 ms
+[2025-11-26 15:52:40] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.758792 ms
+[2025-11-26 15:52:40] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:12.580084 ms
+[Wed Nov 26 15:52:40 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 46.6209 ms
+[2025-11-26 15:52:42] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.297167 ms
+[2025-11-26 15:52:42] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.765625 ms
+[2025-11-26 15:52:42] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:12.537417 ms
+[Wed Nov 26 15:52:42 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 43.279 ms
+[2025-11-26 15:52:44] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.222584 ms
+[2025-11-26 15:52:44] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.766458 ms
+[2025-11-26 15:52:44] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:13.008500 ms
+[Wed Nov 26 15:52:44 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 43.2125 ms
+[2025-11-26 15:52:45] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.109541 ms
+[2025-11-26 15:52:45] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.785667 ms
+[2025-11-26 15:52:45] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:18.301000 ms
+[Wed Nov 26 15:52:45 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 61.3626 ms
+[2025-11-26 15:52:47] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:4.216000 ms
+[2025-11-26 15:52:47] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.528000 ms
+[2025-11-26 15:52:47] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:8.567458 ms
+[Wed Nov 26 15:52:47 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 41.1225 ms
+[2025-11-26 15:52:50] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.296625 ms
+[2025-11-26 15:52:50] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.751417 ms
+[2025-11-26 15:52:50] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:12.574333 ms
+[Wed Nov 26 15:52:50 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 44.4045 ms
+[2025-11-26 15:52:52] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.493834 ms
+[2025-11-26 15:52:52] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.775667 ms
+[2025-11-26 15:52:52] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:12.829542 ms
+[Wed Nov 26 15:52:52 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 43.8684 ms
+[2025-11-26 15:52:54] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:4.594000 ms
+[2025-11-26 15:52:54] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.538458 ms
+[2025-11-26 15:52:54] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:12.983125 ms
+[Wed Nov 26 15:52:54 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 48.0591 ms
+[2025-11-26 15:53:06] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:4.972042 ms
+[2025-11-26 15:53:06] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.531458 ms
+[2025-11-26 15:53:06] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:11.066250 ms
+[Wed Nov 26 15:53:06 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 99.5865 ms
+[2025-11-26 15:53:08] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:4.983416 ms
+[2025-11-26 15:53:08] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.533250 ms
+[2025-11-26 15:53:08] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:11.244583 ms
+[Wed Nov 26 15:53:08 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 44.5536 ms
+[2025-11-26 15:53:10] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:5.689209 ms
+[2025-11-26 15:53:10] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.546958 ms
+[2025-11-26 15:53:10] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:11.049166 ms
+[Wed Nov 26 15:53:10 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 45.121 ms
+[2025-11-26 15:53:12] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:5.018375 ms
+[2025-11-26 15:53:12] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.538209 ms
+[2025-11-26 15:53:12] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:22.294000 ms
+[Wed Nov 26 15:53:12 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 68.7806 ms
+[2025-11-26 15:53:14] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:4.884208 ms
+[2025-11-26 15:53:14] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.535917 ms
+[2025-11-26 15:53:14] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:11.635125 ms
+[Wed Nov 26 15:53:14 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 44.4593 ms
+[2025-11-26 15:53:15] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:4.975833 ms
+[2025-11-26 15:53:15] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.529041 ms
+[2025-11-26 15:53:15] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:11.264500 ms
+[Wed Nov 26 15:53:15 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 43.8022 ms
+[2025-11-26 15:54:16] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.246708 ms
+[2025-11-26 15:54:16] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.400167 ms
+[2025-11-26 15:54:16] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:8.631208 ms
+[Wed Nov 26 15:54:16 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 85.5447 ms
+[2025-11-26 15:54:18] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.174209 ms
+[2025-11-26 15:54:18] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.406375 ms
+[2025-11-26 15:54:18] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:8.725209 ms
+[Wed Nov 26 15:54:18 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 39.9334 ms
+[2025-11-26 15:54:20] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.154166 ms
+[2025-11-26 15:54:20] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.423166 ms
+[2025-11-26 15:54:20] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:8.671208 ms
+[Wed Nov 26 15:54:20 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 41.1742 ms
+[2025-11-26 15:54:23] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.227583 ms
+[2025-11-26 15:54:23] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.424958 ms
+[2025-11-26 15:54:23] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:8.877167 ms
+[Wed Nov 26 15:54:23 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 40.4007 ms
+[2025-11-26 15:54:34] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.292667 ms
+[2025-11-26 15:54:34] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.750833 ms
+[2025-11-26 15:54:34] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:12.582833 ms
+[Wed Nov 26 15:54:34 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 103.374 ms
+[2025-11-26 15:54:36] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.229292 ms
+[2025-11-26 15:54:36] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.805709 ms
+[2025-11-26 15:54:36] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:12.675541 ms
+[Wed Nov 26 15:54:36 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 43.4453 ms
+[2025-11-26 15:55:39] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:4.258000 ms
+[2025-11-26 15:55:39] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.537500 ms
+[2025-11-26 15:55:39] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:13.058708 ms
+[Wed Nov 26 15:55:39 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 107.085 ms
+[2025-11-26 15:55:41] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.245250 ms
+[2025-11-26 15:55:41] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.762166 ms
+[2025-11-26 15:55:41] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:18.113000 ms
+[Wed Nov 26 15:55:41 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 63.1325 ms
+[2025-11-26 15:55:44] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.395375 ms
+[2025-11-26 15:55:44] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.767375 ms
+[2025-11-26 15:55:44] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:12.529083 ms
+[Wed Nov 26 15:55:44 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 44.4005 ms
+[2025-11-26 15:55:47] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.135250 ms
+[2025-11-26 15:55:47] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.748500 ms
+[2025-11-26 15:55:47] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:12.443708 ms
+[Wed Nov 26 15:55:47 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 45.0574 ms
+[2025-11-26 15:55:49] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.313125 ms
+[2025-11-26 15:55:49] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.735333 ms
+[2025-11-26 15:55:49] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:12.908042 ms
+[Wed Nov 26 15:55:49 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 43.7066 ms
+[2025-11-26 15:55:53] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.278167 ms
+[2025-11-26 15:55:53] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.780833 ms
+[2025-11-26 15:55:53] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:12.755250 ms
+[Wed Nov 26 15:55:53 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 44.0864 ms
+[2025-11-26 15:56:09] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.218250 ms
+[2025-11-26 15:56:09] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.759459 ms
+[2025-11-26 15:56:09] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:12.685625 ms
+[Wed Nov 26 15:56:09 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 92.5215 ms
+[2025-11-26 15:56:12] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:6.861833 ms
+[2025-11-26 15:56:12] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:2.924917 ms
+[2025-11-26 15:56:12] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:12.935375 ms
+[Wed Nov 26 15:56:12 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 62.029 ms
+[2025-11-26 15:56:14] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.162750 ms
+[2025-11-26 15:56:14] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.734417 ms
+[2025-11-26 15:56:14] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:12.442166 ms
+[Wed Nov 26 15:56:14 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 43.7799 ms
+[2025-11-26 15:56:16] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.315250 ms
+[2025-11-26 15:56:16] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.738417 ms
+[2025-11-26 15:56:16] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:12.615750 ms
+[Wed Nov 26 15:56:16 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 44.0793 ms
+[2025-11-26 15:56:18] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.412834 ms
+[2025-11-26 15:56:18] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.804334 ms
+[2025-11-26 15:56:18] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:12.812625 ms
+[Wed Nov 26 15:56:18 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 42.3547 ms
+[2025-11-26 15:56:20] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.358584 ms
+[2025-11-26 15:56:20] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.809125 ms
+[2025-11-26 15:56:20] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:12.490541 ms
+[Wed Nov 26 15:56:20 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 43.731 ms
+[2025-11-26 15:56:22] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.144583 ms
+[2025-11-26 15:56:22] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.743500 ms
+[2025-11-26 15:56:22] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:12.451875 ms
+[Wed Nov 26 15:56:22 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 43.9839 ms
+[2025-11-26 15:56:25] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.300667 ms
+[2025-11-26 15:56:25] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.743791 ms
+[2025-11-26 15:56:25] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:12.896791 ms
+[Wed Nov 26 15:56:25 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 44.2692 ms
+[2025-11-26 15:56:28] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.332959 ms
+[2025-11-26 15:56:28] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.773125 ms
+[2025-11-26 15:56:28] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:12.854917 ms
+[Wed Nov 26 15:56:28 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 47.7175 ms
+[2025-11-26 15:56:30] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.838333 ms
+[2025-11-26 15:56:30] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.746500 ms
+[2025-11-26 15:56:30] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:12.659041 ms
+[Wed Nov 26 15:56:30 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 43.2611 ms
+[2025-11-26 15:57:06] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:4.387292 ms
+[2025-11-26 15:57:06] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.766334 ms
+[2025-11-26 15:57:06] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:16.262667 ms
+[Wed Nov 26 15:57:06 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 106.577 ms
+[2025-11-26 15:57:16] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.196500 ms
+[2025-11-26 15:57:16] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.756666 ms
+[2025-11-26 15:57:16] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:18.937000 ms
+[Wed Nov 26 15:57:16 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 116.043 ms
+[2025-11-26 15:57:17] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.357708 ms
+[2025-11-26 15:57:17] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.799667 ms
+[2025-11-26 15:57:17] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:12.968250 ms
+[Wed Nov 26 15:57:17 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 42.2903 ms
+[2025-11-26 15:57:19] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.479166 ms
+[2025-11-26 15:57:19] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.825917 ms
+[2025-11-26 15:57:19] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:12.608291 ms
+[Wed Nov 26 15:57:19 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 42.4604 ms
+[2025-11-26 15:57:21] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.270666 ms
+[2025-11-26 15:57:21] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.759833 ms
+[2025-11-26 15:57:21] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:12.672917 ms
+[Wed Nov 26 15:57:21 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 43.6357 ms
+[2025-11-26 15:57:24] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.156833 ms
+[2025-11-26 15:57:24] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.816333 ms
+[2025-11-26 15:57:24] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:12.628417 ms
+[Wed Nov 26 15:57:24 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 42.0619 ms
+[2025-11-26 15:57:43] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.221708 ms
+[2025-11-26 15:57:43] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.750375 ms
+[2025-11-26 15:57:43] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:12.666416 ms
+[Wed Nov 26 15:57:43 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 86.0933 ms
+[2025-11-26 15:57:50] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:4.258000 ms
+[2025-11-26 15:57:50] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.535833 ms
+[2025-11-26 15:57:50] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:13.295542 ms
+[Wed Nov 26 15:57:50 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 49.8065 ms
+[2025-11-26 15:57:53] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.343625 ms
+[2025-11-26 15:57:53] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.762250 ms
+[2025-11-26 15:57:53] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:12.372458 ms
+[Wed Nov 26 15:57:53 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 42.4337 ms
+[2025-11-26 15:57:57] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.180167 ms
+[2025-11-26 15:57:57] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.731209 ms
+[2025-11-26 15:57:57] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:12.300209 ms
+[Wed Nov 26 15:57:57 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 41.9533 ms
+[2025-11-26 15:58:00] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.343375 ms
+[2025-11-26 15:58:00] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.753834 ms
+[2025-11-26 15:58:00] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:12.348875 ms
+[Wed Nov 26 15:58:00 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 41.5593 ms
+[2025-11-26 15:58:02] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.414625 ms
+[2025-11-26 15:58:02] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.811416 ms
+[2025-11-26 15:58:02] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:12.583792 ms
+[Wed Nov 26 15:58:02 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 43.6931 ms
+[2025-11-26 15:58:45] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.172250 ms
+[2025-11-26 15:58:45] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.710500 ms
+[2025-11-26 15:58:45] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:12.236125 ms
+[Wed Nov 26 15:58:45 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 86.5017 ms
+[2025-11-26 15:59:04] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.426708 ms
+[2025-11-26 15:59:04] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.762667 ms
+[2025-11-26 15:59:04] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:13.449500 ms
+[Wed Nov 26 15:59:04 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 96.7237 ms
+[2025-11-26 15:59:06] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.727166 ms
+[2025-11-26 15:59:06] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.756792 ms
+[2025-11-26 15:59:06] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:14.065792 ms
+[Wed Nov 26 15:59:06 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 48.622 ms
+[2025-11-26 15:59:09] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.703333 ms
+[2025-11-26 15:59:09] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.808875 ms
+[2025-11-26 15:59:09] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:13.014958 ms
+[Wed Nov 26 15:59:09 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 43.8687 ms
+[2025-11-26 15:59:11] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.176625 ms
+[2025-11-26 15:59:11] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.763041 ms
+[2025-11-26 15:59:11] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:12.339875 ms
+[Wed Nov 26 15:59:11 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 43.6086 ms
+[2025-11-26 15:59:14] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.459375 ms
+[2025-11-26 15:59:14] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.775875 ms
+[2025-11-26 15:59:14] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:12.339667 ms
+[Wed Nov 26 15:59:14 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 42.5605 ms
+[2025-11-26 15:59:17] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.180125 ms
+[2025-11-26 15:59:17] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.732583 ms
+[2025-11-26 15:59:17] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:12.438041 ms
+[Wed Nov 26 15:59:17 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 41.8806 ms
+[2025-11-26 16:00:43] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.424417 ms
+[2025-11-26 16:00:43] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.772875 ms
+[2025-11-26 16:00:43] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:12.563875 ms
+[Wed Nov 26 16:00:43 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 95.1993 ms
+[2025-11-26 16:01:08] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.249375 ms
+[2025-11-26 16:01:08] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.407292 ms
+[2025-11-26 16:01:08] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:8.623792 ms
+[Wed Nov 26 16:01:08 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 80.4373 ms
+[2025-11-26 16:01:11] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.314084 ms
+[2025-11-26 16:01:11] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.404166 ms
+[2025-11-26 16:01:11] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:9.338375 ms
+[Wed Nov 26 16:01:11 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 41.0253 ms
+[2025-11-26 16:01:14] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.480292 ms
+[2025-11-26 16:01:14] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.403791 ms
+[2025-11-26 16:01:14] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:8.877625 ms
+[Wed Nov 26 16:01:14 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 84.199 ms
+[2025-11-26 16:01:36] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.301041 ms
+[2025-11-26 16:01:36] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.426250 ms
+[2025-11-26 16:01:36] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:8.676125 ms
+[Wed Nov 26 16:01:36 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 78.2291 ms
+[2025-11-26 16:01:44] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.495583 ms
+[2025-11-26 16:01:44] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.455042 ms
+[2025-11-26 16:01:44] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:8.957709 ms
+[Wed Nov 26 16:01:44 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 86.3076 ms
+[2025-11-26 16:02:05] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.270500 ms
+[2025-11-26 16:02:05] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.402291 ms
+[2025-11-26 16:02:05] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:8.628541 ms
+[Wed Nov 26 16:02:05 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 79.9328 ms
+[2025-11-26 16:12:34] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:3.404834 ms
+[2025-11-26 16:12:34] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.414750 ms
+[2025-11-26 16:12:34] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:8.734875 ms
+[Wed Nov 26 16:12:34 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 104.665 ms
+[2025-11-26 19:44:13] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:2.672875 ms
+[2025-11-26 19:44:13] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.605625 ms
+[2025-11-26 19:44:13] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:7.147750 ms
+[Wed Nov 26 19:44:13 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 93.8306 ms
+[2025-11-26 19:44:18] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:2.474833 ms
+[2025-11-26 19:44:18] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.606250 ms
+[2025-11-26 19:44:18] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:6.966042 ms
+[Wed Nov 26 19:44:18 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 76.3642 ms
+[2025-11-26 19:44:21] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:2.672375 ms
+[2025-11-26 19:44:21] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.617083 ms
+[2025-11-26 19:44:21] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:6.920792 ms
+[Wed Nov 26 19:44:21 2025] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time: 101.705 ms
+[2025-11-26 19:44:45] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:2.486875 ms
+[2025-11-26 19:44:45] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.681000 ms
+[2025-11-26 19:44:45] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:5.425375 ms
+[2025-11-26 19:44:48] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:2.172000 ms
+[2025-11-26 19:44:48] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.148583 ms
+[2025-11-26 19:44:48] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:6.318166 ms
+[2025-11-26 19:44:50] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:2.608208 ms
+[2025-11-26 19:44:50] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:.662167 ms
+[2025-11-26 19:44:50] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: part/wireSHUFFLE | Execution time:6.959084 ms
