@@ -13,5 +13,5 @@ cache:
   size: 1048576
 
 circuit:
-  shuffle: false
-  joker: false
+  shuffle: true
+  joker: true
