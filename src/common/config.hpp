@@ -21,8 +21,14 @@ public:
     } table;
 
     struct CacheSettings {
+        bool alive;
         int size;
     } cache;
+
+    struct CircuitSettings {
+        bool shuffle;
+        bool joker;
+    } circuit;
 
     static Config& getInstance();
     void loadFromFile(const std::string& filepath);
