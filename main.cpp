@@ -47,8 +47,8 @@ void execute() {
     // OperationCache& cache = OperationCache::getInstance();
 
     secaN11();
-    // int numQubits = 10;
-    // int numGates = 200;
+    int numQubits = 10;
+    int numGates = 200;
     // QMDDEdge state = mathUtils::kron(state::Ket0().getInitialEdge(), mathUtils::kron(state::Ket0().getInitialEdge(), state::Ket0().getInitialEdge()));
     // QMDDEdge gate1 = gate::H().getInitialEdge();
     // QMDDEdge gate2 = mathUtils::kron(gate::I().getInitialEdge(), mathUtils::kron(gate::I().getInitialEdge(), gate::H().getInitialEdge()));

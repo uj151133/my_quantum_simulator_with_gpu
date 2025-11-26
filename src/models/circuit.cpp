@@ -71,11 +71,11 @@ vector<int> QuantumCircuit::countCancer() const {
             if (diff > 0) {
                 cout << "Adjusting scores between qubits " << c << " and " << t << ": " << score[c] << " vs " << score[t] << endl;
                 if (score[c] > score[t]) {
-                    score[c] -= diff * 0.5;
-                    score[t] += diff * 0.5;
+                    score[c] -= diff * 0.3;
+                    score[t] += diff * 0.3;
                 } else {
-                    score[c] += diff * 0.5;
-                    score[t] -= diff * 0.5;
+                    score[c] += diff * 0.3;
+                    score[t] -= diff * 0.3;
                 }
             }
         }
