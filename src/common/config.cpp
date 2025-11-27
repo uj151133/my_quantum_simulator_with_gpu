@@ -35,8 +35,8 @@ void Config::loadFromFile(const std::string& filepath) {
             }
 
             if (config["circuit"]) {
-                circuit.shuffle = config["circuit"]["shuffle"].as<bool>();
                 circuit.joker = config["circuit"]["joker"].as<bool>();
+                circuit.shuffle = config["circuit"]["shuffle"].as<bool>();
             }
         } catch (const YAML::Exception& e) {
             std::cerr << "設定ファイルの読み込みに失敗: " << e.what() << std::endl;
