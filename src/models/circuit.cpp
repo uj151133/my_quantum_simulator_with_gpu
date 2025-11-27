@@ -93,11 +93,11 @@ void QuantumCircuit::consult() {
             return a < b; // タイブレーク安定化
         });
     
-    cout << "Sorted qubit order (logical indices): ";
-    for (int l : order) {
-        cout << l << " ";
-    }
-    cout << endl;
+    // cout << "Sorted qubit order (logical indices): ";
+    // for (int l : order) {
+    //     cout << l << " ";
+    // }
+    // cout << endl;
 
     for (int p = 0; p < this->numQubits; ++p) {
         int l = order[p];
@@ -166,7 +166,7 @@ void QuantumCircuit::normalizeLayer() {
             parts.pop_back();
         }
         while (!parts.empty()) {
-            cout << "Processing part of type: " << parts.front().type << " at depth " << depth << endl;
+            // cout << "Processing part of type: " << parts.front().type << " at depth " << depth << endl;
             if (parts.front().type != Type::VOID) {
                 this->layer_[depth].push_back(parts.front().gate.getInitialEdge());
             }
@@ -1296,12 +1296,14 @@ void QuantumCircuit::criticalExecute() {
     this->build();
     int i = 0;
     while (!this->gateQueue_.empty()) {
-        cout << "number of gates: " << i++ << endl;
         QMDDGate currentGate = this->gateQueue_.front();
-        cout << "Current gate: " << currentGate << endl;
-        cout << "Current state: " << this->finalState << endl;
+        if (CONFIG.circuit.verbose) {
+            cout << "number of gates: " << i++ << endl;
+            cout << "Current gate: " << currentGate << endl;
+            cout << "Current state: " << this->finalState << endl;
 
-        cout << "============================================================\n" << endl;
+            cout << "============================================================\n" << endl;
+        }
         this->gateQueue_.pop();
         this->finalState = QMDDState(mathUtils::mul(currentGate.getInitialEdge(), this->finalState.getInitialEdge()));
     }
@@ -1320,10 +1322,14 @@ void QuantumCircuit::simulate() {
     g_tls_qc = this;
     double elapsed = 0.0;
     record_time(&qc_critical_block, &elapsed);
-    this->totalTimeMs_ += elapsed;
-    printf("\033[1;36mTotal execution time: %.6f ms\033[0m\n", this->totalTimeMs_);
-    cout << this->layer_.size() << " layers executed." << endl;
-    cout << this->wires.size() << " qubits used." << endl;
+    if (CONFIG.circuit.timer) {
+        this->totalTimeMs_ += elapsed;
+        printf("\033[1;36mTotal execution time: %.6f ms\033[0m\n", this->totalTimeMs_);
+    }
+    if (CONFIG.circuit.verbose) {
+        cout << this->layer_.size() << " layers executed." << endl;
+        cout << this->wires.size() << " qubits used." << endl;
+    }
     return;
 }
 
