@@ -63,13 +63,11 @@ vector<int> QuantumCircuit::countCancer() const {
             }
         }
     }
-    cout << "Initial cancer scores: ";
     for (const auto& o : this->irLog_) {
         if (o.qubits.size() == 2) {
             int c = o.qubits[0], t = o.qubits[1];
             int diff = abs(score[c] - score[t]);
             if (diff > 0) {
-                cout << "Adjusting scores between qubits " << c << " and " << t << ": " << score[c] << " vs " << score[t] << endl;
                 if (score[c] > score[t]) {
                     score[c] -= diff * 0.3;
                     score[t] += diff * 0.3;
@@ -94,6 +92,12 @@ void QuantumCircuit::consult() {
             if (score[a] != score[b]) return score[a] < score[b]; // 昇順
             return a < b; // タイブレーク安定化
         });
+    
+    cout << "Sorted qubit order (logical indices): ";
+    for (int l : order) {
+        cout << l << " ";
+    }
+    cout << endl;
 
     for (int p = 0; p < this->numQubits; ++p) {
         int l = order[p];
