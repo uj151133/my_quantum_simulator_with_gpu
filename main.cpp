@@ -44,11 +44,37 @@ void signalHandler(int signal) {
 void execute() {
 
 
+    for ([[maybe_unused]]int _ = 0; _ < 1000; _++) {
+        QuantumCircuit q(11);
+        q.addH(0);
+        q.addH(3);
+        q.addH(6);
+
+        q.addZ(0);
+        q.addZ(3);
+        q.addZ(6);
+
+        q.addCX(0, 1);
+        q.addCX(0, 2);
+        q.addCX(3, 4);
+        q.addCX(3, 5);
+        q.addCX(6, 7);
+        q.addCX(6, 8);
+        q.addCZ(0, 1);
+        q.addCZ(0, 2);
+        q.addCZ(3, 4);
+        q.addCZ(3, 5);
+        q.addCZ(6, 7);
+        q.addCZ(6, 8);
+        q.simulate();
+    }
+
+
     // OperationCache& cache = OperationCache::getInstance();
 
-    secaN11();
-    int numQubits = 10;
-    int numGates = 200;
+    // secaN11();
+    // int numQubits = 10;
+    // int numGates = 200;
     // QMDDEdge state = mathUtils::kron(state::Ket0().getInitialEdge(), mathUtils::kron(state::Ket0().getInitialEdge(), state::Ket0().getInitialEdge()));
     // QMDDEdge gate1 = gate::H().getInitialEdge();
     // QMDDEdge gate2 = mathUtils::kron(gate::I().getInitialEdge(), mathUtils::kron(gate::I().getInitialEdge(), gate::H().getInitialEdge()));
@@ -190,8 +216,8 @@ int main(int argc, char* argv[]) {
     } else {
         // 従来のシミュレーションモード
         cout << "Starting QMDD Simulator in standalone mode..." << endl;
-        // measureExecutionTime(execute);
-        execute();
+        measureExecutionTime(execute);
+        // execute();
 
         cout << "Total entries: " << UniqueTable::getInstance().getTotalEntryCount() << endl;
         

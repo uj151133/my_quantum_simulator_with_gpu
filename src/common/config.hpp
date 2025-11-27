@@ -27,7 +27,10 @@ public:
 
     struct CircuitSettings {
         bool shuffle;
+        int cancerMax;
         bool joker;
+        bool verbose;
+        bool timer;
     } circuit;
 
     static Config& getInstance();

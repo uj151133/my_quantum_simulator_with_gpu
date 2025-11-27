@@ -9,9 +9,12 @@ table:
   size: 1048576
 
 cache:
-  alive: true
+  alive: false
   size: 1048576
 
 circuit:
-  joker: true
-  shuffle: true
+  joker: false
+  cancerMax: 1
+  shuffle: false
+  verbose: false
+  timer: false
