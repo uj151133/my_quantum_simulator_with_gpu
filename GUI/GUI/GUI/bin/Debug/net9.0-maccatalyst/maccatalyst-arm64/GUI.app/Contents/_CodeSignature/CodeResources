@@ -10,7 +10,7 @@
 		</data>
 		<key>Resources/Assets.car</key>
 		<data>
-		LX0EUyw4wgvOP9lIsFLZd0Wt8wQ=
+		dsCYrfbyvqvj1fmn1WBrGEHKJLY=
 		</data>
 		<key>Resources/FluentUI.cs</key>
 		<data>
@@ -34,7 +34,7 @@
 		</data>
 		<key>Resources/appicon.icns</key>
 		<data>
-		4FwlbE+v2+sN4dXTFzGzqkLgd+w=
+		MpxHfDYfBIXik0uFDpIO5NLt/9Y=
 		</data>
 		<key>Resources/dotnet_bot.png</key>
 		<data>
@@ -120,6 +120,22 @@
 		<data>
 		TzSWl90p/LvCGGHo9v/a6bnNulE=
 		</data>
+		<key>Resources/wwwroot/_content/GUI.Shared/models/blackhole.blend</key>
+		<data>
+		h1Vdst1AIxdvLuE5D7Kua+KyUlk=
+		</data>
+		<key>Resources/wwwroot/_content/GUI.Shared/models/blackhole.glb</key>
+		<data>
+		gC4yqYq2LViXvxfUYxMatVNv1Yg=
+		</data>
+		<key>Resources/wwwroot/_content/GUI.Shared/models/blackhole.mtl</key>
+		<data>
+		pIuVMvU26HF5NaEhC264Ejxl/M0=
+		</data>
+		<key>Resources/wwwroot/_content/GUI.Shared/models/blackhole.obj</key>
+		<data>
+		1rzlM/dy0zEACxKpnRtGUaNpfWo=
+		</data>
 		<key>Resources/wwwroot/_content/GUI.Shared/shaders/vein.frag</key>
 		<data>
 		6hyt7SP06YOW0NlJBs6PQhItmbw=
@@ -155,28 +171,28 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			C+NChYsHP7hUnHLtNOHA3yIGzjHqLLzS7bTydY9Qjzw=
+			XZVibqEeNCwH5mDqHF44IEA6K3+yw6MrffpVmA08/Yg=
 			</data>
 		</dict>
 		<key>MonoBundle/GUI.Shared.pdb</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			qk4Sp0SzPqUKxALQ0Togul8QXTfWcHQHA6fk9nxWqAY=
+			nImFs9W8JTzSrocwGDIfKPa3kJHW3DdBKUL4gR0p1G0=
 			</data>
 		</dict>
 		<key>MonoBundle/GUI.dll</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			uxDQLa5jGO5KFqlm3JqqwggT5I2qNah4XJLq4xpANjk=
+			5xO5axwqZeAb2pP16li7QLjNH/aAixNkX6QHo7vtl3Q=
 			</data>
 		</dict>
 		<key>MonoBundle/GUI.pdb</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			xCSOFjJd5TjrKMxZBk1cveOLrcyvYhaINbE2KQCNTOc=
+			LHswYX9gKdhMPmrwIydYkrOZOxZfJLlbQFjkT248jpk=
 			</data>
 		</dict>
 		<key>MonoBundle/Microsoft.AspNetCore.Authorization.dll</key>
@@ -1849,7 +1865,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			XsDf2fiwI7MHfMzTUm3bUoTto3Vhe7xb/yXbz5Y0ry0=
+			c9Uri5cQf1/1eVd+XUqGPSgHJAlKnAO/Q76g82tS76E=
 			</data>
 		</dict>
 		<key>Resources/FluentUI.cs</key>
@@ -1891,7 +1907,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			Xs1Lxvm9EPQHYXzHq6pos6McP48WATdCKhDkCPidQ+g=
+			62G9rft1kp+00mHbpp5l5+SsO5lPoGjgBat+3xXTQVw=
 			</data>
 		</dict>
 		<key>Resources/dotnet_bot.png</key>
@@ -2039,6 +2055,34 @@
 			<key>hash2</key>
 			<data>
 			71LyGlaglHGXv7zQURhYrzbaHZG1rvo90HGf9SSkGj4=
+			</data>
+		</dict>
+		<key>Resources/wwwroot/_content/GUI.Shared/models/blackhole.blend</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			1wboTCN4wt2fVuvqxo1SIurK+KiTlK9WXaf986Qkpmw=
+			</data>
+		</dict>
+		<key>Resources/wwwroot/_content/GUI.Shared/models/blackhole.glb</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			CkBikptDSBrBXdwi5gQcMKi1jeBfpF8fFNTAwtAJdRY=
+			</data>
+		</dict>
+		<key>Resources/wwwroot/_content/GUI.Shared/models/blackhole.mtl</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			KTUxFndxuL4nKy+4q3SMqDY4VkpblYyk4Kz15u4oRNE=
+			</data>
+		</dict>
+		<key>Resources/wwwroot/_content/GUI.Shared/models/blackhole.obj</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			CcMF3rOv6QgmNNDScVZ91WKxKcmAE7X5riV9r4yUgHE=
 			</data>
 		</dict>
 		<key>Resources/wwwroot/_content/GUI.Shared/shaders/vein.frag</key>

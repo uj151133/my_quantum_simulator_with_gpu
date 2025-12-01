@@ -134,7 +134,7 @@ void QuantumCircuit::scheduleIRWithModel(const string& modelPath){
     if(this->irLog_.empty()) return;
     // importer を使って順列を取得（既存: 非合法化）
     aiinfer::SchedulerONNX sched(modelPath);
-    auto perm = sched.propose_order(this->irLog_);
+    auto perm = sched.predict(this->irLog_);
     if(perm.size() != this->irLog_.size()) throw runtime_error("scheduler perm size mismatch");
     vector<Core> reordered(this->irLog_.size());
     for(size_t i=0;i<perm.size();++i){
