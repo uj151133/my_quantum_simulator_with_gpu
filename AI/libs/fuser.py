@@ -6,7 +6,7 @@ import torch.optim as optim
 
 from AI.libs.fusion_rules import score_candidates
 from AI.libs.qiskit_to_core import circuit_to_core_list
-from AI.libs.config import Config
+from AI.libs.parameter import Parameter
 from AI.libs.bridge import Bridge
 from AI.libs.signature import build_signature
 
@@ -14,10 +14,10 @@ from AI.libs.signature import build_signature
 class FuserModel(nn.Module):
     """
     融合ポリシーモデル（完全版）
-    - 入力ベクトルは「ゲート特徴（cfg.gate_feat_dim）」と「シグネチャ（cfg.sig_dim*cfg.top_k_levels）」を連結
+    - 入力ベクトルは「ゲート特徴（params.general.gate_feat_dim）」と「シグネチャ（params.general.sig_dim*params.general.top_k_levels）」を連結
     - forward: 位置ごとのスカラー・スコアを返す
     - propose: descs（Core互換dict配列）から非重複の融合レンジ [(s,e)] を返す
-      ・ルールスコア（cfg 駆動）とモデル出力のピークを合成し、スコア降順で非重複採択
+      ・ルールスコア（params 駆動）とモデル出力のピークを合成し、スコア降順で非重複採択
     """
     def __init__(self, input_dim: int, hidden: int = 128, use_transformer: bool = False, device: str = "cpu"):
         super().__init__()
@@ -60,41 +60,41 @@ class FuserModel(nn.Module):
         v[(pos * 7) % dim] += 0.25
         return v
 
-    def _concat_feat_for_all(self, ops: List[Dict[str, Any]], cfg: Config) -> torch.Tensor:
+    def _concat_feat_for_all(self, ops: List[Dict[str, Any]], params: Parameter) -> torch.Tensor:
         """
         全位置について [gate_feat | signature] を作って [N, D] で返す
         """
-        sig = build_signature(ops, cfg).to(self.device)
+        sig = build_signature(ops, params).to(self.device)
         feats = []
         for idx, op in enumerate(ops):
-            gf = self._gate_feature(op, dim=cfg.gate_feat_dim, pos=idx)
+            gf = self._gate_feature(op, dim=params.general.gate_feat_dim, pos=idx)
             feats.append(torch.cat([gf, sig], dim=0))
         return torch.stack(feats, dim=0)  # [N, gate_feat_dim + sig_len]
 
     def propose(
         self,
         descs: List[Dict[str, Any]],
-        cfg: Optional[Config] = None,
+        params: Optional[Parameter] = None,
         min_len: int = 2,
         peak_topk: int = 4
     ) -> List[Tuple[int, int]]:
         """
         モデル推論に基づく融合レンジの提案
         - ルール候補（score_candidates）を土台に、モデルのピーク位置から短レンジも追加
-        - 優先度は ルールスコア と モデルボーナス（cfg.fusion_model_bonus）で合成
+        - 優先度は ルールスコア と モデルボーナス（params.fuser_heuristics.model_bonus）で合成
         - 非重複化して [(s,e)] を返す
         """
-        if cfg is None:
-            cfg = Config()
+        if params is None:
+            params = Parameter.load()
         n = len(descs)
         if n == 0:
             return []
 
         # 1) ルールに基づく候補（スコア付き）
-        scored = score_candidates(descs, cfg=cfg)  # [(s,e,rule_score)]
+        scored = score_candidates(descs, params=params)  # [(s,e,rule_score)]
 
         # 2) モデルスコアのピークから短い候補を追加（対角中心を優遇）
-        x = self._concat_feat_for_all(descs, cfg)  # [N, D]
+        x = self._concat_feat_for_all(descs, params)  # [N, D]
         with torch.no_grad():
             pos_scores = self.forward(x)          # [N]
         k = min(peak_topk, n)
@@ -104,13 +104,13 @@ class FuserModel(nn.Module):
                 s = max(0, idx - 1)
                 e = min(n - 1, idx + 1)
                 if (e - s + 1) >= min_len:
-                    scored.append((s, e, cfg.fusion_model_bonus))
+                    scored.append((s, e, params.fuser_heuristics.model_bonus))
             else:
                 # 非対角は単独では risky。隣接が対角なら最小レンジ化
                 s = idx
                 e = min(n - 1, idx + 1)
                 if s < e and (descs[e].get("shape", "").upper() == "DIAG"):
-                    scored.append((s, e, cfg.fusion_model_bonus * 0.5))
+                    scored.append((s, e, params.fuser_heuristics.model_bonus * 0.5))
 
         # 3) 優先度順で非重複化
         scored.sort(key=lambda x: (-x[2], x[0], x[1]))
@@ -127,14 +127,14 @@ class FuserModel(nn.Module):
         return taken
 
 
-def train_supervised_fuser(model: FuserModel, train_qcs, cfg: Config, epochs: int = 5) -> None:
+def train_supervised_fuser(model: FuserModel, train_qcs, params: Parameter, epochs: int = 5) -> None:
     """
     教師あり学習（完全版）
     - 正解は score_candidates の上位候補の中心位置（スコアに比例した重み）
     - モデルは位置スコアを出す。回帰（MSE）で中心ピークを上げる
     """
     model.train()
-    opt = optim.Adam(model.parameters(), lr=cfg.lr)
+    opt = optim.Adam(model.parameters(), lr=params.lr)
     loss_fn = nn.MSELoss()
 
     for ep in range(epochs):
@@ -142,11 +142,11 @@ def train_supervised_fuser(model: FuserModel, train_qcs, cfg: Config, epochs: in
         for qc in train_qcs:
             nq, cores = circuit_to_core_list(qc)
             ops = [c.__dict__ for c in cores]
-            scored = score_candidates(ops, cfg=cfg)  # [(s,e,rule_sc)]
+            scored = score_candidates(ops, params=params)  # [(s,e,rule_sc)]
             if not scored:
                 continue
 
-            x = model._concat_feat_for_all(ops, cfg)  # [N,D]
+            x = model._concat_feat_for_all(ops, params)  # [N,D]
             # 教師信号: 候補中心に 1.0、他 0（候補スコアに重み）
             y = torch.zeros(x.size(0), device=model.device)
             w = torch.zeros_like(y)
@@ -171,7 +171,7 @@ def train_ppo_fuser(
     model: FuserModel,
     bridge: Bridge,
     train_qcs,
-    cfg: Config,
+    params: Parameter,
     episodes: int = 50,
     peak_topk: int = 4
 ) -> None:
@@ -182,7 +182,7 @@ def train_ppo_fuser(
     - ルール候補との合成で非重複化してレンジ集合を作る
     """
     model.train()
-    opt = optim.Adam(model.parameters(), lr=cfg.lr)
+    opt = optim.Adam(model.parameters(), lr=params.lr)
 
     for ep in range(episodes):
         ep_return = 0.0
@@ -194,11 +194,11 @@ def train_ppo_fuser(
                 continue
 
             # ルール候補
-            base_scored = score_candidates(ops, cfg=cfg)  # [(s,e,rule)]
+            base_scored = score_candidates(ops, params=params)  # [(s,e,rule)]
             base_ranges = {(s, e) for (s, e, _sc) in base_scored}
 
             # モデル候補（ピーク top-k）
-            x = model._concat_feat_for_all(ops, cfg)      # [N,D]
+            x = model._concat_feat_for_all(ops, params)      # [N,D]
             scores = model(x)                              # [N]
             topk = min(peak_topk, n)
             peak_idx = torch.topk(scores, k=topk).indices.tolist()
@@ -210,12 +210,12 @@ def train_ppo_fuser(
                     s = max(0, idx - 1)
                     e = min(n - 1, idx + 1)
                     if e > s:
-                        model_scored.append((s, e, cfg.fusion_model_bonus))
+                        model_scored.append((s, e, params.fuser_heuristics.model_bonus))
                 else:
                     s = idx
                     e = min(n - 1, idx + 1)
                     if s < e and ops[e].get("shape", "").upper() == "DIAG":
-                        model_scored.append((s, e, cfg.fusion_model_bonus * 0.5))
+                        model_scored.append((s, e, params.fuser_heuristics.model_bonus * 0.5))
 
             # 合成して非重複化（優先度で）
             merged_scored = base_scored + model_scored
@@ -233,16 +233,16 @@ def train_ppo_fuser(
             proxy = sum((e - s + 1) for (s, e) in taken)  # 簡易: 長いほど良い
             reward = float(proxy)
 
-            if cfg.use_cpp_reward:
+            if params.general.use_cpp_reward:
                 import random
-                if random.random() < cfg.cpp_reward_prob:
+                if random.random() < params.general.cpp_reward_prob:
                     try:
                         before = bridge.evaluate_runtime_for_ops(nq, ops, "fuser_before")["wall_time_ms"]
                         # lawでIRを最適化したときの改善を加点（融合そのものはC++実行時に行われる）
                         after_ops = bridge.optimize_ops(ops)
                         after = bridge.evaluate_runtime_for_ops(nq, after_ops, "fuser_after")["wall_time_ms"]
                         delta = (before - after) / max(1.0, before)
-                        reward += max(0.0, float(delta)) * cfg.cpp_reward_alpha
+                        reward += max(0.0, float(delta)) * params.general.cpp_reward_alpha
                     except Exception:
                         pass
 

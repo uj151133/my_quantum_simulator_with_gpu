@@ -6,7 +6,7 @@ from AI.libs.qiskit_to_core import circuit_to_core_list
 from AI.libs.pipelines.pre_runtime import PreRuntime
 from AI.libs.pipelines.post_runtime import PostRuntime
 from AI.libs.scheduler import SchedulerModel
-from AI.libs.config import Config
+from AI.libs.parameter import Parameter
 
 
 def _measure_ms(bridge, nq: int, ops, label: str, trials: int) -> float:
@@ -25,7 +25,7 @@ def evaluate_policy_speedup_for_qiskit(
     session_factory=None,
     runtime_eval=None,
     fusion_model=None,
-    cfg: Config = Config(),
+    params: Parameter = Parameter.load(),
     trials: int = 3,
     max_outer_iters: int = 4,
 ) -> Tuple[int, float, float, float, float]:
@@ -34,22 +34,22 @@ def evaluate_policy_speedup_for_qiskit(
     ops = list(cores)
     # baseline_ms = float(bridge.evaluate_runtime_for_ops(nq, ops, "baseline")["wall_time_ms"])
     baseline_ms = _measure_ms(bridge, nq, ops, "baseline", trials)
-    # pre = PreRuntime(bridge, nq, scheduler_model, device=cfg.device, trials=trials, max_iters=max_outer_iters, improve_eps=0.01, cfg=cfg)
+    # pre = PreRuntime(bridge, nq, scheduler_model, device=params.general.device, trials=trials, max_iters=max_outer_iters, improve_eps=0.01, params=params)
     # pre = PreRuntime(
     #     nq=nq,
     #     model=scheduler_model,
-    #     cfg=cfg,
+    #     params=params,
     #     trials=trials,
     #     max_iters=max_outer_iters,
     #     improve_eps=0.01,
-    #     device=cfg.device,
+    #     device=params.general.device,
     #     bridge=bridge,
     # )
     # best_ops, presim_ms = pre.run(ops)
     pre = PreRuntime(
-        nq=nq, model=scheduler_model, cfg=cfg,
+        nq=nq, model=scheduler_model, params=params,
         trials=trials, max_iters=max_outer_iters, improve_eps=0.01,
-        device=getattr(cfg, "device", "cpu"), bridge=bridge,
+        device=getattr(params, "device", "cpu"), bridge=bridge,
     )
     t0 = time.perf_counter()
     best_ops, sim_ms = pre.run(ops)   # sim_ms は「並べ替え後のシミュレータ時間」
@@ -59,7 +59,7 @@ def evaluate_policy_speedup_for_qiskit(
     if session_factory and runtime_eval:
         try:
             session = session_factory(nq, best_ops)
-            pr = PostRuntime(bridge=bridge, model_fusion=fusion_model, window=cfg.window_size, topk=None, cfg=cfg)
+            pr = PostRuntime(bridge=bridge, model_fusion=fusion_model, window=params.general.window_size, topk=None, params=params)
             pr.run(session)
             fusion_ms = float(runtime_eval(session))
         except Exception as e:

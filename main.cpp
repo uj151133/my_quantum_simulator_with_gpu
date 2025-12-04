@@ -23,7 +23,7 @@
 #include "src/common/ipc_shared_memory.hpp"
 #include "src/common/operationCacheClient.hpp"
 #include "src/test/Shor/shor.hpp"
-
+#include "src/test/seca_n11/secaN11.hpp"
 #include "src/translator/OpenQASM3/fallen.hpp"
 #include "src/translator/OpenQASM3/gen/OpenQASM3Lexer.h"
 #include "src/translator/OpenQASM3/gen/OpenQASM3Parser.h"
@@ -197,6 +197,8 @@ int main(int argc, char* argv[]) {
     } else {
         cout << "Starting QMDD Simulator in standalone mode..." << endl;
         measureExecutionTime(execute);
+        // execute();
+
         cout << "Total entries: " << UniqueTable::getInstance().getTotalEntryCount() << endl;
     }
 
