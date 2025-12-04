@@ -1,9 +1,15 @@
 grammar OpenQASM3;
 
+// ----------------- Parser Rules -----------------
 program
-  : 'OPENQASM' NUMBER '.' NUMBER SEMICOLON
+  : 'OPENQASM' version SEMICOLON
     includeStmt*
     statement*
+  ;
+
+version
+  : DECIMAL
+  | NUMBER
   ;
 
 includeStmt
@@ -34,12 +40,15 @@ paramList
   : expr (COMMA expr)*
   ;
 
+// 四則演算と括弧、小数/整数/識別子/pi を許可
 expr
-  : NUMBER
-  | IDSTR
-  | 'pi'
-  | expr ('+' | '-' | '*' | '/') expr
+  : expr ('*' | '/') expr
+  | expr ('+' | '-') expr
   | LPAREN expr RPAREN
+  | DECIMAL
+  | NUMBER
+  | PI
+  | IDSTR
   ;
 
 gateName
@@ -49,7 +58,7 @@ gateName
   | SWAP | CCX | CSWAP
   | U1 | U2 | U3
   | SX | CH | CRX | CRY | CRZ | CU
-  | P | ID | GPHASE |
+  | P | ID | GPHASE
   ;
 
 gateArgs
@@ -88,7 +97,7 @@ TDG    : 'tdg' ;
 RX     : 'rx' ;
 RY     : 'ry' ;
 RZ     : 'rz' ;
-CX     : 'cx' | 'CX' ;
+CX     : 'cx' ;
 CY     : 'cy' ;
 CZ     : 'cz' ;
 CP     : 'cp' | 'cphase' ;
@@ -106,15 +115,23 @@ U3     : 'u3' ;
 RESET  : 'reset' ;
 BARRIER: 'barrier' ;
 MEASURE: 'measure' ;
+PI     : 'pi' ;
 
-NUMBER : [0-9]+ ;
-IDSTR  : [a-zA-Z_][a-zA-Z_0-9]* ;
-STRING : '"' ~["\r\n]* '"' ;
-LBRACKET: '[' ;
-RBRACKET: ']' ;
-LPAREN: '(' ;
-RPAREN: ')' ;
-COMMA: ',' ;
+// 注意: DECIMALはNUMBERより先に定義する
+DECIMAL
+  : [0-9]+ '.' [0-9]* ([eE] [+\-]? [0-9]+)?
+  | '.' [0-9]+ ([eE] [+\-]? [0-9]+)?
+  | [0-9]+ [eE] [+\-]? [0-9]+
+  ;
+
+NUMBER   : [0-9]+ ;
+IDSTR    : [a-zA-Z_][a-zA-Z_0-9]* ;
+STRING   : '"' ~["\r\n]* '"' ;
+LBRACKET : '[' ;
+RBRACKET : ']' ;
+LPAREN   : '(' ;
+RPAREN   : ')' ;
+COMMA    : ',' ;
 SEMICOLON: ';' ;
 
 WS : [ \t\r\n]+ -> skip ;

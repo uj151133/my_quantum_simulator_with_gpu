@@ -24,7 +24,9 @@ int64_t calculation::generateUniqueTableKey(const shared_ptr<QMDDNode>& node) {
         }
         rowIdx++;
     }
-    return llabs(XXH3_64bits(buffer.data(), buffer.size()));
+    // return llabs(XXH3_64bits(buffer.data(), buffer.size()));
+
+    return XXH3_64bits(buffer.data(), buffer.size());
 }
 
 int64_t calculation::generateOperationCacheKey(const OperationKey& key) {

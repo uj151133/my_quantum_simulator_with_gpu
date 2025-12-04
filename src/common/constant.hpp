@@ -1,4 +1,3 @@
-#pragma once
 #ifndef CONSTANT_HPP
 #define CONSTANT_HPP
 #include <complex>

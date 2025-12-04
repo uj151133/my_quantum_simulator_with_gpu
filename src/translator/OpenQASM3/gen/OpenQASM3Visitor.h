@@ -1,5 +1,5 @@
 
-// Generated from OpenQASM3.g4 by ANTLR 4.13.2
+// Generated from /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/translator/OpenQASM3/OpenQASM3.g4 by ANTLR 4.13.2
 
 #pragma once
 
@@ -20,6 +20,8 @@ public:
    * Visit parse trees produced by OpenQASM3Parser.
    */
     virtual std::any visitProgram(OpenQASM3Parser::ProgramContext *context) = 0;
+
+    virtual std::any visitVersion(OpenQASM3Parser::VersionContext *context) = 0;
 
     virtual std::any visitIncludeStmt(OpenQASM3Parser::IncludeStmtContext *context) = 0;
 

@@ -219,7 +219,6 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, bool parallelism
 QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1, bool parallelism, bool concurrency) {
     OperationCacheClient& cache = OperationCacheClient::getInstance();
     int64_t operationCacheKey = calculation::generateOperationCacheKey(OperationKey(e0, OperationType::ADD, e1));
-    // cout << "concurrency: " << concurrency << endl;
     if (CONFIG.cache.alive) {
         if (auto existingEdge = cache.find(operationCacheKey, concurrency)) {
             if (existingEdge->weight != .0 && existingEdge->uniqueTableKey != 0) {
