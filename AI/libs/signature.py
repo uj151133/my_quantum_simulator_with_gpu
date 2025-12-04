@@ -1,16 +1,16 @@
 from typing import List, Dict, Any
 import torch
-from AI.libs.config import Config
+from AI.libs.parameter import Parameter
 
-def build_signature(ops: List[Dict[str,Any]], cfg: Config) -> torch.Tensor:
+def build_signature(ops: List[Dict[str,Any]], params: Parameter) -> torch.Tensor:
     """
     簡易シグネチャ:
       - shape 分布ヒスト（DIAG/PERM/GENERAL/ANTI/FUSED）→ 5 次元
       - タグの出現頻度上位K（top_k_levels）を hash→bin して sig_dim-5 の次元に詰める
     出力: 長さ sig_dim * top_k_levels のベクトル（Kレベル分を縦に連結）
     """
-    K = cfg.top_k_levels
-    D = cfg.sig_dim
+    K = params.general.top_k_levels
+    D = params.general.sig_dim
     out = torch.zeros(K * D)
 
     # 形カテゴリのインデックス

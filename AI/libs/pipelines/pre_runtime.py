@@ -2,7 +2,7 @@ from typing import List, Dict, Any, Tuple, Optional
 import numpy as np
 
 from AI.libs.scheduler import SchedulerModel, reorder_ops_by_model
-from AI.libs.config import Config
+from AI.libs.parameter import Parameter
 from AI.libs.bridge import Bridge
 
 
@@ -16,7 +16,7 @@ class PreRuntime:
         self,
         nq: int,
         model: Optional[SchedulerModel],
-        cfg: Config,
+        params: Parameter,
         trials: int = 2,
         max_iters: int = 4,
         improve_eps: float = 0.01,
@@ -26,7 +26,7 @@ class PreRuntime:
         self.bridge = bridge or Bridge()
         self.nq = nq
         self.model = model
-        self.cfg = cfg
+        self.params = params
         self.trials = trials
         self.max_iters = max_iters
         self.improve_eps = improve_eps
@@ -43,7 +43,7 @@ class PreRuntime:
         if self.model is None:
             return ops
         return reorder_ops_by_model(
-            ops, self.model, cfg=self.cfg, device=self.device,
+            ops, self.model, params=self.params, device=self.device,
             bridge=self.bridge, use_cpp_dag=True
         )
 

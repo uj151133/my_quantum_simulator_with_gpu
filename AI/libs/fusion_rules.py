@@ -1,13 +1,13 @@
 from typing import List, Tuple, Dict, Any, Optional
-from AI.libs.config import Config
+from AI.libs.parameter import Parameter
 
-def score_candidates(descs: List[Dict[str, Any]], cfg: Optional[Config] = None) -> List[Tuple[int, int, float]]:
+def score_candidates(descs: List[Dict[str, Any]], params: Optional[Parameter] = None) -> List[Tuple[int, int, float]]:
     """
-    ルールに基づく優先度スコア（Config 駆動）を返す。
+    ルールに基づく優先度スコア（Parameter 駆動）を返す。
     FUSED shape は基本スキップ（既に融合済み）。
     """
-    if cfg is None:
-        cfg = Config()
+    if params is None:
+        params = Parameter().load()
     out: List[Tuple[int,int,float]] = []
     n = len(descs)
     if n == 0:
@@ -28,7 +28,7 @@ def score_candidates(descs: List[Dict[str, Any]], cfg: Optional[Config] = None) 
                 j += 1
             if j - i >= 2:
                 length = (j - 1) - i + 1
-                out.append((i, j - 1, cfg.fusion_score_diag_per_gate * float(length)))
+                out.append((i, j - 1, params.fuser_heuristics.score_diag_per_gate * float(length)))
             i = j
         else:
             i += 1
@@ -48,7 +48,7 @@ def score_candidates(descs: List[Dict[str, Any]], cfg: Optional[Config] = None) 
                 ok = True; j += 1
             if ok:
                 length = (j - 1) - i + 1
-                out.append((i, j - 1, cfg.fusion_score_same_axis_per_gate * float(length)))
+                out.append((i, j - 1, params.fuser_heuristics.score_same_axis_per_gate * float(length)))
                 i = j
             else:
                 i += 1
@@ -64,7 +64,7 @@ def score_candidates(descs: List[Dict[str, Any]], cfg: Optional[Config] = None) 
         if a["tag"].upper() in {"CX","CNOT"} and c["tag"].upper() in {"CX","CNOT"}:
             if a.get("qubits")==c.get("qubits") and b["tag"].upper()=="RZ":
                 if len(b.get("qubits",[]))==1 and b["qubits"][0]==a["qubits"][1]:
-                    out.append((i, i+2, cfg.fusion_score_phase_gadget))
+                    out.append((i, i+2, params.fuser_heuristics.score_phase_gadget))
                     i += 3; continue
         i += 1
 
@@ -77,7 +77,7 @@ def score_candidates(descs: List[Dict[str, Any]], cfg: Optional[Config] = None) 
         if h1["tag"].upper()=="H" and cx["tag"].upper() in {"CX","CNOT"} and h2["tag"].upper()=="H":
             if len(h1.get("qubits",[]))==1 and len(h2.get("qubits",[]))==1:
                 if h1["qubits"][0]==cx["qubits"][1] and h2["qubits"][0]==cx["qubits"][1]:
-                    out.append((i, i+2, cfg.fusion_score_hcxh))
+                    out.append((i, i+2, params.fuser_heuristics.score_hcxh))
                     i += 3; continue
         i += 1
 

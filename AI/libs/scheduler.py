@@ -7,7 +7,7 @@ import torch.optim as optim
 
 from AI.libs.ready_rules import build_ready_dag
 from AI.libs.qiskit_to_core import circuit_to_core_list
-from AI.libs.config import Config
+from AI.libs.parameter import Parameter
 from AI.libs.signature import build_signature
 from AI.libs.bridge import Bridge
 
@@ -28,7 +28,7 @@ class TransformerBlock(nn.Module):
 class SchedulerModel(nn.Module):
     """
     入れ替えポリシーモデル（完全版）
-    - 入力: [gate_feature(cfg.gate_feat_dim) | signature(cfg.sig_dim*cfg.top_k_levels)]
+    - 入力: [gate_feature(params.general.gate_feat_dim) | signature(params.general.sig_dim*params.general.top_k_levels)]
     - 出力: スカラー・スコア
     - use_transformer=True で Transformer 前段に切替可
     """
@@ -75,25 +75,25 @@ def _gate_feature(op: Dict[str, Any], dim: int, pos: Optional[int] = None, devic
     return v
 
 
-def _category_weight(op: Dict[str, Any], cfg: Config) -> float:
+def _category_weight(op: Dict[str, Any], params: Parameter) -> float:
     shape = op.get("shape", "GENERAL").upper()
     if shape == "DIAG":
-        return cfg.cost_diag
+        return params.scheduler_heuristics.cost_diag
     if shape == "ANTI":
-        return cfg.cost_anti
+        return params.scheduler_heuristics.cost_anti
     if shape == "PERM":
-        return cfg.cost_perm
-    return cfg.cost_general
+        return params.scheduler_heuristics.cost_perm
+    return params.scheduler_heuristics.cost_general
 
 
-def _make_ready_features(ops: List[Dict[str, Any]], rlist: List[int], cfg: Config, device: str) -> torch.Tensor:
+def _make_ready_features(ops: List[Dict[str, Any]], rlist: List[int], params: Parameter, device: str) -> torch.Tensor:
     """
     ready 候補それぞれについて [gate_feat | signature] を作る
     """
-    sig = build_signature(ops, cfg).to(device)  # [sig_len]
+    sig = build_signature(ops, params).to(device)  # [sig_len]
     feats = []
     for i in rlist:
-        gf = _gate_feature(ops[i], dim=cfg.gate_feat_dim, pos=i, device=device)
+        gf = _gate_feature(ops[i], dim=params.general.gate_feat_dim, pos=i, device=device)
         feats.append(torch.cat([gf, sig], dim=0))  # [gate_feat_dim + sig_len]
     return torch.stack(feats, dim=0).to(device)     # [R, D]
 
@@ -119,7 +119,7 @@ def _as_dict(op):
 def reorder_ops_by_model(
     ops: List[Dict[str, Any]],
     model,
-    cfg: Config,
+    params: Parameter,
     device: str = "cpu",
     bridge: Optional[Bridge] = None,
     use_cpp_dag: bool = True,
@@ -129,10 +129,10 @@ def reorder_ops_by_model(
     if N == 0:
         return []
 
-    sig = build_signature(ops, cfg).to(device)   # [S]
+    sig = build_signature(ops, params).to(device)   # [S]
     X = []
     for i in range(N):
-        gf = _gate_feature(ops[i], dim=cfg.gate_feat_dim, pos=i, device=device)
+        gf = _gate_feature(ops[i], dim=params.general.gate_feat_dim, pos=i, device=device)
         X.append(torch.cat([gf, sig], dim=0))
     X = torch.stack(X, dim=0)  # [N, D]
     with torch.no_grad():
@@ -141,7 +141,7 @@ def reorder_ops_by_model(
     # priority = score - weight
     prios = []
     for i in range(N):
-        w = _category_weight(ops[i], cfg)  # 実装済み想定
+        w = _category_weight(ops[i], params)  # 実装済み想定
         prios.append((float(scores[i].item()) - float(w), i))
     prios.sort(key=lambda x: -x[0])
     perm = [i for _, i in prios]
@@ -159,7 +159,7 @@ def reorder_ops_by_model(
 def train_supervised_scheduler(
     model: SchedulerModel,
     train_qcs,
-    cfg: Config,
+    params: Parameter,
     epochs: int = 5
 ) -> None:
     """
@@ -170,7 +170,7 @@ def train_supervised_scheduler(
     - 損失: CrossEntropy（ラベルスムージングあり）
     """
     model.train()
-    opt = optim.Adam(model.parameters(), lr=cfg.lr)
+    opt = optim.Adam(model.parameters(), lr=params.lr)
     loss_fn = nn.CrossEntropyLoss(label_smoothing=0.05)
 
     device = str(model.device)
@@ -186,7 +186,7 @@ def train_supervised_scheduler(
             if not rlist:
                 continue
 
-            feats = _make_ready_features(ops, rlist, cfg, device)  # [R,D]
+            feats = _make_ready_features(ops, rlist, params, device)  # [R,D]
 
             # 疑似教師: shape=DIAG を優先、無ければ最小index
             diag_first = [i for i in rlist if ops[i].get("shape", "").upper() == "DIAG"]
@@ -217,14 +217,14 @@ def train_ppo_scheduler(
     model: SchedulerModel,
     bridge: Bridge,
     train_qcs,
-    cfg: Config,
+    params: Parameter,
     episodes: int = 50
 ) -> None:
     """
     PPO（簡潔な完全版）
     - 各回路につき「最初のready選択」を1ステップのMDPとして扱う簡易近似
     - 行動: ready候補からサンプリング（softmax）
-    - 報酬: shape=DIAG選択で+1、確率で C++ 実測改善（law適用差分）を加点（cfg に基づく混入）
+    - 報酬: shape=DIAG選択で+1、確率で C++ 実測改善（law適用差分）を加点（params に基づく混入）
     - 目的: Clip objective + 価値関数 + エントロピー正則化
     """
     model.train()
@@ -232,9 +232,9 @@ def train_ppo_scheduler(
 
     input_dim = next(model.parameters()).shape[-1] if not model.use_transformer else None
     # 入力次元は ready特徴の D = gate_feat_dim + sig_len
-    D = cfg.gate_feat_dim + cfg.sig_dim * cfg.top_k_levels
+    D = params.general.gate_feat_dim + params.general.sig_dim * params.general.top_k_levels
     vfn = _PPOValue(input_dim=D, hidden=128, device=device)
-    opt = optim.Adam(list(model.parameters()) + list(vfn.parameters()), lr=cfg.lr)
+    opt = optim.Adam(list(model.parameters()) + list(vfn.parameters()), lr=params.general.lr)
 
     for ep in range(episodes):
         ep_return = 0.0
@@ -248,7 +248,7 @@ def train_ppo_scheduler(
             if not rlist:
                 continue
 
-            feats = _make_ready_features(ops, rlist, cfg, device)  # [R,D]
+            feats = _make_ready_features(ops, rlist, params, device)  # [R,D]
             logits = model(feats)                                  # [R]
             probs = torch.softmax(logits, dim=0)
             dist = torch.distributions.Categorical(probs=probs)
@@ -261,13 +261,13 @@ def train_ppo_scheduler(
             reward = 1.0 if ops[act_idx].get("shape", "").upper() == "DIAG" else 0.0
 
             # 実測混入
-            if cfg.use_cpp_reward and random.random() < cfg.cpp_reward_prob:
+            if params.general.use_cpp_reward and random.random() < params.general.cpp_reward_prob:
                 try:
                     before = bridge.evaluate_runtime_for_ops(nq, ops, "ppo_before")["wall_time_ms"]
                     after_ops = bridge.optimize_ops(ops)  # law 適用効果
                     after = bridge.evaluate_runtime_for_ops(nq, after_ops, "ppo_after")["wall_time_ms"]
                     delta = (before - after) / max(1.0, before)
-                    reward = (1.0 - cfg.cpp_reward_alpha) * reward + cfg.cpp_reward_alpha * max(0.0, float(delta))
+                    reward = (1.0 - params.general.cpp_reward_alpha) * reward + params.general.cpp_reward_alpha * max(0.0, float(delta))
                 except Exception:
                     pass
 
@@ -278,20 +278,19 @@ def train_ppo_scheduler(
             adv = ret - v_pred                      # [1]
 
             # PPO 更新（複数回）
-            for _ in range(cfg.update_epochs):
+            for _ in range(params.general.update_epochs):
                 logits_new = model(feats)                # [R]
                 dist_new = torch.distributions.Categorical(probs=torch.softmax(logits_new, dim=0))
                 logp = dist_new.log_prob(a_local)        # []
                 ratio = torch.exp(logp - logp_old)       # []
 
                 surr1 = ratio * adv
-                surr2 = torch.clamp(ratio, 1.0 - cfg.clip_eps, 1.0 + cfg.clip_eps) * adv
+                surr2 = torch.clamp(ratio, 1.0 - params.general.clip_eps, 1.0 + params.general.clip_eps) * adv
                 policy_loss = -torch.min(surr1, surr2).mean()
 
                 v_new = vfn(feat_chosen)
-                v_loss = ((v_new - ret) ** 2).mean() * cfg.vf_coef
-
-                ent = dist_new.entropy().mean() * cfg.ent_coef
+                v_loss = ((v_new - ret) ** 2).mean() * params.general.vf_coef
+                ent = dist_new.entropy().mean() * params.general.ent_coef
 
                 loss = policy_loss + v_loss - ent
                 opt.zero_grad()
@@ -303,10 +302,10 @@ def train_ppo_scheduler(
         print(f"[PPO Scheduler] ep={ep+1} return={ep_return:.3f}")
 
 
-def make_scheduler_chooser(model: SchedulerModel, cfg: Config, device: str = "cpu"):
+def make_scheduler_chooser(model: SchedulerModel, params: Parameter, device: str = "cpu"):
     """
     推論用ユーティリティ: ops -> reordered_ops を返す関数を作る
     """
     def chooser(ops: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-        return reorder_ops_by_model(ops, model, cfg=cfg, device=device)
+        return reorder_ops_by_model(ops, model, params=params, device=device)
     return chooser

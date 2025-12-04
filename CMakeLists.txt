@@ -193,6 +193,12 @@ link_directories(
     ${GRAALVM_NATIVE_LIB_PATH}
 )
 
+if(APPLE)
+    add_compile_definitions(CLOCK_MONOTONIC_ID=6)
+else()
+    add_compile_definitions(CLOCK_MONOTONIC_ID=1)
+endif()
+
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -I${BOOST_ROOT}/include")
 
@@ -204,6 +210,7 @@ include_directories(src)
 
 enable_language(C)
 enable_language(ASM)
+enable_language(Fortran)
 if(CMAKE_SYSTEM_PROCESSOR MATCHES "x86_64")
     message(STATUS "Building for x86_64 architecture")
     file(GLOB C_SRC "src/atomic/x86_64/atomic_x86_64.c")
@@ -309,7 +316,7 @@ file(GLOB SOURCES CONFIGURE_DEPENDS "src/models/*.cpp" "src/common/*.cpp" "src/m
 file(GLOB OPENQASM3_GEN_SRC CONFIGURE_DEPENDS "${OPENQASM3_GEN_DIR}/*.cpp")
 
 
-add_executable(qmdd_sim main.cpp ${SOURCES} ${C_SRC} ${ASM_SRC} ${OPENQASM3_GEN_SRC})
+add_executable(qmdd_sim main.cpp ${SOURCES} ${C_SRC} ${ASM_SRC} ${OPENQASM3_GEN_SRC} src/common/timer.f90)
 add_dependencies(qmdd_sim copy_config build_java_lib generate_qasm3)
 target_include_directories(qmdd_sim PRIVATE ${GSL_INCLUDE_DIRS} ${OPENQASM3_GEN_DIR} ${ANTLR4_RUNTIME_INCLUDE_DIR})
 target_link_libraries(qmdd_sim PRIVATE

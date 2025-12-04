@@ -24,6 +24,7 @@ enum class Type {
     H,
     CX,
     varCX,
+    CY,
     CZ,
     SWAP,
     P,
@@ -31,6 +32,7 @@ enum class Type {
     Tdg,
     CP,
     CS,
+    CH,
     R,
     Rx,
     Ry,
@@ -43,6 +45,11 @@ enum class Type {
     U1,
     U2,
     U3,
+    CRx,
+    CRy,
+    CRz,
+    CU,
+    Toff,
     Other,
     VOID,
     BAN,
@@ -50,6 +57,7 @@ enum class Type {
 };
 
 ostream& operator<<(ostream& os, Type type);
+string toString(Type type);
 namespace gate {
     /* Identity gate and global phase */
     QMDDGate I();

@@ -1,28 +1,28 @@
 from typing import List, Dict, Any, Tuple, Optional
 from AI.libs.fusion_rules import score_candidates
-from AI.libs.config import Config
+from AI.libs.parameter import Parameter
 
 class PostRuntime:
     """
     実行段階: 窓→（ルールスコア＋モデル提案）→非重複化→融合→step を繰り返し
-    ルールスコアとモデル提案ボーナスは Config 駆動。
+    ルールスコアとモデル提案ボーナスは Parameter 駆動。
     """
-    def __init__(self, bridge, model_fusion=None, window: int = 32, topk: Optional[int]=None, cfg: Optional[Config]=None):
+    def __init__(self, bridge, model_fusion=None, window: int = 32, topk: Optional[int]=None, params: Optional[Parameter]=None):
         self.bridge = bridge
         self.model_fusion = model_fusion
         self.window = window
         self.topk = topk
-        self.cfg = cfg or Config()
+        self.params = params or Parameter().load()
 
     def _merge_candidates(self, descs: List[Dict[str,Any]]) -> List[Tuple[int,int]]:
-        scored = score_candidates(descs, cfg=self.cfg)  # [(s,e,score)]
+        scored = score_candidates(descs, params=self.params)  # [(s,e,score)]
         scored.sort(key=lambda x: (-x[2], x[0]))
         if self.model_fusion is not None:
             try:
-                # cfg を渡す版に統一
-                m_ranges = self.model_fusion.propose(descs, cfg=self.cfg)  # [(s,e)]
+                # params を渡す版に統一
+                m_ranges = self.model_fusion.propose(descs, params=self.params)  # [(s,e)]
                 for (s,e) in m_ranges or []:
-                    scored.append((s,e,self.cfg.fusion_model_bonus))
+                    scored.append((s,e,self.params.fusion_model_bonus))
             except Exception:
                 pass
         taken: List[Tuple[int,int]] = []
