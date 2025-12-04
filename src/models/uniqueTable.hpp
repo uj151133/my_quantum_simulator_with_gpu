@@ -20,12 +20,10 @@ struct Entry {
 
 class UniqueTable {
 private:
-    vector<atomic<Entry*>> table;
-    static constexpr int64_t tableSize=1048576;
+    vector<atomic<Entry*>> table_;
+    static constexpr int64_t tableSize_=1048576;
     UniqueTable();
     int64_t hash(int64_t hashKey) const;
-
-
 
 public:
     UniqueTable(const UniqueTable&) = delete;

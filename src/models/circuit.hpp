@@ -4,11 +4,14 @@
 #include <numeric>
 #include <cmath>
 #include <queue>
+#include <deque>
 #include <array>
 #include <random>
 #include <iostream>
 #include <bitset>
 #include <ranges>
+#include <algorithm>
+#include <cctype>
 #include "qmdd.hpp"
 #include "gate.hpp"
 #include "state.hpp"
@@ -16,6 +19,10 @@
 #include "../common/mathUtils.hpp"
 #include "../common/constant.hpp"
 #include "../common/config.hpp"
+#include "../opt/law.hpp"
+#include "../modules/importer.hpp"
+#include "../models/dag.hpp"
+#include "../models/heauristic.hpp"
 
 using namespace std;
 
@@ -37,14 +44,12 @@ array<T, N> sorted(const array<T, N>& arr) {
     sort(result.begin(), result.end());
     return result;
 }
+extern const unordered_set<string> cancer;
 
 class QuantumCircuit {
 private:
     vector<vector<Part>> wires;
     vector<vector<QMDDEdge>> layer_;
-    QMDDState finalState;
-    int numQubits;
-    queue<QMDDGate> gateQueue_;
     vector<Core> irLog_;
     vector<int> phy2log_;
     vector<int> log2phy_;
@@ -60,6 +65,20 @@ private:
     void smartInsert(const vector<int>& qubitIndices, const Part& part);
     int searchJOKER(const vector<int>& qubitIndices);
     void build();
+    queue<QMDDGate> gateQueue_;
+    QMDDState finalState_;
+    int numQubits_;
+    bool irEnabled_ = false;
+
+    vector<QMDDGate> pending_;
+    vector<Core> metaQueue_;
+    size_t execIdx_ = 0;
+    unordered_map<uint64_t, QMDDGate> fusedStore_;
+    uint64_t nextFusedId_ = 1;
+    static string upper(string s);
+    static bool isDiagTag(const string& tagU);
+    void moveQueueToPending();
+    void buildMetaFromIR(const vector<Core>& ops);
 
     void compute();
     void uncompute();
@@ -67,10 +86,19 @@ private:
 
 
 public:
+
+    void enableIR(bool on);
+    void clearIR();
+    // void compileIRWithLaw(const law::Options& opt);
+    void scheduleIRWithModel(const string& modelPath = ::SCHEDULER_MODEL_PATH);
+    void preprocess(const law::Options& opt, const string& modelPath = ::SCHEDULER_MODEL_PATH);
+
+    vector<Core> snapshotQueueWindow(size_t max_items) const;
+    void fuseRanges(const vector<pair<int,int>>& ranges);
+
     QuantumCircuit(int numQubitits, QMDDState initialState);
     QuantumCircuit(int numQubitits);
-    vector<vector<int>> quantumRegister;
-    bool irEnabled_ = true;
+    vector<vector<int>> quantumRegister_;
     ~QuantumCircuit() = default;
     queue<QMDDGate> getGateQueue() const;
     QMDDState getFinalState() const;
@@ -176,9 +204,9 @@ public:
     void addBarrier();
     void reset(int qubitIndex);
     void globalPhase(double lamda);
-
-    void simulate();
     int measure(int qubitIndex);
+    bool simulateStep();
+    void simulate();
 
     void criticalExecute();
 };

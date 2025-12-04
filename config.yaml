@@ -13,7 +13,7 @@ cache:
   size: 1048576
 
 circuit:
-  joker: false
+  mode: "moderate" # "sparse", "moderate", "dense"
   cancerMax: 1
   shuffle: false
   verbose: false

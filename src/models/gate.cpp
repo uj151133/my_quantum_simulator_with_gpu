@@ -49,6 +49,54 @@ ostream& operator<<(ostream& os, Type type) {
     return os;
 }
 
+string toString(Type type) {
+    switch (type) {
+        case Type::I: return "I";
+        case Type::Ph: return "Ph";
+        case Type::X: return "X";
+        case Type::Y: return "Y";
+        case Type::Z: return "Z";
+        case Type::S: return "S";
+        case Type::Sdg: return "Sdg";
+        case Type::V: return "V";
+        case Type::Vdg: return "Vdg";
+        case Type::H: return "H";
+        case Type::CX: return "CX";
+        case Type::varCX: return "varCX";
+        case Type::CY: return "CY";
+        case Type::CZ: return "CZ";
+        case Type::SWAP: return "SWAP";
+        case Type::P: return "P";
+        case Type::T: return "T";
+        case Type::Tdg: return "Tdg";
+        case Type::CP: return "CP";
+        case Type::CS: return "CS";
+        case Type::CH: return "CH";
+        case Type::R: return "R";
+        case Type::Rx: return "Rx";
+        case Type::Ry: return "Ry";
+        case Type::Rz: return "Rz";
+        case Type::Rxx: return "Rxx";
+        case Type::Ryy: return "Ryy";
+        case Type::Rzz: return "Rzz";
+        case Type::Rxy: return "Rxy";
+        case Type::U: return "U";
+        case Type::U1: return "U1";
+        case Type::U2: return "U2";
+        case Type::U3: return "U3";
+        case Type::CRx: return "CRx";
+        case Type::CRy: return "CRy";
+        case Type::CRz: return "CRz";
+        case Type::CU: return "CU";
+        case Type::Toff: return "Toff";
+        case Type::Other: return "Other";
+        case Type::VOID: return "VOID";
+        case Type::BAN: return "BAN";
+        case Type::JOKER: return "JOKER";
+        default: return "Unknown";
+    }
+}
+
 
 QMDDGate gate::I() {
     call_once(initEdgeFlag, initEdge);

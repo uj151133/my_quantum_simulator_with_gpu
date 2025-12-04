@@ -26,13 +26,13 @@ extern "C" {
 
 class OperationCacheClient {
 private:
-    graal_isolate_t* isolate;
+    graal_isolate_t* isolate_;
     thread_local static graal_isolatethread_t* thread_local_thread;
-    static mutex isolate_mutex;
+    static mutex isolateMutex_;
     inline graal_isolatethread_t* getThreadLocalThread();
     graal_isolatethread_t* initializeNewThread();
 
-    static thread_local unordered_map<int64_t, QMDDEdge> TLSCache;
+    static thread_local unordered_map<int64_t, QMDDEdge> TLSCache_;
 
     optional<QMDDEdge> findGlobal(int64_t key);
     void insertGlobal(int64_t key, const QMDDEdge& edge);

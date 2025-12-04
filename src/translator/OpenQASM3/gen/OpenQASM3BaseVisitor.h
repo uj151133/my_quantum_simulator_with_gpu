@@ -1,5 +1,5 @@
 
-// Generated from OpenQASM3.g4 by ANTLR 4.13.2
+// Generated from /Users/mitsuishikaito/my_quantum_simulator_with_gpu/src/translator/OpenQASM3/OpenQASM3.g4 by ANTLR 4.13.2
 
 #pragma once
 
@@ -16,6 +16,10 @@ class  OpenQASM3BaseVisitor : public OpenQASM3Visitor {
 public:
 
   virtual std::any visitProgram(OpenQASM3Parser::ProgramContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual std::any visitVersion(OpenQASM3Parser::VersionContext *ctx) override {
     return visitChildren(ctx);
   }
 
