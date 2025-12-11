@@ -6,7 +6,7 @@
 #include <memory>
 #include <iostream>
 // #include <shared_mutex>
-#include "../common/config.hpp"
+#include "../common/parameter.hpp"
 #include "qmdd.hpp"
 
 using namespace std;

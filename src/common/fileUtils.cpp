@@ -1,13 +1,13 @@
 #include "fileUtils.hpp"
 
-namespace fileutils {
+namespace fileUtils {
 
 // グローバル実体
 filesystem::path PROJECT_ROOT;
 filesystem::path CONFIG_PATH;
 filesystem::path SETTING_PATH;
 
-void init_file_paths() {
+void resolveFilePath() {
     // PROJECT_ROOT
     const char* env = getenv("PROJECT_ROOT");
     if (env && *env) {

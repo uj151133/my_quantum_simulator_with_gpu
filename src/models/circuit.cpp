@@ -55,12 +55,12 @@ vector<int> QuantumCircuit::countCancer() const {
         const string g = Core::upper(o.tag);
         if (o.qubits.size() == 1) {
             if (isCancer(g)) {
-                score[o.qubits[0]] += 4;
+                score[o.qubits[0]] += PARAMETER.circuit.dealer.nonzeroWeight;
             }
         } else if (o.qubits.size() >= 2) {
             for (size_t i = 0; i < o.qubits.size(); ++i) {
                 if (i == o.qubits.size() - 1  && o.tag != "CZ") {
-                    score[o.qubits[i]] += 2;
+                    score[o.qubits[i]] += PARAMETER.circuit.dealer.targetBitWeight;
                 }
             }
         }
@@ -71,11 +71,11 @@ vector<int> QuantumCircuit::countCancer() const {
             int diff = abs(score[c] - score[t]);
             if (diff > 0) {
                 if (score[c] > score[t]) {
-                    score[c] -= diff * 0.3;
-                    score[t] += diff * 0.3;
+                    score[c] -= diff * PARAMETER.circuit.dealer.shorteningWeight;
+                    score[t] += diff * PARAMETER.circuit.dealer.shorteningWeight;
                 } else {
-                    score[c] += diff * 0.3;
-                    score[t] -= diff * 0.3;
+                    score[c] += diff * PARAMETER.circuit.dealer.shorteningWeight;
+                    score[t] -= diff * PARAMETER.circuit.dealer.shorteningWeight;
                 }
             }
         }
@@ -196,7 +196,7 @@ void QuantumCircuit::smartInsert(const vector<int>& qubitIndices, const Part& pa
     int minIndex = *min_element(qubitIndices.begin(), qubitIndices.end());
     int maxIndex = *max_element(qubitIndices.begin(), qubitIndices.end());
     int JOKERDepth = this->searchJOKER(qubitIndices);
-    if (CONFIG.circuit.mode == "sparse") {
+    if (PARAMETER.circuit.mode == "sparse") {
         for (int i = 0; i < minIndex; ++i) {
             this->wires[i].push_back({Type::I, QMDDGate(identityEdge)});
         }
@@ -207,7 +207,7 @@ void QuantumCircuit::smartInsert(const vector<int>& qubitIndices, const Part& pa
         for (int i = maxIndex + 1; i < this->numQubits_; ++i) {
             this->wires[i].push_back({Type::BAN, QMDDGate()});
         }
-    } else if (CONFIG.circuit.mode == "moderate" && isCancer(toString(part.type))) {
+    } else if (PARAMETER.circuit.mode == "moderate" && isCancer(toString(part.type))) {
         this->wires[minIndex].push_back(part);
         // for (int i = minIndex + 1; i <= maxIndex; ++i) {
         //     this->wires[i].push_back({Type::VOID, QMDDGate()});
@@ -215,7 +215,7 @@ void QuantumCircuit::smartInsert(const vector<int>& qubitIndices, const Part& pa
         for (int i = maxIndex + 1; i < this->numQubits_; ++i) {
             this->wires[i].push_back({Type::BAN, QMDDGate()});
         }
-    }else if (CONFIG.circuit.mode == "moderate" && JOKERDepth != -1) {
+    }else if (PARAMETER.circuit.mode == "moderate" && JOKERDepth != -1) {
         this->wires[minIndex][JOKERDepth] = part;
         for (int i = minIndex + 1; i <= maxIndex; ++i) {
             this->wires[i][JOKERDepth] = {Type::VOID, QMDDGate()};
@@ -538,7 +538,7 @@ void QuantumCircuit::addV(int qubitIndex) {
         this->irLog_.push_back(std::move(c)); return;
     }
 
-    if (CONFIG.circuit.mode == "moderate") {
+    if (PARAMETER.circuit.mode == "moderate") {
         int maxDepth = this->getMaxDepth(qubitIndex, this->numQubits_ - 1);
 
         while (this->wires[qubitIndex].size() < maxDepth) {
@@ -566,7 +566,7 @@ void QuantumCircuit::addH(int qubitIndex) {
         Core c; c.tag="H"; c.qubits={resolveQubit(qubitIndex)}; c.normalize();
         this->irLog_.push_back(std::move(c)); return;
     }
-    if (CONFIG.circuit.mode == "moderate") {
+    if (PARAMETER.circuit.mode == "moderate") {
         int maxDepth = this->getMaxDepth(qubitIndex, this->numQubits_ - 1);
 
         while (this->wires[qubitIndex].size() < maxDepth) {
@@ -929,7 +929,7 @@ void QuantumCircuit::addRx(int qubitIndex, double theta) {
         Core c; c.tag="Rx"; c.qubits={resolveQubit(qubitIndex)}; c.theta=theta; c.normalize();
         this->irLog_.push_back(std::move(c)); return;
     }
-    if (CONFIG.circuit.mode == "moderate") {
+    if (PARAMETER.circuit.mode == "moderate") {
         int maxDepth = this->getMaxDepth(qubitIndex, this->numQubits_ - 1);
 
         while (this->wires[qubitIndex].size() < maxDepth) {
@@ -955,7 +955,7 @@ void QuantumCircuit::addRy(int qubitIndex, double theta) {
         Core c; c.tag="Ry"; c.qubits={resolveQubit(qubitIndex)}; c.theta=theta; c.normalize();
         this->irLog_.push_back(std::move(c)); return;
     }
-    if (CONFIG.circuit.mode == "moderate") {
+    if (PARAMETER.circuit.mode == "moderate") {
         int maxDepth = this->getMaxDepth(qubitIndex, this->numQubits_ - 1);
 
         while (this->wires[qubitIndex].size() < maxDepth) {
@@ -1396,7 +1396,7 @@ void QuantumCircuit::addOracle(int omega) {
         return mathUtils::kron(current, accumulated);
     }).uniqueTableKey);
     QMDDEdge customCZ = mathUtils::add(partialCZ1, partialCZ2);
-    if (CONFIG.circuit.mode == "sparse") {
+    if (PARAMETER.circuit.mode == "sparse") {
         this->gateQueue_.push(QMDDGate(customCZ));
     }
 
@@ -1417,7 +1417,7 @@ void QuantumCircuit::addDiffuser() {
     }).uniqueTableKey);
     QMDDEdge customCZ = mathUtils::add(partialCZ1, partialCZ2);
 
-    if (CONFIG.circuit.mode == "sparse") {
+    if (PARAMETER.circuit.mode == "sparse") {
         this->gateQueue_.push(QMDDGate(customCZ));
     }
 
@@ -1447,7 +1447,7 @@ void QuantumCircuit::reset(int qubitIndex) {
 }
 
 void QuantumCircuit::globalPhase(double lamda) {
-    if (CONFIG.circuit.mode == "sparse") {
+    if (PARAMETER.circuit.mode == "sparse") {
         this->gateQueue_.push(QMDDEdge(exp(i * lamda), nullptr));
     }
     return;
@@ -1459,7 +1459,7 @@ void QuantumCircuit::criticalExecute() {
     int i = 0;
     while (!this->gateQueue_.empty()) {
         QMDDGate currentGate = this->gateQueue_.front();
-        if (CONFIG.circuit.verbose) {
+        if (PARAMETER.circuit.verbose) {
             cout << "number of gates: " << i++ << endl;
             cout << "Current gate: " << currentGate << endl;
             cout << "Current state: " << this->finalState_ << endl;
@@ -1487,11 +1487,13 @@ bool QuantumCircuit::simulateStep(){
 
 void QuantumCircuit::simulate() {
     if (this->irEnabled_) {
-        if (CONFIG.circuit.shuffle) {
+        if (PARAMETER.circuit.dealer.alive) {
             this->consult();
         }
         law::Options opt = law::optionsFromEnv(law::Options{});
-        this->preprocess(opt, ::SCHEDULER_MODEL_PATH);
+        if (PARAMETER.schedulerAI.alive) {
+            this->preprocess(opt, ::SCHEDULER_MODEL_PATH);
+        }
         this->emitIR(this->irLog_);
         this->irLog_.clear();
     }
@@ -1503,13 +1505,14 @@ void QuantumCircuit::simulate() {
     g_tls_qc = this;
     double elapsed = 0.0;
     record_time(&qc_critical_block, &elapsed);
-    if (CONFIG.circuit.timer) {
+    if (PARAMETER.circuit.timer) {
         this->totalTimeMs_ += elapsed;
-        printf("\033[1;36mTotal execution time: %.6f ms\033[0m\n", this->totalTimeMs_);
+        // printf("\033[1;36mTotal execution time: %.6f ms\033[0m\n", this->totalTimeMs_);
+        cout << "\033[1;36mTotal execution time: " << this->totalTimeMs_ << " ms\033[0m" << endl;
     }
     // while (this->simulateStep()){ /* 協調融合しない場合は最後まで */ }
     // cout << "Final state: " << this->finalState_ << endl;
-    if (CONFIG.circuit.verbose) {
+    if (PARAMETER.circuit.verbose) {
         cout << this->layer_.size() << " layers executed." << endl;
         cout << this->wires.size() << " qubits used." << endl;
     }

@@ -16,7 +16,7 @@
 #include <boost/thread/thread.hpp>
 #include "../models/qmdd.hpp"
 #include "../models/uniqueTable.hpp"
-#include "config.hpp"
+#include "parameter.hpp"
 #include "calculation.hpp"
 #include "../modules/threadPool.hpp"
 #include <tbb/task_group.h>
