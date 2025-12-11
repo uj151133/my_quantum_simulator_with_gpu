@@ -138,6 +138,14 @@ void QuantumCircuit::emitIR(const vector<Core>& ops){
     this->irLog_.clear();
 }
 
+queue<QMDDGate> QuantumCircuit::getGateQueue() const {
+    return this->gateQueue_;
+}
+
+QMDDState QuantumCircuit::getFinalState() const {
+    return this->finalState_;
+}
+
 int QuantumCircuit::getMaxDepth(optional<int> start, optional<int> end) const {
     int maxDepth = 0;
     int rangeStart = start.value_or(0);
@@ -147,6 +155,30 @@ int QuantumCircuit::getMaxDepth(optional<int> start, optional<int> end) const {
     }
     return maxDepth;
 }
+
+double QuantumCircuit::getTotalTimeMs() const {
+    return this->totalTimeMs_;
+}
+
+void QuantumCircuit::setRegister(int registerIdx, int size) {
+    if (registerIdx < 0) {
+        throw out_of_range("Invalid register index.");
+    }
+
+    if (registerIdx >= static_cast<int>(this->quantumRegister_.size())) {
+        this->quantumRegister_.resize(registerIdx + 1);
+    }
+
+    this->quantumRegister_[registerIdx].resize(size);
+    iota(this->quantumRegister_[registerIdx].begin(), this->quantumRegister_[registerIdx].end(), registerIdx == 0 ? 0 : this->quantumRegister_[registerIdx - 1].back() + 1);
+}
+
+// void QuantumCircuit::setIrLog(const vector<Core>& ops) {
+//     this->irLog_.clear();
+//     for (const auto& o : ops) {
+//         this->irLog_.push_back(o);
+//     }
+// }
 
 void QuantumCircuit::normalizeLayer() {
     int maxDepth = this->getMaxDepth(optional<int>(), optional<int>());
@@ -257,27 +289,6 @@ int QuantumCircuit::searchJOKER(const vector<int>& qubitIndices) {
         }
     }
     return JOKERDepth;
-}
-
-queue<QMDDGate> QuantumCircuit::getGateQueue() const {
-    return this->gateQueue_;
-}
-
-QMDDState QuantumCircuit::getFinalState() const {
-    return this->finalState_;
-}
-
-void QuantumCircuit::setRegister(int registerIdx, int size) {
-    if (registerIdx < 0) {
-        throw out_of_range("Invalid register index.");
-    }
-
-    if (registerIdx >= static_cast<int>(this->quantumRegister_.size())) {
-        this->quantumRegister_.resize(registerIdx + 1);
-    }
-
-    this->quantumRegister_[registerIdx].resize(size);
-    iota(this->quantumRegister_[registerIdx].begin(), this->quantumRegister_[registerIdx].end(), registerIdx == 0 ? 0 : this->quantumRegister_[registerIdx - 1].back() + 1);
 }
 
 string QuantumCircuit::upper(string s){ for(auto& c:s) c=(char)toupper((unsigned char)c); return s; }

@@ -58,13 +58,13 @@ static void emit_core(QuantumCircuit& qc, const Core& o){
 py::dict evaluate_runtime_for_ops(int nq, const vector<Core>& ops, const string&){
     vector<Core> nops = ops; normalize_all(nops);
     QuantumCircuit qc(nq);
-    for(const auto& o: nops) emit_core(qc, o);
-    auto t0 = chrono::high_resolution_clock::now();
+    qc.emitIR(nops);
+    // auto t0 = chrono::high_resolution_clock::now();
     qc.simulate();
-    auto t1 = chrono::high_resolution_clock::now();
-    double ms = chrono::duration<double, milli>(t1 - t0).count();
+    // auto t1 = chrono::high_resolution_clock::now();
+    // double ms = chrono::duration<double, milli>(t1 - t0).count();
     py::dict d;
-    d["wall_time_ms"] = ms;
+    d["wall_time_ms"] = qc.getTotalTimeMs();
     return d;
 }
 

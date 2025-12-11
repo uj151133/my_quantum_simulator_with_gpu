@@ -54,27 +54,27 @@ private:
     vector<int> phy2log_;
     vector<int> log2phy_;
     vector<int> swapTable_;
-    inline int resolveQubit(int q) const {
-        return (this->irEnabled_ ? this->swapTable_[q] : q);
-    }
-    vector<int> countCancer() const;
-    void consult();
-    void emitIR(const vector<Core>& ops);
-    int getMaxDepth(optional<int> start, optional<int> end) const;
-    void normalizeLayer();
-    void smartInsert(const vector<int>& qubitIndices, const Part& part);
-    int searchJOKER(const vector<int>& qubitIndices);
-    void build();
+    double totalTimeMs_ = .0;
     queue<QMDDGate> gateQueue_;
     QMDDState finalState_;
     int numQubits_;
     bool irEnabled_ = false;
-
     vector<QMDDGate> pending_;
     vector<Core> metaQueue_;
     size_t execIdx_ = 0;
     unordered_map<uint64_t, QMDDGate> fusedStore_;
     uint64_t nextFusedId_ = 1;
+
+    inline int resolveQubit(int q) const {
+        return (this->irEnabled_ ? this->swapTable_[q] : q);
+    }
+    vector<int> countCancer() const;
+    void consult();
+    int getMaxDepth(optional<int> start, optional<int> end) const;
+    void normalizeLayer();
+    void smartInsert(const vector<int>& qubitIndices, const Part& part);
+    int searchJOKER(const vector<int>& qubitIndices);
+    void build();
     static string upper(string s);
     static bool isDiagTag(const string& tagU);
     void moveQueueToPending();
@@ -82,13 +82,14 @@ private:
 
     void compute();
     void uncompute();
-    double totalTimeMs_ = .0;
-
 
 public:
 
+    vector<vector<int>> quantumRegister_;
+
     void enableIR(bool on);
     void clearIR();
+    void emitIR(const vector<Core>& ops);
     // void compileIRWithLaw(const law::Options& opt);
     void scheduleIRWithModel(const string& modelPath = ::SCHEDULER_MODEL_PATH);
     void preprocess(const law::Options& opt, const string& modelPath = ::SCHEDULER_MODEL_PATH);
@@ -98,16 +99,19 @@ public:
 
     QuantumCircuit(int numQubitits, QMDDState initialState);
     QuantumCircuit(int numQubitits);
-    vector<vector<int>> quantumRegister_;
+    
     ~QuantumCircuit() = default;
-    queue<QMDDGate> getGateQueue() const;
-    QMDDState getFinalState() const;
     QuantumCircuit(const QuantumCircuit& other) = default;
     QuantumCircuit& operator=(const QuantumCircuit& other) = default;
     QuantumCircuit(QuantumCircuit&& other) = default;
     QuantumCircuit& operator=(QuantumCircuit&& other) = default;
 
+    queue<QMDDGate> getGateQueue() const;
+    QMDDState getFinalState() const;
+    double getTotalTimeMs() const;
+
     void setRegister(int registerIdx, int size);
+    // void setIrLog(const vector<Core>& ops);
 
     void addI(int qubitIndex);
     void addPh(int qubitIndex, double delta);
