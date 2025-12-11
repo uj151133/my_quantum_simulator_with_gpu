@@ -4,6 +4,7 @@
 #include <vector>
 #include <string_view>
 #include "../common/Core.hpp"
+#include "../common/parameter.hpp"
 
 using namespace std;
 
