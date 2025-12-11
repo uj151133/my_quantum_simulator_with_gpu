@@ -89,12 +89,11 @@ Parameter& Parameter::getInstance() {
 Parameter::Parameter() {}
 
 void Parameter::load() {
-    // グローバルパス初期化
-    fileUtils::FilePath();
-    loadFromFiles(fileUtils::CONFIG_PATH.string(), fileUtils::SETTING_PATH.string());
+    void resolveFilePath();
+    loadFromFile(fileUtils::CONFIG_PATH.string(), fileUtils::SETTING_PATH.string());
 }
 
-void Parameter::loadFromFiles(const string& yamlFilepath, const string& iniFilepath) {
+void Parameter::loadFromFile(const string& yamlFilepath, const string& iniFilepath) {
     call_once(parameter_load_flag, [this, &yamlFilepath, &iniFilepath]() {
         cout << "Loading " << yamlFilepath << " and " << iniFilepath << " ..." << endl;
 
@@ -121,11 +120,20 @@ void Parameter::loadFromFiles(const string& yamlFilepath, const string& iniFilep
             }
 
             if (config["circuit"]) {
-                this->circuit.mode = config["circuit"]["mode"].as<string>();
-                this->circuit.cancerMax = config["circuit"]["cancerMax"].as<int>();
-                this->circuit.shuffle = config["circuit"]["shuffle"].as<bool>();
-                this->circuit.verbose = config["circuit"]["verbose"].as<bool>();
-                this->circuit.timer = config["circuit"]["timer"].as<bool>();
+                const auto& circuitConfig = config["circuit"];
+                if (circuitConfig["mode"])      this->circuit.mode = circuitConfig["mode"].as<string>();
+                if (circuitConfig["cancerMax"]) this->circuit.cancerMax = circuitConfig["cancerMax"].as<int>();
+                if (circuitConfig["verbose"])   this->circuit.verbose = circuitConfig["verbose"].as<bool>();
+                if (circuitConfig["timer"])     this->circuit.timer = circuitConfig["timer"].as<bool>();
+
+                if (circuitConfig["Dealer"]) {
+                    const auto& dealerConfig = circuitConfig["Dealer"];
+                    if (dealerConfig["alive"])            this->circuit.dealer.alive = dealerConfig["alive"].as<bool>();
+                    if (dealerConfig["nonzeroWeight"])    this->circuit.dealer.nonzeroWeight = dealerConfig["nonzeroWeight"].as<double>();
+                    if (dealerConfig["controlBitWeight"]) this->circuit.dealer.controlBitWeight = dealerConfig["controlBitWeight"].as<double>();
+                    if (dealerConfig["targetBitWeight"])  this->circuit.dealer.targetBitWeight = dealerConfig["targetBitWeight"].as<double>();
+                    if (dealerConfig["shorteningWeight"]) this->circuit.dealer.shorteningWeight = dealerConfig["shorteningWeight"].as<double>();
+                }
             }
         } catch (const YAML::Exception& e) {
             cerr << "YAML設定ファイルの読み込みに失敗: " << e.what() << endl;
@@ -139,47 +147,44 @@ void Parameter::loadFromFiles(const string& yamlFilepath, const string& iniFilep
         }
 
         // Scheduler.Heuristics
-        scheduler_heuristics.alive        = ini.getBool("Scheduler.Heuristics", "alive", scheduler_heuristics.alive);
-        scheduler_heuristics.cost_diag    = ini.getDouble("Scheduler.Heuristics", "cost_diag", scheduler_heuristics.cost_diag);
-        scheduler_heuristics.cost_anti    = ini.getDouble("Scheduler.Heuristics", "cost_anti", scheduler_heuristics.cost_anti);
-        scheduler_heuristics.cost_perm    = ini.getDouble("Scheduler.Heuristics", "cost_perm", scheduler_heuristics.cost_perm);
-        scheduler_heuristics.cost_general = ini.getDouble("Scheduler.Heuristics", "cost_general", scheduler_heuristics.cost_general);
+        schedulerHeuristics.alive        = ini.getBool("Scheduler.Heuristics", "alive", schedulerHeuristics.alive);
+        schedulerHeuristics.costDiag    = ini.getDouble("Scheduler.Heuristics", "cost_diag", schedulerHeuristics.costDiag);
+        schedulerHeuristics.costAnti    = ini.getDouble("Scheduler.Heuristics", "cost_anti", schedulerHeuristics.costAnti);
+        schedulerHeuristics.costPerm    = ini.getDouble("Scheduler.Heuristics", "cost_perm", schedulerHeuristics.costPerm);
+        schedulerHeuristics.costGeneral = ini.getDouble("Scheduler.Heuristics", "cost_general", schedulerHeuristics.costGeneral);
 
         // Scheduler.AI
-        scheduler_ai.alive                = ini.getBool("Scheduler.AI", "alive", scheduler_ai.alive);
-
+        schedulerAI.alive                = ini.getBool("Scheduler.AI", "alive", schedulerAI.alive);
         // Fuser.Heuristics
-        fuser_heuristics.alive                    = ini.getBool("Fuser.Heuristics", "alive", fuser_heuristics.alive);
-        fuser_heuristics.score_diag_per_gate      = ini.getDouble("Fuser.Heuristics", "score_diag_per_gate", fuser_heuristics.score_diag_per_gate);
-        fuser_heuristics.score_same_axis_per_gate = ini.getDouble("Fuser.Heuristics", "score_same_axis_per_gate", fuser_heuristics.score_same_axis_per_gate);
-        fuser_heuristics.score_phase_gadget       = ini.getDouble("Fuser.Heuristics", "score_phase_gadget", fuser_heuristics.score_phase_gadget);
-        fuser_heuristics.score_hcxh               = ini.getDouble("Fuser.Heuristics", "score_hcxh", fuser_heuristics.score_hcxh);
-        fuser_heuristics.model_bonus              = ini.getDouble("Fuser.Heuristics", "model_bonus", fuser_heuristics.model_bonus);
+        fuserHeuristics.alive                    = ini.getBool("Fuser.Heuristics", "alive", fuserHeuristics.alive);
+        fuserHeuristics.scoreDiagPerGate      = ini.getDouble("Fuser.Heuristics", "score_diag_per_gate", fuserHeuristics.scoreDiagPerGate);
+        fuserHeuristics.scoreSameAxisPerGate = ini.getDouble("Fuser.Heuristics", "score_same_axis_per_gate", fuserHeuristics.scoreSameAxisPerGate);
+        fuserHeuristics.scorePhaseGadget       = ini.getDouble("Fuser.Heuristics", "score_phase_gadget", fuserHeuristics.scorePhaseGadget);
+        fuserHeuristics.scoreHcxh               = ini.getDouble("Fuser.Heuristics", "score_hcxh", fuserHeuristics.scoreHcxh);
+        fuserHeuristics.modelBonus              = ini.getDouble("Fuser.Heuristics", "model_bonus", fuserHeuristics.modelBonus);
 
         // Fuser.AI
-        fuser_ai.alive                     = ini.getBool("Fuser.AI", "alive", fuser_ai.alive);
+        fuserAI.alive                     = ini.getBool("Fuser.AI", "alive", fuserAI.alive);
 
         // General
         general.rl                 = ini.getBool("General", "rl", general.rl);
-        general.window_size        = ini.getInt("General", "window_size", general.window_size);
-        general.top_k_levels       = ini.getInt("General", "top_k_levels", general.top_k_levels);
-        general.sig_dim            = ini.getInt("General", "sig_dim", general.sig_dim);
-        general.gate_feat_dim      = ini.getInt("General", "gate_feat_dim", general.gate_feat_dim);
-        general.max_qubits         = ini.getInt("General", "max_qubits", general.max_qubits);
+        general.windowSize        = ini.getInt("General", "window_size", general.windowSize);
+        general.topKLevels       = ini.getInt("General", "top_k_levels", general.topKLevels);
+        general.sigDim            = ini.getInt("General", "sig_dim", general.sigDim);
+        general.gateFeatDim      = ini.getInt("General", "gate_feat_dim", general.gateFeatDim);
+        general.maxQubits         = ini.getInt("General", "max_qubits", general.maxQubits);
 
         general.gamma              = ini.getDouble("General", "gamma", general.gamma);
         general.lam                = ini.getDouble("General", "lam", general.lam);
         general.lr                 = ini.getDouble("General", "lr", general.lr);
-        general.clip_eps           = ini.getDouble("General", "clip_eps", general.clip_eps);
-        general.ent_coef           = ini.getDouble("General", "ent_coef", general.ent_coef);
-        general.vf_coef            = ini.getDouble("General", "vf_coef", general.vf_coef);
-        general.update_epochs      = ini.getInt("General", "update_epochs", general.update_epochs);
-
+        general.clipEps           = ini.getDouble("General", "clip_eps", general.clipEps);
+        general.entCoef           = ini.getDouble("General", "ent_coef", general.entCoef);
+        general.vfCoef            = ini.getDouble("General", "vf_coef", general.vfCoef);
+        general.updateEpochs      = ini.getInt("General", "update_epochs", general.updateEpochs);
         general.device             = ini.getString("General", "device", general.device);
-
-        general.use_cpp_reward     = ini.getBool("General", "use_cpp_reward", general.use_cpp_reward);
-        general.cpp_reward_prob    = ini.getDouble("General", "cpp_reward_prob", general.cpp_reward_prob);
-        general.cpp_reward_alpha   = ini.getDouble("General", "cpp_reward_alpha", general.cpp_reward_alpha);
+        general.useCppReward     = ini.getBool("General", "use_cpp_reward", general.useCppReward);
+        general.cppRewardProb    = ini.getDouble("General", "cpp_reward_prob", general.cppRewardProb);
+        general.cppRewardAlpha   = ini.getDouble("General", "cpp_reward_alpha", general.cppRewardAlpha);
     });
 }
 
@@ -187,11 +192,11 @@ void Parameter::print() const {
     cout << "GUI:\n  enabled: " << (gui.enabled ? "true" : "false") << endl;
     cout << "Process:\n  concurrency: " << process.concurrency
               << "\n  parallelism: " << process.parallelism << endl;
-    cout << "Scheduler.Heuristics:\n  alive: " << (scheduler_heuristics.alive ? "true" : "false")
-              << "\n  cost_diag: " << scheduler_heuristics.cost_diag
-              << "\n  cost_anti: " << scheduler_heuristics.cost_anti
-              << "\n  cost_perm: " << scheduler_heuristics.cost_perm
-              << "\n  cost_general: " << scheduler_heuristics.cost_general << endl;
+    cout << "Scheduler.Heuristics:\n  alive: " << (schedulerHeuristics.alive ? "true" : "false")
+              << "\n  costDiag: " << schedulerHeuristics.costDiag
+              << "\n  costAnti: " << schedulerHeuristics.costAnti
+              << "\n  costPerm: " << schedulerHeuristics.costPerm
+              << "\n  costGeneral: " << schedulerHeuristics.costGeneral << endl;
     cout << "General:\n  device: " << general.device
               << "\n  lr: " << general.lr << endl;
 }

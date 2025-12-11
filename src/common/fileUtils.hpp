@@ -8,7 +8,7 @@
 
 using namespace std;
 
-namespace fileutils {
+namespace fileUtils {
     // .env の PROJECT_ROOT を使用（未設定なら current_path）
     extern filesystem::path PROJECT_ROOT;
 
@@ -17,7 +17,7 @@ namespace fileutils {
     extern filesystem::path SETTING_PATH;  // PROJECT_ROOT/paths.json の "setting_ini"
 
     // 初期化（起動時に一度呼ぶ）
-    void resolveFilePaths();
+    void resolveFilePath();
 }
 
 #endif

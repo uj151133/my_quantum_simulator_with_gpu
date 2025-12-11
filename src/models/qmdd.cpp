@@ -19,9 +19,9 @@ ostream& operator<<(ostream& os, const QMDDVariant& variant) {
 QMDDEdge::QMDDEdge(complex<double> w, shared_ptr<QMDDNode> n)
     : weight(w), uniqueTableKey((n && w != complex<double>(.0, .0)) ? calculation::generateUniqueTableKey(n) : 0), isTerminal(!n) {
     #ifdef __APPLE__
-        CONFIG.loadFromFile("/Users/mitsuishikaito/my_quantum_simulator_with_gpu/config.yaml");
+        PARAMETER.loadFromFile();
     #elif __linux__
-        CONFIG.loadFromFile("/home/ark/my_quantum_simulator_with_gpu/config.yaml");
+        PARAMETER.loadFromFile();
     #else
         #error "Unsupported operating system"
     #endif
@@ -33,9 +33,9 @@ QMDDEdge::QMDDEdge(complex<double> w, shared_ptr<QMDDNode> n)
 QMDDEdge::QMDDEdge(double w, shared_ptr<QMDDNode> n)
     : weight(complex<double>(w, .0)), uniqueTableKey((n && w != .0) ? calculation::generateUniqueTableKey(n) : 0), isTerminal(!n) {
     #ifdef __APPLE__
-        CONFIG.loadFromFile("/Users/mitsuishikaito/my_quantum_simulator_with_gpu/config.yaml");
+        PARAMETER.loadFromFile();
     #elif __linux__
-        CONFIG.loadFromFile("/home/ark/my_quantum_simulator_with_gpu/config.yaml");
+        PARAMETER.loadFromFile();
     #else
         #error "Unsupported operating system"
     #endif
@@ -47,9 +47,9 @@ QMDDEdge::QMDDEdge(double w, shared_ptr<QMDDNode> n)
 QMDDEdge::QMDDEdge(complex<double> w, int64_t key)
     : weight(w), uniqueTableKey(w != complex<double>(.0, .0) ? key : 0), isTerminal(this->uniqueTableKey == 0) {
     #ifdef __APPLE__
-        CONFIG.loadFromFile("/Users/mitsuishikaito/my_quantum_simulator_with_gpu/config.yaml");
+        PARAMETER.loadFromFile();
     #elif __linux__
-        CONFIG.loadFromFile("/home/ark/my_quantum_simulator_with_gpu/config.yaml");
+        PARAMETER.loadFromFile();
     #else
         #error "Unsupported operating system"
     #endif
@@ -60,9 +60,9 @@ QMDDEdge::QMDDEdge(complex<double> w, int64_t key)
 QMDDEdge::QMDDEdge(double w, int64_t key)
     : weight(complex<double>(w, .0)), uniqueTableKey(w != .0 ? key : 0), isTerminal(this->uniqueTableKey == 0) {
     #ifdef __APPLE__
-        CONFIG.loadFromFile("/Users/mitsuishikaito/my_quantum_simulator_with_gpu/config.yaml");
+        PARAMETER.loadFromFile();
     #elif __linux__
-        CONFIG.loadFromFile("/home/ark/my_quantum_simulator_with_gpu/config.yaml");
+        PARAMETER.loadFromFile();
     #else
         #error "Unsupported operating system"
     #endif

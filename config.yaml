@@ -15,6 +15,12 @@ cache:
 circuit:
   mode: "moderate" # "sparse", "moderate", "dense"
   cancerMax: 1
-  shuffle: false
   verbose: false
   timer: false
+
+  Dealer:
+    alive: false
+    nonzeroWeight: 4.0
+    controlBitWeight: 0.0
+    targetBitWeight: 2.0
+    shorteningWeight: 0.3

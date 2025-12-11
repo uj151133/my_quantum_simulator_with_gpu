@@ -16,30 +16,85 @@ using namespace std;
 class Parameter {
 public:
     // YAML settings
-    struct GuiSettings { bool enabled = false; } gui;
-    struct ProcessSettings { int concurrency = 0; int parallelism = 0; } process;
-    struct TableSettings { int size = 0; } table;
-    struct CacheSettings { bool alive = false; int size = 0; } cache;
-    struct CircuitSettings { bool shuffle = false; int cancerMax = 0; string mode; bool verbose = false; bool timer = false; } circuit;
+    struct GuiSettings {
+        bool enabled = false;
+    } gui;
+    struct ProcessSettings {
+        int concurrency = 0;
+        int parallelism = 0;
+    } process;
+    struct TableSettings {
+        int size = 0;
+    } table;
+    struct CacheSettings {
+        bool alive = false;
+        int size = 0;
+    } cache;
+    struct DealerSettings {
+        bool alive = false;
+        double nonzeroWeight = .0;
+        double controlBitWeight = .0;
+        double targetBitWeight = .0;
+        double shorteningWeight = .0;
+    };
+    struct CircuitSettings {
+        int cancerMax = 0;
+        string mode;
+        bool verbose = false;
+        bool timer = false;
+        DealerSettings dealer;
+    } circuit;
 
     // INI settings
-    struct SchedulerHeuristics { bool alive = true; double cost_diag = 2.0; double cost_anti = 2.5; double cost_perm = 3.0; double cost_general = 4.0; } scheduler_heuristics;
-    struct SchedulerAI { bool alive = true; } scheduler_ai;
-    struct FuserHeuristics { bool alive = true; double score_diag_per_gate = 2.0; double score_same_axis_per_gate = 1.0; double score_phase_gadget = 4.0; double score_hcxh = 3.0; double model_bonus = 0.5; } fuser_heuristics;
-    struct FuserAI { bool alive = true; } fuser_ai;
+    struct SchedulerHeuristics {
+        bool alive = true;
+        double costDiag = 2.0;
+        double costAnti = 2.5;
+        double costPerm = 3.0;
+        double costGeneral = 4.0;
+    } schedulerHeuristics;
+    struct SchedulerAI {
+        bool alive = true;
+    } schedulerAI;
+    struct FuserHeuristics {
+        bool alive = true;
+        double scoreDiagPerGate = 2.0;
+        double scoreSameAxisPerGate = 1.0;
+        double scorePhaseGadget = 4.0;
+        double scoreHcxh = 3.0;
+        double modelBonus = 0.5;
+    } fuserHeuristics;
+
+    struct FuserAI {
+        bool alive = true;
+    } fuserAI;
     struct General {
-        bool rl = false; int window_size = 32; int top_k_levels = 8; int sig_dim = 6; int gate_feat_dim = 128; int max_qubits = 64;
-        double gamma = 0.995; double lam = 0.95; double lr = 3e-4; double clip_eps = 0.2; double ent_coef = 0.01; double vf_coef = 0.5; int update_epochs = 5;
-        string device = "cpu"; bool use_cpp_reward = true; double cpp_reward_prob = 0.02; double cpp_reward_alpha = 0.2;
+        bool rl = false;
+        int windowSize = 32;
+        int topKLevels = 8;
+        int sigDim = 6;
+        int gateFeatDim = 128;
+        int maxQubits = 64;
+        double gamma = 0.995;
+        double lam = 0.95;
+        double lr = 3e-4;
+        double clipEps = 0.2;
+        double entCoef = 0.01;
+        double vfCoef = 0.5;
+        int updateEpochs = 5;
+        string device = "cpu";
+        bool useCppReward = true;
+        double cppRewardProb = 0.02;
+        double cppRewardAlpha = 0.2;
     } general;
 
     static Parameter& getInstance();
 
-    // 既定グローバルパス（fileutils::CONFIG_PATH / fileutils::SETTING_PATH）を使用
+    // 既定グローバルパス（fileUtils::CONFIG_PATH / fileUtils::SETTING_PATH）を使用
     void load();
     // 明示パス指定（必要なら）
-    void loadFromFiles(const string& yamlFilepath = fileutils::CONFIG_PATH.string(),
-                       const string& iniFilepath  = fileutils::SETTING_PATH.string());
+    void loadFromFile(const string& yamlFilepath = fileUtils::CONFIG_PATH.string(),
+                       const string& iniFilepath  = fileUtils::SETTING_PATH.string());
     void print() const;
 
 private:

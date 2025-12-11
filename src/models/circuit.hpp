@@ -18,7 +18,7 @@
 #include "../common/Core.hpp"
 #include "../common/mathUtils.hpp"
 #include "../common/constant.hpp"
-#include "../common/config.hpp"
+#include "../common/parameter.hpp"
 #include "../opt/law.hpp"
 #include "../modules/importer.hpp"
 #include "../models/dag.hpp"

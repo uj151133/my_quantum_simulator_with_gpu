@@ -8,7 +8,7 @@
 #include <signal.h>
 #include <fstream>
 
-#include "src/common/config.hpp"
+#include "src/common/parameter.hpp"
 #include "src/models/qmdd.hpp"
 #include "src/common/constant.hpp"
 #include "src/models/gate.hpp"
@@ -134,8 +134,10 @@ int main(int argc, char* argv[]) {
 
 #ifdef __APPLE__
     const char* cfgPath = "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/config.yaml";
+    const char* stgPath = "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/setting.ini";
 #elif __linux__
     const char* cfgPath = "/home/ark/my_quantum_simulator_with_gpu/config.yaml";
+    const char* stgPath = "/home/ark/my_quantum_simulator_with_gpu/setting.ini";
 #else
     #error "Unsupported operating system"
 #endif
@@ -143,7 +145,8 @@ int main(int argc, char* argv[]) {
     // 設定ファイル読み込み（例外ガード）
     try {
         cout << "Loading config file: " << cfgPath << endl;
-        CONFIG.loadFromFile(cfgPath);
+        cout << "Loading setting file: " << stgPath << endl;
+        PARAMETER.loadFromFile(cfgPath, stgPath);
     } catch (const exception& e) {
         cerr << "Config load failed: " << e.what() << endl;
     }
