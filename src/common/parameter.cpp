@@ -89,7 +89,7 @@ Parameter& Parameter::getInstance() {
 Parameter::Parameter() {}
 
 void Parameter::load() {
-    void resolveFilePath();
+    fileUtils::resolveFilePath();
     loadFromFile(fileUtils::CONFIG_PATH.string(), fileUtils::SETTING_PATH.string());
 }
 

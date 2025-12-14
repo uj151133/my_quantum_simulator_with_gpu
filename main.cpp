@@ -40,7 +40,7 @@ void signalHandler(int) {
 }
 
 void execute() {
-    int numQubits = 1;
+    int numQubits = 9;
     int qubitIndex = 1 - 1;
 
     QMDDEdge state = state::Ket0().getInitialEdge();
@@ -49,16 +49,18 @@ void execute() {
     }
 
 
-    vector<QMDDEdge> edges(qubitIndex, identityEdge);
+    vector<QMDDEdge> edges(qubitIndex, gate::I().getInitialEdge());
     edges.push_back(gate::H().getInitialEdge());
 
     QMDDGate gate = accumulate(edges.rbegin() + 1, edges.rend(), edges.back(), [](const QMDDEdge& accumulated, const QMDDEdge& current) {
         return mathUtils::kron(current, accumulated);
     });
 
+    cout << "cache alive: " << PARAMETER.cache.alive << endl;
 
 
-    for ([[maybe_unused]] int _ = 0; _ < 100000; ++_) {
+
+    for ([[maybe_unused]] int _ = 0; _ < 10000; ++_) {
         state = mathUtils::mul(state, gate.getInitialEdge());
     }
 }
@@ -128,11 +130,20 @@ int main(int argc, char* argv[]) {
     #error "Unsupported operating system"
 #endif
 
-    // 設定ファイル読み込み（例外ガード）
+    // // 設定ファイル読み込み（例外ガード）
+    // try {
+    //     cout << "Loading config file: " << cfgPath << endl;
+    //     cout << "Loading setting file: " << stgPath << endl;
+    //     PARAMETER.loadFromFile(cfgPath, stgPath);
+    // } catch (const exception& e) {
+    //     cerr << "Config load failed: " << e.what() << endl;
+    // }
+
+    fileUtils::resolveFilePath();
     try {
-        cout << "Loading config file: " << cfgPath << endl;
-        cout << "Loading setting file: " << stgPath << endl;
-        PARAMETER.loadFromFile(cfgPath, stgPath);
+        cout << "Loading config file: " << fileUtils::getConfigPath() << endl;
+        cout << "Loading setting file: " << fileUtils::getSettingPath() << endl;
+        PARAMETER.load(); // 一回だけ
     } catch (const exception& e) {
         cerr << "Config load failed: " << e.what() << endl;
     }

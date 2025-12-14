@@ -259,6 +259,13 @@ if(NOT ANTLR_JAR)
         set(ANTLR_JAR "$ENV{ANTLR_JAR}")
     elseif(EXISTS "/opt/homebrew/Cellar/antlr/4.13.2/antlr-4.13.2-complete.jar")
         set(ANTLR_JAR "/opt/homebrew/Cellar/antlr/4.13.2/antlr-4.13.2-complete.jar")
+    # Linux(Ubuntu) の一般的な場所も探索
+    elseif(EXISTS "/usr/share/java/antlr-4.13.2-complete.jar")
+        set(ANTLR_JAR "/usr/share/java/antlr-4.13.2-complete.jar")
+    elseif(EXISTS "/usr/share/java/antlr-4.13.1-complete.jar")
+        set(ANTLR_JAR "/usr/share/java/antlr-4.13.1-complete.jar")
+    elseif(EXISTS "/usr/local/share/java/antlr-4.13.2-complete.jar")
+        set(ANTLR_JAR "/usr/local/share/java/antlr-4.13.2-complete.jar")
     endif()
 endif()
 
