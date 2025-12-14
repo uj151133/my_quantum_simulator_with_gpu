@@ -93,8 +93,8 @@ public:
     // 既定グローバルパス（fileUtils::CONFIG_PATH / fileUtils::SETTING_PATH）を使用
     void load();
     // 明示パス指定（必要なら）
-    void loadFromFile(const string& yamlFilepath = fileUtils::CONFIG_PATH.string(),
-                       const string& iniFilepath  = fileUtils::SETTING_PATH.string());
+    void loadFromFile(const string& yamlFilepath = fileUtils::getConfigPath().string(),
+                      const string& iniFilepath  = fileUtils::getSettingPath().string());
     void print() const;
 
 private:

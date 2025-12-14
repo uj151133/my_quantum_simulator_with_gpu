@@ -16,6 +16,8 @@ void resolveFilePath() {
         PROJECT_ROOT = filesystem::current_path();
     }
 
+    PROJECT_ROOT = filesystem::weakly_canonical(PROJECT_ROOT);
+
     // PROJECT_ROOT/paths.json を読む
     nlohmann::json j;
     ifstream in(PROJECT_ROOT / "paths.json");
@@ -31,9 +33,8 @@ void resolveFilePath() {
     if (!j.contains("config_yaml")) j["config_yaml"] = "config.yaml";
     if (!j.contains("setting_ini")) j["setting_ini"] = "setting.ini";
 
-
-    CONFIG_PATH  = PROJECT_ROOT / j.at("config_yaml").get<string>();
-    SETTING_PATH = PROJECT_ROOT / j.at("setting_ini").get<string>();
+    CONFIG_PATH  = filesystem::weakly_canonical(PROJECT_ROOT / j.at("config_yaml").get<string>());
+    SETTING_PATH = filesystem::weakly_canonical(PROJECT_ROOT / j.at("setting_ini").get<string>());
 }
 
 }

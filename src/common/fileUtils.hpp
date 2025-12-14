@@ -18,6 +18,15 @@ namespace fileUtils {
 
     // 初期化（起動時に一度呼ぶ）
     void resolveFilePath();
+
+    inline const filesystem::path& getConfigPath() {
+        if (CONFIG_PATH.empty()) resolveFilePath();
+        return CONFIG_PATH;
+    }
+    inline const filesystem::path& getSettingPath() {
+        if (SETTING_PATH.empty()) resolveFilePath();
+        return SETTING_PATH;
+    }
 }
 
 #endif
