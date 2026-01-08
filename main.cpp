@@ -18,12 +18,12 @@
 #include "src/common/calculation.hpp"
 #include "src/models/circuit.hpp"
 #include "src/common/monitor.hpp"
-#include "src/test/Grover/grover.hpp"
-#include "src/test/random/randomRotate.hpp"
+#include "src/test/Grover/grover11MQT.hpp"
+// #include "src/test/random/randomRotate.hpp"
 #include "src/common/ipc_shared_memory.hpp"
 #include "src/common/operationCacheClient.hpp"
-#include "src/test/Shor/shor.hpp"
-#include "src/test/seca_n11/secaN11.hpp"
+// #include "src/test/Shor/shor.hpp"
+// #include "src/test/seca_n11/secaN11.hpp"
 #include "src/translator/OpenQASM3/fallen.hpp"
 #include "src/translator/OpenQASM3/gen/OpenQASM3Lexer.h"
 #include "src/translator/OpenQASM3/gen/OpenQASM3Parser.h"
@@ -40,29 +40,25 @@ void signalHandler(int) {
 }
 
 void execute() {
-    int numQubits = 9;
-    int qubitIndex = 1 - 1;
+    // QMDDEdge state = mathUtils::kron(state::Ket0().getInitialEdge(), mathUtils::kron(state::Ket0().getInitialEdge(), state::Ket0().getInitialEdge()));
+    // QMDDEdge gate1 = gate::H().getInitialEdge();
+    // QMDDEdge gate2 = mathUtils::kron(gate::I().getInitialEdge(), gate::H().getInitialEdge());
+    // QMDDEdge gate3 = mathUtils::kron(gate::X().getInitialEdge(), mathUtils::kron(gate::X().getInitialEdge(), gate::X().getInitialEdge()));
 
-    QMDDEdge state = state::Ket0().getInitialEdge();
-    for (int i = 1; i < numQubits; ++i) {
-        state = mathUtils::kron(state::Ket0().getInitialEdge(), state);
-    }
+    // QMDDEdge gate4 = mathUtils::kron(gate::X().getInitialEdge(), gate::H().getInitialEdge());
+    // QMDDEdge gate5 = mathUtils::kron(gate::I().getInitialEdge(), mathUtils::kron(gate::X().getInitialEdge(), gate::H().getInitialEdge()));
+    // QMDDEdge gate6 = mathUtils::kron(gate::I().getInitialEdge(), mathUtils::kron(gate::I().getInitialEdge(), gate::X().getInitialEdge()));
 
+    // for ([[maybe_unused]] int _ = 0; _ < 100000; ++_) {
+    //     // state = mathUtils::mul(gate1, state);
+    //     // state = mathUtils::mul(gate2, state);
+    //     // state = mathUtils::mul(gate3, state);
+    //     state = mathUtils::mul(gate4, state);
+    //     state = mathUtils::mul(gate5, state);
+    //     state = mathUtils::mul(gate6, state);
+    // }
 
-    vector<QMDDEdge> edges(qubitIndex, gate::I().getInitialEdge());
-    edges.push_back(gate::H().getInitialEdge());
-
-    QMDDGate gate = accumulate(edges.rbegin() + 1, edges.rend(), edges.back(), [](const QMDDEdge& accumulated, const QMDDEdge& current) {
-        return mathUtils::kron(current, accumulated);
-    });
-
-    cout << "cache alive: " << PARAMETER.cache.alive << endl;
-
-
-
-    for ([[maybe_unused]] int _ = 0; _ < 10000; ++_) {
-        state = mathUtils::mul(state, gate.getInitialEdge());
-    }
+    grover11MQT();
 }
 
 bool translateAndExecuteQASM(const string& qasm_file) {
