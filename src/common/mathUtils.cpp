@@ -64,10 +64,12 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, bool parallelism
     for (const auto& [i, j] : parallelTasks) {
         threadFutures.push_back(threadPool.enqueue([&, i, j]() -> pair<pair<size_t, size_t>, QMDDEdge> {
             QMDDEdge answer = edgeZero;
+            bool addPara = true;
+            bool mulPara = true;
             for (size_t k = 0; k < n0->edges[0].size(); k++) {
                 QMDDEdge p(e0.weight * n0->edges[i][k].weight, n0->edges[i][k].uniqueTableKey);
                 QMDDEdge q(e1.weight * n1->edges[k][j].weight, n1->edges[k][j].uniqueTableKey);
-                answer = mathUtils::add(answer, mathUtils::mul(p, q, true), true);
+                answer = mathUtils::add(answer, mathUtils::mul(p, q, mulPara), addPara);
             }
             return {{i, j}, answer};
         }));
@@ -134,6 +136,7 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, bool parallelism
     }
     return result;
 }
+
 
 // QMDDEdge mathUtils::mulForDiagonal(const QMDDEdge& e0, const QMDDEdge& e1) {
 

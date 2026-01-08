@@ -5,8 +5,8 @@ endif()
 
 project(Qmdd_Sim VERSION 0.1.0)
 
-# set(CMAKE_BUILD_TYPE Release)
-# set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3")
+# ビルドタイプをReleaseに設定（最適化を常に有効化）
+set(CMAKE_BUILD_TYPE Release)
 
 set(GRAALVM_NATIVE_LIB_PATH "${CMAKE_SOURCE_DIR}/src/java/build/native/nativeCompile")
 set(GRAALVM_NATIVE_LIB_SEARCH_NAME "operationcache")
@@ -33,6 +33,12 @@ endif()
 # C++20を使用する
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# 最適化フラグ（精度を保ちつつ高速化）
+set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -flto")
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -flto")
 
 set(Python3_FIND_STRATEGY LOCATION)
 set(Python3_FIND_UNVERSIONED_NAMES FIRST)

@@ -4,6 +4,7 @@ const unordered_set<string> cancer = {"H", "V", "Vdg", "VDG", "Rx", "RX", "Ry", 
 
 extern "C" void record_time(void (*cb)(), double* elapsed_ms);
 thread_local QuantumCircuit* g_tls_qc = nullptr;
+thread_local size_t g_tls_gate_num = 0;
 
 extern "C" void qc_critical_block() {
     g_tls_qc->criticalExecute();
@@ -122,13 +123,18 @@ void QuantumCircuit::emitIR(const vector<Core>& ops){
         else if(g=="Y") this->addY(o.qubits.at(0));
         else if(g=="Z") this->addZ(o.qubits.at(0));
         else if(g=="P"||g=="U1") this->addP(o.qubits.at(0), (o.phi!=0.0? o.phi : o.theta));
+        else if(g=="S") this->addS(o.qubits.at(0));
+        else if(g=="SDG"||g=="Sdg") this->addSdg(o.qubits.at(0));
+        else if(g=="T") this->addT(o.qubits.at(0));
+        else if(g=="TDG"||g=="Tdg") this->addTdg(o.qubits.at(0));
+        else if(g=="V") this->addV(o.qubits.at(0));
         else if(g=="RX") this->addRx(o.qubits.at(0), o.theta);
         else if(g=="RY") this->addRy(o.qubits.at(0), o.theta);
         else if(g=="RZ") this->addRz(o.qubits.at(0), o.theta);
         else if(g=="CX"||g=="CNOT") this->addCX(o.qubits.at(0), o.qubits.at(1));
         else if(g=="CZ") this->addCZ(o.qubits.at(0), o.qubits.at(1));
         else if(g=="CP") this->addCP(o.qubits.at(0), o.qubits.at(1), (o.phi!=0.0? o.phi : o.theta));
-        else if(g=="CRZ") this->addCP(o.qubits.at(0), o.qubits.at(1), o.theta); // 仮: CPで代用
+        else if(g=="CRZ") this->addCRz(o.qubits.at(0), o.qubits.at(1), o.theta);
         else if(g=="SWAP") this->addSWAP(o.qubits.at(0), o.qubits.at(1));
         else if(g=="TOFFOLI"||g=="CCX") this->addToff({o.qubits.at(0), o.qubits.at(1)}, o.qubits.at(2));
         else if(g=="BARRIER") this->addBarrier();
@@ -574,8 +580,8 @@ void QuantumCircuit::addV(vector<int>& qubitIndices) {
 
 void QuantumCircuit::addH(int qubitIndex) {
     if(this->irEnabled_){
-        Core c; c.tag="H"; c.qubits={resolveQubit(qubitIndex)}; c.normalize();
-        this->irLog_.push_back(std::move(c)); return;
+        this->irLog_.push_back(Core{.tag="H", .qubits={resolveQubit(qubitIndex)}});
+        return;
     }
     if (PARAMETER.circuit.mode == "moderate") {
         int maxDepth = this->getMaxDepth(qubitIndex, this->numQubits_ - 1);
@@ -773,6 +779,10 @@ void QuantumCircuit::addSWAP(int qubitIndex1, int qubitIndex2) {
 }
 
 void QuantumCircuit::addP(int qubitIndex, double phi) {
+    if(this->irEnabled_){
+        this->irLog_.push_back(Core{.tag = "P", .qubits = {resolveQubit(qubitIndex)}, .phi = phi});
+        return;
+    }
     this->smartInsert({qubitIndex}, {Type::P, gate::P(phi)});
     return;
 }
@@ -785,6 +795,10 @@ void QuantumCircuit::addP(vector<pair<int, double>>& qubitParams) {
 }
 
 void QuantumCircuit::addT(int qubitIndex) {
+    if(this->irEnabled_){
+        this->irLog_.push_back(Core{.tag = "T", .qubits = {resolveQubit(qubitIndex)}});
+        return;
+    }
     this->smartInsert({qubitIndex}, {Type::T, gate::T()});
     return;
 }
@@ -797,7 +811,12 @@ void QuantumCircuit::addT(vector<int>& qubitIndices) {
 }
 
 void QuantumCircuit::addTdg(int qubitIndex) {
+    if(this->irEnabled_){
+        this->irLog_.push_back(Core{.tag = "TDG", .qubits = {resolveQubit(qubitIndex)}});
+        return;
+    }
     this->smartInsert({qubitIndex}, {Type::Tdg, gate::Tdg()});
+    return;
 }
 
 void QuantumCircuit::addTdg(vector<int>& qubitIndices) {
@@ -989,8 +1008,8 @@ void QuantumCircuit::addRy(int qubitIndex, double theta) {
 
 void QuantumCircuit::addRz(int qubitIndex, double theta) {
     if(this->irEnabled_){
-        Core c; c.tag="RZ"; c.qubits={resolveQubit(qubitIndex)}; c.theta=theta; c.normalize();
-        this->irLog_.push_back(std::move(c)); return;
+        this->irLog_.push_back(Core{.tag="RZ", .qubits={resolveQubit(qubitIndex)}, .theta=theta});
+        return;
     }
     this->smartInsert({qubitIndex}, {Type::Rz, gate::Rz(theta)});
     return;
@@ -1157,6 +1176,10 @@ void QuantumCircuit::addCRy(int controlIndex, int targetIndex, double theta) {
 }
 
 void QuantumCircuit::addCRz(int controlIndex, int targetIndex, double theta) {
+    if (this->irEnabled_) {
+        this->irLog_.push_back(Core{.tag="CRZ", .qubits={resolveQubit(controlIndex), resolveQubit(targetIndex)}, .theta=theta});
+        return;
+    }
     int minIndex = min(controlIndex, targetIndex);
     int maxIndex = max(controlIndex, targetIndex);
     int maxDepth = this->getMaxDepth(minIndex, maxIndex);
@@ -1468,10 +1491,11 @@ void QuantumCircuit::globalPhase(double lamda) {
 void QuantumCircuit::criticalExecute() {
     this->build();
     int i = 0;
+    const size_t gateNum = g_tls_gate_num;
     while (!this->gateQueue_.empty()) {
         QMDDGate currentGate = this->gateQueue_.front();
         if (PARAMETER.circuit.verbose) {
-            cout << "number of gates: " << i++ << endl;
+            cout << "Gate Idx: " << i++ << " / " << gateNum << endl;
             cout << "Current gate: " << currentGate << endl;
             cout << "Current state: " << this->finalState_ << endl;
 
@@ -1513,19 +1537,24 @@ void QuantumCircuit::simulate() {
     // if (this->pending_.empty() && !this->gateQueue_.empty()){
     //     this->moveQueueToPending();
     // }
+
+    int gateNum = this->layer_.size();
     g_tls_qc = this;
-    double elapsed = 0.0;
-    record_time(&qc_critical_block, &elapsed);
-    if (PARAMETER.circuit.timer) {
-        this->totalTimeMs_ += elapsed;
-        // printf("\033[1;36mTotal execution time: %.6f ms\033[0m\n", this->totalTimeMs_);
-        cout << "\033[1;36mTotal execution time: " << this->totalTimeMs_ << " ms\033[0m" << endl;
-    }
-    // while (this->simulateStep()){ /* 協調融合しない場合は最後まで */ }
-    // cout << "Final state: " << this->finalState_ << endl;
-    if (PARAMETER.circuit.verbose) {
-        cout << this->layer_.size() << " layers executed." << endl;
-        cout << this->wires.size() << " qubits used." << endl;
+    g_tls_gate_num = gateNum;
+    double elapsed = .0;
+    if (gateNum != 0) {
+        record_time(&qc_critical_block, &elapsed);
+        if (PARAMETER.circuit.timer) {
+            this->totalTimeMs_ += elapsed;
+            // printf("\033[1;36mTotal execution time: %.6f ms\033[0m\n", this->totalTimeMs_);
+            cout << "\033[1;36mTotal execution time: " << this->totalTimeMs_ << " ms\033[0m" << endl;
+        }
+        // while (this->simulateStep()){ /* 協調融合しない場合は最後まで */ }
+        // cout << "Final state: " << this->finalState_ << endl;
+        if (PARAMETER.circuit.verbose) {
+            cout << this->layer_.size() << " layers executed." << endl;
+            cout << this->wires.size() << " qubits used." << endl;
+        }
     }
     return;
 }

@@ -15,7 +15,7 @@ cache:
 circuit:
   mode: "moderate" # "sparse", "moderate", "dense"
   cancerMax: 1
-  verbose: false
+  verbose: true
   timer: false
 
   Dealer:
