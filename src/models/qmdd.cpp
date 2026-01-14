@@ -18,13 +18,6 @@ ostream& operator<<(ostream& os, const QMDDVariant& variant) {
 
 QMDDEdge::QMDDEdge(complex<double> w, shared_ptr<QMDDNode> n)
     : weight(w), uniqueTableKey((n && w != complex<double>(.0, .0)) ? calculation::generateUniqueTableKey(n) : 0), isTerminal(!n) {
-    #ifdef __APPLE__
-        PARAMETER.loadFromFile();
-    #elif __linux__
-        PARAMETER.loadFromFile();
-    #else
-        #error "Unsupported operating system"
-    #endif
     if (this->uniqueTableKey) UniqueTable::getInstance().insert(this->uniqueTableKey, n);
     this->calculateDepth();
     // cout << "Edge created with weight: " << weight << " and uniqueTableKey: " << uniqueTableKey << " and isTerminal: " << isTerminal << endl;
@@ -32,13 +25,6 @@ QMDDEdge::QMDDEdge(complex<double> w, shared_ptr<QMDDNode> n)
 
 QMDDEdge::QMDDEdge(double w, shared_ptr<QMDDNode> n)
     : weight(complex<double>(w, .0)), uniqueTableKey((n && w != .0) ? calculation::generateUniqueTableKey(n) : 0), isTerminal(!n) {
-    #ifdef __APPLE__
-        PARAMETER.loadFromFile();
-    #elif __linux__
-        PARAMETER.loadFromFile();
-    #else
-        #error "Unsupported operating system"
-    #endif
     if (this->uniqueTableKey) UniqueTable::getInstance().insert(this->uniqueTableKey, n);
     this->calculateDepth();
     // cout << "Edge created with weight: " << weight << " and uniqueTableKey: " << uniqueTableKey << " and isTerminal: " << isTerminal << endl;
@@ -46,26 +32,12 @@ QMDDEdge::QMDDEdge(double w, shared_ptr<QMDDNode> n)
 
 QMDDEdge::QMDDEdge(complex<double> w, int64_t key)
     : weight(w), uniqueTableKey(w != complex<double>(.0, .0) ? key : 0), isTerminal(this->uniqueTableKey == 0) {
-    #ifdef __APPLE__
-        PARAMETER.loadFromFile();
-    #elif __linux__
-        PARAMETER.loadFromFile();
-    #else
-        #error "Unsupported operating system"
-    #endif
     this->calculateDepth();
     // cout << "Edge created with weight: " << weight << " and uniqueTableKey: " << uniqueTableKey << " and isTerminal: " << isTerminal << endl;
 }
 
 QMDDEdge::QMDDEdge(double w, int64_t key)
     : weight(complex<double>(w, .0)), uniqueTableKey(w != .0 ? key : 0), isTerminal(this->uniqueTableKey == 0) {
-    #ifdef __APPLE__
-        PARAMETER.loadFromFile();
-    #elif __linux__
-        PARAMETER.loadFromFile();
-    #else
-        #error "Unsupported operating system"
-    #endif
     this->calculateDepth();
     // cout << "Edge created with weight: " << weight << " and uniqueTableKey: " << uniqueTableKey << " and isTerminal: " << isTerminal << endl;
 }
@@ -111,7 +83,6 @@ bool QMDDEdge::operator==(const QMDDEdge& other) const {
     if (this->weight != other.weight) return false;
     if (this->isTerminal != other.isTerminal) return false;
     if (this->uniqueTableKey != other.uniqueTableKey) return false;
-    if (this->getStartNode() != other.getStartNode()) return false;
     return true;
 }
 

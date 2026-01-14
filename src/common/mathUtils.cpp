@@ -259,7 +259,7 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1, bool parallelism
 
     for (size_t i = 0; i < n0->edges.size(); i++) {
         for (size_t j = 0; j < n0->edges[i].size(); j++) {
-            array<int, 4> depths{
+            array<int, 2> depths{
                 n0->edges[i][j].depth,
                 n1->edges[i][j].depth
             };

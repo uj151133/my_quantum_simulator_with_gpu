@@ -131,6 +131,7 @@ void QuantumCircuit::emitIR(const vector<Core>& ops){
         else if(g=="RX") this->addRx(o.qubits.at(0), o.theta);
         else if(g=="RY") this->addRy(o.qubits.at(0), o.theta);
         else if(g=="RZ") this->addRz(o.qubits.at(0), o.theta);
+        else if(g=="RZZ") this->addRzz(o.qubits.at(0), o.qubits.at(1), o.phi);
         else if(g=="CX"||g=="CNOT") this->addCX(o.qubits.at(0), o.qubits.at(1));
         else if(g=="CZ") this->addCZ(o.qubits.at(0), o.qubits.at(1));
         else if(g=="CP") this->addCP(o.qubits.at(0), o.qubits.at(1), (o.phi!=0.0? o.phi : o.theta));
@@ -202,12 +203,12 @@ void QuantumCircuit::normalizeLayer() {
         for (int q = 0; q < this->numQubits_; q++) {
             parts.push_back(this->wires[q][depth]);
         }
-        while (!parts.empty() && (parts.back().type == Type::I || parts.back().type == Type::VOID || parts.back().type == Type::BAN || parts.back().type == Type::JOKER)) {
+        while (!parts.empty() && (parts.back().type == Type::I || parts.back().type == Type::VOID || parts.back().type == Type::ANKER || parts.back().type == Type::BAN || parts.back().type == Type::JOKER)) {
             parts.pop_back();
         }
         while (!parts.empty()) {
             // cout << "Processing part of type: " << parts.front().type << " at depth " << depth << endl;
-            if (parts.front().type != Type::VOID) {
+            if (parts.front().type != Type::VOID && parts.front().type != Type::ANKER) {
                 this->layer_[depth].push_back(parts.front().gate.getInitialEdge());
             }
             parts.erase(parts.begin());
@@ -239,29 +240,41 @@ void QuantumCircuit::smartInsert(const vector<int>& qubitIndices, const Part& pa
             this->wires[i].push_back({Type::I, QMDDGate(identityEdge)});
         }
         this->wires[minIndex].push_back(part);
-        for (int i = minIndex + 1; i <= maxIndex; ++i) {
+        for (int i = minIndex + 1; i < maxIndex; ++i) {
             this->wires[i].push_back({Type::VOID, QMDDGate()});
+        }
+        if (qubitIndices.size() >= 2) {
+            this->wires[maxIndex].push_back({Type::ANKER, QMDDGate()});
         }
         for (int i = maxIndex + 1; i < this->numQubits_; ++i) {
             this->wires[i].push_back({Type::BAN, QMDDGate()});
         }
     } else if (PARAMETER.circuit.mode == "moderate" && isCancer(toString(part.type))) {
         this->wires[minIndex].push_back(part);
-        // for (int i = minIndex + 1; i <= maxIndex; ++i) {
-        //     this->wires[i].push_back({Type::VOID, QMDDGate()});
-        // }
+        for (int i = minIndex + 1; i < maxIndex; ++i) {
+            this->wires[i].push_back({Type::VOID, QMDDGate()});
+        }
+        if (qubitIndices.size() >= 2) {
+            this->wires[maxIndex].push_back({Type::ANKER, QMDDGate()});
+        }
         for (int i = maxIndex + 1; i < this->numQubits_; ++i) {
             this->wires[i].push_back({Type::BAN, QMDDGate()});
         }
     }else if (PARAMETER.circuit.mode == "moderate" && JOKERDepth != -1) {
         this->wires[minIndex][JOKERDepth] = part;
-        for (int i = minIndex + 1; i <= maxIndex; ++i) {
+        for (int i = minIndex + 1; i < maxIndex; ++i) {
             this->wires[i][JOKERDepth] = {Type::VOID, QMDDGate()};
+        }
+        if (qubitIndices.size() >= 2) {
+            this->wires[maxIndex][JOKERDepth] = {Type::ANKER, QMDDGate()};
         }
     } else {
         this->wires[minIndex].push_back(part);
-        for (int i = minIndex + 1; i <= maxIndex; ++i) {
+        for (int i = minIndex + 1; i < maxIndex; ++i) {
             this->wires[i].push_back({Type::VOID, QMDDGate()});
+        }
+        if (qubitIndices.size() >= 2) {
+            this->wires[maxIndex].push_back({Type::ANKER, QMDDGate()});
         }
     }
 
@@ -827,6 +840,10 @@ void QuantumCircuit::addTdg(vector<int>& qubitIndices) {
 }
 
 void QuantumCircuit::addCP(int controlIndex, int targetIndex, double phi) {
+    if(this->irEnabled_){
+        Core c; c.tag="CP"; c.qubits={resolveQubit(controlIndex), resolveQubit(targetIndex)}; c.phi=phi; c.normalize();
+        this->irLog_.push_back(std::move(c)); return;
+    }
     int minIndex = min(controlIndex, targetIndex);
     int maxIndex = max(controlIndex, targetIndex);
     int maxDepth = this->getMaxDepth(minIndex, maxIndex);
@@ -970,13 +987,14 @@ void QuantumCircuit::addRx(int qubitIndex, double theta) {
                 this->wires[index].push_back({Type::JOKER, gate::I()});
             }
         }
-        this->wires[qubitIndex].push_back({Type::Rx, gate::Rx(theta)});
-        for (int index = qubitIndex + 1; index < this->numQubits_; index++) {
-            this->wires[index].push_back({Type::BAN, QMDDGate()});
-        }
-    } else {
-        this->wires[qubitIndex].push_back({Type::Rx, gate::Rx(theta)});
+    //     this->wires[qubitIndex].push_back({Type::Rx, gate::Rx(theta)});
+    //     for (int index = qubitIndex + 1; index < this->numQubits_; index++) {
+    //         this->wires[index].push_back({Type::BAN, QMDDGate()});
+    //     }
+    // } else {
+    //     this->wires[qubitIndex].push_back({Type::Rx, gate::Rx(theta)});
     }
+    this->smartInsert({qubitIndex}, {Type::Rx, gate::Rx(theta)});
     return;
 }
 
@@ -996,13 +1014,14 @@ void QuantumCircuit::addRy(int qubitIndex, double theta) {
                 this->wires[index].push_back({Type::JOKER, gate::I()});
             }
         }
-        this->wires[qubitIndex].push_back({Type::Ry, gate::Ry(theta)});
-        for (int index = qubitIndex + 1; index < this->numQubits_; index++) {
-            this->wires[index].push_back({Type::BAN, QMDDGate()});
-        }
-    } else {
-        this->wires[qubitIndex].push_back({Type::Ry, gate::Ry(theta)});
+    //     this->wires[qubitIndex].push_back({Type::Ry, gate::Ry(theta)});
+    //     for (int index = qubitIndex + 1; index < this->numQubits_; index++) {
+    //         this->wires[index].push_back({Type::BAN, QMDDGate()});
+    //     }
+    // } else {
+    //     this->wires[qubitIndex].push_back({Type::Ry, gate::Ry(theta)});
     }
+    this->smartInsert({qubitIndex}, {Type::Ry, gate::Ry(theta)});
     return;
 }
 
@@ -1019,6 +1038,62 @@ void QuantumCircuit::addRz(vector<pair<int, double>>& qubitParams) {
     for (const auto& [qubitIndex, theta] : qubitParams) {
         this->addRz(qubitIndex, theta);
     }
+    return;
+}
+
+void QuantumCircuit::addRzz(int qubitIndex1, int qubitIndex2, double phi) {
+    if(this->irEnabled_){
+        Core c; c.tag="Rzz"; c.qubits={resolveQubit(qubitIndex1), resolveQubit(qubitIndex2)}; c.phi=phi; c.normalize();
+        this->irLog_.push_back(std::move(c)); return;
+    }
+    int minIndex = min(qubitIndex1, qubitIndex2);
+    int maxIndex = max(qubitIndex1, qubitIndex2);
+    int maxDepth = this->getMaxDepth(minIndex, maxIndex);
+    for (int index = minIndex; index <= maxIndex; index++) {
+        while (this->wires[index].size() < maxDepth) {
+            this->wires[index].push_back({Type::I, gate::I()});
+        }
+    }
+    QMDDEdge customRzz;
+    size_t numIndex =  maxIndex - minIndex + 1;
+    if (numIndex == 2){
+        customRzz = gate::Rzz(phi).getInitialEdge();
+    } else {
+        // vector<vector<QMDDEdge>> partialPreRzz(pow(2, numIndex), vector<QMDDEdge>(2, identityEdge));
+        vector<QMDDEdge> partialRzz(pow(2, numIndex));
+        for (size_t i = 0; i < partialRzz.size(); i++){
+            int highestBit = (i >> (numIndex - 1)) & 1;
+            int lowestBit = i & 1;
+            bool parity = highestBit ^ lowestBit;
+            int basedIndex = i;
+            // int swappedIndex = (i & ~(1ULL << (numIndex - 1))) | (lowestBit << (numIndex - 1));
+            // swappedIndex = (swappedIndex & ~1ULL) | highestBit;
+            for ([[maybe_unused]] int _ = numIndex - 1; _ >= 0; _--) {
+                // bool msbBased = (basedIndex >> (numIndex - 1)) & 1 ;
+                bool lsbBased = basedIndex & 1;
+                if (lsbBased){
+                    if (_ == numIndex - 1){
+                        partialRzz[i] = braketOne;
+                    }else {
+                        partialRzz[i] = mathUtils::kron(braketOne, partialRzz[i]);
+                    }
+                }else {
+                    if (_ == numIndex - 1){
+                        partialRzz[i] = braketZero;
+                    }else {
+                        partialRzz[i] = mathUtils::kron(braketZero, partialRzz[i]);
+                    }
+                }
+                basedIndex >>= 1;
+                // basedIndex <<= 1;
+            }
+            partialRzz[i].weight = parity ? exp(i * phi / 2) : exp(-i * phi / 2);
+        }
+        customRzz = accumulate(partialRzz.begin() + 1, partialRzz.end(), partialRzz[0], [](const QMDDEdge& accumulated, const QMDDEdge& current) {
+            return mathUtils::add(accumulated, current);
+        });
+    }
+    this->smartInsert({minIndex, maxIndex}, {Type::Rzz, QMDDGate(customRzz)});
     return;
 }
 

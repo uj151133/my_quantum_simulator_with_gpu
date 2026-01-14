@@ -27,6 +27,8 @@
 #include "src/translator/OpenQASM3/fallen.hpp"
 #include "src/translator/OpenQASM3/gen/OpenQASM3Lexer.h"
 #include "src/translator/OpenQASM3/gen/OpenQASM3Parser.h"
+// #include "src/test/QAOA/qaoa16MQT.hpp"
+#include "src/test/QWalk/qwalk13MQT.hpp"
 
 using namespace std;
 
@@ -58,7 +60,9 @@ void execute() {
     //     state = mathUtils::mul(gate6, state);
     // }
 
-    grover11MQT();
+    // grover11MQT();
+    // qaoa16MQT();
+    qwalk13MQT();
 }
 
 bool translateAndExecuteQASM(const string& qasm_file) {

@@ -29,10 +29,120 @@ def make_random_circuits(num: int = 3, num_qubits: int = 6, depth: int = 60) -> 
         qcs.append(qc)
     return qcs
 
-def make_grover_circuit (num_qubits: int) -> QuantumCircuit:
+def make_grover_circuit (num_qubits: int = 11) -> QuantumCircuit:
     # Get a benchmark circuit on algorithmic level representing the GHZ state with 5 qubits
     qc_algorithmic_level = get_benchmark(
         benchmark="grover", level=BenchmarkLevel.ALG, circuit_size=num_qubits
+    )
+
+    print(qc_algorithmic_level.draw())
+    
+    return qc_algorithmic_level
+
+def make_qwalk_circuit(num_qubits: int = 13) -> QuantumCircuit:
+    # Get a benchmark circuit on algorithmic level representing the GHZ state with 5 qubits
+    qc_algorithmic_level = get_benchmark(
+        benchmark="qwalk", level=BenchmarkLevel.ALG, circuit_size=num_qubits
+    )
+
+    print(qc_algorithmic_level.draw())
+    
+    return qc_algorithmic_level
+
+def make_qaoa_circuit(num_qubits: int = 16) -> QuantumCircuit:
+    # Get a benchmark circuit on algorithmic level representing the GHZ state with 5 qubits
+    qc_algorithmic_level = get_benchmark(
+        benchmark="qaoa", level=BenchmarkLevel.ALG, circuit_size=num_qubits
+    )
+
+    print(qc_algorithmic_level.draw())
+    
+    return qc_algorithmic_level
+
+def make_amplitude_estimation_circuit(num_qubits: int = 18) -> QuantumCircuit:
+    # Get a benchmark circuit on algorithmic level representing the GHZ state with 5 qubits
+    qc_algorithmic_level = get_benchmark(
+        benchmark="ae", level=BenchmarkLevel.ALG, circuit_size=num_qubits
+    )
+
+    print(qc_algorithmic_level.draw())
+    
+    return qc_algorithmic_level
+
+def make_efficient_su2_ansatz_circuit(num_qubits: int = 18) -> QuantumCircuit:
+    # Get a benchmark circuit on algorithmic level representing the GHZ state with 5 qubits
+    qc_algorithmic_level = get_benchmark(
+        benchmark="vqe_su2", level=BenchmarkLevel.ALG, circuit_size=num_qubits
+    )
+
+    print(qc_algorithmic_level.draw())
+    
+    return qc_algorithmic_level
+
+def make_qnn_circuit(num_qubits: int = 18) -> QuantumCircuit:
+    # Get a benchmark circuit on algorithmic level representing the GHZ state with 5 qubits
+    qc_algorithmic_level = get_benchmark(
+        benchmark="qnn", level=BenchmarkLevel.ALG, circuit_size=num_qubits
+    )
+
+    print(qc_algorithmic_level.draw())
+    
+    return qc_algorithmic_level
+
+def make_random_circuit(num_qubits: int = 18) -> QuantumCircuit:
+    # Get a benchmark circuit on algorithmic level representing the GHZ state with 5 qubits
+    qc_algorithmic_level = get_benchmark(
+        benchmark="randomcircuit", level=BenchmarkLevel.ALG, circuit_size=num_qubits
+    )
+
+    print(qc_algorithmic_level.draw())
+    
+    return qc_algorithmic_level
+
+def make_real_amplitudes_circuit(num_qubits: int = 18) -> QuantumCircuit:
+    # Get a benchmark circuit on algorithmic level representing the GHZ state with 5 qubits
+    qc_algorithmic_level = get_benchmark(
+        benchmark="vqe_real_amp", level=BenchmarkLevel.ALG, circuit_size=num_qubits
+    )
+
+    print(qc_algorithmic_level.draw())
+    
+    return qc_algorithmic_level
+
+def make_two_local_ansatz_circuit(num_qubits: int = 18) -> QuantumCircuit:
+    # Get a benchmark circuit on algorithmic level representing the GHZ state with 5 qubits
+    qc_algorithmic_level = get_benchmark(
+        benchmark="vqe_two_local", level=BenchmarkLevel.ALG, circuit_size=num_qubits
+    )
+
+    print(qc_algorithmic_level.draw())
+    
+    return qc_algorithmic_level
+
+def make_graph_state_circuit(num_qubits: int = 48) -> QuantumCircuit:
+    # Get a benchmark circuit on algorithmic level representing the GHZ state with 5 qubits
+    qc_algorithmic_level = get_benchmark(
+        benchmark="graphstate", level=BenchmarkLevel.ALG, circuit_size=num_qubits
+    )
+
+    print(qc_algorithmic_level.draw())
+    
+    return qc_algorithmic_level
+
+def make_qft_entangled_circuit(num_qubits: int = 18) -> QuantumCircuit:
+    # Get a benchmark circuit on algorithmic level representing the GHZ state with 5 qubits
+    qc_algorithmic_level = get_benchmark(
+        benchmark="qftentangled", level=BenchmarkLevel.ALG, circuit_size=num_qubits
+    )
+
+    print(qc_algorithmic_level.draw())
+    
+    return qc_algorithmic_level
+
+def make_qpe_inexact_circuit(num_qubits: int = 18) -> QuantumCircuit:
+    # Get a benchmark circuit on algorithmic level representing the GHZ state with 5 qubits
+    qc_algorithmic_level = get_benchmark(
+        benchmark="qpeinexact", level=BenchmarkLevel.ALG, circuit_size=num_qubits
     )
 
     print(qc_algorithmic_level.draw())
@@ -61,7 +171,7 @@ def save_to_qasm(circuit: QuantumCircuit, file_path: str) -> None:
     qasm3_path.write_text(qasm3_str)
 
 if __name__ == "__main__":
-    num_qubits = 11
-    circuit = make_grover_circuit(num_qubits)
+    num_qubits = 18
+    circuit = make_qpe_inexact_circuit(num_qubits)
     print(circuit)
-    save_to_qasm(circuit, f"../../src/test/Grover/grover_{num_qubits}_MQT.qasm")
+    save_to_qasm(circuit, f"../../src/test/QPEInexact/qpe_inexact_{num_qubits}_MQT.qasm")
