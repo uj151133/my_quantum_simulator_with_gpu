@@ -52,6 +52,7 @@ enum class Type {
     Toff,
     Other,
     VOID,
+    ANKER,
     BAN,
     JOKER
 };

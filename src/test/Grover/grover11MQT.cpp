@@ -2679,11 +2679,11 @@ void Q(QuantumCircuit& qc) {
 
 void grover11MQT() {
 
+    array<int, 11> meas;
+
     QuantumCircuit qc(11);
     qc.setRegister(0, 10);
     qc.setRegister(1, 1);
-
-    array<int, 11> meas;
 
     qc.addH(qc.quantumRegister_[0][0]);
     qc.addH(qc.quantumRegister_[0][1]);
