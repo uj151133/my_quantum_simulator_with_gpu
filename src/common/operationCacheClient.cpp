@@ -7,6 +7,12 @@ thread_local graal_isolatethread_t* OperationCacheClient::thread_local_thread = 
 thread_local unordered_map<int64_t, QMDDEdge> OperationCacheClient::TLSCache_;
 mutex OperationCacheClient::isolateMutex_;
 
+struct alignas(8) NativeOperationResult24 {
+    double real;
+    double imag;
+    int64_t uniqueTableKey;
+};
+
 OperationCacheClient::OperationCacheClient() : isolate_(nullptr) {
     lock_guard<mutex> lock(this->isolateMutex_);
     if (graal_create_isolate(nullptr, &this->isolate_, nullptr) != 0) {
@@ -79,22 +85,17 @@ void OperationCacheClient::insertGlobal(int64_t key, const QMDDEdge& edge) {
 __attribute__((hot, flatten))
 optional<QMDDEdge> OperationCacheClient::findGlobal(int64_t key) {
     graal_isolatethread_t* thread = this->getThreadLocalThread();
-    void* ptr = cacheFind(thread, key);
+    NativeOperationResult24 out{};
+    const int found = cacheFind(thread, key, static_cast<void*>(&out));
 
-    if (ptr == nullptr) {
+    if (!found) {
         return nullopt;
     }
 
-    double* doubleData = static_cast<double*>(ptr);
-    int64_t uniqueTableKey = *reinterpret_cast<int64_t*>(reinterpret_cast<char*>(doubleData) + 16);
-
-    auto result = make_optional<QMDDEdge>(
-        complex<double>(doubleData[0], doubleData[1]),
-        uniqueTableKey
+    return make_optional<QMDDEdge>(
+        complex<double>(out.real, out.imag),
+        out.uniqueTableKey
     );
-
-    free(ptr);
-    return result;
 }
 
 void OperationCacheClient::cleanup() {

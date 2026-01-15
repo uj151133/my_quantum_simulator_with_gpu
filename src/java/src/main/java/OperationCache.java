@@ -7,10 +7,8 @@ import java.sql.PreparedStatement;
 import java.sql.Statement;
 
 import org.graalvm.nativeimage.IsolateThread;
-import org.graalvm.nativeimage.UnmanagedMemory;
 import org.graalvm.nativeimage.c.function.CEntryPoint;
 import org.graalvm.word.Pointer;
-import org.graalvm.word.WordFactory;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
@@ -74,18 +72,16 @@ public class OperationCache {
     }
 
     @CEntryPoint(name = "cacheFind")
-    public static Pointer nativeFind(IsolateThread thread, long key) {
+    public static int nativeFind(IsolateThread thread, long key, Pointer out) {
         OperationResult result = CACHE.getIfPresent(key);
         if (result == null) {
-            return WordFactory.nullPointer();
+            return 0;
         }
-        
-        Pointer ptr = UnmanagedMemory.malloc(24);
 
-        ptr.writeDouble(0, result.real());
-        ptr.writeDouble(8, result.imag());
-        ptr.writeLong(16, result.uniqueTableKey());
-        return ptr;
+        out.writeDouble(0, result.real());
+        out.writeDouble(8, result.imag());
+        out.writeLong(16, result.uniqueTableKey());
+        return 1;
     }
 
     public boolean contains(long key) {

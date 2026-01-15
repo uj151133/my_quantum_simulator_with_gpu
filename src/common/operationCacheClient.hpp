@@ -20,7 +20,7 @@ using namespace std;
 
 extern "C" {
     void cacheInsert(graal_isolatethread_t* thread, int64_t key, double real, double imag, int64_t uniqueTableKey);
-    void* cacheFind(graal_isolatethread_t* thread, int64_t key);
+    int cacheFind(graal_isolatethread_t* thread, int64_t key, void* out);
     void saveCacheToSQLite(graal_isolatethread_t* thread);
 }
 
