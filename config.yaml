@@ -9,7 +9,7 @@ table:
   size: 1048576
 
 cache:
-  alive: false
+  alive: true
   size: 1048576
 
 circuit:
@@ -19,7 +19,7 @@ circuit:
   timer: false
 
   Dealer:
-    alive: false
+    alive: true
     nonzeroWeight: 4.0
     controlBitWeight: 0.0
     targetBitWeight: 2.0

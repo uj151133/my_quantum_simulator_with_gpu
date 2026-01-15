@@ -19,7 +19,7 @@
 #include "src/models/circuit.hpp"
 #include "src/common/monitor.hpp"
 #include "src/test/Grover/grover11MQT.hpp"
-// #include "src/test/random/randomRotate.hpp"
+#include "src/test/random/randomRotate.hpp"
 #include "src/common/ipc_shared_memory.hpp"
 #include "src/common/operationCacheClient.hpp"
 // #include "src/test/Shor/shor.hpp"
@@ -62,7 +62,8 @@ void execute() {
 
     // grover11MQT();
     // qaoa16MQT();
-    qwalk13MQT();
+    // qwalk13MQT();
+    randomRotate(13, 200);
 }
 
 bool translateAndExecuteQASM(const string& qasm_file) {
