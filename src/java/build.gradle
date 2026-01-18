@@ -11,7 +11,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.github.ben-manes.caffeine:caffeine:3.2.1'
+    implementation 'com.github.ben-manes.caffeine:caffeine:3.2.3'
     implementation 'org.xerial:sqlite-jdbc:3.45.1.0'
 }
 
@@ -47,7 +47,6 @@ graalvmNative {
                 '-H:IncludeResources=.*\\.sql',
                 '-O3',
                 '-march=native',
-                '-H:+UseSerialGC'
             ])
         }
     }

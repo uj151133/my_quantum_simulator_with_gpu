@@ -19,7 +19,6 @@
 #include "parameter.hpp"
 #include "calculation.hpp"
 #include "../modules/threadPool.hpp"
-#include <tbb/task_group.h>
 #include "constant.hpp"
 #include "../common/operationCacheClient.hpp"
 

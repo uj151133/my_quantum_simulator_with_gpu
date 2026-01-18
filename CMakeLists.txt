@@ -341,7 +341,6 @@ target_link_libraries(qmdd_sim PRIVATE
     ${GMP_LIB}
     Threads::Threads
     xxhash
-    TBB::tbb
     antlr4_runtime
     $<$<BOOL:${GRAALVM_NATIVE_LIB}>:${GRAALVM_NATIVE_LIB}>
     $<$<BOOL:${ONNXRUNTIME_LIB}>:${ONNXRUNTIME_LIB}>
@@ -406,7 +405,6 @@ target_link_libraries(qmdd_core PRIVATE
     ${GMP_LIB}
     Threads::Threads
     xxhash
-    TBB::tbb
     # antlr4_runtime
     $<$<BOOL:${GRAALVM_NATIVE_LIB}>:${GRAALVM_NATIVE_LIB}>
     $<$<BOOL:${ONNXRUNTIME_LIB}>:${ONNXRUNTIME_LIB}>
