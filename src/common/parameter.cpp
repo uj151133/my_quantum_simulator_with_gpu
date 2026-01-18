@@ -106,7 +106,8 @@ void Parameter::loadFromFile(const string& yamlFilepath, const string& iniFilepa
             }
 
             if (config["process"]) {
-                this->process.concurrency = config["process"]["concurrency"].as<int>();
+                // this->process.concurrency = config["process"]["concurrency"].as<int>();
+                this->process.parallel = config["process"]["parallel"].as<bool>();
                 this->process.parallelism = config["process"]["parallelism"].as<int>();
             }
 
@@ -190,8 +191,8 @@ void Parameter::loadFromFile(const string& yamlFilepath, const string& iniFilepa
 
 void Parameter::print() const {
     cout << "GUI:\n  enabled: " << (gui.enabled ? "true" : "false") << endl;
-    cout << "Process:\n  concurrency: " << process.concurrency
-              << "\n  parallelism: " << process.parallelism << endl;
+    cout << "Process:\n  concurrency: " << 0 /*process.concurrency*/
+              << "\n  parallelism: " << process.parallel << endl;
     cout << "Scheduler.Heuristics:\n  alive: " << (schedulerHeuristics.alive ? "true" : "false")
               << "\n  costDiag: " << schedulerHeuristics.costDiag
               << "\n  costAnti: " << schedulerHeuristics.costAnti

@@ -57539,3 +57539,299 @@
 [Thu Jan 15 19:30:10 2026] Host: Mac | Branch: main | Execution time: 2259.08 ms
 [2026-01-15 19:52:26] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: main | Execution time:2099.989833 ms
 [Thu Jan 15 19:52:26 2026] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: main | Execution time: 2111.26 ms
+[2026-01-15 20:07:30] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: main | Execution time:2177.170667 ms
+[Thu Jan 15 20:07:30 2026] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: main | Execution time: 2184.74 ms
+[2026-01-15 20:07:35] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: main | Execution time:2647.254417 ms
+[Thu Jan 15 20:07:35 2026] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: main | Execution time: 2650.71 ms
+[2026-01-15 20:07:41] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: main | Execution time:2708.218084 ms
+[Thu Jan 15 20:07:41 2026] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: main | Execution time: 2712.63 ms
+[2026-01-16 20:32:10] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: RE/para | Execution time:3867.040750 ms
+[Fri Jan 16 20:32:10 2026] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: RE/para | Execution time: 3919.88 ms
+[2026-01-16 20:32:18] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: RE/para | Execution time:4535.879167 ms
+[Fri Jan 16 20:32:19 2026] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: RE/para | Execution time: 4602.53 ms
+[2026-01-17 13:28:52] Host: Mac | Branch: RE/para | Execution time:4613.409083 ms
+[Sat Jan 17 13:28:52 2026] Host: Mac | Branch: RE/para | Execution time: 4684.54 ms
+[2026-01-17 13:29:04] Host: Mac | Branch: RE/para | Execution time:6164.883584 ms
+[Sat Jan 17 13:29:05 2026] Host: Mac | Branch: RE/para | Execution time: 6244.12 ms
+[2026-01-17 13:29:18] Host: Mac | Branch: RE/para | Execution time:5852.714959 ms
+[Sat Jan 17 13:29:18 2026] Host: Mac | Branch: RE/para | Execution time: 5959.72 ms
+[2026-01-17 13:40:23] Host: Mac | Branch: RE/para | Execution time:4913.575334 ms
+[Sat Jan 17 13:40:23 2026] Host: Mac | Branch: RE/para | Execution time: 4974.09 ms
+[2026-01-17 13:41:21] Host: Mac | Branch: RE/para | Execution time:2118.956333 ms
+[Sat Jan 17 13:41:21 2026] Host: Mac | Branch: RE/para | Execution time: 2166.17 ms
+[2026-01-17 13:41:29] Host: Mac | Branch: RE/para | Execution time:476744589.116000 ms
+[Sat Jan 17 13:41:29 2026] Host: Mac | Branch: RE/para | Execution time: 5254.76 ms
+[2026-01-17 13:43:32] Host: Mac | Branch: RE/para | Execution time:6435.782875 ms
+[Sat Jan 17 13:43:32 2026] Host: Mac | Branch: RE/para | Execution time: 6502.79 ms
+[2026-01-17 13:44:48] Host: Mac | Branch: RE/para | Execution time:4894.010917 ms
+[Sat Jan 17 13:44:48 2026] Host: Mac | Branch: RE/para | Execution time: 4938.48 ms
+[2026-01-17 14:55:51] Host: Mac | Branch: RE/para | Execution time:1239.082666 ms
+[Sat Jan 17 14:55:51 2026] Host: Mac | Branch: RE/para | Execution time: 1290.43 ms
+[2026-01-17 14:56:00] Host: Mac | Branch: RE/para | Execution time:1226.190459 ms
+[Sat Jan 17 14:56:01 2026] Host: Mac | Branch: RE/para | Execution time: 1234.94 ms
+[2026-01-17 15:00:09] Host: Mac | Branch: RE/para | Execution time:120.316083 ms
+[Sat Jan 17 15:00:09 2026] Host: Mac | Branch: RE/para | Execution time: 171.583 ms
+[2026-01-17 15:00:15] Host: Mac | Branch: RE/para | Execution time:96.773666 ms
+[Sat Jan 17 15:00:15 2026] Host: Mac | Branch: RE/para | Execution time: 144.252 ms
+[2026-01-17 15:00:19] Host: Mac | Branch: RE/para | Execution time:95.773167 ms
+[Sat Jan 17 15:00:19 2026] Host: Mac | Branch: RE/para | Execution time: 98.6571 ms
+[2026-01-17 15:00:21] Host: Mac | Branch: RE/para | Execution time:93.892042 ms
+[Sat Jan 17 15:00:21 2026] Host: Mac | Branch: RE/para | Execution time: 97.2348 ms
+[2026-01-17 15:00:46] Host: Mac | Branch: RE/para | Execution time:159.452541 ms
+[Sat Jan 17 15:00:46 2026] Host: Mac | Branch: RE/para | Execution time: 211.15 ms
+[2026-01-17 15:00:50] Host: Mac | Branch: RE/para | Execution time:163.633833 ms
+[Sat Jan 17 15:00:50 2026] Host: Mac | Branch: RE/para | Execution time: 169.302 ms
+[2026-01-17 15:00:53] Host: Mac | Branch: RE/para | Execution time:141.911125 ms
+[Sat Jan 17 15:00:53 2026] Host: Mac | Branch: RE/para | Execution time: 144.728 ms
+[2026-01-17 15:00:55] Host: Mac | Branch: RE/para | Execution time:186.816083 ms
+[Sat Jan 17 15:00:55 2026] Host: Mac | Branch: RE/para | Execution time: 189.964 ms
+[2026-01-17 15:01:24] Host: Mac | Branch: RE/para | Execution time:72.117542 ms
+[Sat Jan 17 15:01:24 2026] Host: Mac | Branch: RE/para | Execution time: 106.027 ms
+[2026-01-17 15:01:27] Host: Mac | Branch: RE/para | Execution time:84.053125 ms
+[Sat Jan 17 15:01:27 2026] Host: Mac | Branch: RE/para | Execution time: 87.0723 ms
+[2026-01-17 15:01:47] Host: Mac | Branch: RE/para | Execution time:51.304792 ms
+[Sat Jan 17 15:01:47 2026] Host: Mac | Branch: RE/para | Execution time: 84.4842 ms
+[2026-01-17 15:01:50] Host: Mac | Branch: RE/para | Execution time:44.897375 ms
+[Sat Jan 17 15:01:50 2026] Host: Mac | Branch: RE/para | Execution time: 48.029 ms
+[2026-01-17 15:01:53] Host: Mac | Branch: RE/para | Execution time:44.121083 ms
+[Sat Jan 17 15:01:53 2026] Host: Mac | Branch: RE/para | Execution time: 47.707 ms
+[2026-01-17 15:03:10] Host: Mac | Branch: RE/para | Execution time:26.546791 ms
+[Sat Jan 17 15:03:10 2026] Host: Mac | Branch: RE/para | Execution time: 58.3736 ms
+[2026-01-17 15:03:12] Host: Mac | Branch: RE/para | Execution time:24.200542 ms
+[Sat Jan 17 15:03:12 2026] Host: Mac | Branch: RE/para | Execution time: 27.0062 ms
+[2026-01-17 15:03:35] Host: Mac | Branch: RE/para | Execution time:476741412.519000 ms
+[Sat Jan 17 15:03:35 2026] Host: Mac | Branch: RE/para | Execution time: 129.352 ms
+[2026-01-17 15:03:40] Host: Mac | Branch: RE/para | Execution time:43.361792 ms
+[Sat Jan 17 15:03:40 2026] Host: Mac | Branch: RE/para | Execution time: 48.2137 ms
+[2026-01-17 15:03:45] Host: Mac | Branch: RE/para | Execution time:41.696750 ms
+[Sat Jan 17 15:03:45 2026] Host: Mac | Branch: RE/para | Execution time: 44.3372 ms
+[2026-01-17 15:04:32] Host: Mac | Branch: RE/para | Execution time:26.841125 ms
+[Sat Jan 17 15:04:32 2026] Host: Mac | Branch: RE/para | Execution time: 73.1751 ms
+[2026-01-17 15:04:35] Host: Mac | Branch: RE/para | Execution time:24.526750 ms
+[Sat Jan 17 15:04:35 2026] Host: Mac | Branch: RE/para | Execution time: 27.5878 ms
+[2026-01-17 15:04:58] Host: Mac | Branch: RE/para | Execution time:15.356625 ms
+[Sat Jan 17 15:04:58 2026] Host: Mac | Branch: RE/para | Execution time: 74.7569 ms
+[2026-01-17 15:05:02] Host: Mac | Branch: RE/para | Execution time:15.685125 ms
+[Sat Jan 17 15:05:02 2026] Host: Mac | Branch: RE/para | Execution time: 51.7296 ms
+[2026-01-17 15:05:54] Host: Mac | Branch: RE/para | Execution time:14.574500 ms
+[Sat Jan 17 15:05:54 2026] Host: Mac | Branch: RE/para | Execution time: 69.4845 ms
+[2026-01-17 15:05:57] Host: Mac | Branch: RE/para | Execution time:10.636834 ms
+[Sat Jan 17 15:05:57 2026] Host: Mac | Branch: RE/para | Execution time: 14.8003 ms
+[2026-01-17 15:06:21] Host: Mac | Branch: RE/para | Execution time:14.384291 ms
+[Sat Jan 17 15:06:21 2026] Host: Mac | Branch: RE/para | Execution time: 74.1471 ms
+[2026-01-17 15:06:25] Host: Mac | Branch: RE/para | Execution time:15.518250 ms
+[Sat Jan 17 15:06:25 2026] Host: Mac | Branch: RE/para | Execution time: 121.746 ms
+[2026-01-17 15:06:29] Host: Mac | Branch: RE/para | Execution time:22.119584 ms
+[Sat Jan 17 15:06:29 2026] Host: Mac | Branch: RE/para | Execution time: 68.3348 ms
+[2026-01-17 15:06:34] Host: Mac | Branch: RE/para | Execution time:15.627542 ms
+[Sat Jan 17 15:06:34 2026] Host: Mac | Branch: RE/para | Execution time: 27.5975 ms
+[2026-01-17 15:07:04] Host: Mac | Branch: RE/para | Execution time:10.083500 ms
+[Sat Jan 17 15:07:04 2026] Host: Mac | Branch: RE/para | Execution time: 46.5615 ms
+[2026-01-17 15:07:16] Host: Mac | Branch: RE/para | Execution time:8.883625 ms
+[Sat Jan 17 15:07:16 2026] Host: Mac | Branch: RE/para | Execution time: 54.3395 ms
+[2026-01-18 12:50:58] Host: Mac | Branch: RE/para | Execution time:22.209416 ms
+[Sun Jan 18 12:50:58 2026] Host: Mac | Branch: RE/para | Execution time: 90.2565 ms
+[2026-01-18 12:51:03] Host: Mac | Branch: RE/para | Execution time:20.220625 ms
+[Sun Jan 18 12:51:03 2026] Host: Mac | Branch: RE/para | Execution time: 24.432 ms
+[2026-01-18 12:51:05] Host: Mac | Branch: RE/para | Execution time:28.833500 ms
+[Sun Jan 18 12:51:05 2026] Host: Mac | Branch: RE/para | Execution time: 34.2546 ms
+[2026-01-18 12:51:09] Host: Mac | Branch: RE/para | Execution time:17.317666 ms
+[Sun Jan 18 12:51:09 2026] Host: Mac | Branch: RE/para | Execution time: 74.1747 ms
+[2026-01-18 12:51:12] Host: Mac | Branch: RE/para | Execution time:33.924959 ms
+[Sun Jan 18 12:51:12 2026] Host: Mac | Branch: RE/para | Execution time: 37.1574 ms
+[2026-01-18 12:51:25] Host: Mac | Branch: RE/para | Execution time:15.972666 ms
+[Sun Jan 18 12:51:25 2026] Host: Mac | Branch: RE/para | Execution time: 59.7012 ms
+[2026-01-18 12:51:30] Host: Mac | Branch: RE/para | Execution time:16.335125 ms
+[Sun Jan 18 12:51:30 2026] Host: Mac | Branch: RE/para | Execution time: 21.238 ms
+[2026-01-18 12:51:32] Host: Mac | Branch: RE/para | Execution time:476741386.015000 ms
+[Sun Jan 18 12:51:32 2026] Host: Mac | Branch: RE/para | Execution time: 43.4147 ms
+[2026-01-18 12:51:36] Host: Mac | Branch: RE/para | Execution time:17.369709 ms
+[Sun Jan 18 12:51:36 2026] Host: Mac | Branch: RE/para | Execution time: 20.0564 ms
+[2026-01-18 12:51:52] Host: Mac | Branch: RE/para | Execution time:27.361917 ms
+[Sun Jan 18 12:51:52 2026] Host: Mac | Branch: RE/para | Execution time: 68.2971 ms
+[2026-01-18 12:51:54] Host: Mac | Branch: RE/para | Execution time:18.300750 ms
+[Sun Jan 18 12:51:54 2026] Host: Mac | Branch: RE/para | Execution time: 67.2357 ms
+[2026-01-18 12:51:57] Host: Mac | Branch: RE/para | Execution time:18.361375 ms
+[Sun Jan 18 12:51:57 2026] Host: Mac | Branch: RE/para | Execution time: 23.077 ms
+[2026-01-18 12:51:59] Host: Mac | Branch: RE/para | Execution time:21.272458 ms
+[Sun Jan 18 12:51:59 2026] Host: Mac | Branch: RE/para | Execution time: 26.5472 ms
+[2026-01-18 12:52:01] Host: Mac | Branch: RE/para | Execution time:19.136875 ms
+[Sun Jan 18 12:52:01 2026] Host: Mac | Branch: RE/para | Execution time: 81.6236 ms
+[2026-01-18 12:52:03] Host: Mac | Branch: RE/para | Execution time:476741387.502000 ms
+[Sun Jan 18 12:52:03 2026] Host: Mac | Branch: RE/para | Execution time: 41.733 ms
+[2026-01-18 12:52:06] Host: Mac | Branch: RE/para | Execution time:42.770042 ms
+[Sun Jan 18 12:52:06 2026] Host: Mac | Branch: RE/para | Execution time: 58.9907 ms
+[2026-01-18 12:52:22] Host: Mac | Branch: RE/para | Execution time:23.831916 ms
+[Sun Jan 18 12:52:22 2026] Host: Mac | Branch: RE/para | Execution time: 75.43 ms
+[2026-01-18 12:52:26] Host: Mac | Branch: RE/para | Execution time:19.351666 ms
+[Sun Jan 18 12:52:26 2026] Host: Mac | Branch: RE/para | Execution time: 23.4165 ms
+[2026-01-18 12:52:28] Host: Mac | Branch: RE/para | Execution time:25.890875 ms
+[Sun Jan 18 12:52:28 2026] Host: Mac | Branch: RE/para | Execution time: 32.2125 ms
+[2026-01-18 12:53:03] Host: Mac | Branch: RE/para | Execution time:43.656500 ms
+[Sun Jan 18 12:53:04 2026] Host: Mac | Branch: RE/para | Execution time: 83.4974 ms
+[2026-01-18 12:53:08] Host: Mac | Branch: RE/para | Execution time:47.425125 ms
+[Sun Jan 18 12:53:08 2026] Host: Mac | Branch: RE/para | Execution time: 225.826 ms
+[2026-01-18 12:53:10] Host: Mac | Branch: RE/para | Execution time:45.598083 ms
+[Sun Jan 18 12:53:10 2026] Host: Mac | Branch: RE/para | Execution time: 52.843 ms
+[2026-01-18 12:53:27] Host: Mac | Branch: RE/para | Execution time:61.407584 ms
+[Sun Jan 18 12:53:27 2026] Host: Mac | Branch: RE/para | Execution time: 111.018 ms
+[2026-01-18 12:53:44] Host: Mac | Branch: RE/para | Execution time:56.954958 ms
+[Sun Jan 18 12:53:44 2026] Host: Mac | Branch: RE/para | Execution time: 111.638 ms
+[2026-01-18 12:53:47] Host: Mac | Branch: RE/para | Execution time:50.324625 ms
+[Sun Jan 18 12:53:47 2026] Host: Mac | Branch: RE/para | Execution time: 53.1072 ms
+[2026-01-18 12:53:55] Host: Mac | Branch: RE/para | Execution time:52.249500 ms
+[Sun Jan 18 12:53:55 2026] Host: Mac | Branch: RE/para | Execution time: 104.816 ms
+[2026-01-18 12:53:58] Host: Mac | Branch: RE/para | Execution time:50.135791 ms
+[Sun Jan 18 12:53:58 2026] Host: Mac | Branch: RE/para | Execution time: 53.1831 ms
+[2026-01-18 12:54:04] Host: Mac | Branch: RE/para | Execution time:48.760084 ms
+[Sun Jan 18 12:54:04 2026] Host: Mac | Branch: RE/para | Execution time: 105.399 ms
+[2026-01-18 12:54:21] Host: Mac | Branch: RE/para | Execution time:476741428.510000 ms
+[Sun Jan 18 12:54:21 2026] Host: Mac | Branch: RE/para | Execution time: 165.979 ms
+[2026-01-18 12:54:30] Host: Mac | Branch: RE/para | Execution time:47.558958 ms
+[Sun Jan 18 12:54:30 2026] Host: Mac | Branch: RE/para | Execution time: 104.794 ms
+[2026-01-18 12:54:34] Host: Mac | Branch: RE/para | Execution time:48.302667 ms
+[Sun Jan 18 12:54:34 2026] Host: Mac | Branch: RE/para | Execution time: 51.5285 ms
+[2026-01-18 12:54:37] Host: Mac | Branch: RE/para | Execution time:52.979334 ms
+[Sun Jan 18 12:54:37 2026] Host: Mac | Branch: RE/para | Execution time: 59.024 ms
+[2026-01-18 12:55:56] Host: Mac | Branch: RE/para | Execution time:49.350500 ms
+[Sun Jan 18 12:55:56 2026] Host: Mac | Branch: RE/para | Execution time: 94.2008 ms
+[2026-01-18 12:55:59] Host: Mac | Branch: RE/para | Execution time:46.108417 ms
+[Sun Jan 18 12:55:59 2026] Host: Mac | Branch: RE/para | Execution time: 49.2654 ms
+[2026-01-18 12:56:02] Host: Mac | Branch: RE/para | Execution time:54.010041 ms
+[Sun Jan 18 12:56:02 2026] Host: Mac | Branch: RE/para | Execution time: 61.5743 ms
+[2026-01-18 12:56:25] Host: Mac | Branch: RE/para | Execution time:1268.336542 ms
+[Sun Jan 18 12:56:25 2026] Host: Mac | Branch: RE/para | Execution time: 1317.49 ms
+[2026-01-18 12:56:29] Host: Mac | Branch: RE/para | Execution time:1284.204375 ms
+[Sun Jan 18 12:56:29 2026] Host: Mac | Branch: RE/para | Execution time: 1290.09 ms
+[2026-01-18 12:56:49] Host: Mac | Branch: RE/para | Execution time:2014.825792 ms
+[Sun Jan 18 12:56:49 2026] Host: Mac | Branch: RE/para | Execution time: 2065.84 ms
+[2026-01-18 12:56:55] Host: Mac | Branch: RE/para | Execution time:2010.643959 ms
+[Sun Jan 18 12:56:55 2026] Host: Mac | Branch: RE/para | Execution time: 2014.83 ms
+[2026-01-18 12:57:13] Host: Mac | Branch: RE/para | Execution time:1033.568209 ms
+[Sun Jan 18 12:57:13 2026] Host: Mac | Branch: RE/para | Execution time: 1089.28 ms
+[2026-01-18 12:59:04] Host: Mac | Branch: RE/para | Execution time:948.765291 ms
+[Sun Jan 18 12:59:04 2026] Host: Mac | Branch: RE/para | Execution time: 995.201 ms
+[2026-01-18 12:59:32] Host: Mac | Branch: RE/para | Execution time:1492.745708 ms
+[Sun Jan 18 12:59:32 2026] Host: Mac | Branch: RE/para | Execution time: 1547.49 ms
+[2026-01-18 12:59:36] Host: Mac | Branch: RE/para | Execution time:1345.573500 ms
+[Sun Jan 18 12:59:36 2026] Host: Mac | Branch: RE/para | Execution time: 1350.37 ms
+[2026-01-18 12:59:40] Host: Mac | Branch: RE/para | Execution time:1086.005958 ms
+[Sun Jan 18 12:59:40 2026] Host: Mac | Branch: RE/para | Execution time: 1095.05 ms
+[2026-01-18 12:59:43] Host: Mac | Branch: RE/para | Execution time:1258.435042 ms
+[Sun Jan 18 12:59:43 2026] Host: Mac | Branch: RE/para | Execution time: 1262.52 ms
+[2026-01-18 12:59:47] Host: Mac | Branch: RE/para | Execution time:1046.578416 ms
+[Sun Jan 18 12:59:47 2026] Host: Mac | Branch: RE/para | Execution time: 1051.52 ms
+[2026-01-18 12:59:51] Host: Mac | Branch: RE/para | Execution time:1198.272708 ms
+[Sun Jan 18 12:59:51 2026] Host: Mac | Branch: RE/para | Execution time: 1202.25 ms
+[2026-01-18 12:59:54] Host: Mac | Branch: RE/para | Execution time:1276.833333 ms
+[Sun Jan 18 12:59:54 2026] Host: Mac | Branch: RE/para | Execution time: 1279.99 ms
+[2026-01-18 12:59:59] Host: Mac | Branch: RE/para | Execution time:800.537708 ms
+[Sun Jan 18 12:59:59 2026] Host: Mac | Branch: RE/para | Execution time: 804.544 ms
+[2026-01-18 13:00:13] Host: Mac | Branch: RE/para | Execution time:1251.336500 ms
+[Sun Jan 18 13:00:13 2026] Host: Mac | Branch: RE/para | Execution time: 1309.1 ms
+[2026-01-18 13:00:16] Host: Mac | Branch: RE/para | Execution time:1116.345958 ms
+[Sun Jan 18 13:00:16 2026] Host: Mac | Branch: RE/para | Execution time: 1124.89 ms
+[2026-01-18 13:00:20] Host: Mac | Branch: RE/para | Execution time:1440.452417 ms
+[Sun Jan 18 13:00:20 2026] Host: Mac | Branch: RE/para | Execution time: 1450.63 ms
+[2026-01-18 13:00:23] Host: Mac | Branch: RE/para | Execution time:1256.755750 ms
+[Sun Jan 18 13:00:23 2026] Host: Mac | Branch: RE/para | Execution time: 1260.21 ms
+[2026-01-18 13:00:27] Host: Mac | Branch: RE/para | Execution time:987.847750 ms
+[Sun Jan 18 13:00:27 2026] Host: Mac | Branch: RE/para | Execution time: 993.936 ms
+[2026-01-18 13:00:40] Host: Mac | Branch: RE/para | Execution time:1188.034750 ms
+[Sun Jan 18 13:00:40 2026] Host: Mac | Branch: RE/para | Execution time: 1220.07 ms
+[2026-01-18 13:00:43] Host: Mac | Branch: RE/para | Execution time:1362.924958 ms
+[Sun Jan 18 13:00:43 2026] Host: Mac | Branch: RE/para | Execution time: 1366.26 ms
+[2026-01-18 13:01:04] Host: Mac | Branch: RE/para | Execution time:1414.460166 ms
+[Sun Jan 18 13:01:04 2026] Host: Mac | Branch: RE/para | Execution time: 1525.13 ms
+[2026-01-18 13:01:16] Host: Mac | Branch: RE/para | Execution time:686.816292 ms
+[Sun Jan 18 13:01:16 2026] Host: Mac | Branch: RE/para | Execution time: 739.519 ms
+[2026-01-18 13:01:19] Host: Mac | Branch: RE/para | Execution time:1054.271167 ms
+[Sun Jan 18 13:01:19 2026] Host: Mac | Branch: RE/para | Execution time: 1057.59 ms
+[2026-01-18 13:01:23] Host: Mac | Branch: RE/para | Execution time:1175.018917 ms
+[Sun Jan 18 13:01:23 2026] Host: Mac | Branch: RE/para | Execution time: 1179.58 ms
+[2026-01-18 13:01:27] Host: Mac | Branch: RE/para | Execution time:1475.308916 ms
+[Sun Jan 18 13:01:27 2026] Host: Mac | Branch: RE/para | Execution time: 1479.03 ms
+[2026-01-18 13:01:31] Host: Mac | Branch: RE/para | Execution time:1132.999750 ms
+[Sun Jan 18 13:01:31 2026] Host: Mac | Branch: RE/para | Execution time: 1137.28 ms
+[2026-01-18 13:01:43] Host: Mac | Branch: RE/para | Execution time:950.646916 ms
+[Sun Jan 18 13:01:43 2026] Host: Mac | Branch: RE/para | Execution time: 994.682 ms
+[2026-01-18 13:09:22] Host: Mac | Branch: RE/para | Execution time:1194.694208 ms
+[Sun Jan 18 13:09:22 2026] Host: Mac | Branch: RE/para | Execution time: 1245.89 ms
+[2026-01-18 13:09:33] Host: Mac | Branch: RE/para | Execution time:1290.694333 ms
+[Sun Jan 18 13:09:33 2026] Host: Mac | Branch: RE/para | Execution time: 1297.47 ms
+[2026-01-18 13:09:39] Host: Mac | Branch: RE/para | Execution time:1412.989375 ms
+[Sun Jan 18 13:09:39 2026] Host: Mac | Branch: RE/para | Execution time: 1420.13 ms
+[2026-01-18 13:10:10] Host: Mac | Branch: RE/para | Execution time:1287.737917 ms
+[Sun Jan 18 13:10:10 2026] Host: Mac | Branch: RE/para | Execution time: 1343.59 ms
+[2026-01-18 13:10:45] Host: Mac | Branch: RE/para | Execution time:1394.368834 ms
+[Sun Jan 18 13:10:45 2026] Host: Mac | Branch: RE/para | Execution time: 1434.14 ms
+[2026-01-18 13:10:50] Host: Mac | Branch: RE/para | Execution time:949.158416 ms
+[Sun Jan 18 13:10:50 2026] Host: Mac | Branch: RE/para | Execution time: 954.992 ms
+[2026-01-18 13:10:54] Host: Mac | Branch: RE/para | Execution time:969.506750 ms
+[Sun Jan 18 13:10:54 2026] Host: Mac | Branch: RE/para | Execution time: 973.014 ms
+[2026-01-18 13:10:59] Host: Mac | Branch: RE/para | Execution time:1134.949250 ms
+[Sun Jan 18 13:10:59 2026] Host: Mac | Branch: RE/para | Execution time: 1138.63 ms
+[2026-01-18 13:11:08] Host: Mac | Branch: RE/para | Execution time:1205.830417 ms
+[Sun Jan 18 13:11:08 2026] Host: Mac | Branch: RE/para | Execution time: 1242.36 ms
+[2026-01-18 13:16:40] Host: Mac | Branch: RE/para | Execution time:1505.961667 ms
+[Sun Jan 18 13:16:40 2026] Host: Mac | Branch: RE/para | Execution time: 1555.46 ms
+[2026-01-18 13:16:43] Host: Mac | Branch: RE/para | Execution time:1017.952541 ms
+[Sun Jan 18 13:16:43 2026] Host: Mac | Branch: RE/para | Execution time: 1025.05 ms
+[2026-01-18 13:16:47] Host: Mac | Branch: RE/para | Execution time:1335.061042 ms
+[Sun Jan 18 13:16:47 2026] Host: Mac | Branch: RE/para | Execution time: 1342.9 ms
+[2026-01-18 13:16:50] Host: Mac | Branch: RE/para | Execution time:1017.493708 ms
+[Sun Jan 18 13:16:50 2026] Host: Mac | Branch: RE/para | Execution time: 1024.82 ms
+[2026-01-18 13:16:57] Host: Mac | Branch: RE/para | Execution time:476743198.929000 ms
+[Sun Jan 18 13:16:57 2026] Host: Mac | Branch: RE/para | Execution time: 2961.03 ms
+[2026-01-18 13:17:02] Host: Mac | Branch: RE/para | Execution time:1329.836333 ms
+[Sun Jan 18 13:17:02 2026] Host: Mac | Branch: RE/para | Execution time: 1334.28 ms
+[2026-01-18 13:17:06] Host: Mac | Branch: RE/para | Execution time:1235.850333 ms
+[Sun Jan 18 13:17:06 2026] Host: Mac | Branch: RE/para | Execution time: 1239.97 ms
+[2026-01-18 13:17:46] Host: Mac | Branch: RE/para | Execution time:1222.875167 ms
+[Sun Jan 18 13:17:46 2026] Host: Mac | Branch: RE/para | Execution time: 1276.29 ms
+[2026-01-18 13:17:50] Host: Mac | Branch: RE/para | Execution time:1322.046208 ms
+[Sun Jan 18 13:17:50 2026] Host: Mac | Branch: RE/para | Execution time: 1325.39 ms
+[2026-01-18 13:17:54] Host: Mac | Branch: RE/para | Execution time:1332.343792 ms
+[Sun Jan 18 13:17:54 2026] Host: Mac | Branch: RE/para | Execution time: 1337.34 ms
+[2026-01-18 13:18:13] Host: Mac | Branch: RE/para | Execution time:1167.150667 ms
+[Sun Jan 18 13:18:13 2026] Host: Mac | Branch: RE/para | Execution time: 1199.82 ms
+[2026-01-18 13:18:17] Host: Mac | Branch: RE/para | Execution time:1062.240250 ms
+[Sun Jan 18 13:18:17 2026] Host: Mac | Branch: RE/para | Execution time: 1065.15 ms
+[2026-01-18 13:18:30] Host: Mac | Branch: RE/para | Execution time:1489.769417 ms
+[Sun Jan 18 13:18:30 2026] Host: Mac | Branch: RE/para | Execution time: 1524.45 ms
+[2026-01-18 13:18:34] Host: Mac | Branch: RE/para | Execution time:978.931083 ms
+[Sun Jan 18 13:18:34 2026] Host: Mac | Branch: RE/para | Execution time: 981.862 ms
+[2026-01-18 13:27:37] Host: Mac | Branch: RE/para | Execution time:1311.458250 ms
+[Sun Jan 18 13:27:37 2026] Host: Mac | Branch: RE/para | Execution time: 1360.7 ms
+[2026-01-18 13:27:42] Host: Mac | Branch: RE/para | Execution time:1380.875500 ms
+[Sun Jan 18 13:27:42 2026] Host: Mac | Branch: RE/para | Execution time: 1384.95 ms
+[2026-01-18 13:28:05] Host: Mac | Branch: RE/para | Execution time:1300.409083 ms
+[Sun Jan 18 13:28:05 2026] Host: Mac | Branch: RE/para | Execution time: 1349.44 ms
+[2026-01-18 13:28:26] Host: Mac | Branch: RE/para | Execution time:1270.366583 ms
+[Sun Jan 18 13:28:26 2026] Host: Mac | Branch: RE/para | Execution time: 1308.46 ms
+[2026-01-18 13:28:31] Host: Mac | Branch: RE/para | Execution time:1156.858250 ms
+[Sun Jan 18 13:28:31 2026] Host: Mac | Branch: RE/para | Execution time: 1160.27 ms
+[2026-01-18 13:28:35] Host: Mac | Branch: RE/para | Execution time:1068.980875 ms
+[Sun Jan 18 13:28:35 2026] Host: Mac | Branch: RE/para | Execution time: 1073.41 ms
+[2026-01-18 13:28:41] Host: Mac | Branch: RE/para | Execution time:1001.460833 ms
+[Sun Jan 18 13:28:41 2026] Host: Mac | Branch: RE/para | Execution time: 1005.9 ms
+[2026-01-18 13:28:48] Host: Mac | Branch: RE/para | Execution time:964.429584 ms
+[Sun Jan 18 13:28:48 2026] Host: Mac | Branch: RE/para | Execution time: 968.482 ms
+[2026-01-18 13:28:52] Host: Mac | Branch: RE/para | Execution time:931.265708 ms
+[Sun Jan 18 13:28:52 2026] Host: Mac | Branch: RE/para | Execution time: 934.193 ms
+[2026-01-18 13:29:00] Host: Mac | Branch: RE/para | Execution time:1115.769042 ms
+[Sun Jan 18 13:29:00 2026] Host: Mac | Branch: RE/para | Execution time: 1119.76 ms
+[2026-01-18 13:42:42] Host: Mac | Branch: RE/para | Execution time:1130.575917 ms
+[Sun Jan 18 13:42:42 2026] Host: Mac | Branch: RE/para | Execution time: 1179.89 ms
+[2026-01-18 13:42:47] Host: Mac | Branch: RE/para | Execution time:1404.391458 ms
+[Sun Jan 18 13:42:47 2026] Host: Mac | Branch: RE/para | Execution time: 1412.97 ms
+[2026-01-18 13:42:52] Host: Mac | Branch: RE/para | Execution time:1240.613792 ms
+[Sun Jan 18 13:42:52 2026] Host: Mac | Branch: RE/para | Execution time: 1244.49 ms
+[2026-01-18 13:42:55] Host: Mac | Branch: RE/para | Execution time:941.958791 ms
+[Sun Jan 18 13:42:55 2026] Host: Mac | Branch: RE/para | Execution time: 945.952 ms
+[2026-01-18 13:43:07] Host: Mac | Branch: RE/para | Execution time:1444.838792 ms
+[Sun Jan 18 13:43:07 2026] Host: Mac | Branch: RE/para | Execution time: 1499.36 ms
+[2026-01-18 13:43:11] Host: Mac | Branch: RE/para | Execution time:1335.281459 ms
+[Sun Jan 18 13:43:11 2026] Host: Mac | Branch: RE/para | Execution time: 1341.78 ms
+[2026-01-18 13:44:10] Host: Mac | Branch: RE/para | Execution time:2128.782458 ms
+[Sun Jan 18 13:44:10 2026] Host: Mac | Branch: RE/para | Execution time: 2196.4 ms
