@@ -445,7 +445,8 @@ void QuantumCircuit::fuseRanges(const vector<pair<int,int>>& ranges){
         size_t s = disjoint[i].first, e = disjoint[i].second;
         QMDDEdge acc = this->pending_[s].getInitialEdge();
         for (size_t k=s+1; k<=e; ++k){
-            acc = mathUtils::mul(this->pending_[k].getInitialEdge(), acc);
+            // acc = mathUtils::mul(this->pending_[k].getInitialEdge(), acc);
+            acc = threadPool.submitFiber([&]() { return mathUtils::mul(this->pending_[k].getInitialEdge(), acc); }).get();
         }
         QMDDGate fused(acc);
         Core d; d.tag="FUSED"; d.normalize(); d.handle=nextFusedId_++;
@@ -664,7 +665,8 @@ void QuantumCircuit::addCX(int controlIndex, int targetIndex) {
                 partialCX[1] = mathUtils::kron(identityEdge, partialCX[1]);
             }
         }
-        customCX = mathUtils::add(partialCX[0], partialCX[1]);
+        // customCX = mathUtils::add(partialCX[0], partialCX[1]);
+        customCX = threadPool.submitFiber([&]() { return mathUtils::add(partialCX[0], partialCX[1]); }).get();
     }
     this->smartInsert({minIndex, maxIndex}, {Type::CX, QMDDGate(customCX)});
     return;
@@ -703,7 +705,8 @@ void QuantumCircuit::addVarCX(int controlIndex, int targetIndex) {
                 partialVarCX[1] = mathUtils::kron(identityEdge, partialVarCX[1]);
             }
         }
-        customVarCX = mathUtils::add(partialVarCX[0], partialVarCX[1]);
+        // customVarCX = mathUtils::add(partialVarCX[0], partialVarCX[1]);
+        customVarCX = threadPool.submitFiber([&]() { return mathUtils::add(partialVarCX[0], partialVarCX[1]); }).get();
     }
     this->smartInsert({minIndex, maxIndex}, {Type::varCX, QMDDGate(customVarCX)});
     return;
@@ -738,7 +741,8 @@ void QuantumCircuit::addCY(int controlIndex, int targetIndex) {
             partialCY[1] = mathUtils::kron(identityEdge, partialCY[1]);
         }
     }
-    QMDDEdge customCY = mathUtils::add(partialCY[0], partialCY[1]);
+    // QMDDEdge customCY = mathUtils::add(partialCY[0], partialCY[1]);
+    QMDDEdge customCY = threadPool.submitFiber([&]() { return mathUtils::add(partialCY[0], partialCY[1]); }).get();
     this->smartInsert({minIndex, maxIndex}, {Type::CY, QMDDGate(customCY)});
     return;
 }
@@ -780,7 +784,8 @@ void QuantumCircuit::addCZ(int controlIndex, int targetIndex) {
                 partialCZ[1] = mathUtils::kron(identityEdge, partialCZ[1]);
             }
         }
-        customCZ = mathUtils::add(partialCZ[0], partialCZ[1]);
+        // customCZ = mathUtils::add(partialCZ[0], partialCZ[1]);
+        customCZ = threadPool.submitFiber([&]() { return mathUtils::add(partialCZ[0], partialCZ[1]); }).get();
     }
     this->smartInsert({minIndex, maxIndex}, {Type::CZ, QMDDGate(customCZ)});
     return;
@@ -876,7 +881,8 @@ void QuantumCircuit::addCP(int controlIndex, int targetIndex, double phi) {
                 partialCP[1] = mathUtils::kron(identityEdge, partialCP[1]);
             }
         }
-        customCP = mathUtils::add(partialCP[0], partialCP[1]);
+        // customCP = mathUtils::add(partialCP[0], partialCP[1]);
+        customCP = threadPool.submitFiber([&]() { return mathUtils::add(partialCP[0], partialCP[1]); }).get();
     }
     this->smartInsert({minIndex, maxIndex}, {Type::CP, QMDDGate(customCP)});
     return;
@@ -915,7 +921,8 @@ void QuantumCircuit::addCS(int controlIndex, int targetIndex) {
                 partialCS[1] = mathUtils::kron(identityEdge, partialCS[1]);
             }
         }
-        customCS = mathUtils::add(partialCS[0], partialCS[1]);
+        // customCS = mathUtils::add(partialCS[0], partialCS[1]);
+        customCS = threadPool.submitFiber([&]() { return mathUtils::add(partialCS[0], partialCS[1]); }).get();
     }
     this->wires[minIndex].push_back({Type::CS, QMDDGate(customCS)});
     for (int index = minIndex + 1; index <= maxIndex; index++) {
@@ -966,7 +973,8 @@ void QuantumCircuit::addCH(int controlIndex, int targetIndex) {
             partialCH[1] = mathUtils::kron(identityEdge, partialCH[1]);
         }
     }
-    QMDDEdge customCH = mathUtils::add(partialCH[0], partialCH[1]);
+    // QMDDEdge customCH = mathUtils::add(partialCH[0], partialCH[1]);
+    QMDDEdge customCH = threadPool.submitFiber([&]() { return mathUtils::add(partialCH[0], partialCH[1]); }).get();
     this->smartInsert({minIndex, maxIndex}, {Type::CH, QMDDGate(customCH)});
     return;
 }
@@ -1211,7 +1219,8 @@ void QuantumCircuit::addCRx(int controlIndex, int targetIndex, double theta) {
             partialCRx[1] = mathUtils::kron(identityEdge, partialCRx[1]);
         }
     }
-    QMDDEdge customCRx = mathUtils::add(partialCRx[0], partialCRx[1]);
+    // QMDDEdge customCRx = mathUtils::add(partialCRx[0], partialCRx[1]);
+    QMDDEdge customCRx = threadPool.submitFiber([&]() { return mathUtils::add(partialCRx[0], partialCRx[1]); }).get();
     this->smartInsert({minIndex, maxIndex}, {Type::CRx, QMDDGate(customCRx)});
     return;
 }
@@ -1245,7 +1254,8 @@ void QuantumCircuit::addCRy(int controlIndex, int targetIndex, double theta) {
             partialCRy[1] = mathUtils::kron(identityEdge, partialCRy[1]);
         }
     }
-    QMDDEdge customCRy = mathUtils::add(partialCRy[0], partialCRy[1]);
+    // QMDDEdge customCRy = mathUtils::add(partialCRy[0], partialCRy[1]);
+    QMDDEdge customCRy = threadPool.submitFiber([&]() { return mathUtils::add(partialCRy[0], partialCRy[1]); }).get();
     this->smartInsert({minIndex, maxIndex}, {Type::CRy, QMDDGate(customCRy)});
     return;
 }
@@ -1283,7 +1293,8 @@ void QuantumCircuit::addCRz(int controlIndex, int targetIndex, double theta) {
             partialCRz[1] = mathUtils::kron(identityEdge, partialCRz[1]);
         }
     }
-    QMDDEdge customCRz = mathUtils::add(partialCRz[0], partialCRz[1]);
+    // QMDDEdge customCRz = mathUtils::add(partialCRz[0], partialCRz[1]);
+    QMDDEdge customCRz = threadPool.submitFiber([&]() { return mathUtils::add(partialCRz[0], partialCRz[1]); }).get();
     this->smartInsert({minIndex, maxIndex}, {Type::CRz, QMDDGate(customCRz)});
     return;
 }
@@ -1317,7 +1328,8 @@ void QuantumCircuit::addCU(int controlIndex, int targetIndex, double theta, doub
             partialCU[1] = mathUtils::kron(identityEdge, partialCU[1]);
         }
     }
-    QMDDEdge customCU = mathUtils::add(partialCU[0], partialCU[1]);
+    // QMDDEdge customCU = mathUtils::add(partialCU[0], partialCU[1]);
+    QMDDEdge customCU = threadPool.submitFiber([&]() { return mathUtils::add(partialCU[0], partialCU[1]); }).get();
     this->smartInsert({minIndex, maxIndex}, {Type::CU, QMDDGate(customCU)});
     return;
 }
@@ -1504,7 +1516,8 @@ void QuantumCircuit::addOracle(int omega) {
     QMDDEdge partialCZ2 = QMDDEdge(-2.0, accumulate(customBrkt.rbegin() + 1, customBrkt.rend(), customBrkt.back(), [](const QMDDEdge& accumulated, const QMDDEdge& current) {
         return mathUtils::kron(current, accumulated);
     }).uniqueTableKey);
-    QMDDEdge customCZ = mathUtils::add(partialCZ1, partialCZ2);
+    // QMDDEdge customCZ = mathUtils::add(partialCZ1, partialCZ2);
+    QMDDEdge customCZ = threadPool.submitFiber([&]() { return mathUtils::add(partialCZ1, partialCZ2); }).get();
     if (PARAMETER.circuit.mode == "sparse") {
         this->gateQueue_.push(QMDDGate(customCZ));
     }
@@ -1524,7 +1537,8 @@ void QuantumCircuit::addDiffuser() {
     QMDDEdge partialCZ2 = QMDDEdge(-2.0, accumulate(customBrkt.rbegin() + 1, customBrkt.rend(), customBrkt.back(), [](const QMDDEdge& accumulated, const QMDDEdge& current) {
         return mathUtils::kron(current, accumulated);
     }).uniqueTableKey);
-    QMDDEdge customCZ = mathUtils::add(partialCZ1, partialCZ2);
+    // QMDDEdge customCZ = mathUtils::add(partialCZ1, partialCZ2);
+    QMDDEdge customCZ = threadPool.submitFiber([&]() { return mathUtils::add(partialCZ1, partialCZ2); }).get();
 
     if (PARAMETER.circuit.mode == "sparse") {
         this->gateQueue_.push(QMDDGate(customCZ));
@@ -1564,22 +1578,49 @@ void QuantumCircuit::globalPhase(double lamda) {
 
 
 void QuantumCircuit::criticalExecute() {
-    this->build();
-    int i = 0;
-    const size_t gateNum = g_tls_gate_num;
-    while (!this->gateQueue_.empty()) {
-        QMDDGate currentGate = this->gateQueue_.front();
-        if (PARAMETER.circuit.verbose) {
-            cout << "Gate Idx: " << i++ << " / " << gateNum << endl;
-            cout << "Current gate: " << currentGate << endl;
-            cout << "Current state: " << this->finalState_ << endl;
+    // this->build();
+    // int i = 0;
+    // const size_t gateNum = g_tls_gate_num;
+    // while (!this->gateQueue_.empty()) {
+    //     QMDDGate currentGate = this->gateQueue_.front();
+    //     if (PARAMETER.circuit.verbose) {
+    //         cout << "Gate Idx: " << i++ << " / " << gateNum << endl;
+    //         cout << "Current gate: " << currentGate << endl;
+    //         cout << "Current state: " << this->finalState_ << endl;
 
-            cout << "============================================================\n" << endl;
+    //         cout << "============================================================\n" << endl;
+    //     }
+    //     this->gateQueue_.pop();
+    //     // this->finalState_ = QMDDState(mathUtils::mul(currentGate.getInitialEdge(), this->finalState_.getInitialEdge()));
+    //     this->finalState_ = threadPool.submitFiber([&]() { return QMDDState(mathUtils::mul(currentGate.getInitialEdge(), this->finalState_.getInitialEdge())); }).get();
+    // }
+    // return;
+
+    threadPool.submitFiber([&]() {
+        this->build();
+
+        int i = 0;
+        const size_t gateNum = g_tls_gate_num;
+
+        while (!this->gateQueue_.empty()) {
+            QMDDGate currentGate = this->gateQueue_.front();
+
+            if (PARAMETER.circuit.verbose) {
+                cout << "Gate Idx: " << i++ << " / " << gateNum << endl;
+                cout << "Current gate: " << currentGate << endl;
+                cout << "Current state: " << this->finalState_ << endl;
+                cout << "============================================================\n" << endl;
+            }
+
+            this->gateQueue_.pop();
+
+            // 逐次依存なのでここは順番通りのまま。
+            // 並列化は mul() 内部の fiber 分割に任せる。
+            this->finalState_ = QMDDState(
+                mathUtils::mul(currentGate.getInitialEdge(), this->finalState_.getInitialEdge())
+            );
         }
-        this->gateQueue_.pop();
-        this->finalState_ = QMDDState(mathUtils::mul(currentGate.getInitialEdge(), this->finalState_.getInitialEdge()));
-    }
-    return;
+    }).get();
 }
 
 
@@ -1589,7 +1630,8 @@ bool QuantumCircuit::simulateStep(){
     }
     if (this->execIdx_ >= this->pending_.size()) return false;
     QMDDGate currentGate = this->pending_[this->execIdx_];
-    this->finalState_ = QMDDState(mathUtils::mul(currentGate.getInitialEdge(), this->finalState_.getInitialEdge()));
+    // this->finalState_ = QMDDState(mathUtils::mul(currentGate.getInitialEdge(), this->finalState_.getInitialEdge()));
+    this->finalState_ = threadPool.submitFiber([&]() { return QMDDState(mathUtils::mul(currentGate.getInitialEdge(), this->finalState_.getInitialEdge())); }).get();
     this->execIdx_++;
     return this->execIdx_ < this->pending_.size();
 }
@@ -1652,8 +1694,11 @@ int QuantumCircuit::measure(int qubitIndex) {
     QMDDGate m1 = accumulate(edges1.rbegin() + 1, edges1.rend(), edges1.back(), [](const QMDDEdge& accumulated, const QMDDEdge& current) {
         return mathUtils::kron(current, accumulated);
     });
-    QMDDEdge result0 = mathUtils::mul(m0.getInitialEdge(), this->finalState_.getInitialEdge());
-    QMDDEdge result1 = mathUtils::mul(m1.getInitialEdge(), this->finalState_.getInitialEdge());
+    // QMDDEdge result0 = mathUtils::mul(m0.getInitialEdge(), this->finalState_.getInitialEdge());
+    // QMDDEdge result1 = mathUtils::mul(m1.getInitialEdge(), this->finalState_.getInitialEdge());
+
+    QMDDEdge result0 = threadPool.submitFiber([&]() { return mathUtils::mul(m0.getInitialEdge(), this->finalState_.getInitialEdge()); }).get();
+    QMDDEdge result1 = threadPool.submitFiber([&]() { return mathUtils::mul(m1.getInitialEdge(), this->finalState_.getInitialEdge()); }).get();
 
     vector<complex<double>> v0 = result0.getAllElementsForKet();
     vector<complex<double>> v1 = result1.getAllElementsForKet();

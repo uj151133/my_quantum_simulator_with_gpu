@@ -9,5 +9,4 @@ find_package(Boost ${BOOST_MIN_VERSION} REQUIRED COMPONENTS
     program_options
 )
 find_package(Threads REQUIRED)
-find_package(TBB REQUIRED)
 find_package(GSL REQUIRED)
