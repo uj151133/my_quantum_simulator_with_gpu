@@ -20,7 +20,8 @@ public:
         bool enabled = false;
     } gui;
     struct ProcessSettings {
-        int concurrency = 0;
+        // int concurrency = 0;
+        bool parallel = false;
         int parallelism = 0;
     } process;
     struct TableSettings {

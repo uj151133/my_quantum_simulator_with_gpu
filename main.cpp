@@ -29,7 +29,7 @@
 #include "src/translator/OpenQASM3/gen/OpenQASM3Parser.h"
 // #include "src/test/QAOA/qaoa16MQT.hpp"
 #include "src/test/QWalk/qwalk13MQT.hpp"
-
+#include "src/modules/threadPool.hpp"
 using namespace std;
 
 // グローバルな共有メモリIPCサーバーインスタンス
@@ -202,7 +202,8 @@ int main(int argc, char* argv[]) {
 
         cout << "Total entries: " << UniqueTable::getInstance().getTotalEntryCount() << endl;
     }
-
+    threadPool.shutdown();
     cout << "Program finished successfully." << endl;
+
     return 0;
 }
