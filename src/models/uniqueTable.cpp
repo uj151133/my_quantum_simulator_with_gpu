@@ -15,14 +15,20 @@ UniqueTable& UniqueTable::getInstance() {
 
 void UniqueTable::insert(int64_t hashKey, shared_ptr<QMDDNode> node) {
     int64_t idx = hash(hashKey);
-    Entry* newEntry = new Entry(hashKey, node, nullptr);
+    Entry* newEntry = new Entry(hashKey, weak_ptr<QMDDNode>(node), nullptr);
     Entry* oldHead;
     while (true) {
         oldHead = this->table_[idx].load(memory_order_acquire);
         for (Entry* p = oldHead; p != nullptr; p = p->next) {
             if (p->key == hashKey) {
-                delete newEntry;
-                return;
+                if (p->value.lock() == node) {
+                    delete newEntry;
+                    return;
+                } else if (p->value.expired()) {
+                    p->value = weak_ptr<QMDDNode>(node);
+                    delete newEntry;
+                    return;
+                }
             }
         }
         newEntry->next = oldHead;
@@ -36,7 +42,7 @@ shared_ptr<QMDDNode> UniqueTable::find(int64_t hashKey) const {
     Entry* head = this->table_[idx].load(memory_order_acquire);
     for (Entry* p = head; p != nullptr; p = p->next) {
         if (p->key == hashKey) {
-            return p->value;
+            return p->value.lock();
         }
     }
     return nullptr;
@@ -56,8 +62,8 @@ void UniqueTable::printAllEntries() const {
         for (Entry* p = head; p != nullptr; p = p->next) {
             cout << "  Key: " << p->key << endl;
             cout << "  Nodes: " << endl;
-            if (p->value) {
-                cout << "    " << *p->value << endl;
+            if (p->value.lock()) {
+                cout << "    " << *p->value.lock() << endl;
                 validEntries++;
             } else {
                 cout << "    Null node" << endl;
@@ -79,7 +85,7 @@ void UniqueTable::printNodeNum() const {
         Entry* head = this->table_[idx].load(memory_order_acquire);
         if (!head) continue;
         for (Entry* p = head; p != nullptr; p = p->next) {
-            if (p->value) {
+            if (p->value.lock()) {
                 validEntries++;
             } else {
                 invalidEntries++;

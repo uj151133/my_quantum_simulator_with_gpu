@@ -17,33 +17,35 @@ ostream& operator<<(ostream& os, const QMDDVariant& variant) {
 /////////////////////////////////////
 
 QMDDEdge::QMDDEdge(complex<double> w, shared_ptr<QMDDNode> n)
-    : weight(w), uniqueTableKey((n && w != complex<double>(.0, .0)) ? calculation::generateUniqueTableKey(n) : 0), isTerminal(!n) {
-    if (this->uniqueTableKey) UniqueTable::getInstance().insert(this->uniqueTableKey, n);
+    : weight(w), uniqueTableKey((n && w != complex<double>(.0, .0)) ? calculation::generateUniqueTableKey(n) : 0), son_(n), isTerminal(!n) {
+    if (this->uniqueTableKey) UniqueTable::getInstance().insert(this->uniqueTableKey, this->son_);
     this->calculateDepth();
     // cout << "Edge created with weight: " << weight << " and uniqueTableKey: " << uniqueTableKey << " and isTerminal: " << isTerminal << endl;
 }
 
 QMDDEdge::QMDDEdge(double w, shared_ptr<QMDDNode> n)
-    : weight(complex<double>(w, .0)), uniqueTableKey((n && w != .0) ? calculation::generateUniqueTableKey(n) : 0), isTerminal(!n) {
-    if (this->uniqueTableKey) UniqueTable::getInstance().insert(this->uniqueTableKey, n);
+    : weight(complex<double>(w, .0)), uniqueTableKey((n && w != .0) ? calculation::generateUniqueTableKey(n) : 0), son_(n), isTerminal(!n) {
+    if (this->uniqueTableKey) UniqueTable::getInstance().insert(this->uniqueTableKey, this->son_);
     this->calculateDepth();
     // cout << "Edge created with weight: " << weight << " and uniqueTableKey: " << uniqueTableKey << " and isTerminal: " << isTerminal << endl;
 }
 
 QMDDEdge::QMDDEdge(complex<double> w, int64_t key)
     : weight(w), uniqueTableKey(w != complex<double>(.0, .0) ? key : 0), isTerminal(this->uniqueTableKey == 0) {
+    this->son_ = UniqueTable::getInstance().find(this->uniqueTableKey);
     this->calculateDepth();
     // cout << "Edge created with weight: " << weight << " and uniqueTableKey: " << uniqueTableKey << " and isTerminal: " << isTerminal << endl;
 }
 
 QMDDEdge::QMDDEdge(double w, int64_t key)
     : weight(complex<double>(w, .0)), uniqueTableKey(w != .0 ? key : 0), isTerminal(this->uniqueTableKey == 0) {
+    this->son_ = UniqueTable::getInstance().find(this->uniqueTableKey);
     this->calculateDepth();
     // cout << "Edge created with weight: " << weight << " and uniqueTableKey: " << uniqueTableKey << " and isTerminal: " << isTerminal << endl;
 }
 
 shared_ptr<QMDDNode> QMDDEdge::getStartNode() const {
-    return (uniqueTableKey == 0) ? nullptr : UniqueTable::getInstance().find(uniqueTableKey);
+    return this->son_;
 }
 
 vector<complex<double>> QMDDEdge::getAllElementsForKet() {
@@ -103,18 +105,21 @@ ostream& operator<<(ostream& os, const QMDDEdge& edge) {
 }
 
 void QMDDEdge::calculateDepth() {
+    // cout << "Calculating depth for edge with uniqueTableKey: " << this->uniqueTableKey << " , node: " << this->getStartNode() << endl;
+
     if (this->isTerminal || this->uniqueTableKey ==  0) {
         this->depth = 0;
     } else {
-        vector<int> depths;
+        int maxDepth = 0;
         for (const auto& edgeRow : this->getStartNode()->edges) {
             for (const auto& edge : edgeRow) {
-                depths.push_back(edge.depth);
+                if (edge.depth > maxDepth) maxDepth = edge.depth;
             }
         }
         // return 1 + this->getStartNode()->edges[0][0].depth;
-        this->depth = 1 + *max_element(depths.begin(), depths.end());
+        this->depth = 1 + maxDepth;
     }
+    // cout << "Calculated depth: " << this->depth << endl;
     return;
 }
 

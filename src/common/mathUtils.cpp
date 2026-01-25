@@ -22,6 +22,7 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, bool parallelism
         } else if (e0.weight == 1.0){
             return e1;
         } else {
+            // cout << "Scalar multiplication detected: " << e0.weight << " * Edge with uniqueTableKey: " << e1.uniqueTableKey << endl;
             return QMDDEdge(e0.weight * e1.weight, e1.uniqueTableKey);
         }
     }
@@ -44,23 +45,23 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, bool parallelism
 
     for (size_t i = 0; i < n0->edges.size(); i++) {
         for (size_t j = 0; j < n1->edges[i].size(); j++) {
-            array<int, 4> depths{
-                n0->edges[i][0].depth,
-                n0->edges[i][1].depth,
-                n1->edges[0][j].depth,
-                n1->edges[1][j].depth
-            };
-            double calculatedDepth = mathUtils::median(depths);
-            // const bool spawn = (!parallelism && calculatedDepth >= PARAMETER.process.parallelism) || (parallelism && !concurrency);
+            // array<int, 4> depths{
+            //     n0->edges[i][0].depth,
+            //     n0->edges[i][1].depth,
+            //     n1->edges[0][j].depth,
+            //     n1->edges[1][j].depth
+            // };
+            // double calculatedDepth = mathUtils::median(depths);
+            // bool executeInParallel = PARAMETER.process.parallel && (!concurrency) && (calculatedDepth >= PARAMETER.process.parallelism);
             if (PARAMETER.process.parallel && !concurrency) {
                 // concurrencyTasks.push_back({i, j});
                 fiberFutures.emplace_back(
                     boost::fibers::async([&, i, j]() -> pair<pair<size_t, size_t>, QMDDEdge> {
                         QMDDEdge answer = edgeZero;
                         for (size_t k = 0; k < n0->edges[0].size(); k++) {
-                            QMDDEdge p(e0.weight * n0->edges[i][k].weight, n0->edges[i][k].uniqueTableKey);
-                            QMDDEdge q(e1.weight * n1->edges[k][j].weight, n1->edges[k][j].uniqueTableKey);
-                            answer = mathUtils::add(answer, mathUtils::mul(p, q, parallelism, true), parallelism, true);
+                            QMDDEdge p(e0.weight * n0->edges[i][k].weight, n0->edges[i][k].getStartNode());
+                            QMDDEdge q(e1.weight * n1->edges[k][j].weight, n1->edges[k][j].getStartNode());
+                            answer = mathUtils::add(answer, mathUtils::mul(p, q, true, parallelism), true, parallelism);
                         }
                         return {{i, j}, answer};
                     })
@@ -68,8 +69,8 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, bool parallelism
             } else {
                 QMDDEdge answer = edgeZero;
                 for (size_t k = 0; k < n0->edges[0].size(); k++) {
-                    QMDDEdge p(e0.weight * n0->edges[i][k].weight, n0->edges[i][k].uniqueTableKey);
-                    QMDDEdge q(e1.weight * n1->edges[k][j].weight, n1->edges[k][j].uniqueTableKey);
+                    QMDDEdge p(e0.weight * n0->edges[i][k].weight, n0->edges[i][k].getStartNode());
+                    QMDDEdge q(e1.weight * n1->edges[k][j].weight, n1->edges[k][j].getStartNode());
                     answer = mathUtils::add(answer, mathUtils::mul(p, q, parallelism, concurrency), parallelism, concurrency);
                 }
                 z[i][j] = answer;
@@ -208,10 +209,11 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1, bool parallelism
         if (e0.weight == .0) {
             return e1;
         } else if (e1.isTerminal) {
-            return QMDDEdge(e0.weight + e1.weight, 0);
+            return QMDDEdge(e0.weight + e1.weight, nullptr);
         }
     }
     if (e0.uniqueTableKey == e1.uniqueTableKey) {
+        // cout << "Scalar multiplication detected: " << e0.weight << " * Edge with uniqueTableKey: " << e1.uniqueTableKey << endl;
         return QMDDEdge(e0.weight + e1.weight, e0.uniqueTableKey);
     }
     shared_ptr<QMDDNode> n0 = e0.getStartNode();
@@ -228,25 +230,26 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1, bool parallelism
 
     for (size_t i = 0; i < n0->edges.size(); i++) {
         for (size_t j = 0; j < n0->edges[i].size(); j++) {
-            array<int, 2> depths{
-                n0->edges[i][j].depth,
-                n1->edges[i][j].depth
-            };
-            double calculatedDepth = mathUtils::median(depths);
+            // array<int, 2> depths{
+            //     n0->edges[i][j].depth,
+            //     n1->edges[i][j].depth
+            // };
+            // double calculatedDepth = mathUtils::median(depths);
+            // bool executeInParallel = PARAMETER.process.parallel && (!concurrency) && (calculatedDepth >= PARAMETER.process.parallelism);
             // const bool spawn = (!parallelism && calculatedDepth >= PARAMETER.process.parallelism) || (parallelism && !concurrency);
             if (PARAMETER.process.parallel && !concurrency) {
                 fiberFutures.emplace_back(
                     boost::fibers::async([&, i, j]() -> pair<pair<size_t, size_t>, QMDDEdge> {
-                        QMDDEdge p(e0.weight * n0->edges[i][j].weight, n0->edges[i][j].uniqueTableKey);
-                        QMDDEdge q(e1.weight * n1->edges[i][j].weight, n1->edges[i][j].uniqueTableKey);
-                        QMDDEdge r = mathUtils::add(p, q, parallelism, true);
+                        QMDDEdge p(e0.weight * n0->edges[i][j].weight, n0->edges[i][j].getStartNode());
+                        QMDDEdge q(e1.weight * n1->edges[i][j].weight, n1->edges[i][j].getStartNode());
+                        QMDDEdge r = mathUtils::add(p, q, true, parallelism);
                         return {{i, j}, r};
                     })
                 );
             } else {
                 // sequentialTasks.push_back({i, j});
-                QMDDEdge p(e0.weight * n0->edges[i][j].weight, n0->edges[i][j].uniqueTableKey);
-                QMDDEdge q(e1.weight * n1->edges[i][j].weight, n1->edges[i][j].uniqueTableKey);
+                QMDDEdge p(e0.weight * n0->edges[i][j].weight, n0->edges[i][j].getStartNode());
+                QMDDEdge q(e1.weight * n1->edges[i][j].weight, n1->edges[i][j].getStartNode());
                 z[i][j] = mathUtils::add(p, q, parallelism, concurrency);
             }
         }

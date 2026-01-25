@@ -57835,3 +57835,177 @@
 [Sun Jan 18 13:43:11 2026] Host: Mac | Branch: RE/para | Execution time: 1341.78 ms
 [2026-01-18 13:44:10] Host: Mac | Branch: RE/para | Execution time:2128.782458 ms
 [Sun Jan 18 13:44:10 2026] Host: Mac | Branch: RE/para | Execution time: 2196.4 ms
+[2026-01-25 22:31:15] Host: Mac | Branch: main | Execution time:680.169792 ms
+[Sun Jan 25 22:31:15 2026] Host: Mac | Branch: main | Execution time: 684.96 ms
+[2026-01-25 22:33:40] Host: Mac | Branch: main | Execution time:633.050375 ms
+[Sun Jan 25 22:33:40 2026] Host: Mac | Branch: main | Execution time: 660.912 ms
+[2026-01-25 22:33:47] Host: Mac | Branch: main | Execution time:654.744875 ms
+[Sun Jan 25 22:33:47 2026] Host: Mac | Branch: main | Execution time: 673.107 ms
+[2026-01-25 22:39:16] Host: Mac | Branch: main | Execution time:788.571125 ms
+[Sun Jan 25 22:39:16 2026] Host: Mac | Branch: main | Execution time: 797.26 ms
+[2026-01-25 22:39:20] Host: Mac | Branch: main | Execution time:831.947750 ms
+[Sun Jan 25 22:39:20 2026] Host: Mac | Branch: main | Execution time: 836.69 ms
+[2026-01-25 22:39:23] Host: Mac | Branch: main | Execution time:663.042208 ms
+[Sun Jan 25 22:39:23 2026] Host: Mac | Branch: main | Execution time: 666.144 ms
+[2026-01-25 22:39:26] Host: Mac | Branch: main | Execution time:665.023375 ms
+[Sun Jan 25 22:39:26 2026] Host: Mac | Branch: main | Execution time: 668.342 ms
+[2026-01-25 22:39:29] Host: Mac | Branch: main | Execution time:746.572708 ms
+[Sun Jan 25 22:39:29 2026] Host: Mac | Branch: main | Execution time: 750.269 ms
+[2026-01-25 22:41:57] Host: Mac | Branch: main | Execution time:570.871750 ms
+[Sun Jan 25 22:41:57 2026] Host: Mac | Branch: main | Execution time: 576.566 ms
+[2026-01-25 22:42:12] Host: Mac | Branch: main | Execution time:552.653583 ms
+[Sun Jan 25 22:42:12 2026] Host: Mac | Branch: main | Execution time: 577.475 ms
+[2026-01-25 22:42:15] Host: Mac | Branch: main | Execution time:767.115292 ms
+[Sun Jan 25 22:42:15 2026] Host: Mac | Branch: main | Execution time: 771.976 ms
+[2026-01-25 22:42:18] Host: Mac | Branch: main | Execution time:663.849292 ms
+[Sun Jan 25 22:42:18 2026] Host: Mac | Branch: main | Execution time: 671.496 ms
+[2026-01-25 22:42:21] Host: Mac | Branch: main | Execution time:589.143000 ms
+[Sun Jan 25 22:42:21 2026] Host: Mac | Branch: main | Execution time: 1496.96 ms
+[2026-01-25 23:00:56] Host: Mac | Branch: main | Execution time:734.024208 ms
+[Sun Jan 25 23:00:57 2026] Host: Mac | Branch: main | Execution time: 755.82 ms
+[2026-01-25 23:13:53] Host: Mac | Branch: main | Execution time:969.580666 ms
+[Sun Jan 25 23:13:53 2026] Host: Mac | Branch: main | Execution time: 992.747 ms
+[2026-01-25 23:13:58] Host: Mac | Branch: main | Execution time:631.298167 ms
+[Sun Jan 25 23:13:58 2026] Host: Mac | Branch: main | Execution time: 636.086 ms
+[2026-01-25 23:14:01] Host: Mac | Branch: main | Execution time:637.728458 ms
+[Sun Jan 25 23:14:01 2026] Host: Mac | Branch: main | Execution time: 642.432 ms
+[2026-01-25 23:14:05] Host: Mac | Branch: main | Execution time:805.894292 ms
+[Sun Jan 25 23:14:05 2026] Host: Mac | Branch: main | Execution time: 809.655 ms
+[2026-01-25 23:14:09] Host: Mac | Branch: main | Execution time:773.412875 ms
+[Sun Jan 25 23:14:09 2026] Host: Mac | Branch: main | Execution time: 777.638 ms
+[2026-01-25 23:14:11] Host: Mac | Branch: main | Execution time:692.398208 ms
+[Sun Jan 25 23:14:11 2026] Host: Mac | Branch: main | Execution time: 697.615 ms
+[2026-01-25 23:23:19] Host: Mac | Branch: main | Execution time:1002.851041 ms
+[Sun Jan 25 23:23:19 2026] Host: Mac | Branch: main | Execution time: 1025.96 ms
+[2026-01-25 23:23:39] Host: Mac | Branch: main | Execution time:858.464250 ms
+[Sun Jan 25 23:23:39 2026] Host: Mac | Branch: main | Execution time: 881.119 ms
+[2026-01-25 23:23:43] Host: Mac | Branch: main | Execution time:574.879500 ms
+[Sun Jan 25 23:23:43 2026] Host: Mac | Branch: main | Execution time: 577.773 ms
+[2026-01-25 23:23:48] Host: Mac | Branch: main | Execution time:697.641083 ms
+[Sun Jan 25 23:23:48 2026] Host: Mac | Branch: main | Execution time: 703.545 ms
+[2026-01-25 23:23:54] Host: Mac | Branch: main | Execution time:912.355083 ms
+[Sun Jan 25 23:23:54 2026] Host: Mac | Branch: main | Execution time: 916.431 ms
+[2026-01-25 23:23:57] Host: Mac | Branch: main | Execution time:739.103209 ms
+[Sun Jan 25 23:23:57 2026] Host: Mac | Branch: main | Execution time: 743.653 ms
+[2026-01-25 23:24:00] Host: Mac | Branch: main | Execution time:707.083209 ms
+[Sun Jan 25 23:24:00 2026] Host: Mac | Branch: main | Execution time: 710.627 ms
+[2026-01-25 23:35:17] Host: Mac | Branch: main | Execution time:763.835750 ms
+[Sun Jan 25 23:35:17 2026] Host: Mac | Branch: main | Execution time: 788.119 ms
+[2026-01-25 23:35:20] Host: Mac | Branch: main | Execution time:607.057083 ms
+[Sun Jan 25 23:35:20 2026] Host: Mac | Branch: main | Execution time: 611.329 ms
+[2026-01-26 00:29:28] Host: Mac | Branch: main | Execution time:1014.004250 ms
+[Mon Jan 26 00:29:28 2026] Host: Mac | Branch: main | Execution time: 1037.52 ms
+[2026-01-26 00:29:32] Host: Mac | Branch: main | Execution time:1076.482167 ms
+[Mon Jan 26 00:29:32 2026] Host: Mac | Branch: main | Execution time: 1083.17 ms
+[2026-01-26 00:29:36] Host: Mac | Branch: main | Execution time:979.727125 ms
+[Mon Jan 26 00:29:36 2026] Host: Mac | Branch: main | Execution time: 985.579 ms
+[2026-01-26 00:29:40] Host: Mac | Branch: main | Execution time:942.929667 ms
+[Mon Jan 26 00:29:40 2026] Host: Mac | Branch: main | Execution time: 948.114 ms
+[2026-01-26 00:34:41] Host: Mac | Branch: main | Execution time:927.589208 ms
+[Mon Jan 26 00:34:41 2026] Host: Mac | Branch: main | Execution time: 965.268 ms
+[2026-01-26 00:36:17] Host: Mac | Branch: main | Execution time:766.421542 ms
+[Mon Jan 26 00:36:17 2026] Host: Mac | Branch: main | Execution time: 786.909 ms
+[2026-01-26 00:36:21] Host: Mac | Branch: main | Execution time:792.062916 ms
+[Mon Jan 26 00:36:21 2026] Host: Mac | Branch: main | Execution time: 796.336 ms
+[2026-01-26 00:36:47] Host: Mac | Branch: main | Execution time:927.021958 ms
+[Mon Jan 26 00:36:47 2026] Host: Mac | Branch: main | Execution time: 934.181 ms
+[2026-01-26 00:36:51] Host: Mac | Branch: main | Execution time:875.550584 ms
+[Mon Jan 26 00:36:51 2026] Host: Mac | Branch: main | Execution time: 880.397 ms
+[2026-01-26 00:36:54] Host: Mac | Branch: main | Execution time:1121.696291 ms
+[Mon Jan 26 00:36:54 2026] Host: Mac | Branch: main | Execution time: 1126.95 ms
+[2026-01-26 00:37:07] Host: Mac | Branch: main | Execution time:1057.924041 ms
+[Mon Jan 26 00:37:07 2026] Host: Mac | Branch: main | Execution time: 1064.45 ms
+[2026-01-26 00:37:20] Host: Mac | Branch: main | Execution time:907.102250 ms
+[Mon Jan 26 00:37:20 2026] Host: Mac | Branch: main | Execution time: 913.829 ms
+[2026-01-26 00:37:24] Host: Mac | Branch: main | Execution time:911.488625 ms
+[Mon Jan 26 00:37:24 2026] Host: Mac | Branch: main | Execution time: 915.405 ms
+[2026-01-26 00:37:27] Host: Mac | Branch: main | Execution time:1209.142542 ms
+[Mon Jan 26 00:37:27 2026] Host: Mac | Branch: main | Execution time: 1218.31 ms
+[2026-01-26 00:37:44] Host: Mac | Branch: main | Execution time:986.125541 ms
+[Mon Jan 26 00:37:44 2026] Host: Mac | Branch: main | Execution time: 993.105 ms
+[2026-01-26 00:37:47] Host: Mac | Branch: main | Execution time:1127.956458 ms
+[Mon Jan 26 00:37:47 2026] Host: Mac | Branch: main | Execution time: 1132.67 ms
+[2026-01-26 00:37:56] Host: Mac | Branch: main | Execution time:1147.550625 ms
+[Mon Jan 26 00:37:56 2026] Host: Mac | Branch: main | Execution time: 1153.45 ms
+[2026-01-26 00:38:00] Host: Mac | Branch: main | Execution time:984.146709 ms
+[Mon Jan 26 00:38:00 2026] Host: Mac | Branch: main | Execution time: 988.05 ms
+[2026-01-26 00:38:03] Host: Mac | Branch: main | Execution time:993.459834 ms
+[Mon Jan 26 00:38:03 2026] Host: Mac | Branch: main | Execution time: 1000.75 ms
+[2026-01-26 00:41:57] Host: Mac | Branch: main | Execution time:1124.525625 ms
+[Mon Jan 26 00:41:57 2026] Host: Mac | Branch: main | Execution time: 1147.81 ms
+[2026-01-26 00:42:02] Host: Mac | Branch: main | Execution time:896.453083 ms
+[Mon Jan 26 00:42:02 2026] Host: Mac | Branch: main | Execution time: 900.814 ms
+[2026-01-26 00:42:06] Host: Mac | Branch: main | Execution time:838.019958 ms
+[Mon Jan 26 00:42:06 2026] Host: Mac | Branch: main | Execution time: 842.518 ms
+[2026-01-26 00:42:09] Host: Mac | Branch: main | Execution time:1029.504750 ms
+[Mon Jan 26 00:42:09 2026] Host: Mac | Branch: main | Execution time: 1033.85 ms
+[2026-01-26 00:48:25] Host: Mac | Branch: main | Execution time:832.207625 ms
+[Mon Jan 26 00:48:25 2026] Host: Mac | Branch: main | Execution time: 855.431 ms
+[2026-01-26 00:48:50] Host: Mac | Branch: main | Execution time:984.056167 ms
+[Mon Jan 26 00:48:50 2026] Host: Mac | Branch: main | Execution time: 1201.01 ms
+[2026-01-26 00:48:54] Host: Mac | Branch: main | Execution time:906.394958 ms
+[Mon Jan 26 00:48:54 2026] Host: Mac | Branch: main | Execution time: 912.056 ms
+[2026-01-26 00:48:58] Host: Mac | Branch: main | Execution time:1137.998333 ms
+[Mon Jan 26 00:48:58 2026] Host: Mac | Branch: main | Execution time: 1142.77 ms
+[2026-01-26 00:51:07] Host: Mac | Branch: main | Execution time:1139.217834 ms
+[Mon Jan 26 00:51:07 2026] Host: Mac | Branch: main | Execution time: 1163.53 ms
+[2026-01-26 00:51:11] Host: Mac | Branch: main | Execution time:964.843084 ms
+[Mon Jan 26 00:51:11 2026] Host: Mac | Branch: main | Execution time: 969.139 ms
+[2026-01-26 00:51:14] Host: Mac | Branch: main | Execution time:943.349625 ms
+[Mon Jan 26 00:51:14 2026] Host: Mac | Branch: main | Execution time: 949.255 ms
+[2026-01-26 00:51:17] Host: Mac | Branch: main | Execution time:1228.259875 ms
+[Mon Jan 26 00:51:17 2026] Host: Mac | Branch: main | Execution time: 1235.08 ms
+[2026-01-26 00:51:20] Host: Mac | Branch: main | Execution time:1174.339833 ms
+[Mon Jan 26 00:51:20 2026] Host: Mac | Branch: main | Execution time: 1179.54 ms
+[2026-01-26 00:55:04] Host: Mac | Branch: main | Execution time:554.657125 ms
+[Mon Jan 26 00:55:04 2026] Host: Mac | Branch: main | Execution time: 744.295 ms
+[2026-01-26 00:55:10] Host: Mac | Branch: main | Execution time:1174.972500 ms
+[Mon Jan 26 00:55:10 2026] Host: Mac | Branch: main | Execution time: 1181.13 ms
+[2026-01-26 00:55:12] Host: Mac | Branch: main | Execution time:671.111708 ms
+[Mon Jan 26 00:55:12 2026] Host: Mac | Branch: main | Execution time: 677.124 ms
+[2026-01-26 00:55:16] Host: Mac | Branch: main | Execution time:1156.683958 ms
+[Mon Jan 26 00:55:16 2026] Host: Mac | Branch: main | Execution time: 1162.55 ms
+[2026-01-26 00:55:19] Host: Mac | Branch: main | Execution time:983.105209 ms
+[Mon Jan 26 00:55:19 2026] Host: Mac | Branch: main | Execution time: 987.431 ms
+[2026-01-26 00:55:22] Host: Mac | Branch: main | Execution time:978.549792 ms
+[Mon Jan 26 00:55:22 2026] Host: Mac | Branch: main | Execution time: 983.196 ms
+[2026-01-26 00:55:26] Host: Mac | Branch: main | Execution time:1057.426750 ms
+[Mon Jan 26 00:55:26 2026] Host: Mac | Branch: main | Execution time: 1062.49 ms
+[2026-01-26 00:55:29] Host: Mac | Branch: main | Execution time:1019.903709 ms
+[Mon Jan 26 00:55:29 2026] Host: Mac | Branch: main | Execution time: 1024.87 ms
+[2026-01-26 00:55:34] Host: Mac | Branch: main | Execution time:1144.768625 ms
+[Mon Jan 26 00:55:34 2026] Host: Mac | Branch: main | Execution time: 1149.62 ms
+[2026-01-26 00:55:38] Host: Mac | Branch: main | Execution time:915.241208 ms
+[Mon Jan 26 00:55:38 2026] Host: Mac | Branch: main | Execution time: 920.47 ms
+[2026-01-26 00:55:41] Host: Mac | Branch: main | Execution time:964.164541 ms
+[Mon Jan 26 00:55:41 2026] Host: Mac | Branch: main | Execution time: 968.505 ms
+[2026-01-26 00:55:45] Host: Mac | Branch: main | Execution time:1049.229416 ms
+[Mon Jan 26 00:55:45 2026] Host: Mac | Branch: main | Execution time: 1055.36 ms
+[2026-01-26 00:55:48] Host: Mac | Branch: main | Execution time:977.528583 ms
+[Mon Jan 26 00:55:48 2026] Host: Mac | Branch: main | Execution time: 982.52 ms
+[2026-01-26 00:59:18] Host: Mac | Branch: main | Execution time:665.877666 ms
+[Mon Jan 26 00:59:18 2026] Host: Mac | Branch: main | Execution time: 685.366 ms
+[2026-01-26 00:59:22] Host: Mac | Branch: main | Execution time:831.031583 ms
+[Mon Jan 26 00:59:22 2026] Host: Mac | Branch: main | Execution time: 836.125 ms
+[2026-01-26 00:59:25] Host: Mac | Branch: main | Execution time:1048.165417 ms
+[Mon Jan 26 00:59:25 2026] Host: Mac | Branch: main | Execution time: 1053.3 ms
+[2026-01-26 00:59:27] Host: Mac | Branch: main | Execution time:958.718833 ms
+[Mon Jan 26 00:59:27 2026] Host: Mac | Branch: main | Execution time: 963.264 ms
+[2026-01-26 00:59:31] Host: Mac | Branch: main | Execution time:933.586334 ms
+[Mon Jan 26 00:59:31 2026] Host: Mac | Branch: main | Execution time: 938.116 ms
+[2026-01-26 00:59:34] Host: Mac | Branch: main | Execution time:1050.115292 ms
+[Mon Jan 26 00:59:34 2026] Host: Mac | Branch: main | Execution time: 1054.55 ms
+[2026-01-26 00:59:37] Host: Mac | Branch: main | Execution time:885.224167 ms
+[Mon Jan 26 00:59:37 2026] Host: Mac | Branch: main | Execution time: 890.36 ms
+[2026-01-26 00:59:42] Host: Mac | Branch: main | Execution time:839.533125 ms
+[Mon Jan 26 00:59:42 2026] Host: Mac | Branch: main | Execution time: 843.72 ms
+[2026-01-26 01:05:42] Host: Mac | Branch: main | Execution time:838.253041 ms
+[Mon Jan 26 01:05:42 2026] Host: Mac | Branch: main | Execution time: 845.602 ms
+[2026-01-26 01:05:45] Host: Mac | Branch: main | Execution time:959.624333 ms
+[Mon Jan 26 01:05:45 2026] Host: Mac | Branch: main | Execution time: 963.946 ms
+[2026-01-26 01:05:48] Host: Mac | Branch: main | Execution time:979.168959 ms
+[Mon Jan 26 01:05:48 2026] Host: Mac | Branch: main | Execution time: 988.229 ms
+[2026-01-26 01:05:52] Host: Mac | Branch: main | Execution time:1066.449959 ms
+[Mon Jan 26 01:05:52 2026] Host: Mac | Branch: main | Execution time: 1074.3 ms
+[2026-01-26 01:05:56] Host: Mac | Branch: main | Execution time:928.453417 ms
+[Mon Jan 26 01:05:56 2026] Host: Mac | Branch: main | Execution time: 940.917 ms

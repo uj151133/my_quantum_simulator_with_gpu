@@ -1368,7 +1368,7 @@ void QuantumCircuit::addToff(const array<int, 2>& controlIndexes, int targetInde
                     partialToff[partialToff.size() - 1] = mathUtils::kron(gate::X().getInitialEdge(), partialToff[partialToff.size() - 1]);
                 }
             } else {
-                auto idx = ranges::find(sortedControlIndexes, i);
+                auto idx = std::ranges::find(sortedControlIndexes, i);
                 if (idx != sortedControlIndexes.end()) {
                     int j = static_cast<int>(distance(sortedControlIndexes.begin(), idx));
                             for (int k = 0; k < partialToff.size(); k++) {
@@ -1431,7 +1431,7 @@ void QuantumCircuit::addMCT(const vector<int>& controlIndexes, int targetIndex) 
                     partialMCT[partialMCT.size() - 1] = mathUtils::kron(gate::X().getInitialEdge(), partialMCT[partialMCT.size() - 1]);
                 }
             } else {
-                auto idx = ranges::find(sortedControlIndexes, i);
+                auto idx = std::ranges::find(sortedControlIndexes, i);
                 if (idx != sortedControlIndexes.end()) {
                     int j = static_cast<int>(distance(sortedControlIndexes.begin(), idx));
                             for (int k = 0; k < partialMCT.size(); k++) {
