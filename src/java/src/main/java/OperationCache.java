@@ -23,7 +23,7 @@ public class OperationCache {
         CACHE = Caffeine.newBuilder()
                 .maximumSize(1_048_576)
                 .initialCapacity(262_144)
-                .recordStats()
+                // .recordStats()
                 .build();
     }
     

@@ -42,14 +42,15 @@ ostream& operator<<(ostream& os, const QMDDVariant& variant);
 
 struct QMDDEdge{
     complex<double> weight;
+    shared_ptr<QMDDNode> son_;
     int64_t uniqueTableKey;
     bool isTerminal;
     int depth;
 
-    QMDDEdge(complex<double> w = {.0, .0}, shared_ptr<QMDDNode> n = nullptr);
-    QMDDEdge(double w, shared_ptr<QMDDNode> n = nullptr);
-    QMDDEdge(complex<double> w, int64_t key);
-    QMDDEdge(double w, int64_t key);
+    QMDDEdge(complex<double> w = {.0, .0}, shared_ptr<QMDDNode> n = nullptr, int64_t key = 0);
+    QMDDEdge(double w, shared_ptr<QMDDNode> n = nullptr, int64_t key = 0);
+    // QMDDEdge(complex<double> w, int64_t key);
+    // QMDDEdge(double w, int64_t key);
     QMDDEdge(const QMDDEdge& other) = default;
     shared_ptr<QMDDNode> getStartNode() const;
     vector<complex<double>> getAllElementsForKet();

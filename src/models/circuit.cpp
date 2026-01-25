@@ -1368,7 +1368,7 @@ void QuantumCircuit::addToff(const array<int, 2>& controlIndexes, int targetInde
                     partialToff[partialToff.size() - 1] = mathUtils::kron(gate::X().getInitialEdge(), partialToff[partialToff.size() - 1]);
                 }
             } else {
-                auto idx = ranges::find(sortedControlIndexes, i);
+                auto idx = std::ranges::find(sortedControlIndexes, i);
                 if (idx != sortedControlIndexes.end()) {
                     int j = static_cast<int>(distance(sortedControlIndexes.begin(), idx));
                             for (int k = 0; k < partialToff.size(); k++) {
@@ -1431,7 +1431,7 @@ void QuantumCircuit::addMCT(const vector<int>& controlIndexes, int targetIndex) 
                     partialMCT[partialMCT.size() - 1] = mathUtils::kron(gate::X().getInitialEdge(), partialMCT[partialMCT.size() - 1]);
                 }
             } else {
-                auto idx = ranges::find(sortedControlIndexes, i);
+                auto idx = std::ranges::find(sortedControlIndexes, i);
                 if (idx != sortedControlIndexes.end()) {
                     int j = static_cast<int>(distance(sortedControlIndexes.begin(), idx));
                             for (int k = 0; k < partialMCT.size(); k++) {
@@ -1513,9 +1513,13 @@ void QuantumCircuit::addOracle(int omega) {
     QMDDEdge partialCZ1 = accumulate(customI.rbegin() + 1, customI.rend(), customI.back(), [](const QMDDEdge& accumulated, const QMDDEdge& current) {
         return mathUtils::kron(current, accumulated);
     });
-    QMDDEdge partialCZ2 = QMDDEdge(-2.0, accumulate(customBrkt.rbegin() + 1, customBrkt.rend(), customBrkt.back(), [](const QMDDEdge& accumulated, const QMDDEdge& current) {
-        return mathUtils::kron(current, accumulated);
-    }).uniqueTableKey);
+    auto brktAcc = accumulate(
+        customBrkt.rbegin() + 1, customBrkt.rend(), customBrkt.back(),
+        [](const QMDDEdge& accumulated, const QMDDEdge& current) {
+            return mathUtils::kron(current, accumulated);
+        }
+    );
+    QMDDEdge partialCZ2 = QMDDEdge(-2.0, brktAcc.getStartNode(), brktAcc.uniqueTableKey);
     // QMDDEdge customCZ = mathUtils::add(partialCZ1, partialCZ2);
     QMDDEdge customCZ = threadPool.submitFiber([&]() { return mathUtils::add(partialCZ1, partialCZ2); }).get();
     if (PARAMETER.circuit.mode == "sparse") {
@@ -1534,9 +1538,14 @@ void QuantumCircuit::addDiffuser() {
         return mathUtils::kron(current, accumulated);
     });
     vector<QMDDEdge> customBrkt(this->numQubits_, braketZero);
-    QMDDEdge partialCZ2 = QMDDEdge(-2.0, accumulate(customBrkt.rbegin() + 1, customBrkt.rend(), customBrkt.back(), [](const QMDDEdge& accumulated, const QMDDEdge& current) {
-        return mathUtils::kron(current, accumulated);
-    }).uniqueTableKey);
+    auto brktAcc = accumulate(
+        customBrkt.rbegin() + 1, customBrkt.rend(), customBrkt.back(),
+        [](const QMDDEdge& accumulated, const QMDDEdge& current) {
+            return mathUtils::kron(current, accumulated);
+        }
+    );
+
+    QMDDEdge partialCZ2 = QMDDEdge(-2.0, brktAcc.getStartNode(), brktAcc.uniqueTableKey);
     // QMDDEdge customCZ = mathUtils::add(partialCZ1, partialCZ2);
     QMDDEdge customCZ = threadPool.submitFiber([&]() { return mathUtils::add(partialCZ1, partialCZ2); }).get();
 

@@ -92,8 +92,15 @@ optional<QMDDEdge> OperationCacheClient::findGlobal(int64_t key) {
         return nullopt;
     }
 
+    shared_ptr<QMDDNode> nodePtr = UniqueTable::getInstance().find(out.uniqueTableKey);
+
+    if (!nodePtr && out.uniqueTableKey != 0) {
+        return nullopt;
+    }
+
     return make_optional<QMDDEdge>(
         complex<double>(out.real, out.imag),
+        nodePtr,
         out.uniqueTableKey
     );
 }

@@ -49,9 +49,9 @@ do this
 - Other dependencies as specified in CMakeLists.txt
 
 #### .NET Dependencies
-- **.NET 8.0 or later**: For the Blazor GUI
+- **.NET 9.0 or later**: For the Blazor GUI
 
-### yaml
+<!-- ### yaml
 please install and build yaml.
 ```zsh
 git clone https://github.com/jbeder/yaml-cpp.git
@@ -61,12 +61,14 @@ cd build
 cmake ..
 make
 sudo make install
-```
+``` -->
 
 ### nlohmann/json (macOS)
 ```zsh
 brew install nlohmann-json
 ```
+
+
 
 ### 64 bit float for metal
 
@@ -81,9 +83,51 @@ swift test
 ↓download from this link
 https://dotnet.microsoft.com/ja-jp/download/dotnet/thank-you/sdk-9.0.101-macos-arm64-installer
 
+### vcpkg
+```zsh
+cd ~
+git clone https://github.com/microsoft/vcpkg.git
+cd vcpkg
+./bootstrap-vcpkg.sh
+```
+```zsh
+echo 'export VCPKG_ROOT="$HOME/vcpkg"' >> ~/.zshrc
+source ~/.zshrc
+```
+```zsh
+$VCPKG_ROOT/vcpkg install boost-fiber
+$VCPKG_ROOT/vcpkg install folly
+```
+
 ### others
 ```zsh
 pip install -r requirements.txt
+```
+or
+```zsh
+pip install -r requirements.txt
+```
+
+## Build
+### macOS
+```zsh
+cmake --preset macos-release
+cd build
+ninja
+```
+### Ubuntu
+
+```zsh
+cmake --preset ubuntu-release
+cd build
+ninja
+```
+
+## RUN
+
+```zsh
+cd ~/my_quantum_simulator_with_gpu
+./qmdd_sim
 ```
 
 

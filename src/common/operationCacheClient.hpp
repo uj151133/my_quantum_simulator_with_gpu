@@ -13,6 +13,7 @@
 #include <cstdlib>
 #include <memory_resource>
 #include "../models/qmdd.hpp"
+#include "../models/uniqueTable.hpp"
 
 using namespace std;
 

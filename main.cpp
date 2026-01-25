@@ -64,6 +64,7 @@ void execute() {
     // qaoa16MQT();
     // qwalk13MQT();
     randomRotate(13, 200);
+    UniqueTable::getInstance().printAllEntries();
 }
 
 bool translateAndExecuteQASM(const string& qasm_file) {
