@@ -7,7 +7,6 @@
 #include <ostream>
 #include <gsl/gsl_sf_bessel.h>
 #include "qmdd.hpp"
-#include "../common/constant.hpp"
 #include "../common/mathUtils.hpp"
 using namespace std;
 

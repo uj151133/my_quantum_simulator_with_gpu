@@ -8,9 +8,7 @@
 #include <signal.h>
 #include <fstream>
 
-#include "src/common/parameter.hpp"
 #include "src/models/qmdd.hpp"
-#include "src/common/constant.hpp"
 #include "src/models/gate.hpp"
 #include "src/models/state.hpp"
 #include "src/models/uniqueTable.hpp"
@@ -30,6 +28,7 @@
 // #include "src/test/QAOA/qaoa16MQT.hpp"
 #include "src/test/QWalk/qwalk13MQT.hpp"
 #include "src/modules/threadPool.hpp"
+#include "src/common/bigBang.hpp"
 using namespace std;
 
 // グローバルな共有メモリIPCサーバーインスタンス
@@ -121,33 +120,8 @@ int main(int argc, char* argv[]) {
     signal(SIGINT,  signalHandler);
     signal(SIGTERM, signalHandler);
 
-#ifdef __APPLE__
-    const char* cfgPath = "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/config.yaml";
-    const char* stgPath = "/Users/mitsuishikaito/my_quantum_simulator_with_gpu/setting.ini";
-#elif __linux__
-    const char* cfgPath = "/home/ark/my_quantum_simulator_with_gpu/config.yaml";
-    const char* stgPath = "/home/ark/my_quantum_simulator_with_gpu/setting.ini";
-#else
-    #error "Unsupported operating system"
-#endif
+    birth();
 
-    // // 設定ファイル読み込み（例外ガード）
-    // try {
-    //     cout << "Loading config file: " << cfgPath << endl;
-    //     cout << "Loading setting file: " << stgPath << endl;
-    //     PARAMETER.loadFromFile(cfgPath, stgPath);
-    // } catch (const exception& e) {
-    //     cerr << "Config load failed: " << e.what() << endl;
-    // }
-
-    fileUtils::resolveFilePath();
-    try {
-        cout << "Loading config file: " << fileUtils::getConfigPath() << endl;
-        cout << "Loading setting file: " << fileUtils::getSettingPath() << endl;
-        PARAMETER.load(); // 一回だけ
-    } catch (const exception& e) {
-        cerr << "Config load failed: " << e.what() << endl;
-    }
 
     // コマンドライン引数を解析
     bool startSharedMemoryServer = false;

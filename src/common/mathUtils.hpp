@@ -19,8 +19,8 @@
 #include "parameter.hpp"
 #include "calculation.hpp"
 #include "../modules/threadPool.hpp"
-#include "constant.hpp"
 #include "../common/operationCacheClient.hpp"
+#include "bigBang.hpp"
 
 
 using namespace std;

@@ -4,7 +4,7 @@ extern "C" {
     #include "../atomic/atomic.h"
 }
 
-UniqueTable::UniqueTable() : table_(this->tableSize_) {
+UniqueTable::UniqueTable() : tableSize_(PARAMETER.table.size), table_(this->tableSize_) {
     for (auto& entry : this->table_) entry.store(nullptr, memory_order_relaxed);
 }
 
