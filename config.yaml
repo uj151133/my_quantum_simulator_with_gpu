@@ -6,7 +6,7 @@ process:
   parallelism: 7
 
 table:
-  size: 1048576
+  size: 16777216
 
 cache:
   alive: false
