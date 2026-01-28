@@ -238,10 +238,10 @@ void QuantumCircuit::smartInsert(const vector<int>& qubitIndices, const Part& pa
             this->wires[i].push_back({Type::I, QMDDGate(identityEdge)});
         }
         this->wires[minIndex].push_back(part);
-        for (int i = minIndex + 1; i < maxIndex; ++i) {
-            this->wires[i].push_back({Type::VOID, QMDDGate()});
-        }
         if (qubitIndices.size() >= 2) {
+            for (int i = minIndex + 1; i < maxIndex; ++i) {
+                this->wires[i].push_back({Type::VOID, QMDDGate()});
+            }
             this->wires[maxIndex].push_back({Type::ANKER, QMDDGate()});
         }
         for (int i = maxIndex + 1; i < this->numQubits_; ++i) {

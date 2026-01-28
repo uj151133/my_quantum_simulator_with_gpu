@@ -1,9 +1,9 @@
 #include "mathUtils.hpp"
 
 QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, bool parallelism, bool concurrency) {
-    OperationCacheClient& cache = OperationCacheClient::getInstance();
-    int64_t operationCacheKey = calculation::generateOperationCacheKey(OperationKey(e0, OperationType::MUL, e1));
     if (PARAMETER.cache.alive) {
+        OperationCacheClient& cache = OperationCacheClient::getInstance();
+        int64_t operationCacheKey = calculation::generateOperationCacheKey(OperationKey(e0, OperationType::MUL, e1));
         if (auto existingEdge = cache.find(operationCacheKey, concurrency)) {
             if (existingEdge->weight != .0 && existingEdge->uniqueTableKey != 0) {
                 // cout << "\033[1;36mCache hit!\033[0m" << endl;
@@ -101,6 +101,8 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, bool parallelism
 
     QMDDEdge result = allWeightsAreZero ? edgeZero : QMDDEdge(tmpWeight, make_shared<QMDDNode>(z));
     if (PARAMETER.cache.alive) {
+        OperationCacheClient& cache = OperationCacheClient::getInstance();
+        int64_t operationCacheKey = calculation::generateOperationCacheKey(OperationKey(e0, OperationType::MUL, e1));
         cache.insert(operationCacheKey, result, concurrency);
     }
     return result;
@@ -189,9 +191,9 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, bool parallelism
 // }
 
 QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1, bool parallelism, bool concurrency) {
-    OperationCacheClient& cache = OperationCacheClient::getInstance();
-    int64_t operationCacheKey = calculation::generateOperationCacheKey(OperationKey(e0, OperationType::ADD, e1));
     if (PARAMETER.cache.alive) {
+        OperationCacheClient& cache = OperationCacheClient::getInstance();
+        int64_t operationCacheKey = calculation::generateOperationCacheKey(OperationKey(e0, OperationType::ADD, e1));
         if (auto existingEdge = cache.find(operationCacheKey, concurrency)) {
             if (existingEdge->weight != .0 && existingEdge->uniqueTableKey != 0) {
                 // cout << "\033[1;36mCache hit!\033[0m" << endl;
@@ -274,6 +276,8 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1, bool parallelism
 
     QMDDEdge result = allWeightsAreZero ? edgeZero : QMDDEdge(tmpWeight, make_shared<QMDDNode>(z));
     if (PARAMETER.cache.alive) {
+        OperationCacheClient& cache = OperationCacheClient::getInstance();
+        int64_t operationCacheKey = calculation::generateOperationCacheKey(OperationKey(e0, OperationType::ADD, e1));
         cache.insert(operationCacheKey, result, concurrency);
     }
     return result;
@@ -359,9 +363,10 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1, bool parallelism
 // }
 
 QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
-    OperationCacheClient& cache = OperationCacheClient::getInstance();
-    int64_t operationCacheKey = calculation::generateOperationCacheKey(OperationKey(e0, OperationType::KRONECKER, e1));
+    
     if (PARAMETER.cache.alive) {
+        OperationCacheClient& cache = OperationCacheClient::getInstance();
+        int64_t operationCacheKey = calculation::generateOperationCacheKey(OperationKey(e0, OperationType::KRONECKER, e1));
         if (auto existingEdge = cache.find(operationCacheKey, false)) {
             if (existingEdge->weight != .0 && existingEdge->uniqueTableKey != 0) {
                 // cout << "\033[1;36mCache hit!\033[0m" << endl;
@@ -397,7 +402,7 @@ QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
             for (size_t j = 0; j < n0->edges[i].size(); j++) {
                 futures.emplace_back(
                     boost::fibers::async([&, i, j]() {
-                        return mathUtils::kron(n0->edges[i][j], e1, depth + 1);
+                        return mathUtils::kron(n0->edges[i][j], e1, depth++);
                     })
                 );
             }
@@ -423,7 +428,7 @@ QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
         // cout << "sequential kron" << endl;
         for (size_t i = 0; i < n0->edges.size(); i++) {
             for (size_t j = 0; j < n0->edges[i].size(); j++) {
-                z[i][j] = mathUtils::kron(n0->edges[i][j], e1, depth + 1);
+                z[i][j] = mathUtils::kron(n0->edges[i][j], e1, depth++);
 
                 if (z[i][j].weight != .0) {
                     allWeightsAreZero = false;
@@ -442,48 +447,50 @@ QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
 
     QMDDEdge result = allWeightsAreZero ? edgeZero : QMDDEdge(e0.weight * tmpWeight, make_shared<QMDDNode>(z));
     if (PARAMETER.cache.alive) {
+        OperationCacheClient& cache = OperationCacheClient::getInstance();
+        int64_t operationCacheKey = calculation::generateOperationCacheKey(OperationKey(e0, OperationType::KRONECKER, e1));
         cache.insert(operationCacheKey, result, false);
     }
     return result;
 }
 
-QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1) {
-    OperationCacheClient& cache = OperationCacheClient::getInstance();
-    int64_t operationCacheKey = calculation::generateOperationCacheKey(OperationKey(e0, OperationType::KRONECKER, e1));
-    if (PARAMETER.cache.alive) {
-        if (auto existingEdge = cache.find(operationCacheKey, false)) {
-            if (existingEdge->weight != .0 && existingEdge->uniqueTableKey != 0) {
-                // cout << "\033[1;36mCache hit!\033[0m" << endl;
-                return *existingEdge;
-            }
-        }
-    }
-    // cout << "\033[1;35mCache miss!\033[0m" << endl;
+// QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1) {
+//     OperationCacheClient& cache = OperationCacheClient::getInstance();
+//     int64_t operationCacheKey = calculation::generateOperationCacheKey(OperationKey(e0, OperationType::KRONECKER, e1));
+//     if (PARAMETER.cache.alive) {
+//         if (auto existingEdge = cache.find(operationCacheKey, false)) {
+//             if (existingEdge->weight != .0 && existingEdge->uniqueTableKey != 0) {
+//                 // cout << "\033[1;36mCache hit!\033[0m" << endl;
+//                 return *existingEdge;
+//             }
+//         }
+//     }
+//     // cout << "\033[1;35mCache miss!\033[0m" << endl;
 
-    if (e0.isTerminal) {
-        if (e0.weight == .0) {
-            return e0;
-        }else if (e0.weight == 1.0) {
-            return e1;
-        } else {
-            return QMDDEdge(e0.weight * e1.weight, e1.uniqueTableKey);
-        }
-    }
-    shared_ptr<QMDDNode> n0 = e0.getStartNode();
-    shared_ptr<QMDDNode> n1 = e1.getStartNode();
-    vector<vector<QMDDEdge>> z(n0->edges.size(), vector<QMDDEdge>(n1->edges[0].size()));
-    for (size_t i = 0; i < n0->edges.size(); i++) {
-        for (size_t j = 0; j < n0->edges[i].size(); j++) {
-            z[i][j] = QMDDEdge(n0->edges[i][j].weight, e1.uniqueTableKey);
-        }
-    }
+//     if (e0.isTerminal) {
+//         if (e0.weight == .0) {
+//             return e0;
+//         }else if (e0.weight == 1.0) {
+//             return e1;
+//         } else {
+//             return QMDDEdge(e0.weight * e1.weight, e1.uniqueTableKey);
+//         }
+//     }
+//     shared_ptr<QMDDNode> n0 = e0.getStartNode();
+//     shared_ptr<QMDDNode> n1 = e1.getStartNode();
+//     vector<vector<QMDDEdge>> z(n0->edges.size(), vector<QMDDEdge>(n1->edges[0].size()));
+//     for (size_t i = 0; i < n0->edges.size(); i++) {
+//         for (size_t j = 0; j < n0->edges[i].size(); j++) {
+//             z[i][j] = QMDDEdge(n0->edges[i][j].weight, e1.uniqueTableKey);
+//         }
+//     }
 
-    QMDDEdge result = QMDDEdge(e0.weight * e1.weight, make_shared<QMDDNode>(z));
-    if (PARAMETER.cache.alive) {
-        cache.insert(operationCacheKey, result, false);
-    }
-    return result;
-}
+//     QMDDEdge result = QMDDEdge(e0.weight * e1.weight, make_shared<QMDDNode>(z));
+//     if (PARAMETER.cache.alive) {
+//         cache.insert(operationCacheKey, result, false);
+//     }
+//     return result;
+// }
 
 
 // QMDDEdge mathUtils::kronForDiagonal(const QMDDEdge& e0, const QMDDEdge& e1) {
