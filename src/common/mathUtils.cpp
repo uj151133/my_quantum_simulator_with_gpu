@@ -22,7 +22,7 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, bool parallelism
         } else if (e0.weight == 1.0){
             return e1;
         } else {
-            return QMDDEdge(e0.weight * e1.weight, e1.uniqueTableKey);
+            return QMDDEdge(e0.weight * e1.weight, e1.getStartNode());
         }
     }
 
@@ -58,8 +58,8 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, bool parallelism
                     boost::fibers::async([&, i, j]() -> pair<pair<size_t, size_t>, QMDDEdge> {
                         QMDDEdge answer = edgeZero;
                         for (size_t k = 0; k < n0->edges[0].size(); k++) {
-                            QMDDEdge p(e0.weight * n0->edges[i][k].weight, n0->edges[i][k].uniqueTableKey);
-                            QMDDEdge q(e1.weight * n1->edges[k][j].weight, n1->edges[k][j].uniqueTableKey);
+                            QMDDEdge p(e0.weight * n0->edges[i][k].weight, n0->edges[i][k].getStartNode());
+                            QMDDEdge q(e1.weight * n1->edges[k][j].weight, n1->edges[k][j].getStartNode());
                             answer = mathUtils::add(answer, mathUtils::mul(p, q, parallelism, true), parallelism, true);
                         }
                         return {{i, j}, answer};
@@ -68,8 +68,8 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, bool parallelism
             } else {
                 QMDDEdge answer = edgeZero;
                 for (size_t k = 0; k < n0->edges[0].size(); k++) {
-                    QMDDEdge p(e0.weight * n0->edges[i][k].weight, n0->edges[i][k].uniqueTableKey);
-                    QMDDEdge q(e1.weight * n1->edges[k][j].weight, n1->edges[k][j].uniqueTableKey);
+                    QMDDEdge p(e0.weight * n0->edges[i][k].weight, n0->edges[i][k].getStartNode());
+                    QMDDEdge q(e1.weight * n1->edges[k][j].weight, n1->edges[k][j].getStartNode());
                     answer = mathUtils::add(answer, mathUtils::mul(p, q, parallelism, concurrency), parallelism, concurrency);
                 }
                 z[i][j] = answer;
@@ -214,7 +214,7 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1, bool parallelism
         }
     }
     if (e0.uniqueTableKey == e1.uniqueTableKey) {
-        return QMDDEdge(e0.weight + e1.weight, e0.uniqueTableKey);
+        return QMDDEdge(e0.weight + e1.weight, e0.getStartNode());
     }
     shared_ptr<QMDDNode> n0 = e0.getStartNode();
     shared_ptr<QMDDNode> n1 = e1.getStartNode();
@@ -239,16 +239,16 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1, bool parallelism
             if (PARAMETER.process.parallel && !concurrency) {
                 fiberFutures.emplace_back(
                     boost::fibers::async([&, i, j]() -> pair<pair<size_t, size_t>, QMDDEdge> {
-                        QMDDEdge p(e0.weight * n0->edges[i][j].weight, n0->edges[i][j].uniqueTableKey);
-                        QMDDEdge q(e1.weight * n1->edges[i][j].weight, n1->edges[i][j].uniqueTableKey);
+                        QMDDEdge p(e0.weight * n0->edges[i][j].weight, n0->edges[i][j].getStartNode());
+                        QMDDEdge q(e1.weight * n1->edges[i][j].weight, n1->edges[i][j].getStartNode());
                         QMDDEdge r = mathUtils::add(p, q, parallelism, true);
                         return {{i, j}, r};
                     })
                 );
             } else {
                 // sequentialTasks.push_back({i, j});
-                QMDDEdge p(e0.weight * n0->edges[i][j].weight, n0->edges[i][j].uniqueTableKey);
-                QMDDEdge q(e1.weight * n1->edges[i][j].weight, n1->edges[i][j].uniqueTableKey);
+                QMDDEdge p(e0.weight * n0->edges[i][j].weight, n0->edges[i][j].getStartNode());
+                QMDDEdge q(e1.weight * n1->edges[i][j].weight, n1->edges[i][j].getStartNode());
                 z[i][j] = mathUtils::add(p, q, parallelism, concurrency);
             }
         }
@@ -383,7 +383,7 @@ QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
         }else if (e0.weight == 1.0) {
             return e1;
         } else {
-            return QMDDEdge(e0.weight * e1.weight, e1.uniqueTableKey);
+            return QMDDEdge(e0.weight * e1.weight, e1.getStartNode());
         }
     }
     shared_ptr<QMDDNode> n0 = e0.getStartNode();

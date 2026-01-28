@@ -13,9 +13,9 @@ using namespace std;
 
 struct Entry {
     int64_t key;
-    shared_ptr<QMDDNode> value;
+    weak_ptr<QMDDNode> value;
     Entry* next;
-    Entry(int64_t k, shared_ptr<QMDDNode> v, Entry* n=nullptr) : key(k), value(v), next(n) {}
+    Entry(int64_t k, weak_ptr<QMDDNode> v, Entry* n=nullptr) : key(k), value(v), next(n) {}
 };
 
 class UniqueTable {
