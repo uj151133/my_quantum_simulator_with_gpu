@@ -2,7 +2,7 @@
 #define STATE_HPP
 
 #include "qmdd.hpp"
-#include "../common/constant.hpp"
+#include "../common/bigBang.hpp"
 
 using namespace std;
 

@@ -9,7 +9,7 @@ table:
   size: 1048576
 
 cache:
-  alive: true
+  alive: false
   size: 1048576
 
 circuit:

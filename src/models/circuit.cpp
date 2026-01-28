@@ -11,7 +11,6 @@ extern "C" void qc_critical_block() {
 }
 
 QuantumCircuit::QuantumCircuit(int numQubits, QMDDState initialState) : numQubits_(numQubits), finalState_(initialState) {
-    call_once(initExtendedEdgeFlag, initExtendedEdge);
     this->wires.resize(this->numQubits_);
     if (this->numQubits_ < 1) {
         throw std::invalid_argument("Number of qubits must be at least 1.");
@@ -28,7 +27,6 @@ QuantumCircuit::QuantumCircuit(int numQubits, QMDDState initialState) : numQubit
 
 QuantumCircuit::QuantumCircuit(int numQubits) : numQubits_(numQubits), finalState_(state::Ket0()) {
     this->wires.resize(this->numQubits_);
-    call_once(initExtendedEdgeFlag, initExtendedEdge);
     if (this->numQubits_ < 1) {
         throw invalid_argument("Number of qubits must be at least 1.");
     }

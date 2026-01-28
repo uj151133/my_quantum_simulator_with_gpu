@@ -178,7 +178,7 @@ vector<complex<double>> QMDDNode::getWeights() const {
 /////////////////////////////////////
 
 QMDDGate::QMDDGate(QMDDEdge edge)
-    : initialEdge_(std::move(edge)){}
+    : initialEdge_(edge){}
 
 shared_ptr<QMDDNode> QMDDGate::getStartNode() const {
     return this->initialEdge_.getStartNode();
@@ -208,7 +208,7 @@ ostream& operator<<(ostream& os, const QMDDGate& gate) {
 /////////////////////////////////////
 
 QMDDState::QMDDState(QMDDEdge edge)
-    : initialEdge_(std::move(edge)) {}
+    : initialEdge_(edge) {}
 
 shared_ptr<QMDDNode> QMDDState::getStartNode() const {
     return this->initialEdge_.getStartNode();
