@@ -30,6 +30,7 @@
 // #include "src/test/QAOA/qaoa16MQT.hpp"
 #include "src/test/QWalk/qwalk13MQT.hpp"
 #include "src/modules/threadPool.hpp"
+#include "src/test/QPEInexact/qpeInexact18MQT.hpp"
 using namespace std;
 
 // グローバルな共有メモリIPCサーバーインスタンス
@@ -62,7 +63,8 @@ void execute() {
 
     // grover11MQT();
     // qaoa16MQT();
-    qwalk13MQT();
+    // qwalk13MQT();
+    qpeInexact18MQT();
     // randomRotate(13, 200);
 }
 
