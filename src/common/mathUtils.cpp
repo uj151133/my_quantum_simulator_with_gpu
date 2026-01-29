@@ -393,7 +393,7 @@ QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
     bool allWeightsAreZero = true;
     // const bool spawn = depth < (PARAMETER.process.parallelism + PARAMETER.process.concurrency);
 
-    if (PARAMETER.process.parallel) {
+    if (PARAMETER.process.parallel and false) {
 
         vector<boost::fibers::future<QMDDEdge>> futures;
         futures.reserve(n0->edges.size() * n0->edges[0].size());

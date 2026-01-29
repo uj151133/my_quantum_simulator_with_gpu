@@ -13,13 +13,13 @@ cache:
   size: 1048576
 
 circuit:
-  mode: "moderate" # "sparse", "moderate", "dense"
+  mode: "dense" # "sparse", "moderate", "dense"
   cancerMax: 1
   verbose: true
   timer: false
 
   Dealer:
-    alive: true
+    alive: false
     nonzeroWeight: 4.0
     controlBitWeight: 0.0
     targetBitWeight: 2.0

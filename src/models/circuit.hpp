@@ -57,7 +57,7 @@ private:
     queue<QMDDGate> gateQueue_;
     QMDDState finalState_;
     int numQubits_;
-    bool irEnabled_ = false;
+    bool irEnabled_ = true;
     vector<QMDDGate> pending_;
     vector<Core> metaQueue_;
     size_t execIdx_ = 0;

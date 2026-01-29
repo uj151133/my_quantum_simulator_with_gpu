@@ -1640,10 +1640,10 @@ void QuantumCircuit::simulate() {
         if (PARAMETER.circuit.dealer.alive) {
             this->consult();
         }
-        law::Options opt = law::optionsFromEnv(law::Options{});
-        if (PARAMETER.schedulerAI.alive) {
-            this->preprocess(opt, ::SCHEDULER_MODEL_PATH);
-        }
+        // law::Options opt = law::optionsFromEnv(law::Options{});
+        // if (PARAMETER.schedulerAI.alive) {
+        //     this->preprocess(opt, ::SCHEDULER_MODEL_PATH);
+        // }
         this->emitIR(this->irLog_);
         this->irLog_.clear();
     }
