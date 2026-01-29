@@ -21,6 +21,9 @@ void UniqueTable::insert(int64_t hashKey, shared_ptr<QMDDNode> node) {
         oldHead = this->table_[idx].load(memory_order_acquire);
         for (Entry* p = oldHead; p != nullptr; p = p->next) {
             if (p->key == hashKey) {
+                if (p->value.expired()) {
+                    p->value = node;
+                }
                 delete newEntry;
                 return;
             }
