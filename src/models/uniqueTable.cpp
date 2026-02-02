@@ -15,15 +15,15 @@ UniqueTable& UniqueTable::getInstance() {
 
 void UniqueTable::insert(int64_t hashKey, shared_ptr<QMDDNode> node) {
     int64_t idx = hash(hashKey);
-    Entry* newEntry = new Entry(hashKey, weak_ptr<QMDDNode>(node), nullptr);
+    Entry* newEntry = new Entry(hashKey, node, nullptr);
     Entry* oldHead;
     while (true) {
         oldHead = this->table_[idx].load(memory_order_acquire);
         for (Entry* p = oldHead; p != nullptr; p = p->next) {
             if (p->key == hashKey) {
-                if (p->value.expired()) {
-                    p->value = node;
-                }
+                // if (p->value.expired()) {
+                //     p->value = node;
+                // }
                 delete newEntry;
                 return;
             }
@@ -39,7 +39,7 @@ shared_ptr<QMDDNode> UniqueTable::find(int64_t hashKey) const {
     Entry* head = this->table_[idx].load(memory_order_acquire);
     for (Entry* p = head; p != nullptr; p = p->next) {
         if (p->key == hashKey) {
-            return p->value.lock();
+            return p->value;
         }
     }
     return nullptr;
@@ -59,8 +59,8 @@ void UniqueTable::printAllEntries() const {
         for (Entry* p = head; p != nullptr; p = p->next) {
             cout << "  Key: " << p->key << endl;
             cout << "  Nodes: " << endl;
-            if (p->value.lock()) {
-                cout << "    " << *p->value.lock() << endl;
+            if (p->value) {
+                cout << "    " << *p->value << endl;
                 validEntries++;
             } else {
                 cout << "    Null node" << endl;
@@ -82,7 +82,7 @@ void UniqueTable::printNodeNum() const {
         Entry* head = this->table_[idx].load(memory_order_acquire);
         if (!head) continue;
         for (Entry* p = head; p != nullptr; p = p->next) {
-            if (p->value.lock()) {
+            if (p->value) {
                 validEntries++;
             } else {
                 invalidEntries++;

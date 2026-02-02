@@ -13,10 +13,9 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, bool parallelism
             return QMDDEdge(e0.weight * e1.weight, e1.getStartNode());
         }
     }
-    
+    int64_t operationCacheKey = calculation::generateOperationCacheKey(OperationKey(e0.uniqueTableKey, e1.uniqueTableKey));
+    OperationCacheClient& cache = OperationCacheClient::getInstance();
     if (PARAMETER.cache.alive) {
-        OperationCacheClient& cache = OperationCacheClient::getInstance();
-        int64_t operationCacheKey = calculation::generateOperationCacheKey(OperationKey(e0.uniqueTableKey, e1.uniqueTableKey));
         if (auto existingEdge = cache.find(operationCacheKey, concurrency)) {
             if (existingEdge->weight != .0 && existingEdge->uniqueTableKey != 0) {
                 QMDDEdge result = QMDDEdge(existingEdge->weight * e0.weight * e1.weight, existingEdge->getStartNode());
@@ -95,8 +94,6 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, bool parallelism
     }
 
     if (PARAMETER.cache.alive) {
-        OperationCacheClient& cache = OperationCacheClient::getInstance();
-        int64_t operationCacheKey = calculation::generateOperationCacheKey(OperationKey(e0.uniqueTableKey, e1.uniqueTableKey));
         cache.insert(operationCacheKey, QMDDEdge(tmpWeight, make_shared<QMDDNode>(z)), concurrency);
     }
     QMDDEdge result = allWeightsAreZero ? edgeZero : QMDDEdge(e0.weight * e1.weight * tmpWeight, make_shared<QMDDNode>(z));

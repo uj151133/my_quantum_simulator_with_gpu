@@ -19,6 +19,7 @@
 #include "src/models/circuit.hpp"
 #include "src/common/monitor.hpp"
 #include "src/test/Grover/grover11MQT.hpp"
+#include "src/test/QWalk/qwalk13MQT.hpp"
 #include "src/test/random/randomRotate.hpp"
 #include "src/common/ipc_shared_memory.hpp"
 #include "src/common/operationCacheClient.hpp"
@@ -29,8 +30,14 @@
 #include "src/translator/OpenQASM3/gen/OpenQASM3Parser.h"
 // #include "src/test/QAOA/qaoa16MQT.hpp"
 #include "src/test/QWalk/qwalk13MQT.hpp"
-#include "src/modules/threadPool.hpp"
+#include "src/test/EfficientSU2Ansatz/efficientSU2Ansatz18MQT.hpp"
+#include "src/test/QNN/qnn18MQT.hpp"
+#include "src/test/RealAmplitudes/realAmplitudes18MQT.hpp"
 #include "src/test/TwoLocalAnsatz/twoLocalAnsatz18MQT.hpp"
+#include "src/test/QFTEntangled/qftEntangled18MQT.hpp"
+#include "src/test/QPEInexact/qpeInexact18MQT.hpp"
+#include "src/modules/threadPool.hpp"
+
 using namespace std;
 
 // グローバルな共有メモリIPCサーバーインスタンス
@@ -64,7 +71,11 @@ void execute() {
     // grover11MQT();
     // qaoa16MQT();
     // qwalk13MQT();
-    twoLocalAnsatz18MQT();
+    // efficientSU2Ansatz18MQT();
+    // qnn18MQT();
+    // realAmplitudes18MQT();
+    // twoLocalAnsatz18MQT();
+    qpeInexact18MQT();
     // randomRotate(13, 200);
 }
 
