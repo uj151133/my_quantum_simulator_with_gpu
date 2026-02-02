@@ -53,9 +53,9 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, bool parallelism
                     boost::fibers::async([&, i, j]() -> pair<pair<size_t, size_t>, QMDDEdge> {
                         QMDDEdge answer = edgeZero;
                         for (size_t k = 0; k < n0->edges[0].size(); k++) {
-                            // QMDDEdge p(n0->edges[i][k].weight, n0->edges[i][k].getStartNode());
-                            // QMDDEdge q(n1->edges[k][j].weight, n1->edges[k][j].getStartNode());
-                            answer = mathUtils::add(answer, mathUtils::mul(n0->edges[i][k], n1->edges[k][j], parallelism, true), parallelism, true);
+                            QMDDEdge p(n0->edges[i][k].weight, n0->edges[i][k].getStartNode());
+                            QMDDEdge q(n1->edges[k][j].weight, n1->edges[k][j].getStartNode());
+                            answer = mathUtils::add(answer, mathUtils::mul(p, q, parallelism, true), parallelism, true);
                         }
                         return {{i, j}, answer};
                     })
@@ -63,9 +63,9 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, bool parallelism
             } else {
                 QMDDEdge answer = edgeZero;
                 for (size_t k = 0; k < n0->edges[0].size(); k++) {
-                    // QMDDEdge p(n0->edges[i][k].weight, n0->edges[i][k].getStartNode());
-                    // QMDDEdge q(n1->edges[k][j].weight, n1->edges[k][j].getStartNode());
-                    answer = mathUtils::add(answer, mathUtils::mul(n0->edges[i][k], n1->edges[k][j], parallelism, concurrency), parallelism, concurrency);
+                    QMDDEdge p(n0->edges[i][k].weight, n0->edges[i][k].getStartNode());
+                    QMDDEdge q(n1->edges[k][j].weight, n1->edges[k][j].getStartNode());
+                    answer = mathUtils::add(answer, mathUtils::mul(p, q, parallelism, concurrency), parallelism, concurrency);
                 }
                 z[i][j] = answer;
             }

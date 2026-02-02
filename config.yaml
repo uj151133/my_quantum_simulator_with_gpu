@@ -13,7 +13,7 @@ cache:
   size: 1048576
 
 circuit:
-  mode: "dense" # "sparse", "moderate", "dense"
+  mode: "moderate" # "sparse", "moderate", "dense"
   cancerMax: 1
   verbose: true
   timer: false
