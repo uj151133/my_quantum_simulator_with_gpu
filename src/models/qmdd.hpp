@@ -32,7 +32,8 @@ enum class OperationType {
     TEST,
 };
 
-using OperationKey = tuple<QMDDEdge, OperationType, QMDDEdge>;
+// using OperationKey = tuple<QMDDEdge, OperationType, QMDDEdge>;
+using OperationKey = pair<int64_t, int64_t>;
 
 using OperationResult = pair<complex<double>, int64_t>;
 
