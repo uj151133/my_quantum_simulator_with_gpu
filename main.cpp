@@ -36,6 +36,7 @@
 #include "src/test/TwoLocalAnsatz/twoLocalAnsatz18MQT.hpp"
 #include "src/test/QFTEntangled/qftEntangled18MQT.hpp"
 #include "src/test/QPEInexact/qpeInexact18MQT.hpp"
+#include "src/test/QAOA/qaoa16MQT.hpp"
 #include "src/modules/threadPool.hpp"
 
 using namespace std;
@@ -50,33 +51,16 @@ void signalHandler(int) {
 }
 
 void execute() {
-    // QMDDEdge state = mathUtils::kron(state::Ket0().getInitialEdge(), mathUtils::kron(state::Ket0().getInitialEdge(), state::Ket0().getInitialEdge()));
-    // QMDDEdge gate1 = gate::H().getInitialEdge();
-    // QMDDEdge gate2 = mathUtils::kron(gate::I().getInitialEdge(), gate::H().getInitialEdge());
-    // QMDDEdge gate3 = mathUtils::kron(gate::X().getInitialEdge(), mathUtils::kron(gate::X().getInitialEdge(), gate::X().getInitialEdge()));
-
-    // QMDDEdge gate4 = mathUtils::kron(gate::X().getInitialEdge(), gate::H().getInitialEdge());
-    // QMDDEdge gate5 = mathUtils::kron(gate::I().getInitialEdge(), mathUtils::kron(gate::X().getInitialEdge(), gate::H().getInitialEdge()));
-    // QMDDEdge gate6 = mathUtils::kron(gate::I().getInitialEdge(), mathUtils::kron(gate::I().getInitialEdge(), gate::X().getInitialEdge()));
-
-    // for ([[maybe_unused]] int _ = 0; _ < 100000; ++_) {
-    //     // state = mathUtils::mul(gate1, state);
-    //     // state = mathUtils::mul(gate2, state);
-    //     // state = mathUtils::mul(gate3, state);
-    //     state = mathUtils::mul(gate4, state);
-    //     state = mathUtils::mul(gate5, state);
-    //     state = mathUtils::mul(gate6, state);
-    // }
-
     // grover11MQT();
     // qaoa16MQT();
     // qwalk13MQT();
+    // qaoa16MQT();
     // efficientSU2Ansatz18MQT();
     // qnn18MQT();
     // realAmplitudes18MQT();
     // twoLocalAnsatz18MQT();
-    qpeInexact18MQT();
-    // randomRotate(13, 200);
+    // qpeInexact18MQT();
+    randomRotate(13, 200);
 }
 
 bool translateAndExecuteQASM(const string& qasm_file) {
