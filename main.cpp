@@ -58,7 +58,7 @@ void execute() {
     // efficientSU2Ansatz18MQT();
     // qnn18MQT();
     // realAmplitudes18MQT();
-    twoLocalAnsatz18MQT();
+    // twoLocalAnsatz18MQT();
     // qpeInexact18MQT();
     // randomRotate(13, 200);
 }
