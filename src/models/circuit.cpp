@@ -128,24 +128,18 @@ void QuantumCircuit::emitIR(const vector<Core>& ops){
     if (autoSwitch) this->mode_ = activeMode;
 
     // ========= risk params（まず固定。後でconfig化推奨） =========
-    const double lambda = 0.02;          // 忘却率（大きいほど早く忘れる）
+    const double lambda = 0.02;
     const double eps = 1e-12;
 
-    // 端点mixの効き方（「両方mixは高」「片方mixは中」）
-    const double w_lin  = 0.6;           // 片方mixでも効く成分
-    const double w_quad = 0.8;           // 両方mixで相乗する成分
+    const double w_lin  = 0.6;
+    const double w_quad = 0.8;
 
-    // mix単体の寄与（小さめ）
-    const double w_mixSolo = 0.15;       // 1Q mixing のみでも少し risk を上げる
+    const double w_mixSolo = 0.15;
+    const double w_global  = 0.8;
 
-    // グローバル性（鎖 vs 広域）を効かせる強さ
-    const double w_global = 0.8;         // 0だと区別しない
-
-    // 最終riskの形（積で「両方揃うと急に上がる」）
     const double alpha = 2.0;
     const double beta  = 2.0;
 
-    // しきい値（要チューニング）
     const double threshold = 0.002;
 
     auto decayFactor = [&](size_t dt) -> double {
@@ -197,7 +191,6 @@ void QuantumCircuit::emitIR(const vector<Core>& ops){
     };
 
     auto computeGlobality = [&](size_t step) -> double {
-        // alive 判定（これ未満は無視して掃除対象）
         const double alive = 0.08;
 
         std::vector<int> deg(this->numQubits_, 0);
@@ -233,9 +226,19 @@ void QuantumCircuit::emitIR(const vector<Core>& ops){
 
         double g = 0.7 * edgeDensity + 0.3 * hubness;
 
+        // ★ touchedが少ない序盤で globality が過大になりがちなので抑制
+        const double touchedRatio =
+            (this->numQubits_ > 0) ? (double)touchedCnt / (double)this->numQubits_ : 0.0;
+        g *= touchedRatio;
+
         if (g < 0.0) g = 0.0;
         if (g > 1.0) g = 1.0;
         return g;
+    };
+
+    auto isControlled2Q = [&](const std::string& tag) -> bool {
+        // qubits[0] を control と仮定（このプロジェクトのCore生成に合わせる）
+        return (tag == "CX" || tag == "CNOT" || tag == "CZ" || tag == "CP" || tag == "CRZ" || tag == "CRX" || tag == "CRY" || tag == "CH" || tag == "CS" || tag == "CU");
     };
 
     auto computeEntangleMixScore = [&](int a, int b, size_t step) -> double {
@@ -276,33 +279,41 @@ void QuantumCircuit::emitIR(const vector<Core>& ops){
         if (o.qubits.size() == 2) {
             touchEdge(o.qubits[0], o.qubits[1], step);
         }
-
-        // ===== risk算出（dynamic中だけ、denseの間だけ評価して切替）=====
         if (autoSwitch && activeMode == "dense") {
-            // mix単体の小寄与（「今mixっぽい強さ」の平均）
             double mixAvg = 0.0;
             for (int q = 0; q < this->numQubits_; ++q) mixAvg += mixNow(q, step);
             mixAvg = (this->numQubits_ > 0) ? mixAvg / (double)this->numQubits_ : 0.0;
 
-            // 2Qが来た瞬間だけ“絡み×mix”寄与を強めに入れる
             double entMix = 0.0;
             if (o.qubits.size() == 2) {
-                entMix = computeEntangleMixScore(o.qubits[0], o.qubits[1], step);
+                const int c = o.qubits[0];
+                const int t = o.qubits[1];
+                const double mc = mixNow(c, step);
+                const double mt = mixNow(t, step);
+
+                if (isControlled2Q(g)) {
+                    // ★ 制御ゲートは「制御が重ね合わせか」が一次効果
+                    const double lin  = mc;
+                    const double quad = mc * mt; // ターゲットは副次
+                    entMix = w_lin * lin + w_quad * quad;
+                } else {
+                    // SWAP等の対称ゲートは従来どおり
+                    const double lin  = 0.5 * (mc + mt);
+                    const double quad = mc * mt;
+                    entMix = w_lin * lin + w_quad * quad;
+                }
+
+                if (entMix < 0.0) entMix = 0.0;
+                if (entMix > 1.0) entMix = 1.0;
             }
 
-            // 鎖状/広域の区別（0..1）。広域ほど entMix を増幅。
             const double globality = computeGlobality(step);
             const double globalBoost = 1.0 + w_global * globality;
 
-            // ここで「mix単体」と「絡み×mix」を分けて合成してから積にする
-            // A = mix単体（小さめ）
-            // B = 絡み×mix（主成分、広域ならさらに増幅）
             const double A = w_mixSolo * mixAvg;
             const double B = globalBoost * entMix;
 
             const double riskInst = std::pow(A + eps, alpha) * std::pow(B + eps, beta);
-
-            // riskEMAで“最近”を見る（時間ステップで忘れる）
             riskEMA = (1.0 - lambda) * riskEMA + lambda * riskInst;
 
             if (PARAMETER.circuit.verbose) {
