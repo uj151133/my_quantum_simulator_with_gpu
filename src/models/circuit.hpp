@@ -53,6 +53,7 @@ private:
     vector<int> phy2log_;
     vector<int> log2phy_;
     vector<int> swapTable_;
+    string mode_;
     double totalTimeMs_ = .0;
     queue<QMDDGate> gateQueue_;
     QMDDState finalState_;

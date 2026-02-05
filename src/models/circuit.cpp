@@ -23,6 +23,7 @@ QuantumCircuit::QuantumCircuit(int numQubits, QMDDState initialState) : numQubit
     iota(this->swapTable_.begin(), this->swapTable_.end(), 0);
     iota(this->phy2log_.begin(), this->phy2log_.end(), 0);
     iota(this->log2phy_.begin(), this->log2phy_.end(), 0);
+    this->mode_ = PARAMETER.circuit.mode;
 }
 
 QuantumCircuit::QuantumCircuit(int numQubits) : numQubits_(numQubits), finalState_(state::Ket0()) {
@@ -42,10 +43,17 @@ QuantumCircuit::QuantumCircuit(int numQubits) : numQubits_(numQubits), finalStat
     iota(this->swapTable_.begin(), this->swapTable_.end(), 0);
     iota(this->phy2log_.begin(), this->phy2log_.end(), 0);
     iota(this->log2phy_.begin(), this->log2phy_.end(), 0);
+    this->mode_ = PARAMETER.circuit.mode;
 }
 
 static inline bool isCancer(const string& type) {
     return (cancer.contains(type));
+}
+
+static inline bool isEntanglement(const string& type, size_t qcount) {
+    if (qcount < 2) return false;
+        if (Core::upper(type) == "BARRIER") return false;
+        return true;
 }
 
 vector<int> QuantumCircuit::countCancer() const {
@@ -111,11 +119,216 @@ void QuantumCircuit::emitIR(const vector<Core>& ops){
     bool saved = this->irEnabled_;
     this->irEnabled_ = false;
 
-    for (auto o : ops){
+    // ---- auto dense->moderate switch (EMA risk) ----
+    const std::string originalMode = this->mode_;
+
+    // 「configでdense指定のときだけ」自動切替を有効化（必要なら条件を外して常に有効でもOK）
+    const bool autoSwitch = (originalMode == "dynamic");
+    std::string activeMode = autoSwitch ? std::string("dense") : originalMode;
+    if (autoSwitch) this->mode_ = activeMode;
+
+    // ========= risk params（まず固定。後でconfig化推奨） =========
+    const double lambda = 0.02;          // 忘却率（大きいほど早く忘れる）
+    const double eps = 1e-12;
+
+    // 端点mixの効き方（「両方mixは高」「片方mixは中」）
+    const double w_lin  = 0.6;           // 片方mixでも効く成分
+    const double w_quad = 0.8;           // 両方mixで相乗する成分
+
+    // mix単体の寄与（小さめ）
+    const double w_mixSolo = 0.15;       // 1Q mixing のみでも少し risk を上げる
+
+    // グローバル性（鎖 vs 広域）を効かせる強さ
+    const double w_global = 0.8;         // 0だと区別しない
+
+    // 最終riskの形（積で「両方揃うと急に上がる」）
+    const double alpha = 2.0;
+    const double beta  = 2.0;
+
+    // しきい値（要チューニング）
+    const double threshold = 0.001;
+
+    auto decayFactor = [&](size_t dt) -> double {
+        // (1-lambda)^dt
+        if (dt == 0) return 1.0;
+        return std::pow(1.0 - lambda, (double)dt);
+    };
+
+    struct TimedVal {
+        double v = 0.0;
+        size_t t = 0;
+    };
+
+    // per-qubit mix strength
+    std::vector<TimedVal> mix(this->numQubits_);
+
+    // per-edge entangle strength（lazy decay）
+    std::unordered_map<uint64_t, TimedVal> edge;
+
+    auto edgeKey = [&](int a, int b) -> uint64_t {
+        if (a > b) std::swap(a, b);
+        return (uint64_t)(uint32_t)a << 32 | (uint32_t)b;
+    };
+
+    auto mixNow = [&](int q, size_t step) -> double {
+        auto& tv = mix[q];
+        return tv.v * decayFactor(step - tv.t);
+    };
+
+    auto touchMix = [&](int q, size_t step){
+        auto& tv = mix[q];
+        // decay to now
+        tv.v *= decayFactor(step - tv.t);
+        tv.t = step;
+        // reinforce
+        tv.v = 1.0;
+    };
+
+    auto touchEdge = [&](int a, int b, size_t step){
+        const uint64_t k = edgeKey(a,b);
+        auto& tv = edge[k]; // default {0,0}
+        tv.v *= decayFactor(step - tv.t);
+        tv.t = step;
+        tv.v = 1.0;
+    };
+
+    auto comb2 = [&](int x) -> double {
+        return (x >= 2) ? (double)x * (double)(x - 1) / 2.0 : 0.0;
+    };
+
+    auto computeGlobality = [&](size_t step) -> double {
+        // alive 判定（これ未満は無視して掃除対象）
+        const double alive = 0.08;
+
+        std::vector<int> deg(this->numQubits_, 0);
+        std::vector<char> touched(this->numQubits_, 0);
+        int touchedCnt = 0;
+        int uniqueEdges = 0;
+
+        for (auto it = edge.begin(); it != edge.end(); ) {
+            auto& tv = it->second;
+            double ev = tv.v * decayFactor(step - tv.t);
+
+            if (ev < 1e-6) { it = edge.erase(it); continue; } // 自然にLRUっぽく減る
+            if (ev < alive) { ++it; continue; }
+
+            const uint64_t k = it->first;
+            const int a = (int)(k >> 32);
+            const int b = (int)(k & 0xffffffffu);
+
+            if (!touched[a]) { touched[a] = 1; touchedCnt++; }
+            if (!touched[b]) { touched[b] = 1; touchedCnt++; }
+            deg[a]++; deg[b]++;
+            uniqueEdges++;
+
+            ++it;
+        }
+
+        int maxDeg = 0;
+        for (int d : deg) maxDeg = std::max(maxDeg, d);
+
+        const double denom = comb2(touchedCnt);
+        const double edgeDensity = (denom > 0.0) ? (double)uniqueEdges / denom : 0.0;              // 0..1
+        const double hubness = (touchedCnt >= 2) ? (double)maxDeg / (double)(touchedCnt - 1) : 0.0; // 0..1
+
+        double g = 0.7 * edgeDensity + 0.3 * hubness; // 0..1に収まる想定
+        if (g < 0.0) g = 0.0;
+        if (g > 1.0) g = 1.0;
+        return g;
+    };
+
+    auto computeEntangleMixScore = [&](int a, int b, size_t step) -> double {
+        const double ma = mixNow(a, step);
+        const double mb = mixNow(b, step);
+
+        const double lin  = 0.5 * (ma + mb);  // 片方だけ1なら0.5
+        const double quad = ma * mb;          // 両方1なら1、片方1なら0
+
+        // 0..(w_lin+w_quad) 程度
+        return w_lin * lin + w_quad * quad;
+    };
+
+    // スカラーrisk（最近を忘れる）。これが threshold 超えで切替。
+    double riskEMA = 0.0;
+
+    for (size_t step = 1; step <= ops.size(); ++step) {
+        auto o = ops[step - 1];
         o.normalize();
         for (auto& q : o.qubits) q = this->log2phy_[q];
 
         const string g = Core::upper(o.tag);
+
+        // IRに既にBARRIERがある場合は素直に反映。EMAも区切りとしてリセット（任意）
+        if (g == "BARRIER") {
+            this->addBarrier();
+            continue;
+        }
+
+        // ===== テーブル更新（忘却はlazy）=====
+        if (o.qubits.size() == 1 && isCancer(g)) {
+            touchMix(o.qubits[0], step);
+        }
+        if (o.qubits.size() == 2) {
+            touchEdge(o.qubits[0], o.qubits[1], step);
+        }
+
+        // ===== risk算出（dynamic中だけ、denseの間だけ評価して切替）=====
+        if (autoSwitch && activeMode == "dense") {
+            // mix単体の小寄与（「今mixっぽい強さ」の平均）
+            double mixAvg = 0.0;
+            for (int q = 0; q < this->numQubits_; ++q) mixAvg += mixNow(q, step);
+            mixAvg = (this->numQubits_ > 0) ? mixAvg / (double)this->numQubits_ : 0.0;
+
+            // 2Qが来た瞬間だけ“絡み×mix”寄与を強めに入れる
+            double entMix = 0.0;
+            if (o.qubits.size() == 2) {
+                entMix = computeEntangleMixScore(o.qubits[0], o.qubits[1], step);
+            }
+
+            // 鎖状/広域の区別（0..1）。広域ほど entMix を増幅。
+            const double globality = computeGlobality(step);
+            const double globalBoost = 1.0 + w_global * globality;
+
+            // ここで「mix単体」と「絡み×mix」を分けて合成してから積にする
+            // A = mix単体（小さめ）
+            // B = 絡み×mix（主成分、広域ならさらに増幅）
+            const double A = w_mixSolo * mixAvg;
+            const double B = globalBoost * entMix;
+
+            const double riskInst = std::pow(A + eps, alpha) * std::pow(B + eps, beta);
+
+            // riskEMAで“最近”を見る（時間ステップで忘れる）
+            riskEMA = (1.0 - lambda) * riskEMA + lambda * riskInst;
+
+            if (PARAMETER.circuit.verbose) {
+                std::cerr
+                    << "[AUTO-RISK] step=" << step
+                    << " gate=" << g
+                    << " mixAvg=" << mixAvg
+                    << " entMix=" << entMix
+                    << " globality=" << globality
+                    << " riskInst=" << riskInst
+                    << " riskEMA=" << riskEMA
+                    << " edgeKeys=" << edge.size()
+                    << "\n";
+            }
+
+            if (riskEMA >= threshold) {
+                this->addBarrier();
+                activeMode = "moderate";
+                this->mode_ = activeMode;
+
+                if (PARAMETER.circuit.verbose) {
+                    std::cerr
+                        << "[AUTO-MODE] dense->moderate (dynamic) "
+                        << "at step=" << step
+                        << " riskEMA=" << riskEMA
+                        << " threshold=" << threshold
+                        << "\n";
+                }
+            }
+        }
+
         if(g=="H") this->addH(o.qubits.at(0));
         else if(g=="X") this->addX(o.qubits.at(0));
         else if(g=="Y") this->addY(o.qubits.at(0));
@@ -138,6 +351,8 @@ void QuantumCircuit::emitIR(const vector<Core>& ops){
         else if(g=="TOFFOLI"||g=="CCX") this->addToff({o.qubits.at(0), o.qubits.at(1)}, o.qubits.at(2));
         else if(g=="BARRIER") this->addBarrier();
     }
+
+    this->mode_ = originalMode;
 
     this->irEnabled_ = saved;
     this->irLog_.clear();
@@ -233,7 +448,7 @@ void QuantumCircuit::smartInsert(const vector<int>& qubitIndices, const Part& pa
     int minIndex = *min_element(qubitIndices.begin(), qubitIndices.end());
     int maxIndex = *max_element(qubitIndices.begin(), qubitIndices.end());
     int JOKERDepth = this->searchJOKER(qubitIndices);
-    if (PARAMETER.circuit.mode == "sparse") {
+    if (this->mode_ == "sparse") {
         for (int i = 0; i < minIndex; ++i) {
             this->wires[i].push_back({Type::I, QMDDGate(identityEdge)});
         }
@@ -247,7 +462,7 @@ void QuantumCircuit::smartInsert(const vector<int>& qubitIndices, const Part& pa
         for (int i = maxIndex + 1; i < this->numQubits_; ++i) {
             this->wires[i].push_back({Type::BAN, QMDDGate()});
         }
-    } else if (PARAMETER.circuit.mode == "moderate" && isCancer(toString(part.type))) {
+    } else if (this->mode_ == "moderate" && isCancer(toString(part.type))) {
         this->wires[minIndex].push_back(part);
         for (int i = minIndex + 1; i < maxIndex; ++i) {
             this->wires[i].push_back({Type::VOID, QMDDGate()});
@@ -258,7 +473,7 @@ void QuantumCircuit::smartInsert(const vector<int>& qubitIndices, const Part& pa
         for (int i = maxIndex + 1; i < this->numQubits_; ++i) {
             this->wires[i].push_back({Type::BAN, QMDDGate()});
         }
-    }else if (PARAMETER.circuit.mode == "moderate" && JOKERDepth != -1) {
+    }else if (this->mode_ == "moderate" && JOKERDepth != -1) {
         this->wires[minIndex][JOKERDepth] = part;
         for (int i = minIndex + 1; i < maxIndex; ++i) {
             this->wires[i][JOKERDepth] = {Type::VOID, QMDDGate()};
@@ -567,7 +782,7 @@ void QuantumCircuit::addV(int qubitIndex) {
         this->irLog_.push_back(std::move(c)); return;
     }
 
-    if (PARAMETER.circuit.mode == "moderate") {
+    if (this->mode_ == "moderate") {
         int maxDepth = this->getMaxDepth(qubitIndex, this->numQubits_ - 1);
 
         while (this->wires[qubitIndex].size() < maxDepth) {
@@ -595,7 +810,7 @@ void QuantumCircuit::addH(int qubitIndex) {
         this->irLog_.push_back(Core{.tag="H", .qubits={resolveQubit(qubitIndex)}});
         return;
     }
-    if (PARAMETER.circuit.mode == "moderate") {
+    if (this->mode_ == "moderate") {
         int maxDepth = this->getMaxDepth(qubitIndex, this->numQubits_ - 1);
 
         while (this->wires[qubitIndex].size() < maxDepth) {
@@ -982,7 +1197,7 @@ void QuantumCircuit::addRx(int qubitIndex, double theta) {
         Core c; c.tag="Rx"; c.qubits={resolveQubit(qubitIndex)}; c.theta=theta; c.normalize();
         this->irLog_.push_back(std::move(c)); return;
     }
-    if (PARAMETER.circuit.mode == "moderate") {
+    if (this->mode_ == "moderate") {
         int maxDepth = this->getMaxDepth(qubitIndex, this->numQubits_ - 1);
 
         while (this->wires[qubitIndex].size() < maxDepth) {
@@ -1009,7 +1224,7 @@ void QuantumCircuit::addRy(int qubitIndex, double theta) {
         Core c; c.tag="Ry"; c.qubits={resolveQubit(qubitIndex)}; c.theta=theta; c.normalize();
         this->irLog_.push_back(std::move(c)); return;
     }
-    if (PARAMETER.circuit.mode == "moderate") {
+    if (this->mode_ == "moderate") {
         int maxDepth = this->getMaxDepth(qubitIndex, this->numQubits_ - 1);
 
         while (this->wires[qubitIndex].size() < maxDepth) {
@@ -1516,7 +1731,7 @@ void QuantumCircuit::addOracle(int omega) {
     }).uniqueTableKey);
     // QMDDEdge customCZ = mathUtils::add(partialCZ1, partialCZ2);
     QMDDEdge customCZ = threadPool.submitFiber([&]() { return mathUtils::add(partialCZ1, partialCZ2); }).get();
-    if (PARAMETER.circuit.mode == "sparse") {
+    if (this->mode_ == "sparse") {
         this->gateQueue_.push(QMDDGate(customCZ));
     }
 
@@ -1538,7 +1753,7 @@ void QuantumCircuit::addDiffuser() {
     // QMDDEdge customCZ = mathUtils::add(partialCZ1, partialCZ2);
     QMDDEdge customCZ = threadPool.submitFiber([&]() { return mathUtils::add(partialCZ1, partialCZ2); }).get();
 
-    if (PARAMETER.circuit.mode == "sparse") {
+    if (this->mode_ == "sparse") {
         this->gateQueue_.push(QMDDGate(customCZ));
     }
 
@@ -1568,7 +1783,7 @@ void QuantumCircuit::reset(int qubitIndex) {
 }
 
 void QuantumCircuit::globalPhase(double lamda) {
-    if (PARAMETER.circuit.mode == "sparse") {
+    if (this->mode_ == "sparse") {
         this->gateQueue_.push(QMDDEdge(exp(i * lamda), nullptr));
     }
     return;

@@ -58,9 +58,9 @@ void execute() {
     // efficientSU2Ansatz18MQT();
     // qnn18MQT();
     // realAmplitudes18MQT();
-    // twoLocalAnsatz18MQT();
+    twoLocalAnsatz18MQT();
     // qpeInexact18MQT();
-    randomRotate(13, 200);
+    // randomRotate(13, 200);
 }
 
 bool translateAndExecuteQASM(const string& qasm_file) {
