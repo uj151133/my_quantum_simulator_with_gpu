@@ -51,7 +51,7 @@ void signalHandler(int) {
 }
 
 void execute() {
-    // grover11MQT();
+    grover11MQT();
     // qaoa16MQT();
     // qwalk13MQT();
     // qaoa16MQT();

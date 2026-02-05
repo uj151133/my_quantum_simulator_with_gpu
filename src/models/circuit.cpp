@@ -146,7 +146,7 @@ void QuantumCircuit::emitIR(const vector<Core>& ops){
     const double beta  = 2.0;
 
     // しきい値（要チューニング）
-    const double threshold = 0.001;
+    const double threshold = 0.002;
 
     auto decayFactor = [&](size_t dt) -> double {
         // (1-lambda)^dt
@@ -209,7 +209,7 @@ void QuantumCircuit::emitIR(const vector<Core>& ops){
             auto& tv = it->second;
             double ev = tv.v * decayFactor(step - tv.t);
 
-            if (ev < 1e-6) { it = edge.erase(it); continue; } // 自然にLRUっぽく減る
+            if (ev < 1e-6) { it = edge.erase(it); continue; }
             if (ev < alive) { ++it; continue; }
 
             const uint64_t k = it->first;
@@ -228,10 +228,11 @@ void QuantumCircuit::emitIR(const vector<Core>& ops){
         for (int d : deg) maxDeg = std::max(maxDeg, d);
 
         const double denom = comb2(touchedCnt);
-        const double edgeDensity = (denom > 0.0) ? (double)uniqueEdges / denom : 0.0;              // 0..1
-        const double hubness = (touchedCnt >= 2) ? (double)maxDeg / (double)(touchedCnt - 1) : 0.0; // 0..1
+        const double edgeDensity = (denom > 0.0) ? (double)uniqueEdges / denom : 0.0;
+        const double hubness = (touchedCnt >= 2) ? (double)maxDeg / (double)(touchedCnt - 1) : 0.0;
 
-        double g = 0.7 * edgeDensity + 0.3 * hubness; // 0..1に収まる想定
+        double g = 0.7 * edgeDensity + 0.3 * hubness;
+
         if (g < 0.0) g = 0.0;
         if (g > 1.0) g = 1.0;
         return g;
@@ -241,11 +242,15 @@ void QuantumCircuit::emitIR(const vector<Core>& ops){
         const double ma = mixNow(a, step);
         const double mb = mixNow(b, step);
 
-        const double lin  = 0.5 * (ma + mb);  // 片方だけ1なら0.5
-        const double quad = ma * mb;          // 両方1なら1、片方1なら0
+        const double lin  = 0.5 * (ma + mb);
+        const double quad = ma * mb;
 
-        // 0..(w_lin+w_quad) 程度
-        return w_lin * lin + w_quad * quad;
+        double s = w_lin * lin + w_quad * quad;
+
+        // ★ スコアとして 0..1 に収める（entMix>1 の過大評価を防ぐ）
+        if (s < 0.0) s = 0.0;
+        if (s > 1.0) s = 1.0;
+        return s;
     };
 
     // スカラーrisk（最近を忘れる）。これが threshold 超えで切替。
