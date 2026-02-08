@@ -119,146 +119,224 @@ void QuantumCircuit::emitIR(const vector<Core>& ops){
     bool saved = this->irEnabled_;
     this->irEnabled_ = false;
 
-    // ---- auto dense->moderate switch (EMA risk) ----
     const std::string originalMode = this->mode_;
-
-    // 「configでdense指定のときだけ」自動切替を有効化（必要なら条件を外して常に有効でもOK）
     const bool autoSwitch = (originalMode == "dynamic");
     std::string activeMode = autoSwitch ? std::string("dense") : originalMode;
     if (autoSwitch) this->mode_ = activeMode;
 
-    // ========= risk params（まず固定。後でconfig化推奨） =========
-    const double lambda = 0.02;
-    const double eps = 1e-12;
-
-    const double w_lin  = 0.6;
-    const double w_quad = 0.8;
-
-    const double w_mixSolo = 0.15;
-    const double w_global  = 0.8;
-
-    const double alpha = 2.0;
-    const double beta  = 2.0;
-
-    const double threshold = 0.002;
+    // ========= Parameters =========
+    const double lambda = 0.05;          // 忘却率
+    const double threshold = 0.6;        // リスク閾値（0-1に正規化）
+    const double aliveThreshold = 0.08;  // エッジ/ノード活性閾値
 
     auto decayFactor = [&](size_t dt) -> double {
-        // (1-lambda)^dt
         if (dt == 0) return 1.0;
         return std::pow(1.0 - lambda, (double)dt);
     };
 
-    struct TimedVal {
-        double v = 0.0;
-        size_t t = 0;
-    };
-
-    // per-qubit mix strength
-    std::vector<TimedVal> mix(this->numQubits_);
-
-    // per-edge entangle strength（lazy decay）
-    std::unordered_map<uint64_t, TimedVal> edge;
-
-    auto edgeKey = [&](int a, int b) -> uint64_t {
-        if (a > b) std::swap(a, b);
-        return (uint64_t)(uint32_t)a << 32 | (uint32_t)b;
-    };
-
-    auto mixNow = [&](int q, size_t step) -> double {
-        auto& tv = mix[q];
-        return tv.v * decayFactor(step - tv.t);
-    };
-
-    auto touchMix = [&](int q, size_t step){
-        auto& tv = mix[q];
-        // decay to now
-        tv.v *= decayFactor(step - tv.t);
-        tv.t = step;
-        // reinforce
-        tv.v = 1.0;
-    };
-
-    auto touchEdge = [&](int a, int b, size_t step){
-        const uint64_t k = edgeKey(a,b);
-        auto& tv = edge[k]; // default {0,0}
-        tv.v *= decayFactor(step - tv.t);
-        tv.t = step;
-        tv.v = 1.0;
-    };
-
-    auto comb2 = [&](int x) -> double {
-        return (x >= 2) ? (double)x * (double)(x - 1) / 2.0 : 0.0;
-    };
-
-    auto computeGlobality = [&](size_t step) -> double {
-        const double alive = 0.08;
-
-        std::vector<int> deg(this->numQubits_, 0);
-        std::vector<char> touched(this->numQubits_, 0);
-        int touchedCnt = 0;
-        int uniqueEdges = 0;
-
-        for (auto it = edge.begin(); it != edge.end(); ) {
-            auto& tv = it->second;
-            double ev = tv.v * decayFactor(step - tv.t);
-
-            if (ev < 1e-6) { it = edge.erase(it); continue; }
-            if (ev < alive) { ++it; continue; }
-
-            const uint64_t k = it->first;
-            const int a = (int)(k >> 32);
-            const int b = (int)(k & 0xffffffffu);
-
-            if (!touched[a]) { touched[a] = 1; touchedCnt++; }
-            if (!touched[b]) { touched[b] = 1; touchedCnt++; }
-            deg[a]++; deg[b]++;
-            uniqueEdges++;
-
-            ++it;
+    // ========= 量子ビット状態（グラフのノード） =========
+    struct QubitNode {
+        bool isSuperposed;           // 重ね合わせ状態か
+        double superpositionStrength; // 重ね合わせの強度（時間減衰）
+        size_t lastUpdateTime;
+        
+        QubitNode() : isSuperposed(false), superpositionStrength(0.0), lastUpdateTime(0) {}
+        
+        // 現在の重ね合わせ強度を取得（時間減衰考慮）
+        double getStrength(size_t currentTime, const std::function<double(size_t)>& decay) const {
+            if (!isSuperposed) return 0.0;
+            return superpositionStrength * decay(currentTime - lastUpdateTime);
         }
-
-        int maxDeg = 0;
-        for (int d : deg) maxDeg = std::max(maxDeg, d);
-
-        const double denom = comb2(touchedCnt);
-        const double edgeDensity = (denom > 0.0) ? (double)uniqueEdges / denom : 0.0;
-        const double hubness = (touchedCnt >= 2) ? (double)maxDeg / (double)(touchedCnt - 1) : 0.0;
-
-        double g = 0.7 * edgeDensity + 0.3 * hubness;
-
-        // ★ touchedが少ない序盤で globality が過大になりがちなので抑制
-        const double touchedRatio =
-            (this->numQubits_ > 0) ? (double)touchedCnt / (double)this->numQubits_ : 0.0;
-        g *= touchedRatio;
-
-        if (g < 0.0) g = 0.0;
-        if (g > 1.0) g = 1.0;
-        return g;
+        
+        // 重ね合わせ状態に更新
+        void setSuperposed(size_t time) {
+            isSuperposed = true;
+            superpositionStrength = 1.0;
+            lastUpdateTime = time;
+        }
     };
 
-    auto isControlled2Q = [&](const std::string& tag) -> bool {
-        // qubits[0] を control と仮定（このプロジェクトのCore生成に合わせる）
-        return (tag == "CX" || tag == "CNOT" || tag == "CZ" || tag == "CP" || tag == "CRZ" || tag == "CRX" || tag == "CRY" || tag == "CH" || tag == "CS" || tag == "CU");
+    // ========= 有向エンタングルメントエッジ =========
+    struct DirectedEdge {
+        int control;
+        int target;
+        size_t timestamp;
+        bool trulyEntangled;
+        
+        DirectedEdge(int c, int t, size_t ts, bool ent)
+            : control(c), target(t), timestamp(ts), trulyEntangled(ent) {}
+        
+        // エッジの有効性（時間減衰考慮）
+        bool isAlive(size_t currentTime, const std::function<double(size_t)>& decay, double threshold) const {
+            if (!trulyEntangled) return false;
+            return decay(currentTime - timestamp) >= threshold;
+        }
     };
 
-    auto computeEntangleMixScore = [&](int a, int b, size_t step) -> double {
-        const double ma = mixNow(a, step);
-        const double mb = mixNow(b, step);
-
-        const double lin  = 0.5 * (ma + mb);
-        const double quad = ma * mb;
-
-        double s = w_lin * lin + w_quad * quad;
-
-        // ★ スコアとして 0..1 に収める（entMix>1 の過大評価を防ぐ）
-        if (s < 0.0) s = 0.0;
-        if (s > 1.0) s = 1.0;
-        return s;
+    // ========= エンタングルメントグラフ =========
+    struct EntanglementGraph {
+        int numQubits;
+        std::vector<QubitNode> nodes;  // ノード = 量子ビット
+        std::vector<DirectedEdge> edges;
+        
+        EntanglementGraph(int n) : numQubits(n), nodes(n) {}
+        
+        void applyGate(const Core& gate, size_t step) {
+            const std::string g = Core::upper(gate.tag);
+            
+            // 1量子ビットゲート
+            if (gate.qubits.size() == 1) {
+                int q = gate.qubits[0];
+                
+                // 重ね合わせを作るゲート
+                if (isCancer(g)) {  // H, V, Rx, Ry
+                    nodes[q].setSuperposed(step);
+                }
+            }
+            
+            // 2量子ビットゲート
+            else if (gate.qubits.size() == 2) {
+                int q0 = gate.qubits[0];
+                int q1 = gate.qubits[1];
+                
+                // 制御ゲート
+                if (g == "CX" || g == "CNOT" || g == "CZ" || g == "CP" || g == "CRZ") {
+                    int ctrl = q0;
+                    int tgt = q1;
+                    
+                    // 制御ビットが重ね合わせ → 真の量子もつれ
+                    bool createsEntanglement = nodes[ctrl].isSuperposed;
+                    
+                    if (createsEntanglement) {
+                        nodes[ctrl].setSuperposed(step);
+                        nodes[tgt].setSuperposed(step);
+                        edges.emplace_back(ctrl, tgt, step, true);
+                    } else {
+                        edges.emplace_back(ctrl, tgt, step, false);
+                    }
+                }
+                // SWAP系
+                else if (g == "SWAP" || g == "ISWAP") {
+                    bool createsEntanglement = 
+                        nodes[q0].isSuperposed || nodes[q1].isSuperposed;
+                    
+                    if (createsEntanglement) {
+                        nodes[q0].setSuperposed(step);
+                        nodes[q1].setSuperposed(step);
+                        edges.emplace_back(q0, q1, step, true);
+                        edges.emplace_back(q1, q0, step, true);
+                    }
+                }
+                // RZZ系
+                else if (g == "RZZ" || g == "RXX" || g == "RYY") {
+                    bool createsEntanglement = 
+                        nodes[q0].isSuperposed || nodes[q1].isSuperposed;
+                    
+                    if (createsEntanglement) {
+                        nodes[q0].setSuperposed(step);
+                        nodes[q1].setSuperposed(step);
+                        edges.emplace_back(q0, q1, step, true);
+                        edges.emplace_back(q1, q0, step, true);
+                    }
+                }
+            }
+            
+            // 3量子ビットゲート（Toffoli）
+            else if (gate.qubits.size() >= 3 && (g == "CCX" || g == "TOFFOLI")) {
+                int ctrl1 = gate.qubits[0];
+                int ctrl2 = gate.qubits[1];
+                int tgt = gate.qubits[2];
+                
+                bool createsEntanglement = 
+                    nodes[ctrl1].isSuperposed || nodes[ctrl2].isSuperposed;
+                
+                if (createsEntanglement) {
+                    nodes[ctrl1].setSuperposed(step);
+                    nodes[ctrl2].setSuperposed(step);
+                    nodes[tgt].setSuperposed(step);
+                    
+                    edges.emplace_back(ctrl1, tgt, step, true);
+                    edges.emplace_back(ctrl2, tgt, step, true);
+                }
+            }
+        }
+        
+        struct TopologyMetrics {
+            double maxOutDegreeNorm;   // 正規化された最大出次数
+            double avgOutDegree;       // 平均出次数
+            double stdOutDegree;       // 出次数の標準偏差
+            double hubScore;           // ハブスコア (0-1)
+            double chainness;          // 鎖状度 (0-1)
+            int trueEntanglementCount; // 真の量子もつれ数
+        };
+        
+        TopologyMetrics analyzeTopology(size_t step, const std::function<double(size_t)>& decayFactor, double aliveThresh) {
+            TopologyMetrics m;
+            m.maxOutDegreeNorm = 0.0;
+            m.avgOutDegree = 0.0;
+            m.stdOutDegree = 0.0;
+            m.hubScore = 0.0;
+            m.chainness = 1.0;
+            m.trueEntanglementCount = 0;
+            
+            std::vector<int> outDegree(numQubits, 0);
+            std::vector<int> inDegree(numQubits, 0);
+            
+            // 活性化している真の量子もつれのみカウント
+            for (const auto& edge : edges) {
+                if (!edge.isAlive(step, decayFactor, aliveThresh)) continue;
+                
+                m.trueEntanglementCount++;
+                outDegree[edge.control]++;
+                inDegree[edge.target]++;
+            }
+            
+            if (m.trueEntanglementCount == 0) {
+                return m;
+            }
+            
+            // 最大出次数
+            int maxOutDegree = *std::max_element(outDegree.begin(), outDegree.end());
+            
+            // ★ 正規化（ビット数で割る）
+            m.maxOutDegreeNorm = (double)maxOutDegree / (double)numQubits;
+            
+            // 平均出次数
+            m.avgOutDegree = std::accumulate(outDegree.begin(), outDegree.end(), 0.0) / numQubits;
+            
+            // 標準偏差
+            double variance = 0.0;
+            for (int d : outDegree) {
+                variance += (d - m.avgOutDegree) * (d - m.avgOutDegree);
+            }
+            variance /= numQubits;
+            m.stdOutDegree = std::sqrt(variance);
+            
+            // ハブスコア
+            if (m.avgOutDegree > 0.1) {
+                m.hubScore = (maxOutDegree - m.avgOutDegree) / std::max((double)numQubits - 1, 1.0);
+                m.hubScore = std::max(0.0, std::min(1.0, m.hubScore));
+            }
+            
+            // 鎖状度（総次数が1-2のノードの割合）
+            int chainLikeNodes = 0;
+            for (int i = 0; i < numQubits; ++i) {
+                int totalDeg = outDegree[i] + inDegree[i];
+                if (totalDeg >= 1 && totalDeg <= 2) {
+                    chainLikeNodes++;
+                }
+            }
+            m.chainness = (double)chainLikeNodes / numQubits;
+            
+            return m;
+        }
     };
 
-    // スカラーrisk（最近を忘れる）。これが threshold 超えで切替。
+    // ========= グラフインスタンス =========
+    EntanglementGraph entGraph(this->numQubits_);
     double riskEMA = 0.0;
 
+    // ========= メインループ =========
     for (size_t step = 1; step <= ops.size(); ++step) {
         auto o = ops[step - 1];
         o.normalize();
@@ -266,85 +344,75 @@ void QuantumCircuit::emitIR(const vector<Core>& ops){
 
         const string g = Core::upper(o.tag);
 
-        // IRに既にBARRIERがある場合は素直に反映。EMAも区切りとしてリセット（任意）
         if (g == "BARRIER") {
             this->addBarrier();
+            riskEMA = 0.0;
             continue;
         }
 
-        // ===== テーブル更新（忘却はlazy）=====
-        if (o.qubits.size() == 1 && isCancer(g)) {
-            touchMix(o.qubits[0], step);
-        }
-        if (o.qubits.size() == 2) {
-            touchEdge(o.qubits[0], o.qubits[1], step);
-        }
+        // ゲート適用による状態更新
+        entGraph.applyGate(o, step);
+
+        // リスク評価
         if (autoSwitch && activeMode == "dense") {
-            double mixAvg = 0.0;
-            for (int q = 0; q < this->numQubits_; ++q) mixAvg += mixNow(q, step);
-            mixAvg = (this->numQubits_ > 0) ? mixAvg / (double)this->numQubits_ : 0.0;
-
-            double entMix = 0.0;
-            if (o.qubits.size() == 2) {
-                const int c = o.qubits[0];
-                const int t = o.qubits[1];
-                const double mc = mixNow(c, step);
-                const double mt = mixNow(t, step);
-
-                if (isControlled2Q(g)) {
-                    // ★ 制御ゲートは「制御が重ね合わせか」が一次効果
-                    const double lin  = mc;
-                    const double quad = mc * mt; // ターゲットは副次
-                    entMix = w_lin * lin + w_quad * quad;
-                } else {
-                    // SWAP等の対称ゲートは従来どおり
-                    const double lin  = 0.5 * (mc + mt);
-                    const double quad = mc * mt;
-                    entMix = w_lin * lin + w_quad * quad;
-                }
-
-                if (entMix < 0.0) entMix = 0.0;
-                if (entMix > 1.0) entMix = 1.0;
-            }
-
-            const double globality = computeGlobality(step);
-            const double globalBoost = 1.0 + w_global * globality;
-
-            const double A = w_mixSolo * mixAvg;
-            const double B = globalBoost * entMix;
-
-            const double riskInst = std::pow(A + eps, alpha) * std::pow(B + eps, beta);
-            riskEMA = (1.0 - lambda) * riskEMA + lambda * riskInst;
-
-            if (PARAMETER.circuit.verbose) {
-                std::cerr
-                    << "[AUTO-RISK] step=" << step
-                    << " gate=" << g
-                    << " mixAvg=" << mixAvg
-                    << " entMix=" << entMix
-                    << " globality=" << globality
-                    << " riskInst=" << riskInst
-                    << " riskEMA=" << riskEMA
-                    << " edgeKeys=" << edge.size()
-                    << "\n";
-            }
-
-            if (riskEMA >= threshold) {
-                this->addBarrier();
-                activeMode = "moderate";
-                this->mode_ = activeMode;
+            auto topo = entGraph.analyzeTopology(step, decayFactor, aliveThreshold);
+            
+            // 真の量子もつれが存在する場合のみ評価
+            if (topo.trueEntanglementCount >= 1) {
+                
+                // ★★★ 正規化されたリスク計算 ★★★
+                double risk = 0.0;
+                
+                // 1. 正規化された最大出次数（0-1）
+                risk += topo.maxOutDegreeNorm * 3.0;
+                
+                // 2. ハブスコア（0-1）
+                risk += topo.hubScore * 3.0;
+                
+                // 3. 非鎖状度（0-1）
+                risk += (1.0 - topo.chainness) * 2.0;
+                
+                // 4. 標準偏差（正規化：平均で割る）
+                double normalizedStd = (topo.avgOutDegree > 0.1) 
+                    ? topo.stdOutDegree / (topo.avgOutDegree + 1.0) 
+                    : 0.0;
+                risk += normalizedStd * 2.0;
+                
+                // 最終的にriskは 0-10 程度の範囲
+                // 0-1に正規化
+                risk /= 10.0;
+                risk = std::max(0.0, std::min(1.0, risk));
+                
+                // EMAで平滑化
+                riskEMA = (1.0 - lambda) * riskEMA + lambda * risk;
 
                 if (PARAMETER.circuit.verbose) {
-                    std::cerr
-                        << "[AUTO-MODE] dense->moderate (dynamic) "
-                        << "at step=" << step
-                        << " riskEMA=" << riskEMA
-                        << " threshold=" << threshold
-                        << "\n";
+                    std::cerr << "[RISK] step=" << step
+                             << " maxOutDegNorm=" << topo.maxOutDegreeNorm
+                             << " avgOutDeg=" << topo.avgOutDegree
+                             << " stdOutDeg=" << topo.stdOutDegree
+                             << " hubScore=" << topo.hubScore
+                             << " chainness=" << topo.chainness
+                             << " risk=" << risk
+                             << " riskEMA=" << riskEMA
+                             << "\n";
+                }
+
+                if (riskEMA >= threshold) {
+                    this->addBarrier();
+                    activeMode = "moderate";
+                    this->mode_ = activeMode;
+
+                    if (PARAMETER.circuit.verbose) {
+                        std::cerr << "[MODE SWITCH] dense -> moderate at step " << step << "\n";
+                    }
+                    
+                    riskEMA = 0.0;
                 }
             }
         }
 
+        // ゲート追加
         if(g=="H") this->addH(o.qubits.at(0));
         else if(g=="X") this->addX(o.qubits.at(0));
         else if(g=="Y") this->addY(o.qubits.at(0));
@@ -369,7 +437,6 @@ void QuantumCircuit::emitIR(const vector<Core>& ops){
     }
 
     this->mode_ = originalMode;
-
     this->irEnabled_ = saved;
     this->irLog_.clear();
 }
