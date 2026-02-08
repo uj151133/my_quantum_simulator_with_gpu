@@ -149,6 +149,16 @@ def make_qpe_inexact_circuit(num_qubits: int = 18) -> QuantumCircuit:
     
     return qc_algorithmic_level
 
+def make_shor_circuit(num_qubits: int = 17) -> QuantumCircuit:
+    # Get a benchmark circuit on algorithmic level representing the GHZ state with 5 qubits
+    qc_algorithmic_level = get_benchmark(
+        benchmark="shor", level=BenchmarkLevel.ALG, circuit_size=num_qubits
+    )
+
+    print(qc_algorithmic_level.draw())
+    
+    return qc_algorithmic_level
+
 def save_to_qasm(circuit: QuantumCircuit, file_path: str) -> None:
     path = Path(file_path)
     
@@ -172,6 +182,6 @@ def save_to_qasm(circuit: QuantumCircuit, file_path: str) -> None:
 
 if __name__ == "__main__":
     num_qubits = 18
-    circuit = make_qpe_inexact_circuit(num_qubits)
+    circuit = make_shor_circuit(num_qubits)
     print(circuit)
-    save_to_qasm(circuit, f"../../src/test/QPEInexact/qpe_inexact_{num_qubits}_MQT.qasm")
+    save_to_qasm(circuit, f"../../src/test/Shor/shor_{num_qubits}_MQT.qasm")
