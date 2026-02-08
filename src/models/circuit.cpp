@@ -427,6 +427,7 @@ void QuantumCircuit::emitIR(const vector<Core>& ops){
         else if(g=="RY") this->addRy(o.qubits.at(0), o.theta);
         else if(g=="RZ") this->addRz(o.qubits.at(0), o.theta);
         else if(g=="RZZ") this->addRzz(o.qubits.at(0), o.qubits.at(1), o.phi);
+        else if(g=="U") this->addU(o.qubits.at(0), o.theta, o.phi, o.lam);
         else if(g=="CX"||g=="CNOT") this->addCX(o.qubits.at(0), o.qubits.at(1));
         else if(g=="CZ") this->addCZ(o.qubits.at(0), o.qubits.at(1));
         else if(g=="CP") this->addCP(o.qubits.at(0), o.qubits.at(1), (o.phi!=0.0? o.phi : o.theta));
@@ -1177,7 +1178,6 @@ void QuantumCircuit::addCP(int controlIndex, int targetIndex, double phi) {
                 partialCP[1] = mathUtils::kron(identityEdge, partialCP[1]);
             }
         }
-        // customCP = mathUtils::add(partialCP[0], partialCP[1]);
         customCP = threadPool.submitFiber([&]() { return mathUtils::add(partialCP[0], partialCP[1]); }).get();
     }
     this->smartInsert({minIndex, maxIndex}, {Type::CP, QMDDGate(customCP)});
@@ -1436,6 +1436,22 @@ void QuantumCircuit::addFREDKIN(int controlIndex, int targetIndex1, int targetIn
 }
 
 void QuantumCircuit::addU(int qubitIndex, double theta, double phi, double lambda) {
+    if(this->irEnabled_){
+        this->irLog_.push_back(Core{.tag = "U", .qubits = {resolveQubit(qubitIndex)}, .theta = theta, .phi = phi, .lam = lambda});
+        return;
+    }
+    if (this->mode_ == "moderate") {
+        int maxDepth = this->getMaxDepth(qubitIndex, this->numQubits_ - 1);
+
+        while (this->wires[qubitIndex].size() < maxDepth) {
+            this->wires[qubitIndex].push_back({Type::I, gate::I()});
+        }
+        for (int index = qubitIndex + 1; index < this->numQubits_; index++) {
+            while (this->wires[index].size() < maxDepth) {
+                this->wires[index].push_back({Type::JOKER, gate::I()});
+            }
+        }
+    }
     this->smartInsert({qubitIndex}, {Type::U, gate::U(theta, phi, lambda)});
     return;
 }

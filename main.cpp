@@ -36,6 +36,7 @@
 #include "src/test/TwoLocalAnsatz/twoLocalAnsatz18MQT.hpp"
 #include "src/test/QFTEntangled/qftEntangled18MQT.hpp"
 #include "src/test/QPEInexact/qpeInexact18MQT.hpp"
+#include "src/test/Shor/shor18MQT.hpp"
 #include "src/test/QAOA/qaoa16MQT.hpp"
 #include "src/modules/threadPool.hpp"
 
@@ -61,6 +62,7 @@ void execute() {
     // twoLocalAnsatz18MQT();
     // qpeInexact18MQT();
     // randomRotate(13, 200);
+    shor18MQT();
 }
 
 bool translateAndExecuteQASM(const string& qasm_file) {
