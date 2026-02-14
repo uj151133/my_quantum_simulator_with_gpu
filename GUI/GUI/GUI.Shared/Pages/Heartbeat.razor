@@ -10,17 +10,18 @@
 
 <!-- 完全統合実装：CSS + JavaScript + HTML + Veda.js Background -->
 <style>
-/* ページ全体の背景を透明にする */
+/* デフォルトの背景に戻すため、ページ全体の透明強制は無効化 */
+/*
 body, html {
     background: transparent !important;
     background-color: transparent !important;
 }
 
-/* Blazor Serverの既存背景を無効化（サイドバーは除く） */
 .main, .content, .page {
     background: transparent !important;
     background-color: transparent !important;
 }
+*/
 
 /* サイドバーの背景を保持 */
 .sidebar {
@@ -655,6 +656,8 @@ else
                         window.heartbeatInterop = {
                             updateInterval: null,
                             vedaInstance: null,
+                            enableQuantumBackground: false,
+                            _stopRequested: false,
                             
                             startRealTimeUpdate: function(dotNetObjectReference) {
                                 console.log('Starting real-time heartbeat updates...');
@@ -1019,6 +1022,9 @@ else
                                     
                                     // レンダリング関数
                                     const render = (time) => {
+                                        if (window.heartbeatInterop && window.heartbeatInterop._stopRequested) {
+                                            return;
+                                        }
                                         frameCount++;
                                         
                                         // フレームカウントを表示に更新
@@ -1120,13 +1126,6 @@ else
                                 
                                 updateDebugStatus('jsStatus', 'Loaded ✅');
                                 
-                                // 背景色を強制的にクリア（デバッグ）
-                                document.body.style.background = 'transparent';
-                                document.body.style.backgroundColor = 'transparent';
-                                document.documentElement.style.background = 'transparent';
-                                document.documentElement.style.backgroundColor = 'transparent';
-                                console.log('🎨 Background colors forcefully cleared');
-                                
                                 // デバッグ情報
                                 console.log('Window size:', window.innerWidth, 'x', window.innerHeight);
                                 console.log('User agent:', navigator.userAgent);
@@ -1139,94 +1138,16 @@ else
                                 } else {
                                     console.warn('⚠️ Heart icon not found');
                                 }
-                                
-                                // キャンバス要素の確認・作成
-                                let canvas = document.getElementById('vedaCanvas');
-                                if (!canvas) {
-                                    // キャンバスが存在しない場合は作成
-                                    console.log('🎨 Canvas not found, creating new canvas element');
-                                    canvas = document.createElement('canvas');
-                                    canvas.id = 'vedaCanvas';
-                                    canvas.className = 'veda-canvas';
-                                } else {
-                                    console.log('🎨 Canvas found:', canvas.width, 'x', canvas.height);
+
+                                // デフォルト背景に戻す：量子背景（WebGL/vein.frag）は起動しない
+                                this._stopRequested = true;
+                                const existingCanvas = document.getElementById('vedaCanvas');
+                                if (existingCanvas && existingCanvas.parentElement) {
+                                    existingCanvas.parentElement.removeChild(existingCanvas);
                                 }
-                                
-                                updateDebugStatus('canvasStatus', 'Found/Created ✅');
-                                
-                                if (canvas) {
-                                    // 詳細なDOM構造とスタイル情報を出力
-                                    console.log('🔍 Canvas parent:', canvas.parentElement);
-                                    console.log('🔍 Canvas siblings:', Array.from(canvas.parentElement?.children || []));
-                                    console.log('🔍 Document body style:', {
-                                        background: window.getComputedStyle(document.body).background,
-                                        backgroundColor: window.getComputedStyle(document.body).backgroundColor
-                                    });
-                                    console.log('🔍 HTML style:', {
-                                        background: window.getComputedStyle(document.documentElement).background,
-                                        backgroundColor: window.getComputedStyle(document.documentElement).backgroundColor
-                                    });
-                                    
-                                    // キャンバスのスタイルを背景用に設定
-                                    canvas.style.position = 'fixed';
-                                    canvas.style.top = '0';
-                                    canvas.style.left = '0';
-                                    canvas.style.width = '100vw';
-                                    canvas.style.height = '100vh';
-                                    canvas.style.zIndex = '-1'; // 背景として配置（他の要素の下に）
-                                    canvas.style.pointerEvents = 'none';
-                                    canvas.style.display = 'block';
-                                    canvas.style.visibility = 'visible';
-                                    canvas.style.opacity = '1';
-                                    canvas.style.backgroundColor = 'transparent';
-                                    canvas.style.border = 'none';
-                                    
-                                    // 親要素のスタイルも適切に設定
-                                    if (canvas.parentElement) {
-                                        canvas.parentElement.style.position = 'relative';
-                                        canvas.parentElement.style.overflow = 'visible';
-                                    }
-                                    
-                                    // 親要素から切り離してbodyに直接追加（確実に最前面に）
-                                    document.body.appendChild(canvas);
-                                    console.log('🔄 Canvas moved/added to body');
-                                    
-                                    console.log('🎨 Canvas style forcefully applied');
-                                    console.log('🔍 Final canvas computed style:', {
-                                        position: window.getComputedStyle(canvas).position,
-                                        zIndex: window.getComputedStyle(canvas).zIndex,
-                                        width: window.getComputedStyle(canvas).width,
-                                        height: window.getComputedStyle(canvas).height,
-                                        visibility: window.getComputedStyle(canvas).visibility,
-                                        display: window.getComputedStyle(canvas).display,
-                                        backgroundColor: window.getComputedStyle(canvas).backgroundColor,
-                                        opacity: window.getComputedStyle(canvas).opacity
-                                    });
-                                    
-                                    // キャンバスの位置を視覚的に確認
-                                    const rect = canvas.getBoundingClientRect();
-                                    console.log('📐 Canvas position:', {
-                                        top: rect.top,
-                                        left: rect.left,
-                                        width: rect.width,
-                                        height: rect.height,
-                                        visible: rect.width > 0 && rect.height > 0
-                                    });
-                                    
-                                    // 即座にサイズ設定
-                                    canvas.width = window.innerWidth;
-                                    canvas.height = window.innerHeight;
-                                    console.log('📐 Canvas resized to:', canvas.width, 'x', canvas.height);
-                                } else {
-                                    console.error('❌ Canvas element could not be found or created!');
-                                    updateDebugStatus('canvasStatus', 'Creation failed ❌');
-                                }
-                                
-                                // 背景エフェクトを少し遅延させて初期化（DOM確実に準備されるように）
-                                setTimeout(() => {
-                                    console.log('🌌 Starting background initialization...');
-                                    this.initializeVedaBackground();
-                                }, 100);
+                                updateDebugStatus('canvasStatus', 'Disabled');
+                                updateDebugStatus('webglStatus', 'Disabled');
+                                updateDebugStatus('shaderStatus', 'Disabled');
                                 
                                 // 初期アニメーション
                                 setTimeout(() => {
@@ -1235,7 +1156,12 @@ else
                             },
                             
                             cleanup: function() {
+                                this._stopRequested = true;
                                 this.stopRealTimeUpdate();
+                                const canvas = document.getElementById('vedaCanvas');
+                                if (canvas && canvas.parentElement) {
+                                    canvas.parentElement.removeChild(canvas);
+                                }
                                 console.log('Heartbeat cleanup completed');
                             }
                         };

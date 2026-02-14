@@ -88,7 +88,7 @@ optional<QMDDEdge> OperationCacheClient::findGlobal(int64_t key) {
     NativeOperationResult24 out{};
     const int found = cacheFind(thread, key, static_cast<void*>(&out));
 
-    if (!found) {
+    if (!found || UniqueTable::getInstance().find(out.uniqueTableKey) == nullptr) {
         return nullopt;
     }
 
