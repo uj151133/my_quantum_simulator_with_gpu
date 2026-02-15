@@ -12,7 +12,7 @@ void birth() {
 
     /* global resources initialization */
     PARAMETER.load();
-    threadPool;
+    (void)threadPool;
     UniqueTable::getInstance();
     OperationCacheClient::getInstance();
 
@@ -25,5 +25,4 @@ void birth() {
     identityEdge = gate::I().getInitialEdge();
     braketZero = mathUtils::dyad(state::Ket0().getInitialEdge(), state::Bra0().getInitialEdge());
     braketOne = mathUtils::dyad(state::Ket1().getInitialEdge(), state::Bra1().getInitialEdge());
-
 }

@@ -386,17 +386,17 @@ void QuantumCircuit::emitIR(const vector<Core>& ops){
                 // EMAで平滑化
                 riskEMA = (1.0 - lambda) * riskEMA + lambda * risk;
 
-                if (PARAMETER.circuit.verbose) {
-                    std::cerr << "[RISK] step=" << step
-                             << " maxOutDegNorm=" << topo.maxOutDegreeNorm
-                             << " avgOutDeg=" << topo.avgOutDegree
-                             << " stdOutDeg=" << topo.stdOutDegree
-                             << " hubScore=" << topo.hubScore
-                             << " chainness=" << topo.chainness
-                             << " risk=" << risk
-                             << " riskEMA=" << riskEMA
-                             << "\n";
-                }
+                // if (PARAMETER.circuit.verbose) {
+                //     std::cerr << "[RISK] step=" << step
+                //              << " maxOutDegNorm=" << topo.maxOutDegreeNorm
+                //              << " avgOutDeg=" << topo.avgOutDegree
+                //              << " stdOutDeg=" << topo.stdOutDegree
+                //              << " hubScore=" << topo.hubScore
+                //              << " chainness=" << topo.chainness
+                //              << " risk=" << risk
+                //              << " riskEMA=" << riskEMA
+                //              << "\n";
+                // }
 
                 if (riskEMA >= threshold) {
                     this->addBarrier();
