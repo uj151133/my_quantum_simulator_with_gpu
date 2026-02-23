@@ -30,6 +30,7 @@ public:
     struct CacheSettings {
         bool alive = false;
         int size = 0;
+        int TLSSize = 0;
     } cache;
     struct DealerSettings {
         bool alive = false;

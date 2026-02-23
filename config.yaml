@@ -11,6 +11,7 @@ table:
 cache:
   alive: true
   size: 1048576
+  TLSSize: 823543
 
 circuit:
   mode: "dynamic" # "sparse", "moderate", "dense", "dynamic"

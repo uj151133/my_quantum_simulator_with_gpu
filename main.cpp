@@ -53,13 +53,13 @@ void signalHandler(int) {
 
 void execute() {
     // grover11MQT();
-    // qaoa16MQT();
     // qwalk13MQT();
     // qaoa16MQT();
     // efficientSU2Ansatz18MQT();
     // qnn18MQT();
     // realAmplitudes18MQT();
     // twoLocalAnsatz18MQT();
+    // qftEntangled18MQT();
     // qpeInexact18MQT();
     // randomRotate(13, 200);
     shor18MQT();

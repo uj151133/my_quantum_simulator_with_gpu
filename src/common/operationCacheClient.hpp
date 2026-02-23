@@ -12,6 +12,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <memory_resource>
+#include "parameter.hpp"
 #include "../models/qmdd.hpp"
 #include "../models/uniqueTable.hpp"
 
@@ -33,7 +34,18 @@ private:
     inline graal_isolatethread_t* getThreadLocalThread();
     graal_isolatethread_t* initializeNewThread();
 
-    static thread_local unordered_map<int64_t, QMDDEdge> TLSCache_;
+    // static thread_local unordered_map<int64_t, QMDDEdge> TLSCache_;
+    struct TLSEntry {
+        QMDDEdge edge;
+        list<int64_t>::iterator it; // points into TLSLru_ (front=MRU, back=LRU)
+    };
+
+    static thread_local unordered_map<int64_t, TLSEntry> TLSCache_;
+    static thread_local std::list<int64_t> TLSLru_;
+    const int64_t tlsCapacity_;
+
+    inline void tlsTouch_(unordered_map<int64_t, TLSEntry>::iterator it);
+    inline void tlsEvict_();
 
     optional<QMDDEdge> findGlobal(int64_t key);
     void insertGlobal(int64_t key, const QMDDEdge& edge);
@@ -48,6 +60,7 @@ public:
     static OperationCacheClient& getInstance();
     void cleanup();
     void flushThreadLocalToGlobal();
+
     void saveCacheToSQLite();
 };
 

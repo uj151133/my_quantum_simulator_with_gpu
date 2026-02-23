@@ -118,6 +118,7 @@ void Parameter::loadFromFile(const string& yamlFilepath, const string& iniFilepa
             if (config["cache"]) {
                 this->cache.alive = config["cache"]["alive"].as<bool>();
                 this->cache.size = config["cache"]["size"].as<int>();
+                this->cache.TLSSize = config["cache"]["TLSSize"].as<int>();
             }
 
             if (config["circuit"]) {
