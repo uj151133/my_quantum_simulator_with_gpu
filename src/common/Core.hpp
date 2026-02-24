@@ -15,6 +15,7 @@ struct Core {
     double theta = 0.0;        // 角度パラメータ1（回転系/位相系）
     double phi   = 0.0;        // 角度パラメータ2（必要に応じて使用）
     double lam   = 0.0;        // 角度パラメータ3（必要に応じて使用）
+    double gamma = 0.0;        // 角度パラメータ4（必要に応じて使用）
 
 
     string shape = "GENERAL";

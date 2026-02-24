@@ -176,7 +176,7 @@ public:
     void addCRx(int controlIndex, int targetIndex, double theta);
     void addCRy(int controlIndex, int targetIndex, double theta);
     void addCRz(int controlIndex, int targetIndex, double theta);
-    void addCU(int controlIndex, int targetIndex, double theta, double phi, double lambda);
+    void addCU(int controlIndex, int targetIndex, double theta, double phi, double lambda, double gamma);
     void addBARENCO(int qubitIndex, double alpha, double phi, double theta);
     void addB(int qubitIndex);
     void addCSX(int controlIndex, int targetIndex);

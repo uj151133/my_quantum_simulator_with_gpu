@@ -432,6 +432,7 @@ void QuantumCircuit::emitIR(const vector<Core>& ops){
         else if(g=="CZ") this->addCZ(o.qubits.at(0), o.qubits.at(1));
         else if(g=="CP") this->addCP(o.qubits.at(0), o.qubits.at(1), (o.phi!=0.0? o.phi : o.theta));
         else if(g=="CRZ") this->addCRz(o.qubits.at(0), o.qubits.at(1), o.theta);
+        else if(g=="CU") this->addCU(o.qubits.at(0), o.qubits.at(1), o.theta, o.phi, o.lam, o.gamma);
         else if(g=="SWAP") this->addSWAP(o.qubits.at(0), o.qubits.at(1));
         else if(g=="TOFFOLI"||g=="CCX") this->addToff({o.qubits.at(0), o.qubits.at(1)}, o.qubits.at(2));
         else if(g=="BARRIER") this->addBarrier();
@@ -1611,7 +1612,11 @@ void QuantumCircuit::addCRz(int controlIndex, int targetIndex, double theta) {
     return;
 }
 
-void QuantumCircuit::addCU(int controlIndex, int targetIndex, double theta, double phi, double lambda) {
+void QuantumCircuit::addCU(int controlIndex, int targetIndex, double theta, double phi, double lambda, double gamma) {
+    if (this->irEnabled_) {
+        this->irLog_.push_back(Core{.tag="CU", .qubits={resolveQubit(controlIndex), resolveQubit(targetIndex)}, .theta=theta, .phi=phi, .lam=lambda, .gamma=gamma});
+        return;
+    }
     int minIndex = min(controlIndex, targetIndex);
     int maxIndex = max(controlIndex, targetIndex);
     int maxDepth = this->getMaxDepth(minIndex, maxIndex);
@@ -1621,12 +1626,15 @@ void QuantumCircuit::addCU(int controlIndex, int targetIndex, double theta, doub
         }
     }
     array<QMDDEdge, 2> partialCU;
+
+    QMDDEdge U(gate::U(theta, phi, lambda).getInitialEdge().weight * exp(i * gamma), gate::U(theta, phi, lambda).getStartNode());
+
     if (maxIndex == controlIndex) {
         partialCU[0] = braketZero;
         partialCU[1] = braketOne;
     } else {
         partialCU[0] = identityEdge;
-        partialCU[1] = gate::U(theta, phi, lambda).getInitialEdge();
+        partialCU[1] = U;
     }
     for (int index = maxIndex - 1; index >= minIndex; index--) {
         if (index == controlIndex) {
@@ -1634,7 +1642,7 @@ void QuantumCircuit::addCU(int controlIndex, int targetIndex, double theta, doub
             partialCU[1] = mathUtils::kron(braketOne, partialCU[1]);
         } else if (index == targetIndex) {
             partialCU[0] = mathUtils::kron(identityEdge, partialCU[0]);
-            partialCU[1] = mathUtils::kron(gate::U(theta, phi, lambda).getInitialEdge(), partialCU[1]);
+            partialCU[1] = mathUtils::kron(U, partialCU[1]);
         } else {
             partialCU[0] = mathUtils::kron(identityEdge, partialCU[0]);
             partialCU[1] = mathUtils::kron(identityEdge, partialCU[1]);

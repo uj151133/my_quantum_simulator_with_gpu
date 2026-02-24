@@ -38,6 +38,7 @@
 #include "src/test/QPEInexact/qpeInexact18MQT.hpp"
 #include "src/test/Shor/shor18MQT.hpp"
 #include "src/test/QAOA/qaoa16MQT.hpp"
+#include "src/test/AmplitudeEstimation/amplitudeEstimation18MQT.hpp"
 #include "src/modules/threadPool.hpp"
 
 using namespace std;
@@ -55,6 +56,7 @@ void execute() {
     // grover11MQT();
     // qwalk13MQT();
     // qaoa16MQT();
+    amplitudeEstimation18MQT();
     // efficientSU2Ansatz18MQT();
     // qnn18MQT();
     // realAmplitudes18MQT();
@@ -62,7 +64,7 @@ void execute() {
     // qftEntangled18MQT();
     // qpeInexact18MQT();
     // randomRotate(13, 200);
-    shor18MQT();
+    // shor18MQT();
 }
 
 bool translateAndExecuteQASM(const string& qasm_file) {

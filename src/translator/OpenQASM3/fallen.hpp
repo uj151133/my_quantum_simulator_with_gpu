@@ -87,7 +87,7 @@ public:
                 else if (g == "CRX") circuit.addCRx(q.at(0), q.at(1), p.at(0));
                 else if (g == "CRY") circuit.addCRy(q.at(0), q.at(1), p.at(0));
                 else if (g == "CRZ") circuit.addCRz(q.at(0), q.at(1), p.at(0));
-                else if (g == "CU")  circuit.addCU(q.at(0), q.at(1), p.at(0), p.at(1), p.at(2));
+                else if (g == "CU")  circuit.addCU(q.at(0), q.at(1), p.at(0), p.at(1), p.at(2), p.at(3));
                 else if (g == "SWAP") circuit.addSWAP(q.at(0), q.at(1));
                 else if (g == "GPHASE") circuit.globalPhase(p.at(0));
                 else if (g == "CCX" || g == "CSWAP") {
