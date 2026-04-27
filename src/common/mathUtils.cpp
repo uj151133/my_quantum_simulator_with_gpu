@@ -183,8 +183,6 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, bool parallelism
 // }
 
 QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1, bool parallelism, bool concurrency) {
-    // cout << "\033[1;35mCache miss!\033[0m" << endl;
-
     if (e1.isTerminal) {
         std::swap(const_cast<QMDDEdge&>(e0), const_cast<QMDDEdge&>(e1));
     }
@@ -335,8 +333,6 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1, bool parallelism
 // }
 
 QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
-    // cout << "\033[1;35mCache miss!\033[0m" << endl;
-
     if (e0.isTerminal) {
         if (e0.weight == .0) {
             return e0;
@@ -410,18 +406,6 @@ QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
 }
 
 // QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1) {
-//     OperationCacheClient& cache = OperationCacheClient::getInstance();
-//     int64_t operationCacheKey = calculation::generateOperationCacheKey(OperationKey(e0, OperationType::KRONECKER, e1));
-//     if (PARAMETER.cache.alive) {
-//         if (auto existingEdge = cache.find(operationCacheKey, false)) {
-//             if (existingEdge->weight != .0 && existingEdge->uniqueTableKey != 0) {
-//                 // cout << "\033[1;36mCache hit!\033[0m" << endl;
-//                 return *existingEdge;
-//             }
-//         }
-//     }
-//     // cout << "\033[1;35mCache miss!\033[0m" << endl;
-
 //     if (e0.isTerminal) {
 //         if (e0.weight == .0) {
 //             return e0;
@@ -441,9 +425,6 @@ QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
 //     }
 
 //     QMDDEdge result = QMDDEdge(e0.weight * e1.weight, make_shared<QMDDNode>(z));
-//     if (PARAMETER.cache.alive) {
-//         cache.insert(operationCacheKey, result, false);
-//     }
 //     return result;
 // }
 
@@ -613,4 +594,10 @@ int mathUtils::findCoprimeBelow(int N) {
             return x;
         }
     }
+}
+
+bool mathUtils::isMultiplePI(double theta, double eps) {
+    double quotient = theta / M_PI;
+    double roundedQuotient = round(quotient);
+    return abs(quotient - roundedQuotient) < eps;
 }

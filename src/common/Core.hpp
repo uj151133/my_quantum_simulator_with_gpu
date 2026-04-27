@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <cctype>
 #include <unordered_set>
+#include "mathUtils.hpp"
 
 using namespace std;
 
@@ -40,6 +41,8 @@ struct Core {
     pair<int,int> orderedPair() const;
     pair<int,int> unorderedKey() const;
     void normalize();
+
+    bool isCancer() const;
 };
 
 #endif

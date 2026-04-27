@@ -17,10 +17,10 @@ circuit:
   mode: "dynamic" # "sparse", "moderate", "dense", "dynamic"
   cancerMax: 1
   verbose: true
-  timer: false
+  timer: true
 
   Dealer:
-    alive: false
+    alive: true
     nonzeroWeight: 4.0
     controlBitWeight: 0.0
     targetBitWeight: 2.0

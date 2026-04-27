@@ -1,6 +1,6 @@
 #include "circuit.hpp"
 
-const unordered_set<string> cancer = {"H", "V", "Vdg", "VDG", "Rx", "RX", "Ry", "RY"};
+// const unordered_set<string> cancer = {"H", "V", "Vdg", "VDG", "Rx", "RX", "Ry", "RY"};
 
 extern "C" void record_time(void (*cb)(), double* elapsed_ms);
 thread_local QuantumCircuit* g_tls_qc = nullptr;
@@ -46,9 +46,9 @@ QuantumCircuit::QuantumCircuit(int numQubits) : numQubits_(numQubits), finalStat
     this->mode_ = PARAMETER.circuit.mode;
 }
 
-static inline bool isCancer(const string& type) {
-    return (cancer.contains(type));
-}
+// static inline bool isCancer(const string& type) {
+//     return (cancer.contains(type));
+// }
 
 static inline bool isEntanglement(const string& type, size_t qcount) {
     if (qcount < 2) return false;
@@ -61,15 +61,15 @@ vector<int> QuantumCircuit::countCancer() const {
     for (const auto& o : this->irLog_) {
         const string g = Core::upper(o.tag);
         if (o.qubits.size() == 1) {
-            if (isCancer(g)) {
+            if (o.isCancer()) {
                 score[o.qubits[0]] += PARAMETER.circuit.dealer.nonzeroWeight;
             }
-        } else if (o.qubits.size() >= 2) {
-            for (size_t i = 0; i < o.qubits.size(); ++i) {
-                if (i == o.qubits.size() - 1  && o.tag != "CZ") {
-                    score[o.qubits[i]] += PARAMETER.circuit.dealer.targetBitWeight;
-                }
-            }
+        // } else if (o.qubits.size() >= 2) {
+        //     for (size_t i = 0; i < o.qubits.size(); ++i) {
+        //         if (i == o.qubits.size() - 1  && o.tag != "CZ") {
+        //             score[o.qubits[i]] += PARAMETER.circuit.dealer.targetBitWeight;
+        //         }
+        //     }
         }
     }
     for (const auto& o : this->irLog_) {
@@ -189,7 +189,7 @@ void QuantumCircuit::emitIR(const vector<Core>& ops){
                 int q = gate.qubits[0];
                 
                 // 重ね合わせを作るゲート
-                if (isCancer(g)) {  // H, V, Rx, Ry
+                if (gate.isCancer()) {  // H, V, Rx, Ry
                     nodes[q].setSuperposed(step);
                 }
             }
@@ -533,6 +533,10 @@ void QuantumCircuit::smartInsert(const vector<int>& qubitIndices, const Part& pa
     int minIndex = *min_element(qubitIndices.begin(), qubitIndices.end());
     int maxIndex = *max_element(qubitIndices.begin(), qubitIndices.end());
     int JOKERDepth = this->searchJOKER(qubitIndices);
+
+    const std::string t = Core::upper(toString(part.type));
+    const bool isCancerType = (t == "H" || t == "V" || t == "VDG" || t == "RX" || t == "RY");
+
     if (this->mode_ == "sparse") {
         for (int i = 0; i < minIndex; ++i) {
             this->wires[i].push_back({Type::I, QMDDGate(identityEdge)});
@@ -547,7 +551,7 @@ void QuantumCircuit::smartInsert(const vector<int>& qubitIndices, const Part& pa
         for (int i = maxIndex + 1; i < this->numQubits_; ++i) {
             this->wires[i].push_back({Type::BAN, QMDDGate()});
         }
-    } else if (this->mode_ == "moderate" && isCancer(toString(part.type))) {
+    } else if (this->mode_ == "moderate" && isCancerType) {
         this->wires[minIndex].push_back(part);
         for (int i = minIndex + 1; i < maxIndex; ++i) {
             this->wires[i].push_back({Type::VOID, QMDDGate()});
@@ -1898,24 +1902,6 @@ void QuantumCircuit::globalPhase(double lamda) {
 
 
 void QuantumCircuit::criticalExecute() {
-    // this->build();
-    // int i = 0;
-    // const size_t gateNum = g_tls_gate_num;
-    // while (!this->gateQueue_.empty()) {
-    //     QMDDGate currentGate = this->gateQueue_.front();
-    //     if (PARAMETER.circuit.verbose) {
-    //         cout << "Gate Idx: " << i++ << " / " << gateNum << endl;
-    //         cout << "Current gate: " << currentGate << endl;
-    //         cout << "Current state: " << this->finalState_ << endl;
-
-    //         cout << "============================================================\n" << endl;
-    //     }
-    //     this->gateQueue_.pop();
-    //     // this->finalState_ = QMDDState(mathUtils::mul(currentGate.getInitialEdge(), this->finalState_.getInitialEdge()));
-    //     this->finalState_ = threadPool.submitFiber([&]() { return QMDDState(mathUtils::mul(currentGate.getInitialEdge(), this->finalState_.getInitialEdge())); }).get();
-    // }
-    // return;
-
     threadPool.submitFiber([&]() {
         this->build();
 

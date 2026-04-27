@@ -1,5 +1,12 @@
 #include "Core.hpp"
 
+const unordered_set<string> cancerSTAGE4 = {"H", "V", "Vdg", "VDG"};
+const unordered_set<string> cancerSTAGE3 = {"Rx", "RX", "Ry", "RY"};
+
+bool Core::isCancer() const {
+    return (cancerSTAGE4.contains(this->tag) || cancerSTAGE3.contains(this->tag)) && !(mathUtils::isMultiplePI(this->theta));
+}
+
 string Core::upper(string s){
     for (auto& c : s) c = static_cast<char>(toupper(static_cast<unsigned char>(c)));
     return s;

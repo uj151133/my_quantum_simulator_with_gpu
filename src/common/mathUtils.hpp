@@ -5,6 +5,7 @@
 #include <boost/fiber/algo/work_stealing.hpp>
 #include <boost/fiber/mutex.hpp>
 #include <cmath>
+#include <limits>
 #include <random>
 #include <numeric>
 #include <queue>
@@ -46,6 +47,8 @@ namespace mathUtils {
     double sumOfSquares(const vector<complex<double>>& vec);
     vector<int> createRange(int start, int end);
     int findCoprimeBelow(int N);
+
+    bool isMultiplePI(double theta, double eps = 1e-10);
 
     template <class T, size_t N>
     double median(const array<T, N>& a) {
