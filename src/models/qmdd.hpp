@@ -13,6 +13,7 @@
 #include <tuple>
 #include <boost/fiber/all.hpp>
 #include <stack>
+#include "sv.hpp"
 
 using namespace std;
 
@@ -32,6 +33,11 @@ enum class OperationType {
     TEST,
 };
 
+enum class SonKind : uint8_t {
+    QMDDNode,
+    SVLeaf
+};
+
 // using OperationKey = tuple<QMDDEdge, OperationType, QMDDEdge>;
 using OperationKey = pair<int64_t, int64_t>;
 
@@ -45,6 +51,7 @@ struct QMDDEdge{
     complex<double> weight;
     int64_t uniqueTableKey;
     shared_ptr<QMDDNode> son_;
+    SonKind sonKind_;
     bool isTerminal;
     int depth;
 
