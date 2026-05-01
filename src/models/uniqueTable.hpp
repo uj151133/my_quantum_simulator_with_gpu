@@ -29,7 +29,7 @@ public:
     UniqueTable(const UniqueTable&) = delete;
     UniqueTable& operator=(const UniqueTable&) = delete;
     static UniqueTable& getInstance();
-    void insert(int64_t hashKey, shared_ptr<QMDDNode> node);
+    void insert(int64_t hashKey, const shared_ptr<QMDDNode>& node);
     shared_ptr<QMDDNode> find(int64_t hashKey) const;
     void printAllEntries() const;
     void printNodeNum() const;
