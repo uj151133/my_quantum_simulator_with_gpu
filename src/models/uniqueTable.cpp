@@ -4,7 +4,7 @@ extern "C" {
     #include "../atomic/atomic.h"
 }
 
-UniqueTable::UniqueTable() : tableSize_(PARAMETER.table.size), table_(this->tableSize_) {
+UniqueTable::UniqueTable() : tableSize_(PARAMETER.table.size / 2), table_(this->tableSize_) {
     for (auto& entry : this->table_) entry.store(nullptr, memory_order_relaxed);
 }
 
@@ -13,7 +13,7 @@ UniqueTable& UniqueTable::getInstance() {
     return instance;
 }
 
-void UniqueTable::insert(int64_t hashKey, shared_ptr<QMDDNode> node) {
+void UniqueTable::insert(int64_t hashKey, const shared_ptr<QMDDNode>& node) {
     int64_t idx = hash(hashKey);
     Entry* newEntry = new Entry(hashKey, weak_ptr<QMDDNode>(node), nullptr);
     Entry* oldHead;
