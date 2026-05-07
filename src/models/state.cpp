@@ -6,45 +6,45 @@
 //
 /////////////////////////////////////
 
-QMDDState state::Ket0() {
-    return QMDDState(QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
-        {edgeOne},
-        {edgeZero},
+QMDDSuite state::Ket0() {
+    return QMDDSuite(QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+        {edgeOne, edgeZero},
+        {edgeZero, edgeZero},
     })));
 };
 
-QMDDState state::Ket1() {
-    return QMDDState(QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
-        {edgeZero},
-        {edgeOne},
+QMDDSuite state::Ket1() {
+    return QMDDSuite(QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+        {edgeZero, edgeZero},
+        {edgeOne, edgeZero},
     })));
 };
 
-QMDDState state::KetPlus() {
-    return QMDDState(QMDDEdge(1.0 / sqrt(2.0), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
-        {edgeOne},
-        {edgeOne},
+QMDDSuite state::KetPlus() {
+    return QMDDSuite(QMDDEdge(1.0 / sqrt(2.0), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+        {edgeOne, edgeZero},
+        {edgeOne, edgeZero},
     })));
 };
 
-QMDDState state::KetMinus() {
-    return QMDDState(QMDDEdge(1.0 / sqrt(2.0), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
-        {edgeOne},
-        {QMDDEdge(-1.0, nullptr)},
+QMDDSuite state::KetMinus() {
+    return QMDDSuite(QMDDEdge(1.0 / sqrt(2.0), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+        {edgeOne, edgeZero},
+        {QMDDEdge(-1.0), edgeZero},
     })));
 };
 
-QMDDState state::KetI() {
-    return QMDDState(QMDDEdge(1.0 / sqrt(2.0), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
-        {edgeOne},
-        {QMDDEdge(i, nullptr)},
+QMDDSuite state::KetI() {
+    return QMDDSuite(QMDDEdge(1.0 / sqrt(2.0), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+        {edgeOne, edgeZero},
+        {QMDDEdge(i), edgeZero},
     })));
 };
 
-QMDDState state::KetIMinus() {
-    return QMDDState(QMDDEdge(1.0 / sqrt(2.0), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
-        {edgeOne},
-        {QMDDEdge(-i, nullptr)},
+QMDDSuite state::KetIMinus() {
+    return QMDDSuite(QMDDEdge(1.0 / sqrt(2.0), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+        {edgeOne, edgeZero},
+        {QMDDEdge(-i), edgeZero},
     })));
 };
 
@@ -55,38 +55,44 @@ QMDDState state::KetIMinus() {
 //
 /////////////////////////////////////
 
-QMDDState state::Bra0() {
-    return QMDDState(QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
-        {edgeOne, edgeZero}
+QMDDSuite state::Bra0() {
+    return QMDDSuite(QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+        {edgeOne, edgeZero},
+        {edgeZero, edgeZero}
     })));
 };
 
-QMDDState state::Bra1() {
-    return QMDDState(QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
-        {edgeZero, edgeOne}
+QMDDSuite state::Bra1() {
+    return QMDDSuite(QMDDEdge(1.0, make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+        {edgeZero, edgeOne},
+        {edgeZero, edgeZero}
     })));
 };
 
-QMDDState state::BraPlus() {
-    return QMDDState(QMDDEdge(1.0 / sqrt(2.0), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
-        {edgeOne, edgeOne}
+QMDDSuite state::BraPlus() {
+    return QMDDSuite(QMDDEdge(1.0 / sqrt(2.0), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+        {edgeOne, edgeOne},
+        {edgeZero, edgeZero}
     })));
 };
 
-QMDDState state::BraMinus() {
-    return QMDDState(QMDDEdge(1.0 / sqrt(2.0), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
-        {edgeOne, QMDDEdge(-1.0, nullptr)}
+QMDDSuite state::BraMinus() {
+    return QMDDSuite(QMDDEdge(1.0 / sqrt(2.0), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+        {edgeOne, QMDDEdge(-1.0)},
+        {edgeZero, edgeZero}
     })));
 };
 
-QMDDState state::BraI() {
-    return QMDDState(QMDDEdge(1.0 / sqrt(2.0), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
-        {edgeOne, QMDDEdge(i, nullptr)}
+QMDDSuite state::BraI() {
+    return QMDDSuite(QMDDEdge(1.0 / sqrt(2.0), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+        {edgeOne, QMDDEdge(i)},
+        {edgeZero, edgeZero}
     })));
 };
 
-QMDDState state::BraIMinus() {
-    return QMDDState(QMDDEdge(1.0 / sqrt(2.0), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
-        {edgeOne, QMDDEdge(-i, nullptr)}
+QMDDSuite state::BraIMinus() {
+    return QMDDSuite(QMDDEdge(1.0 / sqrt(2.0), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
+        {edgeOne, QMDDEdge(-i)},
+        {edgeZero, edgeZero}
     })));
 };

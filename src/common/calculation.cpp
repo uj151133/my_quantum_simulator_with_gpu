@@ -18,7 +18,7 @@ int64_t calculation::generateUniqueTableKey(const shared_ptr<QMDDNode>& node) {
             buffer.insert(buffer.end(), real_bytes, real_bytes + sizeof(double));
             buffer.insert(buffer.end(), imag_bytes, imag_bytes + sizeof(double));
 
-            const uint8_t* key_bytes = reinterpret_cast<const uint8_t*>(&edge.uniqueTableKey);
+            const uint8_t* key_bytes = reinterpret_cast<const uint8_t*>(&edge.key_);
             buffer.insert(buffer.end(), key_bytes, key_bytes + sizeof(size_t));
             colIdx++;
         }

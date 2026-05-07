@@ -4,12 +4,24 @@
 #include <cstdint>
 #include <cstddef>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+    void releaseGpuBuffer(void* p);
+#ifdef __cplusplus
+}
+#endif
+
 struct SVLeaf {
-    int64_t sourceKey;   // 変換元サブツリーの uniqueTableKey
-    size_t  size;    // 要素数（2^k）
-    void*   reBuf;  // GPU側メモリ（実部）Metal: id<MTLBuffer>、CUDA: double*
-    void*   imBuf;  // GPU側メモリ（虚部）
-    bool    valid = false;
+    size_t  dim;
+    void*   reBuf;
+    void*   imBuf;
+
+    ~SVLeaf() {
+        releaseGpuBuffer(reBuf);
+        releaseGpuBuffer(imBuf);
+    }
 };
+
 
 #endif

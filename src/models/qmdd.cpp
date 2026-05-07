@@ -15,44 +15,81 @@ ostream& operator<<(ostream& os, const QMDDVariant& variant) {
 //	QMDDEdge
 //
 /////////////////////////////////////
+QMDDEdge::QMDDEdge(){}
+
+QMDDEdge::QMDDEdge(complex<double> w)
+    :weight(w) {}
+
+QMDDEdge::QMDDEdge(double w)
+:weight(complex<double>(w, .0)) {}
 
 QMDDEdge::QMDDEdge(complex<double> w, shared_ptr<QMDDNode> n)
-    : weight(w), uniqueTableKey((n && w != complex<double>(.0, .0)) ? calculation::generateUniqueTableKey(n) : 0), son_(n), isTerminal(!n) {
-    if (this->uniqueTableKey) UniqueTable::getInstance().insert(this->uniqueTableKey, this->son_);
+    : weight(w), key_((n && w != complex<double>(.0, .0)) ? calculation::generateUniqueTableKey(n) : 0), sonNode_(n), isTerminal(!n), sonKind_(SonKind::QMDDNode) {
+    if (this->key_) UniqueTable::getInstance().insert(this->key_, this->sonNode_);
     this->calculateDepth();
-    // cout << "Edge created with weight: " << weight << " and uniqueTableKey: " << uniqueTableKey << " and isTerminal: " << isTerminal << endl;
+    // cout << "Edge created with weight: " << weight << " and key_: " << key_ << " and isTerminal: " << isTerminal << endl;
 }
 
 QMDDEdge::QMDDEdge(double w, shared_ptr<QMDDNode> n)
-    : weight(complex<double>(w, .0)), uniqueTableKey((n && w != .0) ? calculation::generateUniqueTableKey(n) : 0), son_(n), isTerminal(!n) {
-    if (this->uniqueTableKey) UniqueTable::getInstance().insert(this->uniqueTableKey, this->son_);
+    : weight(complex<double>(w, .0)), key_((n && w != .0) ? calculation::generateUniqueTableKey(n) : 0), sonNode_(n), isTerminal(!n), sonKind_(SonKind::QMDDNode) {
+    if (this->key_) UniqueTable::getInstance().insert(this->key_, this->sonNode_);
     this->calculateDepth();
-    // cout << "Edge created with weight: " << weight << " and uniqueTableKey: " << uniqueTableKey << " and isTerminal: " << isTerminal << endl;
+    // cout << "Edge created with weight: " << weight << " and key_: " << key_ << " and isTerminal: " << isTerminal << endl;
 }
 
-QMDDEdge::QMDDEdge(complex<double> w, int64_t key)
-    : weight(w), uniqueTableKey(w != complex<double>(.0, .0) ? key : 0), isTerminal(this->uniqueTableKey == 0) {
-    this->son_ = UniqueTable::getInstance().find(this->uniqueTableKey);
+QMDDEdge::QMDDEdge(complex<double> w, int64_t key, shared_ptr<SVLeaf> l)
+    : weight(w), key_(key), sonLeaf_(l), isTerminal(!l), sonKind_(SonKind::SVLeaf) {
+    if (this->key_) Memo::getInstance().insert(this->key_, this->sonLeaf_);
     this->calculateDepth();
-    // cout << "Edge created with weight: " << weight << " and uniqueTableKey: " << uniqueTableKey << " and isTerminal: " << isTerminal << endl;
+    // cout << "Edge created with weight: " << weight << " and key_: " << key_ << " and isTerminal: " << isTerminal << endl;
 }
 
-QMDDEdge::QMDDEdge(double w, int64_t key)
-    : weight(complex<double>(w, .0)), uniqueTableKey(w != .0 ? key : 0), isTerminal(this->uniqueTableKey == 0) {
-    this->son_ = UniqueTable::getInstance().find(this->uniqueTableKey);
+QMDDEdge::QMDDEdge(double w, int64_t key, shared_ptr<SVLeaf> l)
+    : weight(complex<double>(w, .0)), key_(key), sonLeaf_(l), isTerminal(!l), sonKind_(SonKind::SVLeaf) {
+    if (this->key_) Memo::getInstance().insert(this->key_, this->sonLeaf_);
     this->calculateDepth();
-    // cout << "Edge created with weight: " << weight << " and uniqueTableKey: " << uniqueTableKey << " and isTerminal: " << isTerminal << endl;
+    // cout << "Edge created with weight: " << weight << " and key_: " << key_ << " and isTerminal: " << isTerminal << endl;
+}
+
+QMDDEdge::QMDDEdge(complex<double> w, int64_t key, SonKind kind)
+    : weight(w), key_(w != complex<double>(.0, .0) ? key : 0), isTerminal(this->key_ == 0) {
+    this->sonKind_ = kind;
+    if (this->key_ != 0) {
+        if (this->sonKind_ == SonKind::QMDDNode) {
+            this->sonNode_ = UniqueTable::getInstance().find(this->key_);
+        } else {
+            this->sonLeaf_ = Memo::getInstance().find(this->key_);
+        }
+    }
+    this->calculateDepth();
+    // cout << "Edge created with weight: " << weight << " and key_: " << key_ << " and isTerminal: " << isTerminal << endl;
+}
+
+QMDDEdge::QMDDEdge(double w, int64_t key, SonKind kind)
+    : weight(complex<double>(w, .0)), key_(w != .0 ? key : 0), isTerminal(this->key_ == 0) {
+    this->sonKind_ = kind;
+    if (this->sonKind_ == SonKind::QMDDNode) {
+        this->sonNode_ = UniqueTable::getInstance().find(this->key_);
+    } else {
+        this->sonLeaf_ = Memo::getInstance().find(this->key_);
+    }
+    this->calculateDepth();
+    // cout << "Edge created with weight: " << weight << " and key_: " << key_ << " and isTerminal: " << isTerminal << endl;
 }
 
 shared_ptr<QMDDNode> QMDDEdge::getStartNode() const {
-    return this->son_;
+    return this->sonNode_;
+}
+
+shared_ptr<SVLeaf> QMDDEdge::getStartLeaf() const {
+    return this->sonLeaf_;
 }
 
 vector<complex<double>> QMDDEdge::getAllElementsForKet() {
     vector<complex<double>> result;
     stack<pair<shared_ptr<QMDDNode>, size_t>> nodeStack;
 
-    shared_ptr<QMDDNode> node = this->getStartNode();
+    shared_ptr<QMDDNode> node = this->sonNode_;
 
     if (isTerminal) {
         result.push_back(weight);
@@ -84,7 +121,7 @@ vector<complex<double>> QMDDEdge::getAllElementsForKet() {
 bool QMDDEdge::operator==(const QMDDEdge& other) const {
     if (this->weight != other.weight) return false;
     if (this->isTerminal != other.isTerminal) return false;
-    if (this->uniqueTableKey != other.uniqueTableKey) return false;
+    if (this->key_ != other.key_) return false;
     return true;
 }
 
@@ -96,8 +133,8 @@ bool QMDDEdge::operator!=(const QMDDEdge& other) const {
 ostream& operator<<(ostream& os, const QMDDEdge& edge) {
     os << "Weight = " << edge.weight;
 
-    if (edge.uniqueTableKey != 0) {
-        os << ", Key = " << edge.uniqueTableKey << ", isTerminal = " << edge.isTerminal;
+    if (edge.key_ != 0) {
+        os << ", Key = " << edge.key_ << ", isTerminal = " << edge.isTerminal;
     } else {
         os << ", Key = Null" << ", isTerminal = " << edge.isTerminal;
     }
@@ -105,9 +142,12 @@ ostream& operator<<(ostream& os, const QMDDEdge& edge) {
 }
 
 void QMDDEdge::calculateDepth() {
-    if (this->isTerminal || this->uniqueTableKey ==  0) {
+    if (this->isTerminal || this->key_ ==  0) {
         this->depth = 0;
-    } else {
+    } else if (this->sonKind_ == SonKind::SVLeaf) {
+        this->depth = static_cast<int>(log2(this->sonLeaf_->dim));
+    }
+    else {
         vector<int> depths;
         for (const auto& edgeRow : this->getStartNode()->edges) {
             for (const auto& edge : edgeRow) {
@@ -182,9 +222,9 @@ vector<complex<double>> QMDDNode::getWeights() const {
 QMDDGate::QMDDGate(QMDDEdge edge)
     : initialEdge_(edge){}
 
-shared_ptr<QMDDNode> QMDDGate::getStartNode() const {
-    return this->initialEdge_.getStartNode();
-}
+// shared_ptr<QMDDNode> QMDDGate::getStartNode() const {
+//     return this->initialEdge_.getStartNode();
+// }
 
 QMDDEdge QMDDGate::getInitialEdge() const {
     return this->initialEdge_;
@@ -212,9 +252,9 @@ ostream& operator<<(ostream& os, const QMDDGate& gate) {
 QMDDState::QMDDState(QMDDEdge edge)
     : initialEdge_(edge) {}
 
-shared_ptr<QMDDNode> QMDDState::getStartNode() const {
-    return this->initialEdge_.getStartNode();
-}
+// shared_ptr<QMDDNode> QMDDState::getStartNode() const {
+//     return this->initialEdge_.getStartNode();
+// }
 
 QMDDEdge QMDDState::getInitialEdge() const {
     return this->initialEdge_;
@@ -230,6 +270,33 @@ bool QMDDState::operator!=(const QMDDState& other) const {
 
 ostream& operator<<(ostream& os, const QMDDState& state) {
     os << "QMDDState with initial edge:\n" << state.initialEdge_;
+    return os;
+}
+
+
+/////////////////////////////////////
+//
+//	QMDDSuite
+//
+/////////////////////////////////////
+
+QMDDSuite::QMDDSuite(QMDDEdge edge)
+    : initialEdge_(edge) {}
+
+QMDDEdge QMDDSuite::getInitialEdge() const {
+    return this->initialEdge_;
+}
+
+bool QMDDSuite::operator==(const QMDDSuite& other) const {
+    return this->initialEdge_ == other.initialEdge_;
+}
+
+bool QMDDSuite::operator!=(const QMDDSuite& other) const {
+    return !(*this == other);
+}
+
+ostream& operator<<(ostream& os, const QMDDSuite& suite) {
+    os << "QMDDSuite with initial edge:\n" << suite.initialEdge_;
     return os;
 }
 

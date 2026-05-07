@@ -109,6 +109,7 @@ void Parameter::loadFromFile(const string& yamlFilepath, const string& iniFilepa
                 // this->process.concurrency = config["process"]["concurrency"].as<int>();
                 this->process.parallel = config["process"]["parallel"].as<bool>();
                 this->process.parallelism = config["process"]["parallelism"].as<int>();
+                this->process.GPU = config["process"]["GPU"].as<int>();
             }
 
             if (config["table"]) {

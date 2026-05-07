@@ -248,7 +248,7 @@ SimulationResult SharedMemoryIPCServer::processCircuitRequest(const CircuitReque
         finalStateStream << "Final QMDD state computed with " << request.gates.size() 
                         << " gates on " << request.num_qubits << " qubits - "
                         << "Initial edge weight: " << finalState.getInitialEdge().weight
-                        << ", Unique table key: " << finalState.getInitialEdge().uniqueTableKey;
+                        << ", Unique table key: " << finalState.getInitialEdge().key_;
         
         // 詳細なシミュレーションログを手動で生成（実際のsimulate()ログを含む）
         std::stringstream simulationLogBuilder;
@@ -266,11 +266,11 @@ SimulationResult SharedMemoryIPCServer::processCircuitRequest(const CircuitReque
         for (size_t i = 0; i < request.gates.size(); i++) {
             simulationLogBuilder << "Gate " << i << ": " << request.gates[i].type << " on qubit " << request.gates[i].qubits[0] << "\n";
             simulationLogBuilder << "  Weight: " << currentState.getInitialEdge().weight << "\n";
-            simulationLogBuilder << "  Key: " << currentState.getInitialEdge().uniqueTableKey << "\n";
+            simulationLogBuilder << "  Key: " << currentState.getInitialEdge().key_ << "\n";
         }
         
         simulationLogBuilder << "Final state weight: " << finalState.getInitialEdge().weight << "\n";
-        simulationLogBuilder << "Final state key: " << finalState.getInitialEdge().uniqueTableKey << "\n";
+        simulationLogBuilder << "Final state key: " << finalState.getInitialEdge().key_ << "\n";
         
         result.success = true;
         result.executionTime = duration.count() / 1000.0;

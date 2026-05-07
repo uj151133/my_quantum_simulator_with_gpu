@@ -5,6 +5,7 @@
 #include <vector>
 #include <memory>
 #include <iostream>
+#include <boost/fiber/all.hpp>
 #include "../common/parameter.hpp"
 #include "sv.hpp"
 

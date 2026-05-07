@@ -7,6 +7,10 @@
 #include <typeinfo>
 #include <xxhash.h>
 #include <cstdlib>
+#include <cstdint>
+#include <cstddef>
+#include <cstring>
+#include <complex>
 #include "../models/qmdd.hpp"
 
 using namespace std;

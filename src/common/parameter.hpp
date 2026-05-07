@@ -23,6 +23,7 @@ public:
         // int concurrency = 0;
         bool parallel = false;
         int parallelism = 0;
+        int GPU = 0;
     } process;
     struct TableSettings {
         int size = 0;

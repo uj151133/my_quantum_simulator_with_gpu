@@ -62,81 +62,81 @@ ostream& operator<<(ostream& os, Type type);
 string toString(Type type);
 namespace gate {
     /* Identity gate and global phase */
-    QMDDGate I();
-    QMDDGate Ph(double delta);
+    QMDDSuite I();
+    QMDDSuite Ph(double delta);
 
     /* Clifford qubit gates */
-    QMDDGate X();
-    QMDDGate Y();
-    QMDDGate Z();
-    QMDDGate S();
-    QMDDGate Sdg();
-    QMDDGate V();
-    QMDDGate Vdg();
-    QMDDGate H();
-    QMDDGate CX1();
-    QMDDGate CX2();
-    QMDDGate varCX();
-    QMDDGate CZ();
-    QMDDGate DCNOT();
-    QMDDGate SWAP();
-    QMDDGate iSWAP();
+    QMDDSuite X();
+    QMDDSuite Y();
+    QMDDSuite Z();
+    QMDDSuite S();
+    QMDDSuite Sdg();
+    QMDDSuite V();
+    QMDDSuite Vdg();
+    QMDDSuite H();
+    QMDDSuite CX1();
+    QMDDSuite CX2();
+    QMDDSuite varCX();
+    QMDDSuite CZ();
+    QMDDSuite DCNOT();
+    QMDDSuite SWAP();
+    QMDDSuite iSWAP();
 
     /* Non-Clifford qubit gates */
-    QMDDGate P(double phi);
-    QMDDGate T();
-    QMDDGate Tdg();
-    QMDDGate CP(double phi);
-    QMDDGate CS();
+    QMDDSuite P(double phi);
+    QMDDSuite T();
+    QMDDSuite Tdg();
+    QMDDSuite CP(double phi);
+    QMDDSuite CS();
 
     /* Rotation operator gates */
-    QMDDGate R(double theta, double phi);
-    QMDDGate Rx(double theta);
-    QMDDGate Ry(double theta);
-    QMDDGate Rz(double theta);
-    QMDDGate Rk(int k);
+    QMDDSuite R(double theta, double phi);
+    QMDDSuite Rx(double theta);
+    QMDDSuite Ry(double theta);
+    QMDDSuite Rz(double theta);
+    QMDDSuite Rk(int k);
 
     /* Two-qubit interaction gates */
-    QMDDGate Rxx(double phi);
-    QMDDGate Ryy(double phi);
-    QMDDGate Rzz(double phi);
-    QMDDGate Rxy(double phi);
+    QMDDSuite Rxx(double phi);
+    QMDDSuite Ryy(double phi);
+    QMDDSuite Rzz(double phi);
+    QMDDSuite Rxy(double phi);
 
     /* Non-Clifford swap gates */
-    QMDDGate SquareSWAP();
-    QMDDGate SquareiSWAP();
-    QMDDGate SWAPalpha(double alpha);
-    QMDDGate FREDKIN();
+    QMDDSuite SquareSWAP();
+    QMDDSuite SquareiSWAP();
+    QMDDSuite SWAPalpha(double alpha);
+    QMDDSuite FREDKIN();
 
     /* Other named qubit */
-    QMDDGate U(double theta, double phi, double lambda);
-    QMDDGate U1(double theta);
-    QMDDGate U2(double phi, double lambda);
-    QMDDGate U3(double theta, double phi, double lamda);
-    QMDDGate BARENCO(double alpha, double phi, double theta);
-    QMDDGate B();
-    QMDDGate CSX();
-    QMDDGate N(double a, double b, double c);
-    QMDDGate DB();
-    QMDDGate ECR();
-    QMDDGate fSim(double theta, double phi);
-    QMDDGate G(double theta);
-    QMDDGate M();
-    QMDDGate syc();
-    QMDDGate CZS(double theta, double phi, double gamma);
-    QMDDGate D(double theta);
-    QMDDGate RCCX();
-    QMDDGate PG();
-    QMDDGate Toff();
-    QMDDGate fFredkin();
+    QMDDSuite U(double theta, double phi, double lambda);
+    QMDDSuite U1(double theta);
+    QMDDSuite U2(double phi, double lambda);
+    QMDDSuite U3(double theta, double phi, double lamda);
+    QMDDSuite BARENCO(double alpha, double phi, double theta);
+    QMDDSuite B();
+    QMDDSuite CSX();
+    QMDDSuite N(double a, double b, double c);
+    QMDDSuite DB();
+    QMDDSuite ECR();
+    QMDDSuite fSim(double theta, double phi);
+    QMDDSuite G(double theta);
+    QMDDSuite M();
+    QMDDSuite syc();
+    QMDDSuite CZS(double theta, double phi, double gamma);
+    QMDDSuite D(double theta);
+    QMDDSuite RCCX();
+    QMDDSuite PG();
+    QMDDSuite Toff();
+    QMDDSuite fFredkin();
 }
 
 
 
-// QMDDGate createPlusYGate();
-// QMDDGate createMinusYGate();
-// QMDDGate createSdgGate();
-// QMDDGate createTdgGate();
+// QMDDSuite createPlusYGate();
+// QMDDSuite createMinusYGate();
+// QMDDSuite createSdgGate();
+// QMDDSuite createTdgGate();
 
 
 // matrix Rotate(const ex &k);

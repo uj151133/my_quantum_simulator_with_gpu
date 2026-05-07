@@ -1,7 +1,7 @@
 #include "benchXor5d1.hpp"
 
 void benchXor5d1() {
-    QMDDState ket_0 = state::Ket0();
+    QMDDSuite ket_0 = state::Ket0();
     QuantumCircuit circuit(5);
     circuit.addCX(0, 1);
     circuit.addCX(1, 2);

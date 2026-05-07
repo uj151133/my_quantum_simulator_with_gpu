@@ -4,7 +4,7 @@ void shor(size_t N) {
     size_t m = N == 0 ? 1 : static_cast<size_t>(ceil(log2(N + 1)));
     size_t n = 2 * m;
 
-    QMDDState initialState = state::Ket0();
+    QMDDSuite initialState = state::Ket0();
 
     for (int _ = 0; _ < m - 1; _++) {
         initialState = mathUtils::kron(state::Ket0().getInitialEdge(), initialState.getInitialEdge());

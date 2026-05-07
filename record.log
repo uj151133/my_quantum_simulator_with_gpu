@@ -58857,3 +58857,5 @@
 [Fri May  1 11:22:29 2026] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: check/pointer | Execution time: 46833.2 ms
 [2026-05-01 11:23:11] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: check/pointer | Execution time:1028.501584 ms
 [Fri May  1 11:23:12 2026] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: check/pointer | Execution time: 2161.18 ms
+[2026-05-01 11:39:05] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:1140.718333 ms
+[Fri May  1 11:39:06 2026] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time: 2302.28 ms

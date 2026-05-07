@@ -1,4 +1,4 @@
-#include "Memo.hpp"
+#include "memo.hpp"
 
 extern "C" {
     #include "../atomic/atomic.h"
@@ -44,7 +44,7 @@ shared_ptr<SVLeaf> Memo::find(int64_t hashKey) const {
 
     for (SVEntry* p = head; p != nullptr; p = p->next) {
         if (p->key == hashKey) {
-            return p->value.lock().get();
+            return p->value.lock();
         }
     }
     return nullptr;
@@ -66,7 +66,7 @@ void Memo::printAllEntries() const {
         for (SVEntry* p = head; p != nullptr; p = p->next) {
             cout << "  Key: " << p->key << endl;
             if (auto sp = p->value.lock()) {
-                cout << "  SVLeaf valid(size=" << sp->size << ", sourceKey=" << sp->sourceKey << ")" << endl;
+                cout << "  SVLeaf valid(size=" << sp-> dim << ")" << endl;
                 validEntries++;
             } else {
                 cout << "  Null leaf" << endl;

@@ -14,6 +14,7 @@
 #include <boost/fiber/all.hpp>
 #include <stack>
 #include "sv.hpp"
+#include "memo.hpp"
 
 using namespace std;
 
@@ -35,7 +36,8 @@ enum class OperationType {
 
 enum class SonKind : uint8_t {
     QMDDNode,
-    SVLeaf
+    SVLeaf,
+    Terminal
 };
 
 // using OperationKey = tuple<QMDDEdge, OperationType, QMDDEdge>;
@@ -48,19 +50,26 @@ ostream& operator<<(ostream& os, const QMDDVariant& variant);
 
 
 struct QMDDEdge{
-    complex<double> weight;
-    int64_t uniqueTableKey;
-    shared_ptr<QMDDNode> son_;
-    SonKind sonKind_;
-    bool isTerminal;
-    int depth;
+    complex<double> weight = complex<double>(.0, .0);
+    int64_t key_ = 0;
+    shared_ptr<QMDDNode> sonNode_ = nullptr;
+    shared_ptr<SVLeaf> sonLeaf_ = nullptr;
+    SonKind sonKind_ = SonKind::Terminal;
+    bool isTerminal = true;
+    int depth = 0;
 
-    QMDDEdge(complex<double> w = {.0, .0}, shared_ptr<QMDDNode> n = nullptr);
-    QMDDEdge(double w, shared_ptr<QMDDNode> n = nullptr);
-    QMDDEdge(complex<double> w, int64_t key);
-    QMDDEdge(double w, int64_t key);
+    QMDDEdge();
+    QMDDEdge(complex<double> w);
+    QMDDEdge(double w);
+    QMDDEdge(complex<double> w, shared_ptr<QMDDNode> n);
+    QMDDEdge(double w, shared_ptr<QMDDNode> n);
+    QMDDEdge(complex<double> w, int64_t key, shared_ptr<SVLeaf> l);
+    QMDDEdge(double w, int64_t key, shared_ptr<SVLeaf> l);
+    QMDDEdge(complex<double> w, int64_t key, SonKind kind);
+    QMDDEdge(double w, int64_t key, SonKind kind);
     QMDDEdge(const QMDDEdge& other) = default;
     shared_ptr<QMDDNode> getStartNode() const;
+    shared_ptr<SVLeaf> getStartLeaf() const;
     vector<complex<double>> getAllElementsForKet();
     ~QMDDEdge() = default;
     QMDDEdge& operator=(const QMDDEdge& other) = default;
@@ -92,7 +101,7 @@ public:
     QMDDGate(QMDDEdge edge = QMDDEdge());
     QMDDGate(const QMDDGate& other) = default;
     ~QMDDGate() = default;
-    shared_ptr<QMDDNode> getStartNode() const;
+    // shared_ptr<QMDDNode> getStartNode() const;
     QMDDEdge getInitialEdge() const;
     QMDDGate& operator=(const QMDDGate& other) = default;
     bool operator==(const QMDDGate& other) const;
@@ -107,13 +116,28 @@ public:
     QMDDState(QMDDEdge edge);
     QMDDState(const QMDDState& other) = default;
     ~QMDDState() = default;
-    shared_ptr<QMDDNode> getStartNode() const;
+    // shared_ptr<QMDDNode> getStartNode() const;
     QMDDEdge getInitialEdge() const;
     vector<complex<double>> getAllElements();
     QMDDState& operator=(const QMDDState& other) = default;
     bool operator==(const QMDDState& other) const;
     bool operator!=(const QMDDState& other) const;
     friend ostream& operator<<(ostream& os, const QMDDState& state);
+};
+
+class QMDDSuite{
+    private:
+    QMDDEdge initialEdge_;
+public:
+    QMDDSuite(QMDDEdge edge = QMDDEdge());
+    QMDDSuite(const QMDDSuite& other) = default;
+    ~QMDDSuite() = default;
+    QMDDEdge getInitialEdge() const;
+    vector<complex<double>> getAllElements();
+    QMDDSuite& operator=(const QMDDSuite& other) = default;
+    bool operator==(const QMDDSuite& other) const;
+    bool operator!=(const QMDDSuite& other) const;
+    friend ostream& operator<<(ostream& os, const QMDDSuite& suite);
 };
 
 #endif

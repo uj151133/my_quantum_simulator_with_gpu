@@ -51,6 +51,11 @@ do this
 #### .NET Dependencies
 - **.NET 8.0 or later**: For the Blazor GUI
 
+#### METAL env
+```zsh
+xcodebuild -downloadComponent MetalToolchain
+```
+
 ### yaml
 please install and build yaml.
 ```zsh
