@@ -1,5 +1,6 @@
 #import <Metal/Metal.h>
 #include "../models/sv.hpp"
+#include "../models/qmdd.hpp"
 #include "backend.hpp"
 
 struct GPUInputHeader {
@@ -381,13 +382,13 @@ extern "C" void runMulAny2Wrapper(
     const void* edgesB = B.qmdd.edges.empty() ? nullptr : B.qmdd.edges.data();
     size_t edgesB_bytes = B.qmdd.edges.size() * sizeof(GPUEdge);
 
-    const float* inReA = (A.kind == GPUInput::Kind::SV) ? (const float*)A.sv.reHandle : nullptr;
-    const float* inImA = (A.kind == GPUInput::Kind::SV) ? (const float*)A.sv.imHandle : nullptr;
-    const float* inReB = (B.kind == GPUInput::Kind::SV) ? (const float*)B.sv.reHandle : nullptr;
-    const float* inImB = (B.kind == GPUInput::Kind::SV) ? (const float*)B.sv.imHandle : nullptr;
+    const float* inReA = (A.kind == SonKind::SVLeaf) ? (const float*)A.sv.reHandle : nullptr;
+    const float* inImA = (A.kind == SonKind::SVLeaf) ? (const float*)A.sv.imHandle : nullptr;
+    const float* inReB = (B.kind == SonKind::SVLeaf) ? (const float*)B.sv.reHandle : nullptr;
+    const float* inImB = (B.kind == SonKind::SVLeaf) ? (const float*)B.sv.imHandle : nullptr;
 
-    size_t inA_bytes = (A.kind == GPUInput::Kind::SV) ? A.dim * A.dim * sizeof(float) : 0;
-    size_t inB_bytes = (B.kind == GPUInput::Kind::SV) ? B.dim * B.dim * sizeof(float) : 0;
+    size_t inA_bytes = (A.kind == SonKind::SVLeaf) ? A.dim * A.dim * sizeof(float) : 0;
+    size_t inB_bytes = (B.kind == SonKind::SVLeaf) ? B.dim * B.dim * sizeof(float) : 0;
 
     id<MTLBuffer> outIdBuf =
         [device newBufferWithLength:sizeof(uint64_t)
@@ -442,13 +443,13 @@ extern "C" void runAddAny2Wrapper(
     const void* edgesB = B.qmdd.edges.empty() ? nullptr : B.qmdd.edges.data();
     size_t edgesB_bytes = B.qmdd.edges.size() * sizeof(GPUEdge);
 
-    const float* inReA = (A.kind == GPUInput::Kind::SV) ? (const float*)A.sv.reHandle : nullptr;
-    const float* inImA = (A.kind == GPUInput::Kind::SV) ? (const float*)A.sv.imHandle : nullptr;
-    const float* inReB = (B.kind == GPUInput::Kind::SV) ? (const float*)B.sv.reHandle : nullptr;
-    const float* inImB = (B.kind == GPUInput::Kind::SV) ? (const float*)B.sv.imHandle : nullptr;
+    const float* inReA = (A.kind == SonKind::SVLeaf) ? (const float*)A.sv.reHandle : nullptr;
+    const float* inImA = (A.kind == SonKind::SVLeaf) ? (const float*)A.sv.imHandle : nullptr;
+    const float* inReB = (B.kind == SonKind::SVLeaf) ? (const float*)B.sv.reHandle : nullptr;
+    const float* inImB = (B.kind == SonKind::SVLeaf) ? (const float*)B.sv.imHandle : nullptr;
 
-    size_t inA_bytes = (A.kind == GPUInput::Kind::SV) ? A.dim * A.dim * sizeof(float) : 0;
-    size_t inB_bytes = (B.kind == GPUInput::Kind::SV) ? B.dim * B.dim * sizeof(float) : 0;
+    size_t inA_bytes = (A.kind == SonKind::SVLeaf) ? A.dim * A.dim * sizeof(float) : 0;
+    size_t inB_bytes = (B.kind == SonKind::SVLeaf) ? B.dim * B.dim * sizeof(float) : 0;
 
     id<MTLBuffer> outIdBuf =
         [device newBufferWithLength:sizeof(uint64_t)
@@ -503,13 +504,13 @@ extern "C" void runKronAny2Wrapper(
     const void* edgesB = B.qmdd.edges.empty() ? nullptr : B.qmdd.edges.data();
     size_t edgesB_bytes = B.qmdd.edges.size() * sizeof(GPUEdge);
 
-    const float* inReA = (A.kind == GPUInput::Kind::SV) ? (const float*)A.sv.reHandle : nullptr;
-    const float* inImA = (A.kind == GPUInput::Kind::SV) ? (const float*)A.sv.imHandle : nullptr;
-    const float* inReB = (B.kind == GPUInput::Kind::SV) ? (const float*)B.sv.reHandle : nullptr;
-    const float* inImB = (B.kind == GPUInput::Kind::SV) ? (const float*)B.sv.imHandle : nullptr;
+    const float* inReA = (A.kind == SonKind::SVLeaf) ? (const float*)A.sv.reHandle : nullptr;
+    const float* inImA = (A.kind == SonKind::SVLeaf) ? (const float*)A.sv.imHandle : nullptr;
+    const float* inReB = (B.kind == SonKind::SVLeaf) ? (const float*)B.sv.reHandle : nullptr;
+    const float* inImB = (B.kind == SonKind::SVLeaf) ? (const float*)B.sv.imHandle : nullptr;
 
-    size_t inA_bytes = (A.kind == GPUInput::Kind::SV) ? A.dim * A.dim * sizeof(float) : 0;
-    size_t inB_bytes = (B.kind == GPUInput::Kind::SV) ? B.dim * B.dim * sizeof(float) : 0;
+    size_t inA_bytes = (A.kind == SonKind::SVLeaf) ? A.dim * A.dim * sizeof(float) : 0;
+    size_t inB_bytes = (B.kind == SonKind::SVLeaf) ? B.dim * B.dim * sizeof(float) : 0;
 
     id<MTLBuffer> outIdBuf =
         [device newBufferWithLength:sizeof(uint64_t)

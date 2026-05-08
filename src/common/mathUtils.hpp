@@ -22,6 +22,8 @@
 #include "../modules/threadPool.hpp"
 #include "../common/operationCacheClient.hpp"
 #include "../common/bigBang.hpp"
+#include "../modules/backend.hpp"
+#include "../modules/Heian.h"
 
 using namespace std;
 // using namespace Eigen;

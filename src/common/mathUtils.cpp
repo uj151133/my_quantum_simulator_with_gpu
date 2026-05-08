@@ -23,6 +23,26 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, bool parallelism
             }
         }
     }
+
+    if (depth >= PARAMETER.process.GPU || e0.sonKind_ == SonKind::SVLeaf || e1.sonKind_ == SonKind::SVLeaf) {
+        GPUInput A = farewell(e0);
+        GPUInput B = farewell(e1);
+
+        uint32_t dim = A.dim;
+        size_t total = (size_t)dim * dim;
+        size_t outBytes = total * sizeof(gpu_precision);
+
+        vector<gpu_precision> outRe(total), outIm(total);
+        int64_t outId = 0;
+        gpu_precision outCoef[2] = {.0f, .0f};
+
+        runMulAny2Wrapper(A, B,
+                        outRe.data(), outBytes,
+                        outIm.data(), outBytes,
+                        &outId, outCoef);
+        return QMDDEdge(complex<double>(outCoef[0], outCoef[1]), outId, SonKind::SVLeaf);
+    }
+
     // cout << "\033[1;35mCache miss!\033[0m" << endl;
 
     shared_ptr<QMDDNode> n0 = e0.getStartNode();
@@ -196,6 +216,24 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1, bool parallelism
     if (e0.key_ == e1.key_) {
         return QMDDEdge(e0.weight + e1.weight, e0.getStartNode());
     }
+    if (depth >= PARAMETER.process.GPU || e0.sonKind_ == SonKind::SVLeaf || e1.sonKind_ == SonKind::SVLeaf) {
+        GPUInput A = farewell(e0);
+        GPUInput B = farewell(e1);
+
+        uint32_t dim = A.dim;
+        size_t total = (size_t)dim * dim;
+        size_t outBytes = total * sizeof(gpu_precision);
+
+        std::vector<gpu_precision> outRe(total), outIm(total);
+        int64_t outId = 0;
+        gpu_precision outCoef[2] = {.0f, .0f};
+
+        runAddAny2Wrapper(A, B,
+                        outRe.data(), outBytes,
+                        outIm.data(), outBytes,
+                        &outId, outCoef);
+        return QMDDEdge(complex<double>(outCoef[0], outCoef[1]), outId, SonKind::SVLeaf);
+    }
     shared_ptr<QMDDNode> n0 = e0.getStartNode();
     shared_ptr<QMDDNode> n1 = e1.getStartNode();
     bool allWeightsAreZero = true;
@@ -342,6 +380,25 @@ QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
             return QMDDEdge(e0.weight * e1.weight, e1.getStartNode());
         }
     }
+
+    if (depth >= PARAMETER.process.GPU || e0.sonKind_ == SonKind::SVLeaf) {
+        GPUInput A = farewell(e0);
+        GPUInput B = farewell(e1);
+
+        uint32_t dim = A.dim * B.dim;
+        size_t total = (size_t)dim * dim;
+        size_t outBytes = total * sizeof(gpu_precision);
+
+        vector<gpu_precision> outRe(total), outIm(total);
+        int64_t outId = 0;
+        gpu_precision outCoef[2] = {.0f, .0f};
+
+        runKronAny2Wrapper(A, B,
+                        outRe.data(), outBytes,
+                        outIm.data(), outBytes,
+                        &outId, outCoef);
+        return QMDDEdge(complex<double>(outCoef[0], outCoef[1]), outId, SonKind::SVLeaf);
+    }
     shared_ptr<QMDDNode> n0 = e0.getStartNode();
     shared_ptr<QMDDNode> n1 = e1.getStartNode();
     vector<vector<QMDDEdge>> z(2, vector<QMDDEdge>(2));
@@ -349,53 +406,19 @@ QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
     bool allWeightsAreZero = true;
     // const bool spawn = depth < (PARAMETER.process.parallelism + PARAMETER.process.concurrency);
 
-    if (PARAMETER.process.parallel and false) {
+    for (size_t i = 0; i < 2; i++) {
+        for (size_t j = 0; j < 2; j++) {
+            z[i][j] = mathUtils::kron(n0->edges[i][j], e1, depth + 1);
 
-        vector<boost::fibers::future<QMDDEdge>> futures;
-        futures.reserve(4);
-
-        for (size_t i = 0; i < 2; i++) {
-            for (size_t j = 0; j < 2; j++) {
-                futures.emplace_back(
-                    boost::fibers::async([&, i, j]() {
-                        return mathUtils::kron(n0->edges[i][j], e1, depth + 1);
-                    })
-                );
-            }
-        }
-
-        size_t idx = 0;
-        for (size_t i = 0; i < 2; i++) {
-            for (size_t j = 0; j < 2; j++) {
-                z[i][j] = futures[idx++].get();
-                if (z[i][j].weight != .0) {
-                    allWeightsAreZero = false;
-                    if (tmpWeight == .0) {
-                        tmpWeight = z[i][j].weight;
-                        z[i][j].weight = 1.0;
-                    } else {
-                        z[i][j].weight /= tmpWeight;
-                    }
-                }
-            }
-        }
-
-    } else{
-        // cout << "sequential kron" << endl;
-        for (size_t i = 0; i < 2; i++) {
-            for (size_t j = 0; j < 2; j++) {
-                z[i][j] = mathUtils::kron(n0->edges[i][j], e1, depth + 1);
-
-                if (z[i][j].weight != .0) {
-                    allWeightsAreZero = false;
-                    if (tmpWeight == .0) {
-                        tmpWeight = z[i][j].weight;
-                        z[i][j].weight = 1.0;
-                    }else if (tmpWeight != .0) {
-                        z[i][j].weight /= tmpWeight;
-                    } else {
-                        cout << "⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️" << endl;
-                    }
+            if (z[i][j].weight != .0) {
+                allWeightsAreZero = false;
+                if (tmpWeight == .0) {
+                    tmpWeight = z[i][j].weight;
+                    z[i][j].weight = 1.0;
+                }else if (tmpWeight != .0) {
+                    z[i][j].weight /= tmpWeight;
+                } else {
+                    cout << "⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️" << endl;
                 }
             }
         }

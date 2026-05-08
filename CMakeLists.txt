@@ -364,6 +364,14 @@ target_link_libraries(qmdd_sim PRIVATE
     $<$<BOOL:${ONNXRUNTIME_LIB}>:${ONNXRUNTIME_LIB}>
 )
 
+if(APPLE)
+    target_link_libraries(qmdd_sim PRIVATE
+        "-framework Metal"
+        "-framework Foundation"
+        "-framework CoreFoundation"
+    )
+endif()
+
 if(APPLE AND ONNXRUNTIME_LIB)
     get_filename_component(ONNX_LIB_DIR "${ONNXRUNTIME_LIB}" DIRECTORY)
     set_target_properties(qmdd_sim PROPERTIES
@@ -437,6 +445,14 @@ target_link_libraries(qmdd_core PRIVATE
     $<$<BOOL:${GRAALVM_NATIVE_LIB}>:${GRAALVM_NATIVE_LIB}>
     $<$<BOOL:${ONNXRUNTIME_LIB}>:${ONNXRUNTIME_LIB}>
 )
+
+if(APPLE)
+    target_link_libraries(qmdd_core PRIVATE
+        "-framework Metal"
+        "-framework Foundation"
+        "-framework CoreFoundation"
+    )
+endif()
 
 if(APPLE AND ONNXRUNTIME_LIB)
     get_filename_component(ONNX_LIB_DIR "${ONNXRUNTIME_LIB}" DIRECTORY)

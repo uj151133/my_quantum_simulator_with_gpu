@@ -13,6 +13,8 @@ using gpu_precision = float;
 using gpu_precision = double;
 #endif
 
+using namespace std;
+
 struct GPUEdge {
     gpu_precision re = 0.0;
     gpu_precision im = 0.0;
@@ -20,7 +22,7 @@ struct GPUEdge {
 };
 
 struct GPUQMDD {
-    std::vector<GPUEdge> edges;
+    vector<GPUEdge> edges;
 };
 
 struct GPUSV {
@@ -29,8 +31,7 @@ struct GPUSV {
 };
 
 struct GPUInput {
-    enum class Kind : uint8_t { QMDD, SV, Terminal };
-    Kind kind;
+    SonKind kind;
 
     gpu_precision root_re = 1.0;
     gpu_precision root_im = 0.0;
@@ -43,6 +44,8 @@ struct GPUInput {
 
 GPUInput flattenQMDD(const QMDDEdge& root);
 
-GPUInput wrapSVEdge(const QMDDEdge& root);
+GPUInput wrapSV(const QMDDEdge& root);
+
+GPUInput farewell(const QMDDEdge& root);
 
 #endif

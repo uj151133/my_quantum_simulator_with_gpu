@@ -69,13 +69,13 @@ static void fillNode(
 GPUInput flattenQMDD(const QMDDEdge& root) {
     if (root.isTerminal || root.key_ == 0 || isZeroWeight(root.weight)) {
         GPUInput out;
-        out.kind = GPUInput::Kind::Terminal;
+        out.kind = SonKind::Terminal;
         setRootWeight(out, root);
         return out;
     }
 
     GPUInput out;
-    out.kind = GPUInput::Kind::QMDD;
+    out.kind = SonKind::QMDDNode;
     setRootWeight(out, root);
     out.dim = 1u << root.depth;
 
@@ -91,10 +91,10 @@ GPUInput flattenQMDD(const QMDDEdge& root) {
     return out;
 }
 
-GPUInput wrapSVEdge(const QMDDEdge& root) {
+GPUInput wrapSV(const QMDDEdge& root) {
 
     GPUInput out;
-    out.kind = GPUInput::Kind::SV;
+    out.kind = SonKind::SVLeaf;
     setRootWeight(out, root);
 
     auto leaf = root.getStartLeaf();
@@ -107,4 +107,28 @@ GPUInput wrapSVEdge(const QMDDEdge& root) {
     out.sv.imHandle = leaf->imBuf;
 
     return out;
+}
+
+GPUInput farewell(const QMDDEdge& root) {
+    if (root.isTerminal || root.key_ == 0 || isZeroWeight(root.weight)) {
+        GPUInput out;
+        out.kind = SonKind::Terminal;
+        setRootWeight(out, root);
+        return out;
+    }
+
+    switch (root.sonKind_) {
+        case SonKind::QMDDNode:
+            return flattenQMDD(root);
+        case SonKind::SVLeaf:
+            return wrapSV(root);
+        case SonKind::Terminal: {
+            GPUInput out;
+            out.kind = SonKind::Terminal;
+            setRootWeight(out, root);
+            return out;
+        }
+        default:
+            throw std::runtime_error("wrapAuto: unknown sonKind_");
+    }
 }
