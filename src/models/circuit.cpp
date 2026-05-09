@@ -520,7 +520,7 @@ void QuantumCircuit::build() {
     for (auto& layer : this->layer_) {
         if (layer.empty()) continue;
 
-        QMDDEdge result;
+        QMDDEdge result = layer.back();
         int depth = static_cast<int>(layer.size()) - 2;
         for (auto it = layer.rbegin() + 1; it != layer.rend(); ++it, --depth) {
             result = mathUtils::kron(*it, result, depth);

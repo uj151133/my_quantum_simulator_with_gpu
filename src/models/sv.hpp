@@ -17,10 +17,8 @@ struct SVLeaf {
     void*   reBuf;
     void*   imBuf;
 
-    ~SVLeaf() {
-        releaseGpuBuffer(reBuf);
-        releaseGpuBuffer(imBuf);
-    }
+    SVLeaf(size_t dim, void* reBuf, void* imBuf);
+    ~SVLeaf();
 };
 
 

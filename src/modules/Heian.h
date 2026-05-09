@@ -8,8 +8,8 @@
 extern "C" void runMulAny2Wrapper(
     const GPUInput& A,
     const GPUInput& B,
-    float* outRe, size_t out_bytes,
-    float* outIm, size_t out_bytes2,
+    void** outRe,
+    void** outIm,
     int64_t* outId,
     float* outCoef
 );
@@ -17,8 +17,8 @@ extern "C" void runMulAny2Wrapper(
 extern "C" void runAddAny2Wrapper(
     const GPUInput& A,
     const GPUInput& B,
-    float* outRe, size_t out_bytes,
-    float* outIm, size_t out_bytes2,
+    void** outRe,
+    void** outIm,
     int64_t* outId,
     float* outCoef
 );
@@ -26,8 +26,8 @@ extern "C" void runAddAny2Wrapper(
 extern "C" void runKronAny2Wrapper(
     const GPUInput& A,
     const GPUInput& B,
-    float* outRe, size_t out_bytes,
-    float* outIm, size_t out_bytes2,
+    void** outRe,
+    void** outIm,
     int64_t* outId,
     float* outCoef
 );

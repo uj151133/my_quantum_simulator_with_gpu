@@ -58859,3 +58859,22 @@
 [Fri May  1 11:23:12 2026] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: check/pointer | Execution time: 2161.18 ms
 [2026-05-01 11:39:05] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:1140.718333 ms
 [Fri May  1 11:39:06 2026] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time: 2302.28 ms
+[2026-05-08 12:04:18] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:4294974.632000 ms
+[2026-05-08 14:02:45] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:36.751250 ms
+[2026-05-08 15:39:59] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:5.858333 ms
+[2026-05-08 22:29:38] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:9.364417 ms
+[2026-05-08 22:30:34] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:11.492666 ms
+[2026-05-08 22:30:49] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:8.397792 ms
+[2026-05-09 01:38:42] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:7.800666 ms
+[2026-05-09 01:40:21] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:8.652500 ms
+[2026-05-09 14:49:23] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:32.255833 ms
+[2026-05-09 15:22:49] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:1207.104459 ms
+[Sat May  9 15:22:50 2026] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time: 2635.77 ms
+[2026-05-09 15:23:33] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:1143.375958 ms
+[Sat May  9 15:23:35 2026] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time: 2561.71 ms
+[2026-05-09 15:25:43] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:54.024125 ms
+[2026-05-09 15:27:07] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:45.199458 ms
+[2026-05-09 15:29:36] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:68.031750 ms
+[2026-05-09 15:31:37] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:57.820167 ms
+[2026-05-09 21:42:19] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:167.521250 ms
+[2026-05-09 21:43:55] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:93.511542 ms

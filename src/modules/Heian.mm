@@ -164,12 +164,12 @@ static void runMulAny2(
     const GPUInputHeader& hdrB,
     const void* edgesA, size_t edgesA_bytes,
     const void* edgesB, size_t edgesB_bytes,
-    const float* inReA, size_t inA_bytes,
-    const float* inImA, size_t inA_bytes2,
-    const float* inReB, size_t inB_bytes,
-    const float* inImB, size_t inB_bytes2,
-    float* outRe, size_t out_bytes,
-    float* outIm, size_t out_bytes2,
+    id<MTLBuffer> inReBufA,
+    id<MTLBuffer> inImBufA,
+    id<MTLBuffer> inReBufB,
+    id<MTLBuffer> inImBufB,
+    id<MTLBuffer> outReBuf,
+    id<MTLBuffer> outImBuf,
     id<MTLBuffer> outIdBuf,
     id<MTLBuffer> outCoefBuf
 ) {
@@ -184,14 +184,6 @@ static void runMulAny2(
 
     id<MTLBuffer> edgesBufA = edgesA_bytes ? [device newBufferWithBytes:edgesA length:edgesA_bytes options:MTLResourceStorageModeShared] : nil;
     id<MTLBuffer> edgesBufB = edgesB_bytes ? [device newBufferWithBytes:edgesB length:edgesB_bytes options:MTLResourceStorageModeShared] : nil;
-
-    id<MTLBuffer> inReBufA = [device newBufferWithBytes:inReA length:inA_bytes options:MTLResourceStorageModeShared];
-    id<MTLBuffer> inImBufA = [device newBufferWithBytes:inImA length:inA_bytes2 options:MTLResourceStorageModeShared];
-    id<MTLBuffer> inReBufB = [device newBufferWithBytes:inReB length:inB_bytes options:MTLResourceStorageModeShared];
-    id<MTLBuffer> inImBufB = [device newBufferWithBytes:inImB length:inB_bytes2 options:MTLResourceStorageModeShared];
-
-    id<MTLBuffer> outReBuf = [device newBufferWithBytes:outRe length:out_bytes options:MTLResourceStorageModeShared];
-    id<MTLBuffer> outImBuf = [device newBufferWithBytes:outIm length:out_bytes2 options:MTLResourceStorageModeShared];
 
     id<MTLCommandBuffer> cmd = [queue commandBuffer];
     id<MTLComputeCommandEncoder> enc = [cmd computeCommandEncoder];
@@ -232,12 +224,12 @@ static void runAddAny2(
     const GPUInputHeader& hdrB,
     const void* edgesA, size_t edgesA_bytes,
     const void* edgesB, size_t edgesB_bytes,
-    const float* inReA, size_t inA_bytes,
-    const float* inImA, size_t inA_bytes2,
-    const float* inReB, size_t inB_bytes,
-    const float* inImB, size_t inB_bytes2,
-    float* outRe, size_t out_bytes,
-    float* outIm, size_t out_bytes2,
+    id<MTLBuffer> inReBufA,
+    id<MTLBuffer> inImBufA,
+    id<MTLBuffer> inReBufB,
+    id<MTLBuffer> inImBufB,
+    id<MTLBuffer> outReBuf,
+    id<MTLBuffer> outImBuf,
     id<MTLBuffer> outIdBuf,
     id<MTLBuffer> outCoefBuf
 ) {
@@ -252,14 +244,6 @@ static void runAddAny2(
 
     id<MTLBuffer> edgesBufA = edgesA_bytes ? [device newBufferWithBytes:edgesA length:edgesA_bytes options:MTLResourceStorageModeShared] : nil;
     id<MTLBuffer> edgesBufB = edgesB_bytes ? [device newBufferWithBytes:edgesB length:edgesB_bytes options:MTLResourceStorageModeShared] : nil;
-
-    id<MTLBuffer> inReBufA = [device newBufferWithBytes:inReA length:inA_bytes options:MTLResourceStorageModeShared];
-    id<MTLBuffer> inImBufA = [device newBufferWithBytes:inImA length:inA_bytes2 options:MTLResourceStorageModeShared];
-    id<MTLBuffer> inReBufB = [device newBufferWithBytes:inReB length:inB_bytes options:MTLResourceStorageModeShared];
-    id<MTLBuffer> inImBufB = [device newBufferWithBytes:inImB length:inB_bytes2 options:MTLResourceStorageModeShared];
-
-    id<MTLBuffer> outReBuf = [device newBufferWithBytes:outRe length:out_bytes options:MTLResourceStorageModeShared];
-    id<MTLBuffer> outImBuf = [device newBufferWithBytes:outIm length:out_bytes2 options:MTLResourceStorageModeShared];
 
     id<MTLCommandBuffer> cmd = [queue commandBuffer];
     id<MTLComputeCommandEncoder> enc = [cmd computeCommandEncoder];
@@ -301,12 +285,12 @@ static void runKronAny2(
     const GPUInputHeader& hdrB,
     const void* edgesA, size_t edgesA_bytes,
     const void* edgesB, size_t edgesB_bytes,
-    const float* inReA, size_t inA_bytes,
-    const float* inImA, size_t inA_bytes2,
-    const float* inReB, size_t inB_bytes,
-    const float* inImB, size_t inB_bytes2,
-    float* outRe, size_t out_bytes,
-    float* outIm, size_t out_bytes2,
+    id<MTLBuffer> inReBufA,
+    id<MTLBuffer> inImBufA,
+    id<MTLBuffer> inReBufB,
+    id<MTLBuffer> inImBufB,
+    id<MTLBuffer> outReBuf,
+    id<MTLBuffer> outImBuf,
     id<MTLBuffer> outIdBuf,
     id<MTLBuffer> outCoefBuf
 ) {
@@ -321,14 +305,6 @@ static void runKronAny2(
 
     id<MTLBuffer> edgesBufA = edgesA_bytes ? [device newBufferWithBytes:edgesA length:edgesA_bytes options:MTLResourceStorageModeShared] : nil;
     id<MTLBuffer> edgesBufB = edgesB_bytes ? [device newBufferWithBytes:edgesB length:edgesB_bytes options:MTLResourceStorageModeShared] : nil;
-
-    id<MTLBuffer> inReBufA = inA_bytes ? [device newBufferWithBytes:inReA length:inA_bytes options:MTLResourceStorageModeShared] : nil;
-    id<MTLBuffer> inImBufA = inA_bytes2 ? [device newBufferWithBytes:inImA length:inA_bytes2 options:MTLResourceStorageModeShared] : nil;
-    id<MTLBuffer> inReBufB = inB_bytes ? [device newBufferWithBytes:inReB length:inB_bytes options:MTLResourceStorageModeShared] : nil;
-    id<MTLBuffer> inImBufB = inB_bytes2 ? [device newBufferWithBytes:inImB length:inB_bytes2 options:MTLResourceStorageModeShared] : nil;
-
-    id<MTLBuffer> outReBuf = [device newBufferWithBytes:outRe length:out_bytes options:MTLResourceStorageModeShared];
-    id<MTLBuffer> outImBuf = [device newBufferWithBytes:outIm length:out_bytes2 options:MTLResourceStorageModeShared];
 
     id<MTLCommandBuffer> cmd = [queue commandBuffer];
     id<MTLComputeCommandEncoder> enc = [cmd computeCommandEncoder];
@@ -365,13 +341,20 @@ static void runKronAny2(
 extern "C" void runMulAny2Wrapper(
     const GPUInput& A,
     const GPUInput& B,
-    float* outRe, size_t out_bytes,
-    float* outIm, size_t out_bytes2,
+    void** outRe,
+    void** outIm,
     int64_t* outId,
     float* outCoef
 ) {
     id<MTLDevice> device = MTLCreateSystemDefaultDevice();
-    id<MTLLibrary> library = [device newDefaultLibrary];
+    NSString* libPath = @"/Users/mitsuishikaito/my_quantum_simulator_with_gpu/build/Heian.metallib";
+    NSError* libErr = nil;
+    NSURL* libURL = [NSURL fileURLWithPath:libPath];
+    id<MTLLibrary> library = [device newLibraryWithURL:libURL error:&libErr];
+    if (!library) {
+        NSLog(@"Failed to load metallib: %@", libErr);
+        return;
+    }
 
     GPUInputHeader hdrA = makeHeader(A);
     GPUInputHeader hdrB = makeHeader(B);
@@ -382,35 +365,43 @@ extern "C" void runMulAny2Wrapper(
     const void* edgesB = B.qmdd.edges.empty() ? nullptr : B.qmdd.edges.data();
     size_t edgesB_bytes = B.qmdd.edges.size() * sizeof(GPUEdge);
 
-    const float* inReA = (A.kind == SonKind::SVLeaf) ? (const float*)A.sv.reHandle : nullptr;
-    const float* inImA = (A.kind == SonKind::SVLeaf) ? (const float*)A.sv.imHandle : nullptr;
-    const float* inReB = (B.kind == SonKind::SVLeaf) ? (const float*)B.sv.reHandle : nullptr;
-    const float* inImB = (B.kind == SonKind::SVLeaf) ? (const float*)B.sv.imHandle : nullptr;
+    id<MTLBuffer> inReBufA = (A.kind == SonKind::SVLeaf) ? (__bridge id<MTLBuffer>)A.sv.reHandle : nil;
+    id<MTLBuffer> inImBufA = (A.kind == SonKind::SVLeaf) ? (__bridge id<MTLBuffer>)A.sv.imHandle : nil;
+    id<MTLBuffer> inReBufB = (B.kind == SonKind::SVLeaf) ? (__bridge id<MTLBuffer>)B.sv.reHandle : nil;
+    id<MTLBuffer> inImBufB = (B.kind == SonKind::SVLeaf) ? (__bridge id<MTLBuffer>)B.sv.imHandle : nil;
 
     size_t inA_bytes = (A.kind == SonKind::SVLeaf) ? A.dim * A.dim * sizeof(float) : 0;
     size_t inB_bytes = (B.kind == SonKind::SVLeaf) ? B.dim * B.dim * sizeof(float) : 0;
 
-    id<MTLBuffer> outIdBuf =
-        [device newBufferWithLength:sizeof(uint64_t)
-                             options:MTLResourceStorageModeShared];
-    id<MTLBuffer> outCoefBuf =
-        [device newBufferWithLength:sizeof(float)*2
-                             options:MTLResourceStorageModeShared];
+    uint32_t dim = A.dim;
+    size_t total = (size_t)dim * dim;
+    size_t outBytes = total * sizeof(float);
+
+    id<MTLBuffer> outReBuf = [device newBufferWithLength:outBytes options:MTLResourceStorageModeShared];
+    id<MTLBuffer> outImBuf = [device newBufferWithLength:outBytes options:MTLResourceStorageModeShared];
+
+    id<MTLBuffer> outIdBuf = [device newBufferWithLength:sizeof(uint64_t) options:MTLResourceStorageModeShared];
+
+    id<MTLBuffer> outCoefBuf = [device newBufferWithLength:sizeof(float)*2 options:MTLResourceStorageModeShared];
+
 
     runMulAny2(
         device, library,
         hdrA, hdrB,
         edgesA, edgesA_bytes,
         edgesB, edgesB_bytes,
-        inReA, inA_bytes,
-        inImA, inA_bytes,
-        inReB, inB_bytes,
-        inImB, inB_bytes,
-        outRe, out_bytes,
-        outIm, out_bytes2,
+        inReBufA,
+        inImBufA,
+        inReBufB,
+        inImBufB,
+        outReBuf,
+        outImBuf,
         outIdBuf,
         outCoefBuf
     );
+
+    if (outRe) { [outReBuf retain]; *outRe = (__bridge void*)outReBuf; }
+    if (outIm) { [outImBuf retain]; *outIm = (__bridge void*)outImBuf; }
 
     if (outId) {
         *outId = *(int64_t*)outIdBuf.contents;
@@ -418,21 +409,43 @@ extern "C" void runMulAny2Wrapper(
 
     if (outCoef) {
         float* c = (float*)outCoefBuf.contents;
-        outCoef[0] = c[0];
-        outCoef[1] = c[1];
+        float coefRe = c[0];
+        float coefIm = c[1];
+
+        float rA = (float)A.root_re, iA = (float)A.root_im;
+        float rB = (float)B.root_re, iB = (float)B.root_im;
+        float r = rA*rB - iA*iB;
+        float i = rA*iB + iA*rB;
+
+        // coef * (rootA*rootB)
+        outCoef[0] = coefRe * r - coefIm * i;
+        outCoef[1] = coefRe * i + coefIm * r;
     }
+
+    float* re = (float*)outReBuf.contents;
+    float* im = (float*)outImBuf.contents;
+    NSLog(@"out[0]=(%f,%f) out[1]=(%f,%f) out[2]=(%f,%f)",
+        re[0], im[0], re[1], im[1], re[2], im[2]);
+    NSLog(@"outCoef = (%f, %f)", outCoef[0], outCoef[1]);
 }
 
 extern "C" void runAddAny2Wrapper(
     const GPUInput& A,
     const GPUInput& B,
-    float* outRe, size_t out_bytes,
-    float* outIm, size_t out_bytes2,
+    void** outRe,
+    void** outIm,
     int64_t* outId,
     float* outCoef
 ) {
     id<MTLDevice> device = MTLCreateSystemDefaultDevice();
-    id<MTLLibrary> library = [device newDefaultLibrary];
+    NSString* libPath = @"/Users/mitsuishikaito/my_quantum_simulator_with_gpu/build/Heian.metallib";
+    NSError* libErr = nil;
+    NSURL* libURL = [NSURL fileURLWithPath:libPath];
+    id<MTLLibrary> library = [device newLibraryWithURL:libURL error:&libErr];
+    if (!library) {
+        NSLog(@"Failed to load metallib: %@", libErr);
+        return;
+    }
 
     GPUInputHeader hdrA = makeHeader(A);
     GPUInputHeader hdrB = makeHeader(B);
@@ -443,36 +456,42 @@ extern "C" void runAddAny2Wrapper(
     const void* edgesB = B.qmdd.edges.empty() ? nullptr : B.qmdd.edges.data();
     size_t edgesB_bytes = B.qmdd.edges.size() * sizeof(GPUEdge);
 
-    const float* inReA = (A.kind == SonKind::SVLeaf) ? (const float*)A.sv.reHandle : nullptr;
-    const float* inImA = (A.kind == SonKind::SVLeaf) ? (const float*)A.sv.imHandle : nullptr;
-    const float* inReB = (B.kind == SonKind::SVLeaf) ? (const float*)B.sv.reHandle : nullptr;
-    const float* inImB = (B.kind == SonKind::SVLeaf) ? (const float*)B.sv.imHandle : nullptr;
+    id<MTLBuffer> inReBufA = (A.kind == SonKind::SVLeaf) ? (__bridge id<MTLBuffer>)A.sv.reHandle : nil;
+    id<MTLBuffer> inImBufA = (A.kind == SonKind::SVLeaf) ? (__bridge id<MTLBuffer>)A.sv.imHandle : nil;
+    id<MTLBuffer> inReBufB = (B.kind == SonKind::SVLeaf) ? (__bridge id<MTLBuffer>)B.sv.reHandle : nil;
+    id<MTLBuffer> inImBufB = (B.kind == SonKind::SVLeaf) ? (__bridge id<MTLBuffer>)B.sv.imHandle : nil;
 
     size_t inA_bytes = (A.kind == SonKind::SVLeaf) ? A.dim * A.dim * sizeof(float) : 0;
     size_t inB_bytes = (B.kind == SonKind::SVLeaf) ? B.dim * B.dim * sizeof(float) : 0;
 
-    id<MTLBuffer> outIdBuf =
-        [device newBufferWithLength:sizeof(uint64_t)
-                             options:MTLResourceStorageModeShared];
+    uint32_t dim = A.dim;
+    size_t total = (size_t)dim * dim;
+    size_t outBytes = total * sizeof(float);
 
-    id<MTLBuffer> outCoefBuf =
-        [device newBufferWithLength:sizeof(float)*2
-                             options:MTLResourceStorageModeShared];
+    id<MTLBuffer> outReBuf = [device newBufferWithLength:outBytes options:MTLResourceStorageModeShared];
+    id<MTLBuffer> outImBuf = [device newBufferWithLength:outBytes options:MTLResourceStorageModeShared];
+
+    id<MTLBuffer> outIdBuf = [device newBufferWithLength:sizeof(uint64_t) options:MTLResourceStorageModeShared];
+
+    id<MTLBuffer> outCoefBuf = [device newBufferWithLength:sizeof(float)*2 options:MTLResourceStorageModeShared];
 
     runAddAny2(
         device, library,
         hdrA, hdrB,
         edgesA, edgesA_bytes,
         edgesB, edgesB_bytes,
-        inReA, inA_bytes,
-        inImA, inA_bytes,
-        inReB, inB_bytes,
-        inImB, inB_bytes,
-        outRe, out_bytes,
-        outIm, out_bytes2,
+        inReBufA,
+        inImBufA,
+        inReBufB,
+        inImBufB,
+        outReBuf,
+        outImBuf,
         outIdBuf,
         outCoefBuf
     );
+
+    if (outRe) { [outReBuf retain]; *outRe = (__bridge void*)outReBuf; }
+    if (outIm) { [outImBuf retain]; *outIm = (__bridge void*)outImBuf; }
 
     if (outId) {
         *outId = *(int64_t*)outIdBuf.contents;
@@ -482,18 +501,31 @@ extern "C" void runAddAny2Wrapper(
         outCoef[0] = c[0];
         outCoef[1] = c[1];
     }
+
+    float* re = (float*)outReBuf.contents;
+    float* im = (float*)outImBuf.contents;
+    NSLog(@"out[0]=(%f,%f) out[1]=(%f,%f) out[2]=(%f,%f)",
+        re[0], im[0], re[1], im[1], re[2], im[2]);
+    NSLog(@"outCoef = (%f, %f)", outCoef[0], outCoef[1]);
 }
 
 extern "C" void runKronAny2Wrapper(
     const GPUInput& A,
     const GPUInput& B,
-    float* outRe, size_t out_bytes,
-    float* outIm, size_t out_bytes2,
+    void** outRe,
+    void** outIm,
     int64_t* outId,
     float* outCoef
 ) {
     id<MTLDevice> device = MTLCreateSystemDefaultDevice();
-    id<MTLLibrary> library = [device newDefaultLibrary];
+    NSString* libPath = @"/Users/mitsuishikaito/my_quantum_simulator_with_gpu/build/Heian.metallib";
+    NSError* libErr = nil;
+    NSURL* libURL = [NSURL fileURLWithPath:libPath];
+    id<MTLLibrary> library = [device newLibraryWithURL:libURL error:&libErr];
+    if (!library) {
+        NSLog(@"Failed to load metallib: %@", libErr);
+        return;
+    }
 
     GPUInputHeader hdrA = makeHeader(A);
     GPUInputHeader hdrB = makeHeader(B);
@@ -504,36 +536,42 @@ extern "C" void runKronAny2Wrapper(
     const void* edgesB = B.qmdd.edges.empty() ? nullptr : B.qmdd.edges.data();
     size_t edgesB_bytes = B.qmdd.edges.size() * sizeof(GPUEdge);
 
-    const float* inReA = (A.kind == SonKind::SVLeaf) ? (const float*)A.sv.reHandle : nullptr;
-    const float* inImA = (A.kind == SonKind::SVLeaf) ? (const float*)A.sv.imHandle : nullptr;
-    const float* inReB = (B.kind == SonKind::SVLeaf) ? (const float*)B.sv.reHandle : nullptr;
-    const float* inImB = (B.kind == SonKind::SVLeaf) ? (const float*)B.sv.imHandle : nullptr;
+    id<MTLBuffer> inReBufA = (A.kind == SonKind::SVLeaf) ? (__bridge id<MTLBuffer>)A.sv.reHandle : nil;
+    id<MTLBuffer> inImBufA = (A.kind == SonKind::SVLeaf) ? (__bridge id<MTLBuffer>)A.sv.imHandle : nil;
+    id<MTLBuffer> inReBufB = (B.kind == SonKind::SVLeaf) ? (__bridge id<MTLBuffer>)B.sv.reHandle : nil;
+    id<MTLBuffer> inImBufB = (B.kind == SonKind::SVLeaf) ? (__bridge id<MTLBuffer>)B.sv.imHandle : nil;
 
     size_t inA_bytes = (A.kind == SonKind::SVLeaf) ? A.dim * A.dim * sizeof(float) : 0;
     size_t inB_bytes = (B.kind == SonKind::SVLeaf) ? B.dim * B.dim * sizeof(float) : 0;
 
-    id<MTLBuffer> outIdBuf =
-        [device newBufferWithLength:sizeof(uint64_t)
-                             options:MTLResourceStorageModeShared];
+    uint32_t dimOut = A.dim * B.dim;
+    size_t total = (size_t)dimOut * dimOut;
+    size_t outBytes = total * sizeof(float);
 
-    id<MTLBuffer> outCoefBuf =
-        [device newBufferWithLength:sizeof(float)*2
-                             options:MTLResourceStorageModeShared];
+    id<MTLBuffer> outReBuf = [device newBufferWithLength:outBytes options:MTLResourceStorageModeShared];
+    id<MTLBuffer> outImBuf = [device newBufferWithLength:outBytes options:MTLResourceStorageModeShared];
+
+    id<MTLBuffer> outIdBuf = [device newBufferWithLength:sizeof(uint64_t) options:MTLResourceStorageModeShared];
+
+    id<MTLBuffer> outCoefBuf = [device newBufferWithLength:sizeof(float)*2 options:MTLResourceStorageModeShared];
 
     runKronAny2(
         device, library,
         hdrA, hdrB,
         edgesA, edgesA_bytes,
         edgesB, edgesB_bytes,
-        inReA, inA_bytes,
-        inImA, inA_bytes,
-        inReB, inB_bytes,
-        inImB, inB_bytes,
-        outRe, out_bytes,
-        outIm, out_bytes2,
+        inReBufA,
+        inImBufA,
+        inReBufB,
+        inImBufB,
+        outReBuf,
+        outImBuf,
         outIdBuf,
         outCoefBuf
     );
+
+    if (outRe) { [outReBuf retain]; *outRe = (__bridge void*)outReBuf; }
+    if (outIm) { [outImBuf retain]; *outIm = (__bridge void*)outImBuf; }
 
     if (outId) {
         *outId = *(int64_t*)outIdBuf.contents;
@@ -541,9 +579,23 @@ extern "C" void runKronAny2Wrapper(
 
     if (outCoef) {
         float* c = (float*)outCoefBuf.contents;
-        outCoef[0] = c[0];
-        outCoef[1] = c[1];
+        float coefRe = c[0];
+        float coefIm = c[1];
+
+        float rA = (float)A.root_re, iA = (float)A.root_im;
+        float rB = (float)B.root_re, iB = (float)B.root_im;
+        float r = rA*rB - iA*iB;
+        float i = rA*iB + iA*rB;
+        outCoef[0] = coefRe * r - coefIm * i;
+        outCoef[1] = coefRe * i + coefIm * r;
     }
+
+    float* re = (float*)outReBuf.contents;
+    float* im = (float*)outImBuf.contents;
+    NSLog(@"out[0]=(%f,%f) out[1]=(%f,%f) out[2]=(%f,%f)",
+        re[0], im[0], re[1], im[1], re[2], im[2]);
+    std::cerr << "GPU kron result: outId=" << outId
+          << " outCoef=(" << outCoef[0] << "," << outCoef[1] << ")\n";
 }
 
 

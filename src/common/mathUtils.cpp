@@ -13,6 +13,23 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, bool parallelism
             return QMDDEdge(e0.weight * e1.weight, e1.getStartNode());
         }
     }
+
+    if (depth >= PARAMETER.process.GPU || e0.sonKind_ == SonKind::SVLeaf || e1.sonKind_ == SonKind::SVLeaf) {
+        GPUInput A = farewell(e0);
+        GPUInput B = farewell(e1);
+
+        void* outRe = nullptr;
+        void* outIm = nullptr;
+
+        int64_t outId = 0;
+        gpu_precision outCoef[2] = {.0f, .0f};
+
+        runMulAny2Wrapper(A, B,
+                        &outRe, &outIm,
+                        &outId, outCoef);
+        return QMDDEdge(complex<double>(outCoef[0], outCoef[1]), outId, make_shared<SVLeaf>(A.dim, outRe, outIm));
+    }
+
     int64_t operationCacheKey = calculation::generateOperationCacheKey(OperationKey(e0.key_, e1.key_));
     OperationCacheClient& cache = OperationCacheClient::getInstance();
     if (PARAMETER.cache.alive) {
@@ -22,25 +39,6 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, bool parallelism
                 return result;
             }
         }
-    }
-
-    if (depth >= PARAMETER.process.GPU || e0.sonKind_ == SonKind::SVLeaf || e1.sonKind_ == SonKind::SVLeaf) {
-        GPUInput A = farewell(e0);
-        GPUInput B = farewell(e1);
-
-        uint32_t dim = A.dim;
-        size_t total = (size_t)dim * dim;
-        size_t outBytes = total * sizeof(gpu_precision);
-
-        vector<gpu_precision> outRe(total), outIm(total);
-        int64_t outId = 0;
-        gpu_precision outCoef[2] = {.0f, .0f};
-
-        runMulAny2Wrapper(A, B,
-                        outRe.data(), outBytes,
-                        outIm.data(), outBytes,
-                        &outId, outCoef);
-        return QMDDEdge(complex<double>(outCoef[0], outCoef[1]), outId, SonKind::SVLeaf);
     }
 
     // cout << "\033[1;35mCache miss!\033[0m" << endl;
@@ -220,19 +218,16 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1, bool parallelism
         GPUInput A = farewell(e0);
         GPUInput B = farewell(e1);
 
-        uint32_t dim = A.dim;
-        size_t total = (size_t)dim * dim;
-        size_t outBytes = total * sizeof(gpu_precision);
+        void* outRe = nullptr;
+        void* outIm = nullptr;
 
-        std::vector<gpu_precision> outRe(total), outIm(total);
         int64_t outId = 0;
         gpu_precision outCoef[2] = {.0f, .0f};
 
         runAddAny2Wrapper(A, B,
-                        outRe.data(), outBytes,
-                        outIm.data(), outBytes,
+                        &outRe, &outIm,
                         &outId, outCoef);
-        return QMDDEdge(complex<double>(outCoef[0], outCoef[1]), outId, SonKind::SVLeaf);
+        return QMDDEdge(complex<double>(outCoef[0], outCoef[1]), outId, make_shared<SVLeaf>(A.dim, outRe, outIm));
     }
     shared_ptr<QMDDNode> n0 = e0.getStartNode();
     shared_ptr<QMDDNode> n1 = e1.getStartNode();
@@ -377,7 +372,7 @@ QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
         }else if (e0.weight == 1.0) {
             return e1;
         } else {
-            return QMDDEdge(e0.weight * e1.weight, e1.getStartNode());
+            return QMDDEdge(e0.weight * e1.weight, e1.key_, e1.sonKind_);
         }
     }
 
@@ -385,22 +380,22 @@ QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
         GPUInput A = farewell(e0);
         GPUInput B = farewell(e1);
 
-        uint32_t dim = A.dim * B.dim;
-        size_t total = (size_t)dim * dim;
-        size_t outBytes = total * sizeof(gpu_precision);
-
-        vector<gpu_precision> outRe(total), outIm(total);
+        void* outRe = nullptr;
+        void* outIm = nullptr;
         int64_t outId = 0;
         gpu_precision outCoef[2] = {.0f, .0f};
 
         runKronAny2Wrapper(A, B,
-                        outRe.data(), outBytes,
-                        outIm.data(), outBytes,
+                        &outRe, &outIm,
                         &outId, outCoef);
-        return QMDDEdge(complex<double>(outCoef[0], outCoef[1]), outId, SonKind::SVLeaf);
+        std::cerr << "GPU kron result: outId=" << outId
+          << " outCoef=(" << outCoef[0] << "," << outCoef[1] << ")\n";
+        return QMDDEdge(complex<double>(outCoef[0], outCoef[1]), outId, make_shared<SVLeaf>(A.dim * B.dim, outRe, outIm));
     }
     shared_ptr<QMDDNode> n0 = e0.getStartNode();
-    shared_ptr<QMDDNode> n1 = e1.getStartNode();
+
+    if (!n0) { std::cerr << "kron: n0 is null (key=" << e0.key_ << ", weight= " << e0.weight << ")\n"; }
+
     vector<vector<QMDDEdge>> z(2, vector<QMDDEdge>(2));
     complex<double> tmpWeight = .0;
     bool allWeightsAreZero = true;

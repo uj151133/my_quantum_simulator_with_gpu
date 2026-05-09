@@ -46,7 +46,20 @@ QMDDEdge::QMDDEdge(complex<double> w, int64_t key, shared_ptr<SVLeaf> l)
 
 QMDDEdge::QMDDEdge(double w, int64_t key, shared_ptr<SVLeaf> l)
     : weight(complex<double>(w, .0)), key_(key), sonLeaf_(l), isTerminal(!l), sonKind_(SonKind::SVLeaf) {
-    if (this->key_) Memo::getInstance().insert(this->key_, this->sonLeaf_);
+    // if (this->key_) Memo::getInstance().insert(this->key_, this->sonLeaf_);
+    if (this->key_ != 0) {
+        if (this->sonKind_ == SonKind::QMDDNode) {
+            this->sonNode_ = UniqueTable::getInstance().find(this->key_);
+            if (!this->sonNode_) {
+                std::cerr << "UniqueTable miss: key=" << this->key_ << "\n";
+            }
+        } else {
+            this->sonLeaf_ = Memo::getInstance().find(this->key_);
+            if (!this->sonLeaf_) {
+                std::cerr << "Memo miss: key=" << this->key_ << "\n";
+            }
+        }
+    }
     this->calculateDepth();
     // cout << "Edge created with weight: " << weight << " and key_: " << key_ << " and isTerminal: " << isTerminal << endl;
 }
@@ -91,7 +104,7 @@ vector<complex<double>> QMDDEdge::getAllElementsForKet() {
 
     shared_ptr<QMDDNode> node = this->sonNode_;
 
-    if (isTerminal) {
+    if (this->isTerminal) {
         result.push_back(weight);
     } else {
         nodeStack.push(make_pair(getStartNode(), 0));
@@ -145,6 +158,9 @@ void QMDDEdge::calculateDepth() {
     if (this->isTerminal || this->key_ ==  0) {
         this->depth = 0;
     } else if (this->sonKind_ == SonKind::SVLeaf) {
+        if (!this->sonLeaf_) {
+            throw std::runtime_error("QMDDEdge::calculateDepth: sonLeaf_ is null");
+        }
         this->depth = static_cast<int>(log2(this->sonLeaf_->dim));
     }
     else {

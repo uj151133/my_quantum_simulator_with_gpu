@@ -34,7 +34,7 @@ kernel void norm_pass1(
     uint tg_tid                     [[thread_index_in_threadgroup]],
     uint tg_size                    [[threads_per_threadgroup]]
 ) {
-    uint idx = total;
+    uint idx = 0xFFFFFFFFu;
     NormVal v{0.0, 0.0};
 
     if (tid < total) {
@@ -223,7 +223,8 @@ inline float2 evalInput(
     const device float* inIm,
     uint row,
     uint col,
-    uint tid
+    uint tid,
+    bool applyRoot
 ) {
     if (hdr.kind == 1) { // SV
         float2 v = float2(inRe[tid], inIm[tid]);
@@ -258,8 +259,8 @@ kernel void mul_any2(
     float2 acc = float2(0.0, 0.0);
 
     for (uint k = 0; k < dim; ++k) {
-        float2 a = evalInput(hdrA, edgesA, inReA, inImA, row, k, row * dim + k);
-        float2 b = evalInput(hdrB, edgesB, inReB, inImB, k, col, k * dim + col);
+        float2 a = evalInput(hdrA, edgesA, inReA, inImA, row, k, row * dim + k, false);
+        float2 b = evalInput(hdrB, edgesB, inReB, inImB, k, col, k * dim + col, false);
         acc += cmul(a, b);
     }
 
@@ -287,8 +288,8 @@ kernel void add_any2(
     uint row = tid / dim;
     uint col = tid - row * dim;
 
-    float2 a = evalInput(hdrA, edgesA, inReA, inImA, row, col, tid);
-    float2 b = evalInput(hdrB, edgesB, inReB, inImB, row, col, tid);
+    float2 a = evalInput(hdrA, edgesA, inReA, inImA, row, col, tid, true);
+    float2 b = evalInput(hdrB, edgesB, inReB, inImB, row, col, tid, true);
     float2 v = a + b;
 
     outRe[tid] = v.x;
@@ -322,8 +323,8 @@ kernel void kron_any2(
     uint rowB = row % dimB;
     uint colB = col % dimB;
 
-    float2 a = evalInput(hdrA, edgesA, inReA, inImA, rowA, colA, rowA * dimA + colA);
-    float2 b = evalInput(hdrB, edgesB, inReB, inImB, rowB, colB, rowB * dimB + colB);
+    float2 a = evalInput(hdrA, edgesA, inReA, inImA, rowA, colA, rowA * dimA + colA, false);
+    float2 b = evalInput(hdrB, edgesB, inReB, inImB, rowB, colB, rowB * dimB + colB, false);
 
     float2 v = cmul(a, b);
     outRe[tid] = v.x;
