@@ -90,6 +90,11 @@ QMDDEdge::QMDDEdge(double w, int64_t key, SonKind kind)
     // cout << "Edge created with weight: " << weight << " and key_: " << key_ << " and isTerminal: " << isTerminal << endl;
 }
 
+QMDDEdge::QMDDEdge(complex<double> w, int64_t key, shared_ptr<QMDDNode> n, shared_ptr<SVLeaf> l, SonKind kind)
+    : weight(w), key_(key), sonNode_(n), sonLeaf_(l), isTerminal(!n && !l), sonKind_(kind) {
+    this->calculateDepth();
+}
+
 shared_ptr<QMDDNode> QMDDEdge::getStartNode() const {
     return this->sonNode_;
 }

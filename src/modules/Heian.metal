@@ -226,10 +226,10 @@ inline float2 evalInput(
     uint tid,
     bool applyRoot
 ) {
-    if (hdr.kind == 1) { // SV
+    if (hdr.kind == 2) { // SV
         float2 v = float2(inRe[tid], inIm[tid]);
         return cmul(float2(hdr.root_re, hdr.root_im), v);
-    } else if (hdr.kind == 0) { // QMDD
+    } else if (hdr.kind == 1) { // QMDD
         return evalDD(edges, float2(hdr.root_re, hdr.root_im), row, col, hdr.dim);
     } else { // Terminal
         return float2(0.0, 0.0);

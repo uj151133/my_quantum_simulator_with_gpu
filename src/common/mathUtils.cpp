@@ -10,7 +10,7 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, bool parallelism
         } else if (e0.weight == 1.0){
             return e1;
         } else {
-            return QMDDEdge(e0.weight * e1.weight, e1.getStartNode());
+            return QMDDEdge(e0.weight * e1.weight, e1.key_, e1.getStartNode(), e1.getStartLeaf(), e1.sonKind_);
         }
     }
 
@@ -70,8 +70,8 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, bool parallelism
                     boost::fibers::async([&, i, j]() -> pair<pair<size_t, size_t>, QMDDEdge> {
                         QMDDEdge answer = edgeZero;
                         for (size_t k = 0; k < 2; k++) {
-                            QMDDEdge p(n0->edges[i][k].weight, n0->edges[i][k].getStartNode());
-                            QMDDEdge q(n1->edges[k][j].weight, n1->edges[k][j].getStartNode());
+                            QMDDEdge p(n0->edges[i][k].weight, n0->edges[i][k].key_, n0->edges[i][k].getStartNode(), n0->edges[i][k].getStartLeaf(), e0.sonKind_);
+                            QMDDEdge q(n1->edges[k][j].weight, n1->edges[k][j].key_, n1->edges[k][j].getStartNode(), n1->edges[k][j].getStartLeaf(), e1.sonKind_);
                             answer = mathUtils::add(answer, mathUtils::mul(p, q, parallelism, true, depth + 1), parallelism, true, depth + 1);
                         }
                         return {{i, j}, answer};
@@ -80,8 +80,8 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, bool parallelism
             } else {
                 QMDDEdge answer = edgeZero;
                 for (size_t k = 0; k < 2; k++) {
-                    QMDDEdge p(n0->edges[i][k].weight, n0->edges[i][k].getStartNode());
-                    QMDDEdge q(n1->edges[k][j].weight, n1->edges[k][j].getStartNode());
+                    QMDDEdge p(n0->edges[i][k].weight, n0->edges[i][k].key_, n0->edges[i][k].getStartNode(), n0->edges[i][k].getStartLeaf(), e0.sonKind_);
+                    QMDDEdge q(n1->edges[k][j].weight, n1->edges[k][j].key_, n1->edges[k][j].getStartNode(), n1->edges[k][j].getStartLeaf(), e1.sonKind_);
                     answer = mathUtils::add(answer, mathUtils::mul(p, q, parallelism, concurrency, depth + 1), parallelism, concurrency, depth + 1);
                 }
                 z[i][j] = answer;
@@ -212,7 +212,7 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1, bool parallelism
         }
     }
     if (e0.key_ == e1.key_) {
-        return QMDDEdge(e0.weight + e1.weight, e0.getStartNode());
+        return QMDDEdge(e0.weight + e1.weight, e0.key_, e0.getStartNode(), e0.getStartLeaf(), e0.sonKind_);
     }
     if (depth >= PARAMETER.process.GPU || e0.sonKind_ == SonKind::SVLeaf || e1.sonKind_ == SonKind::SVLeaf) {
         GPUInput A = farewell(e0);
@@ -248,15 +248,15 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1, bool parallelism
             if (PARAMETER.process.parallel && !concurrency) {
                 fiberFutures.emplace_back(
                     boost::fibers::async([&, i, j]() -> pair<pair<size_t, size_t>, QMDDEdge> {
-                        QMDDEdge p(e0.weight * n0->edges[i][j].weight, n0->edges[i][j].getStartNode());
-                        QMDDEdge q(e1.weight * n1->edges[i][j].weight, n1->edges[i][j].getStartNode());
+                        QMDDEdge p(e0.weight * n0->edges[i][j].weight, n0->edges[i][j].key_, n0->edges[i][j].getStartNode(), n0->edges[i][j].getStartLeaf(), e0.sonKind_);
+                        QMDDEdge q(e1.weight * n1->edges[i][j].weight, n1->edges[i][j].key_, n1->edges[i][j].getStartNode(), n1->edges[i][j].getStartLeaf(), e1.sonKind_);
                         QMDDEdge r = mathUtils::add(p, q, parallelism, true, depth + 1);
                         return {{i, j}, r};
                     })
                 );
             } else {
-                QMDDEdge p(e0.weight * n0->edges[i][j].weight, n0->edges[i][j].getStartNode());
-                QMDDEdge q(e1.weight * n1->edges[i][j].weight, n1->edges[i][j].getStartNode());
+                QMDDEdge p(e0.weight * n0->edges[i][j].weight, n0->edges[i][j].key_, n0->edges[i][j].getStartNode(), n0->edges[i][j].getStartLeaf(), e0.sonKind_);
+                QMDDEdge q(e1.weight * n1->edges[i][j].weight, n1->edges[i][j].key_, n1->edges[i][j].getStartNode(), n1->edges[i][j].getStartLeaf(), e1.sonKind_);
                 z[i][j] = mathUtils::add(p, q, parallelism, concurrency, depth + 1);
             }
         }
@@ -372,7 +372,7 @@ QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
         }else if (e0.weight == 1.0) {
             return e1;
         } else {
-            return QMDDEdge(e0.weight * e1.weight, e1.key_, e1.sonKind_);
+            return QMDDEdge(e0.weight * e1.weight, e1.key_, e1.getStartNode(), e1.getStartLeaf(), e1.sonKind_);
         }
     }
 

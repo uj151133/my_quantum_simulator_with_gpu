@@ -35,9 +35,9 @@ enum class OperationType {
 };
 
 enum class SonKind : uint8_t {
+    Terminal,
     QMDDNode,
     SVLeaf,
-    Terminal
 };
 
 // using OperationKey = tuple<QMDDEdge, OperationType, QMDDEdge>;
@@ -67,6 +67,7 @@ struct QMDDEdge{
     QMDDEdge(double w, int64_t key, shared_ptr<SVLeaf> l);
     QMDDEdge(complex<double> w, int64_t key, SonKind kind);
     QMDDEdge(double w, int64_t key, SonKind kind);
+    QMDDEdge(complex<double> w, int64_t key, shared_ptr<QMDDNode> n, shared_ptr<SVLeaf> l, SonKind kind);
     QMDDEdge(const QMDDEdge& other) = default;
     shared_ptr<QMDDNode> getStartNode() const;
     shared_ptr<SVLeaf> getStartLeaf() const;

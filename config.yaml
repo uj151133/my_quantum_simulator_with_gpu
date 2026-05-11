@@ -4,13 +4,13 @@ gui:
 process:
   parallel: true
   parallelism: 7
-  GPU: 10
+  GPU: 100
 
 table:
   size: 16777216
 
 cache:
-  alive: false
+  alive: true
   size: 1048576
   TLSSize: 823543
 
