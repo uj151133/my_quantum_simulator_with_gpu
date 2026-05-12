@@ -4,7 +4,7 @@ gui:
 process:
   parallel: true
   parallelism: 7
-  GPU: 15
+  GPU: 7
 
 table:
   size: 16777216

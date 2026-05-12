@@ -247,7 +247,23 @@ if(APPLE)
     add_custom_target(metal_shaders ALL DEPENDS ${METAL_LIB})
 else()
     find_package(CUDAToolkit)
+
     if(CUDAToolkit_FOUND)
+        # nvcc を明示的に探して、CMake の CUDA compiler として設定
+        find_program(NVCC_PATH NAMES nvcc HINTS /usr/local/cuda/bin ENV CUDA_HOME PATH_SUFFIXES bin)
+        if(NOT NVCC_PATH)
+            message(FATAL_ERROR "CUDAToolkit は見つかったが nvcc が見つかりません。CMAKE_CUDA_COMPILER を指定してください。")
+        endif()
+
+        if(NOT CMAKE_CUDA_COMPILER)
+            set(CMAKE_CUDA_COMPILER "${NVCC_PATH}" CACHE FILEPATH "CUDA compiler" FORCE)
+        endif()
+
+        # 自動検出失敗対策（必要なら 86/89 など固定値に変更）
+        if(NOT DEFINED CMAKE_CUDA_ARCHITECTURES)
+            set(CMAKE_CUDA_ARCHITECTURES native CACHE STRING "CUDA architectures")
+        endif()
+
         enable_language(CUDA)
         add_compile_definitions(USE_CUDA)
         set(GPU_BACKEND_SRC src/modules/Heian.cu)
