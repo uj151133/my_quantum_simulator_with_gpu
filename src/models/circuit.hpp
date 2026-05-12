@@ -56,7 +56,7 @@ private:
     string mode_;
     double totalTimeMs_ = .0;
     queue<QMDDSuite> gateQueue_;
-    QMDDSuite finalState_;
+    
     int numQubits_;
     bool irEnabled_ = true;
     vector<QMDDSuite> pending_;
@@ -84,6 +84,8 @@ private:
     void uncompute();
 
 public:
+
+    QMDDSuite finalState_;
 
     vector<vector<int>> quantumRegister_;
 

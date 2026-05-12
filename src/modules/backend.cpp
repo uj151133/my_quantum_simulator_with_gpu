@@ -1,10 +1,5 @@
 #include "backend.hpp"
 
-#include <stdexcept>
-#include <unordered_map>
-
-using namespace std;
-
 namespace {
 
 static inline bool isZeroWeight(const complex<double>& w) {
@@ -50,7 +45,7 @@ static void fillNode(
                     const size_t childBase = static_cast<size_t>(newIndex) * 4;
                     if (outEdges.size() < childBase + 4) outEdges.resize(childBase + 4);
 
-                    fillNode(e.getStartNode(), newIndex, keyToIndex, outEdges);
+                    fillNode(get<shared_ptr<QMDDNode>>(e.getSon()), newIndex, keyToIndex, outEdges);
 
                     ge.childIndex = newIndex;
                 } else {
@@ -86,7 +81,7 @@ GPUInput flattenQMDD(const QMDDEdge& root) {
 
     out.qmdd.edges.resize(4);
 
-    fillNode(root.getStartNode(), 0, keyToIndex, out.qmdd.edges);
+    fillNode(get<shared_ptr<QMDDNode>>(root.getSon()), 0, keyToIndex, out.qmdd.edges);
 
     return out;
 }
@@ -97,7 +92,7 @@ GPUInput wrapSV(const QMDDEdge& root) {
     out.kind = SonKind::SVLeaf;
     setRootWeight(out, root);
 
-    auto leaf = root.getStartLeaf();
+    shared_ptr<SVLeaf> leaf = get<shared_ptr<SVLeaf>>(root.getSon());
     if (!leaf) {
         throw runtime_error("wrapSVEdge: edge does not reference SVLeaf.");
     }
@@ -110,13 +105,6 @@ GPUInput wrapSV(const QMDDEdge& root) {
 }
 
 GPUInput farewell(const QMDDEdge& root) {
-    if (root.isTerminal || root.key_ == 0 || isZeroWeight(root.weight)) {
-        GPUInput out;
-        out.kind = SonKind::Terminal;
-        setRootWeight(out, root);
-        return out;
-    }
-
     switch (root.sonKind_) {
         case SonKind::QMDDNode:
             return flattenQMDD(root);

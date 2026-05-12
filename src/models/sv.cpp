@@ -6,3 +6,13 @@ SVLeaf::~SVLeaf() {
         releaseGpuBuffer(reBuf);
         releaseGpuBuffer(imBuf);
 }
+
+ostream& operator<<(std::ostream& os, const SVLeaf& sv) {
+    os << "SVLeaf { "
+        << "dim = " << sv.dim
+        << ", reBuf = " << sv.reBuf
+        << ", imBuf = " << sv.imBuf
+        << " }";
+
+    return os;
+}

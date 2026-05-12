@@ -67,6 +67,7 @@ void execute() {
     // shor18MQT();
 
     // randomCX(3, 5000, true);
+    // Memo::getInstance().printAllEntries();
 }
 
 bool translateAndExecuteQASM(const string& qasm_file) {

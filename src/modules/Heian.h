@@ -5,31 +5,41 @@
 #include <cstdint>
 #include "backend.hpp"
 
-extern "C" void runMulAny2Wrapper(
+#ifdef __cplusplus
+extern "C" {
+#endif
+void runMulAny2Wrapper(
     const GPUInput& A,
     const GPUInput& B,
     void** outRe,
     void** outIm,
     int64_t* outId,
-    float* outCoef
+    gpu_precision* outCoef
+);
+void runAddAny2Wrapper(
+    const GPUInput& A,
+    const GPUInput& B,
+    void** outRe,
+    void** outIm,
+    int64_t* outId,
+    gpu_precision* outCoef
+);
+void runKronAny2Wrapper(
+    const GPUInput& A,
+    const GPUInput& B,
+    void** outRe,
+    void** outIm,
+    int64_t* outId,
+    gpu_precision* outCoef
 );
 
-extern "C" void runAddAny2Wrapper(
-    const GPUInput& A,
-    const GPUInput& B,
-    void** outRe,
-    void** outIm,
-    int64_t* outId,
-    float* outCoef
-);
+void releaseGpuBuffer(void* p);
 
-extern "C" void runKronAny2Wrapper(
-    const GPUInput& A,
-    const GPUInput& B,
-    void** outRe,
-    void** outIm,
-    int64_t* outId,
-    float* outCoef
-);
+bool copyGpuBufferToHostFloat(void* gpuHandle, float* dst, size_t count);
+
+bool copyGpuBufferToHostDouble(void* gpuHandle, double* dst, size_t count);
+#ifdef __cplusplus
+}
+#endif
 
 #endif

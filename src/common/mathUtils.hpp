@@ -52,6 +52,8 @@ namespace mathUtils {
 
     bool isMultiplePI(double theta, double eps = 1e-10);
 
+    bool isZERO(const complex<double>& z);
+
     template <class T, size_t N>
     double median(const array<T, N>& a) {
         static_assert(N > 0, "median: array must be non-empty");

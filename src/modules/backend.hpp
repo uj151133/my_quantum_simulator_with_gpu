@@ -6,6 +6,8 @@
 #include <cstddef>
 #include <cstdint>
 #include <vector>
+#include <stdexcept>
+#include <unordered_map>
 
 #if defined(USE_METAL)
 using gpu_precision = float;

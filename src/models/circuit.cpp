@@ -1631,7 +1631,7 @@ void QuantumCircuit::addCU(int controlIndex, int targetIndex, double theta, doub
     }
     array<QMDDEdge, 2> partialCU;
 
-    QMDDEdge U(gate::U(theta, phi, lambda).getInitialEdge().weight * exp(i * gamma), gate::U(theta, phi, lambda).getInitialEdge().getStartNode());
+    QMDDEdge U(gate::U(theta, phi, lambda).getInitialEdge().weight * exp(i * gamma), gate::U(theta, phi, lambda).getInitialEdge().getSon());
 
     if (maxIndex == controlIndex) {
         partialCU[0] = braketZero;
@@ -2024,8 +2024,8 @@ int QuantumCircuit::measure(int qubitIndex) {
     QMDDEdge result0 = threadPool.submitFiber([&]() { return mathUtils::mul(m0.getInitialEdge(), this->finalState_.getInitialEdge()); }).get();
     QMDDEdge result1 = threadPool.submitFiber([&]() { return mathUtils::mul(m1.getInitialEdge(), this->finalState_.getInitialEdge()); }).get();
 
-    vector<complex<double>> v0 = result0.getAllElementsForKet();
-    vector<complex<double>> v1 = result1.getAllElementsForKet();
+    vector<complex<double>> v0 = result0.openKet();
+    vector<complex<double>> v1 = result1.openKet();
 
     double p0 = mathUtils::sumOfSquares(v0);
     double p1 = mathUtils::sumOfSquares(v1);
@@ -2036,10 +2036,10 @@ int QuantumCircuit::measure(int qubitIndex) {
     double random_value = dist(gen);
 
     if (random_value < p0) {
-        this->finalState_ = QMDDSuite(QMDDEdge(result0.weight * (1.0 / sqrt(p0)), make_shared<QMDDNode>(*result0.getStartNode())));
+        this->finalState_ = QMDDSuite(QMDDEdge(result0.weight * (1.0 / sqrt(p0)), result0.key_, result0.getSon()));
         return 0;
     } else {
-        this->finalState_ = QMDDSuite(QMDDEdge(result0.weight * (1.0 / sqrt(p1)), make_shared<QMDDNode>(*result1.getStartNode())));
+        this->finalState_ = QMDDSuite(QMDDEdge(result1.weight * (1.0 / sqrt(p1)), result1.key_, result1.getSon()));
         return 1;
     }
 }

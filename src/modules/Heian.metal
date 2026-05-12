@@ -8,7 +8,7 @@ struct GPUEdge {
 };
 
 struct GPUInputHeader {
-    uint kind;     // 0=QMDD, 1=SV, 2=Terminal
+    uint kind;
     float root_re;
     float root_im;
     uint dim;      // sv.size（=行列の一辺）

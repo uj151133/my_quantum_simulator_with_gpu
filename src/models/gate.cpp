@@ -428,8 +428,8 @@ QMDDSuite gate::Rxx(double phi) {
     double tanPhiHalf = tan(phiHalf);
 
     return QMDDSuite(QMDDEdge(cos(phiHalf), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
-        {gate::I().getInitialEdge(), QMDDEdge(-i * tanPhiHalf, make_shared<QMDDNode>(*gate::X().getInitialEdge().getStartNode()))},
-        {QMDDEdge(-i * tanPhiHalf, make_shared<QMDDNode>(*gate::X().getInitialEdge().getStartNode())), gate::I().getInitialEdge()}
+        {gate::I().getInitialEdge(), QMDDEdge(-i * tanPhiHalf, make_shared<QMDDNode>(*get<shared_ptr<QMDDNode>>(gate::X().getInitialEdge().getSon())))},
+        {QMDDEdge(-i * tanPhiHalf, make_shared<QMDDNode>(*get<shared_ptr<QMDDNode>>(gate::X().getInitialEdge().getSon()))), gate::I().getInitialEdge()}
     })));
 }
 
@@ -438,15 +438,15 @@ QMDDSuite gate::Ryy(double phi) {
     double tanPhiHalf = tan(phiHalf);
 
     return QMDDSuite(QMDDEdge(cos(phiHalf), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
-        {gate::I().getInitialEdge(), QMDDEdge(i * tanPhiHalf, make_shared<QMDDNode>(*gate::Y().getInitialEdge().getStartNode()))},
-        {QMDDEdge(-i * tanPhiHalf, make_shared<QMDDNode>(*gate::Y().getInitialEdge().getStartNode())), gate::I().getInitialEdge()}
+        {gate::I().getInitialEdge(), QMDDEdge(i * tanPhiHalf, make_shared<QMDDNode>(*get<shared_ptr<QMDDNode>>(gate::Y().getInitialEdge().getSon())))},
+        {QMDDEdge(-i * tanPhiHalf, make_shared<QMDDNode>(*get<shared_ptr<QMDDNode>>(gate::Y().getInitialEdge().getSon()))), gate::I().getInitialEdge()}
     })));
 }
 
 QMDDSuite gate::Rzz(double phi) {
     return QMDDSuite(QMDDEdge(exp(-i * phi / 2.0), make_shared<QMDDNode>(vector<vector<QMDDEdge>>{
         {gate::P(phi).getInitialEdge(), edgeZero},
-        {edgeZero, QMDDEdge(exp(i * phi), make_shared<QMDDNode>(*gate::P(-phi).getInitialEdge().getStartNode()))}
+        {edgeZero, QMDDEdge(exp(i * phi), make_shared<QMDDNode>(*get<shared_ptr<QMDDNode>>(gate::P(-phi).getInitialEdge().getSon())))}
     })));
 }
 
