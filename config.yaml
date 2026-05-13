@@ -3,7 +3,7 @@ gui:
 
 parallelism:
   fiber: 1
-  GPU: 100
+  GPU: 15
 
 table:
   size: 16777216
