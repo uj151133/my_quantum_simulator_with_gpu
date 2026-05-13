@@ -2,7 +2,7 @@ gui:
   enabled: false
 
 parallelism:
-  fiber: 7
+  fiber: 3
   GPU: 100
 
 table:

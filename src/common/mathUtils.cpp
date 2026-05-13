@@ -1,6 +1,6 @@
 #include "mathUtils.hpp"
 
-QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, bool parallelism, bool concurrency, int depth) {
+QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
     // cout << "\033[1;34mEntering mul: depth=" << depth << " e0.weight=" << e0.weight << " e0.sonKind_=" << static_cast<int>(e0.sonKind_) << " e0.key_=" << e0.key_ << " e1.weight=" << e1.weight << " e1.sonKind_=" << static_cast<int>(e1.sonKind_) << " e1.key_=" << e1.key_ << "\033[0m" << endl;
     if (e1.isTerminal) {
         std::swap(const_cast<QMDDEdge&>(e0), const_cast<QMDDEdge&>(e1));
@@ -32,6 +32,8 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, bool parallelism
         // std::cerr << "GPU mul result: outId=" << outId << " outCoef=(" << outCoef[0] << "," << outCoef[1] << ")\n";
         return QMDDEdge(complex<double>(outCoef[0], outCoef[1]), outId, make_shared<SVLeaf>(A.dim, outRe, outIm));
     }
+
+    bool concurrency = depth < PARAMETER.parallelism.fiber;
 
     int64_t operationCacheKey = calculation::generateOperationCacheKey(OperationKey(e0.key_, e1.key_));
     OperationCacheClient& cache = OperationCacheClient::getInstance();
@@ -66,14 +68,14 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, bool parallelism
                 n1->edges[1][j].depth
             };
             double calculatedDepth = mathUtils::median(depths);
-            if (!concurrency) {
+            if (concurrency) {
                 fiberFutures.emplace_back(
                     boost::fibers::async([&, i, j]() -> pair<pair<size_t, size_t>, QMDDEdge> {
                         QMDDEdge answer = edgeZero;
                         for (size_t k = 0; k < 2; k++) {
                             QMDDEdge p(n0->edges[i][k].weight, n0->edges[i][k].getSon());
                             QMDDEdge q(n1->edges[k][j].weight, n1->edges[k][j].getSon());
-                            answer = mathUtils::add(answer, mathUtils::mul(p, q, parallelism, true, depth + 1), parallelism, true, depth + 1);
+                            answer = mathUtils::add(answer, mathUtils::mul(p, q, depth + 1), depth + 1);
                         }
                         return {{i, j}, answer};
                     })
@@ -83,7 +85,7 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, bool parallelism
                 for (size_t k = 0; k < 2; k++) {
                     QMDDEdge p(n0->edges[i][k].weight, n0->edges[i][k].getSon());
                     QMDDEdge q(n1->edges[k][j].weight, n1->edges[k][j].getSon());
-                    answer = mathUtils::add(answer, mathUtils::mul(p, q, parallelism, concurrency, depth + 1), parallelism, concurrency, depth + 1);
+                    answer = mathUtils::add(answer, mathUtils::mul(p, q, depth + 1), depth + 1);
                 }
                 z[i][j] = answer;
             }
@@ -201,7 +203,7 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, bool parallelism
 //     }
 // }
 
-QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1, bool parallelism, bool concurrency, int depth) {
+QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
     if (e1.isTerminal) {
         std::swap(const_cast<QMDDEdge&>(e0), const_cast<QMDDEdge&>(e1));
     }
@@ -231,6 +233,9 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1, bool parallelism
         std::cerr << "GPU add result: outId=" << outId << " outCoef=(" << outCoef[0] << "," << outCoef[1] << ")\n";
         return QMDDEdge(complex<double>(outCoef[0], outCoef[1]), outId, make_shared<SVLeaf>(A.dim, outRe, outIm));
     }
+
+    bool concurrency = depth < PARAMETER.parallelism.fiber;
+
     shared_ptr<QMDDNode> n0 = get<shared_ptr<QMDDNode>>(e0.getSon());
     shared_ptr<QMDDNode> n1 = get<shared_ptr<QMDDNode>>(e1.getSon());
     bool allWeightsAreZero = true;
@@ -245,8 +250,7 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1, bool parallelism
                 n0->edges[i][j].depth,
                 n1->edges[i][j].depth
             };
-            double calculatedDepth = mathUtils::median(depths);
-            if (!concurrency) {
+            if (concurrency) {
                 fiberFutures.emplace_back(
                     boost::fibers::async([&, i, j]() -> pair<pair<size_t, size_t>, QMDDEdge> {
                         QMDDEdge p(e0.weight * n0->edges[i][j].weight, n0->edges[i][j].getSon());
