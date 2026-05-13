@@ -22,7 +22,7 @@ public:
     struct ParallelismSettings {
         int fiber = 0;
         int GPU = 0;
-    } process;
+    } parallelism;
     struct TableSettings {
         int size = 0;
     } table;

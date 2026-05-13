@@ -66,7 +66,7 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, bool parallelism
                 n1->edges[1][j].depth
             };
             double calculatedDepth = mathUtils::median(depths);
-            if (PARAMETER.process.parallel && !concurrency) {
+            if (!concurrency) {
                 fiberFutures.emplace_back(
                     boost::fibers::async([&, i, j]() -> pair<pair<size_t, size_t>, QMDDEdge> {
                         QMDDEdge answer = edgeZero;
@@ -246,7 +246,7 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1, bool parallelism
                 n1->edges[i][j].depth
             };
             double calculatedDepth = mathUtils::median(depths);
-            if (PARAMETER.process.parallel && !concurrency) {
+            if (!concurrency) {
                 fiberFutures.emplace_back(
                     boost::fibers::async([&, i, j]() -> pair<pair<size_t, size_t>, QMDDEdge> {
                         QMDDEdge p(e0.weight * n0->edges[i][j].weight, n0->edges[i][j].getSon());

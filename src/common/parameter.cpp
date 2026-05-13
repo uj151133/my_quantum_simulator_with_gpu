@@ -194,7 +194,6 @@ void Parameter::print() const {
     cout << "GUI:\n  enabled: " << (gui.enabled ? "true" : "false") << endl;
     cout << "Parallelism:\n  fiber: " << parallelism.fiber
               << "\n  GPU: " << parallelism.GPU << endl;
-              << "\n  parallelism: " << parallelism.fiber << endl;
     cout << "Scheduler.Heuristics:\n  alive: " << (schedulerHeuristics.alive ? "true" : "false")
               << "\n  costDiag: " << schedulerHeuristics.costDiag
               << "\n  costAnti: " << schedulerHeuristics.costAnti
