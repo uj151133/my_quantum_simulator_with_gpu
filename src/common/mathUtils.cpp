@@ -255,14 +255,14 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
                     boost::fibers::async([&, i, j]() -> pair<pair<size_t, size_t>, QMDDEdge> {
                         QMDDEdge p(e0.weight * n0->edges[i][j].weight, n0->edges[i][j].getSon());
                         QMDDEdge q(e1.weight * n1->edges[i][j].weight, n1->edges[i][j].getSon());
-                        QMDDEdge r = mathUtils::add(p, q, parallelism, true, depth + 1);
+                        QMDDEdge r = mathUtils::add(p, q, depth + 1);
                         return {{i, j}, r};
                     })
                 );
             } else {
                 QMDDEdge p(e0.weight * n0->edges[i][j].weight, n0->edges[i][j].getSon());
                 QMDDEdge q(e1.weight * n1->edges[i][j].weight, n1->edges[i][j].getSon());
-                z[i][j] = mathUtils::add(p, q, parallelism, concurrency, depth + 1);
+                z[i][j] = mathUtils::add(p, q, depth + 1);
             }
         }
     }
