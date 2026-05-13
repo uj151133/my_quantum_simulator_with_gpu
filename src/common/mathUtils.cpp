@@ -15,7 +15,7 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, bool parallelism
         }
     }
     // cout << "\033[1;34mEntering mul: depth=" << depth << " e0.weight=" << e0.weight << " e1.weight=" << e1.weight << "\033[0m" << endl;
-    if (depth >= PARAMETER.process.GPU || e0.sonKind_ == SonKind::SVLeaf || e1.sonKind_ == SonKind::SVLeaf) {
+    if (depth >= PARAMETER.parallelism.GPU || e0.sonKind_ == SonKind::SVLeaf || e1.sonKind_ == SonKind::SVLeaf) {
         // cout << "\033[1;34mEntering mul: depth=" << depth << " e0.weight=" << e0.weight << " e0.sonKind_=" << static_cast<int>(e0.sonKind_) << " e0.key_=" << e0.key_ << " e1.weight=" << e1.weight << " e1.sonKind_=" << static_cast<int>(e1.sonKind_) << " e1.key_=" << e1.key_ << "\033[0m" << endl;
         GPUInput A = farewell(e0);
         GPUInput B = farewell(e1);
@@ -56,7 +56,6 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, bool parallelism
     vector<boost::fibers::future<pair<pair<size_t, size_t>, QMDDEdge>>> fiberFutures;
 
     // cout << "Preparing tasks for multiplication: " << n0->edges.size() << " x " << n1->edges[0].size() << endl;
-    // cout << "PARAMETER.process.parallelism: " << PARAMETER.process.parallelism << ", PARAMETER.process.concurrency: " << PARAMETER.process.concurrency << endl;
 
     for (size_t i = 0; i < 2; i++) {
         for (size_t j = 0; j < 2; j++) {
@@ -67,7 +66,6 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, bool parallelism
                 n1->edges[1][j].depth
             };
             double calculatedDepth = mathUtils::median(depths);
-            // const bool spawn = (!parallelism && calculatedDepth >= PARAMETER.process.parallelism) || (parallelism && !concurrency);
             if (PARAMETER.process.parallel && !concurrency) {
                 fiberFutures.emplace_back(
                     boost::fibers::async([&, i, j]() -> pair<pair<size_t, size_t>, QMDDEdge> {
@@ -217,7 +215,7 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1, bool parallelism
     if (e0.key_ == e1.key_) {
         return QMDDEdge(e0.weight + e1.weight, e0.key_, e0.son_);
     }
-    if (depth >= PARAMETER.process.GPU || e0.sonKind_ == SonKind::SVLeaf || e1.sonKind_ == SonKind::SVLeaf) {
+    if (depth >= PARAMETER.parallelism.GPU || e0.sonKind_ == SonKind::SVLeaf || e1.sonKind_ == SonKind::SVLeaf) {
         GPUInput A = farewell(e0);
         GPUInput B = farewell(e1);
 
@@ -248,7 +246,6 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1, bool parallelism
                 n1->edges[i][j].depth
             };
             double calculatedDepth = mathUtils::median(depths);
-            // const bool spawn = (!parallelism && calculatedDepth >= PARAMETER.process.parallelism) || (parallelism && !concurrency);
             if (PARAMETER.process.parallel && !concurrency) {
                 fiberFutures.emplace_back(
                     boost::fibers::async([&, i, j]() -> pair<pair<size_t, size_t>, QMDDEdge> {
@@ -380,7 +377,7 @@ QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
         }
     }
 
-    if (depth >= PARAMETER.process.GPU || e0.sonKind_ == SonKind::SVLeaf) {
+    if (depth >= PARAMETER.parallelism.GPU || e0.sonKind_ == SonKind::SVLeaf) {
         GPUInput A = farewell(e0);
         GPUInput B = farewell(e1);
 
@@ -402,7 +399,6 @@ QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
     vector<vector<QMDDEdge>> z(2, vector<QMDDEdge>(2));
     complex<double> tmpWeight = .0;
     bool allWeightsAreZero = true;
-    // const bool spawn = depth < (PARAMETER.process.parallelism + PARAMETER.process.concurrency);
 
     for (size_t i = 0; i < 2; i++) {
         for (size_t j = 0; j < 2; j++) {

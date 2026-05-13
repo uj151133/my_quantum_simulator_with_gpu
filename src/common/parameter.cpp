@@ -105,11 +105,10 @@ void Parameter::loadFromFile(const string& yamlFilepath, const string& iniFilepa
                 this->gui.enabled = config["gui"]["enabled"].as<bool>();
             }
 
-            if (config["process"]) {
+            if (config["parallelism"]) {
                 // this->process.concurrency = config["process"]["concurrency"].as<int>();
-                this->process.parallel = config["process"]["parallel"].as<bool>();
-                this->process.parallelism = config["process"]["parallelism"].as<int>();
-                this->process.GPU = config["process"]["GPU"].as<int>();
+                this->parallelism.fiber = config["parallelism"]["fiber"].as<int>();
+                this->parallelism.GPU = config["parallelism"]["GPU"].as<int>();
             }
 
             if (config["table"]) {
@@ -193,8 +192,9 @@ void Parameter::loadFromFile(const string& yamlFilepath, const string& iniFilepa
 
 void Parameter::print() const {
     cout << "GUI:\n  enabled: " << (gui.enabled ? "true" : "false") << endl;
-    cout << "Process:\n  concurrency: " << 0 /*process.concurrency*/
-              << "\n  parallelism: " << process.parallel << endl;
+    cout << "Parallelism:\n  fiber: " << parallelism.fiber
+              << "\n  GPU: " << parallelism.GPU << endl;
+              << "\n  parallelism: " << parallelism.fiber << endl;
     cout << "Scheduler.Heuristics:\n  alive: " << (schedulerHeuristics.alive ? "true" : "false")
               << "\n  costDiag: " << schedulerHeuristics.costDiag
               << "\n  costAnti: " << schedulerHeuristics.costAnti
