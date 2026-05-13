@@ -2,8 +2,8 @@ gui:
   enabled: false
 
 parallelism:
-  fiber: 3
-  GPU: 100
+  fiber: 1
+  GPU: 15
 
 table:
   size: 16777216

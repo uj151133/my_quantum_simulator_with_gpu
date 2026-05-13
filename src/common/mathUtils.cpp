@@ -1,6 +1,6 @@
 #include "mathUtils.hpp"
 
-QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
+QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, bool onFiber, int depth) {
     // cout << "\033[1;34mEntering mul: depth=" << depth << " e0.weight=" << e0.weight << " e0.sonKind_=" << static_cast<int>(e0.sonKind_) << " e0.key_=" << e0.key_ << " e1.weight=" << e1.weight << " e1.sonKind_=" << static_cast<int>(e1.sonKind_) << " e1.key_=" << e1.key_ << "\033[0m" << endl;
     if (e1.isTerminal) {
         std::swap(const_cast<QMDDEdge&>(e0), const_cast<QMDDEdge&>(e1));
@@ -38,7 +38,7 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
     int64_t operationCacheKey = calculation::generateOperationCacheKey(OperationKey(e0.key_, e1.key_));
     OperationCacheClient& cache = OperationCacheClient::getInstance();
     if (PARAMETER.cache.alive) {
-        if (auto existingEdge = cache.find(operationCacheKey, concurrency)) {
+        if (auto existingEdge = cache.find(operationCacheKey, onFiber)) {
             if (existingEdge->weight != .0 && existingEdge->key_ != 0) {
                 QMDDEdge result = QMDDEdge(existingEdge->weight * e0.weight * e1.weight, existingEdge->getSon());
                 return result;
@@ -75,7 +75,7 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
                         for (size_t k = 0; k < 2; k++) {
                             QMDDEdge p(n0->edges[i][k].weight, n0->edges[i][k].getSon());
                             QMDDEdge q(n1->edges[k][j].weight, n1->edges[k][j].getSon());
-                            answer = mathUtils::add(answer, mathUtils::mul(p, q, depth + 1), depth + 1);
+                            answer = mathUtils::add(answer, mathUtils::mul(p, q, true, depth + 1), depth + 1);
                         }
                         return {{i, j}, answer};
                     })
@@ -85,7 +85,7 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
                 for (size_t k = 0; k < 2; k++) {
                     QMDDEdge p(n0->edges[i][k].weight, n0->edges[i][k].getSon());
                     QMDDEdge q(n1->edges[k][j].weight, n1->edges[k][j].getSon());
-                    answer = mathUtils::add(answer, mathUtils::mul(p, q, depth + 1), depth + 1);
+                    answer = mathUtils::add(answer, mathUtils::mul(p, q, onFiber, depth + 1), depth + 1);
                 }
                 z[i][j] = answer;
             }
@@ -115,7 +115,7 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
     }
 
     if (PARAMETER.cache.alive) {
-        cache.insert(operationCacheKey, QMDDEdge(tmpWeight, make_shared<QMDDNode>(z)), concurrency);
+        cache.insert(operationCacheKey, QMDDEdge(tmpWeight, make_shared<QMDDNode>(z)), onFiber);
     }
     QMDDEdge result = allWeightsAreZero ? edgeZero : QMDDEdge(e0.weight * e1.weight * tmpWeight, make_shared<QMDDNode>(z));
     return result;
