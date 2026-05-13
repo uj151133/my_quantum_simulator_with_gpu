@@ -1914,11 +1914,11 @@ void QuantumCircuit::globalPhase(double lamda) {
 
 
 void QuantumCircuit::criticalExecute() {
-    threadPool.submitFiber([&]() {
+    const size_t gateNum = g_tls_gate_num;
+    threadPool.submitFiber([&, gateNum]() {
         this->build();
 
         int i = 0;
-        const size_t gateNum = g_tls_gate_num;
 
         while (!this->gateQueue_.empty()) {
             QMDDSuite currentGate = this->gateQueue_.front();

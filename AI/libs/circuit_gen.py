@@ -149,7 +149,7 @@ def make_qpe_inexact_circuit(num_qubits: int = 18) -> QuantumCircuit:
     
     return qc_algorithmic_level
 
-def make_shor_circuit(num_qubits: int = 17) -> QuantumCircuit:
+def make_shor_circuit(num_qubits: int = 18) -> QuantumCircuit:
     # Get a benchmark circuit on algorithmic level representing the GHZ state with 5 qubits
     qc_algorithmic_level = get_benchmark(
         benchmark="shor", level=BenchmarkLevel.ALG, circuit_size=num_qubits
