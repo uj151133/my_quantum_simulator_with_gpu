@@ -1794,7 +1794,7 @@ void QuantumCircuit::addMCT(const vector<int>& controlIndexes, int targetIndex) 
         //     return mathUtils::kron(current, accumulated);
         // });
         // this->gateQueue.push(result);
-
+        this->smartInsert({minIndex, maxIndex}, {Type::MCT, QMDDSuite(customMCT)});
         return;
     }
 }

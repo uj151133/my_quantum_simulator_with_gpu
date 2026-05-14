@@ -40,6 +40,7 @@
 #include "src/test/QAOA/qaoa16MQT.hpp"
 #include "src/test/AmplitudeEstimation/amplitudeEstimation18MQT.hpp"
 #include "src/modules/threadPool.hpp"
+#include "src/test/9symml/bench9symml.hpp"
 
 using namespace std;
 
@@ -64,7 +65,8 @@ void execute() {
     // qftEntangled18MQT();
     // qpeInexact18MQT();
     // randomRotate(13, 200);
-    shor18MQT();
+    // shor18MQT();
+    bench9symml();
 
     // randomCX(3, 5000, true);
     // Memo::getInstance().printAllEntries();

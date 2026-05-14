@@ -51,6 +51,7 @@ enum class Type {
     CRz,
     CU,
     Toff,
+    MCT,
     Other,
     VOID,
     ANKER,

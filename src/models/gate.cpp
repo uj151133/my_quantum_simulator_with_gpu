@@ -40,6 +40,7 @@ ostream& operator<<(ostream& os, Type type) {
         case Type::CRz: os << "CRz"; break;
         case Type::CU: os << "CU"; break;
         case Type::Toff: os << "Toff"; break;
+        case Type::MCT: os << "MCT"; break;
         case Type::Other: os << "Other"; break;
         case Type::VOID: os << "⛓️"; break;
         case Type::ANKER: os << "⚓️"; break;
