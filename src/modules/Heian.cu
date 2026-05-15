@@ -122,7 +122,7 @@ __global__ void mul_any2_kernel(
     double* outIm
 ) {
     uint32_t tid = blockIdx.x * blockDim.x + threadIdx.x;
-    uint32_t dim = hdrA.dim;
+    uint32_t dim = hdrB.dim;
     uint32_t total = dim * dim;
     if (tid >= total) return;
 
@@ -153,7 +153,7 @@ __global__ void add_any2_kernel(
     double* outIm
 ) {
     uint32_t tid = blockIdx.x * blockDim.x + threadIdx.x;
-    uint32_t dim = hdrA.dim;
+    uint32_t dim = hdrB.dim;
     uint32_t total = dim * dim;
     if (tid >= total) return;
 

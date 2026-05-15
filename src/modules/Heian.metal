@@ -249,7 +249,7 @@ kernel void mul_any2(
     device float* outIm              [[buffer(9)]],
     uint tid                          [[thread_position_in_grid]]
 ) {
-    uint dim = hdrA.dim;        // 前提：AとBで同じ
+    uint dim = hdrB.dim;        // 前提：AとBで同じ
     uint total = dim * dim;
     if (tid >= total) return;
 
@@ -281,7 +281,7 @@ kernel void add_any2(
     device float* outIm              [[buffer(9)]],
     uint tid                          [[thread_position_in_grid]]
 ) {
-    uint dim = hdrA.dim; // 前提：AとBで同じ
+    uint dim = hdrB.dim; // 前提：AとBで同じ
     uint total = dim * dim;
     if (tid >= total) return;
 
