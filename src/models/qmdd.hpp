@@ -4,6 +4,7 @@
 #include <variant>
 #include <iostream>
 #include <complex>
+#include <cstring>
 #include <array>
 #include <vector>
 #include <unordered_map>
@@ -13,6 +14,8 @@
 #include <tuple>
 #include <boost/fiber/all.hpp>
 #include <stack>
+#include "sv.hpp"
+#include "memo.hpp"
 
 using namespace std;
 
@@ -32,34 +35,51 @@ enum class OperationType {
     TEST,
 };
 
+enum class SonKind : uint8_t {
+    Terminal,
+    QMDDNode,
+    SVLeaf
+};
+
 // using OperationKey = tuple<QMDDEdge, OperationType, QMDDEdge>;
 using OperationKey = pair<int64_t, int64_t>;
 
 using OperationResult = pair<complex<double>, int64_t>;
 
-using QMDDVariant = variant<QMDDGate, QMDDState>;
-ostream& operator<<(ostream& os, const QMDDVariant& variant);
+using SonVariant = variant<monostate, shared_ptr<QMDDNode>, shared_ptr<SVLeaf>>;
 
 
 struct QMDDEdge{
-    complex<double> weight;
-    int64_t uniqueTableKey;
-    shared_ptr<QMDDNode> son_;
-    bool isTerminal;
-    int depth;
+    complex<double> weight = complex<double>(.0, .0);
+    int64_t key_ = 0;
+    // shared_ptr<QMDDNode> sonNode_ = nullptr;
+    // shared_ptr<SVLeaf> sonLeaf_ = nullptr;
+    SonVariant son_ = monostate();
+    SonKind sonKind_ = SonKind::Terminal;
+    bool isTerminal = true;
+    int depth = 0;
 
-    QMDDEdge(complex<double> w = {.0, .0}, shared_ptr<QMDDNode> n = nullptr);
-    QMDDEdge(double w, shared_ptr<QMDDNode> n = nullptr);
-    QMDDEdge(complex<double> w, int64_t key);
-    QMDDEdge(double w, int64_t key);
+    QMDDEdge();
+    QMDDEdge(complex<double> w);
+    QMDDEdge(double w);
+    QMDDEdge(complex<double> w, SonVariant son);
+    QMDDEdge(double w, SonVariant son);
+    QMDDEdge(complex<double> w, int64_t key, SonVariant son);
+    QMDDEdge(double w, int64_t key, SonVariant son);
+    QMDDEdge(complex<double> w, int64_t key, SonKind kind);
+    QMDDEdge(double w, int64_t key, SonKind kind);
+    // QMDDEdge(complex<double> w, int64_t key, shared_ptr<QMDDNode> n, shared_ptr<SVLeaf> l, SonKind kind);
     QMDDEdge(const QMDDEdge& other) = default;
-    shared_ptr<QMDDNode> getStartNode() const;
-    vector<complex<double>> getAllElementsForKet();
+    // shared_ptr<QMDDNode> getStartNode() const;
+    // shared_ptr<SVLeaf> getStartLeaf() const;
+    SonVariant getSon() const;
+    vector<complex<double>> openKet();
     ~QMDDEdge() = default;
     QMDDEdge& operator=(const QMDDEdge& other) = default;
     bool operator==(const QMDDEdge& other) const;
     bool operator!=(const QMDDEdge& other) const;
     friend ostream& operator<<(ostream& os, const QMDDEdge& edge);
+    void Noah();
     void calculateDepth();
 };
 
@@ -85,7 +105,7 @@ public:
     QMDDGate(QMDDEdge edge = QMDDEdge());
     QMDDGate(const QMDDGate& other) = default;
     ~QMDDGate() = default;
-    shared_ptr<QMDDNode> getStartNode() const;
+    // shared_ptr<QMDDNode> getStartNode() const;
     QMDDEdge getInitialEdge() const;
     QMDDGate& operator=(const QMDDGate& other) = default;
     bool operator==(const QMDDGate& other) const;
@@ -100,13 +120,28 @@ public:
     QMDDState(QMDDEdge edge);
     QMDDState(const QMDDState& other) = default;
     ~QMDDState() = default;
-    shared_ptr<QMDDNode> getStartNode() const;
+    // shared_ptr<QMDDNode> getStartNode() const;
     QMDDEdge getInitialEdge() const;
     vector<complex<double>> getAllElements();
     QMDDState& operator=(const QMDDState& other) = default;
     bool operator==(const QMDDState& other) const;
     bool operator!=(const QMDDState& other) const;
     friend ostream& operator<<(ostream& os, const QMDDState& state);
+};
+
+class QMDDSuite{
+    private:
+    QMDDEdge initialEdge_;
+public:
+    QMDDSuite(QMDDEdge edge = QMDDEdge());
+    QMDDSuite(const QMDDSuite& other) = default;
+    ~QMDDSuite() = default;
+    QMDDEdge getInitialEdge() const;
+    vector<complex<double>> getAllElements();
+    QMDDSuite& operator=(const QMDDSuite& other) = default;
+    bool operator==(const QMDDSuite& other) const;
+    bool operator!=(const QMDDSuite& other) const;
+    friend ostream& operator<<(ostream& os, const QMDDSuite& suite);
 };
 
 #endif

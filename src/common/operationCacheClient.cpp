@@ -94,7 +94,7 @@ void OperationCacheClient::insert(int64_t key, const QMDDEdge& edge, bool useTLS
 __attribute__((hot, flatten))
 void OperationCacheClient::insertGlobal(int64_t key, const QMDDEdge& edge) {
     graal_isolatethread_t* thread = this->getThreadLocalThread();
-    cacheInsert(thread, key, edge.weight.real(), edge.weight.imag(), edge.uniqueTableKey);
+    cacheInsert(thread, key, edge.weight.real(), edge.weight.imag(), edge.key_);
 }
 
 __attribute__((hot, flatten))
@@ -109,7 +109,8 @@ optional<QMDDEdge> OperationCacheClient::findGlobal(int64_t key) {
 
     return make_optional<QMDDEdge>(
         complex<double>(out.real, out.imag),
-        out.uniqueTableKey
+        out.uniqueTableKey,
+        SonKind::QMDDNode
     );
 }
 

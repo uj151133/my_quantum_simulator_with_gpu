@@ -1,10 +1,10 @@
 #include "bench5mod5tc.hpp"
 
 void bench5mod5tc() {
-    QMDDState ket_0 = state::Ket0();
-    QMDDState ket_1 = state::Ket1();
+    QMDDSuite ket_0 = state::Ket0();
+    QMDDSuite ket_1 = state::Ket1();
     QMDDEdge firstEdge = mathUtils::kron(ket_0.getInitialEdge(), mathUtils::kron(ket_0.getInitialEdge(), mathUtils::kron(ket_0.getInitialEdge(), mathUtils::kron(ket_0.getInitialEdge(), mathUtils::kron(ket_0.getInitialEdge(), ket_1.getInitialEdge())))));
-    QuantumCircuit circuit(6, QMDDState(firstEdge));
+    QuantumCircuit circuit(6, QMDDSuite(firstEdge));
     vector<int> controlMCT = {0, 1, 2, 3, 4};
     circuit.addMCT(controlMCT, 5);
     controlMCT = {0, 1, 3, 4};

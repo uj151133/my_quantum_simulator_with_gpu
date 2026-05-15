@@ -58853,3 +58853,286 @@
 [Mon Mar 16 17:25:30 2026] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: main | Execution time: 9087.01 ms
 [2026-03-16 17:26:01] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: main | Execution time:17648.571000 ms
 [Mon Mar 16 17:26:01 2026] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: main | Execution time: 26729.2 ms
+[2026-05-01 11:22:28] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: check/pointer | Execution time:43993.123000 ms
+[Fri May  1 11:22:29 2026] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: check/pointer | Execution time: 46833.2 ms
+[2026-05-01 11:23:11] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: check/pointer | Execution time:1028.501584 ms
+[Fri May  1 11:23:12 2026] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: check/pointer | Execution time: 2161.18 ms
+[2026-05-01 11:39:05] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:1140.718333 ms
+[Fri May  1 11:39:06 2026] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time: 2302.28 ms
+[2026-05-08 12:04:18] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:4294974.632000 ms
+[2026-05-08 14:02:45] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:36.751250 ms
+[2026-05-08 15:39:59] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:5.858333 ms
+[2026-05-08 22:29:38] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:9.364417 ms
+[2026-05-08 22:30:34] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:11.492666 ms
+[2026-05-08 22:30:49] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:8.397792 ms
+[2026-05-09 01:38:42] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:7.800666 ms
+[2026-05-09 01:40:21] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:8.652500 ms
+[2026-05-09 14:49:23] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:32.255833 ms
+[2026-05-09 15:22:49] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:1207.104459 ms
+[Sat May  9 15:22:50 2026] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time: 2635.77 ms
+[2026-05-09 15:23:33] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:1143.375958 ms
+[Sat May  9 15:23:35 2026] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time: 2561.71 ms
+[2026-05-09 15:25:43] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:54.024125 ms
+[2026-05-09 15:27:07] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:45.199458 ms
+[2026-05-09 15:29:36] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:68.031750 ms
+[2026-05-09 15:31:37] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:57.820167 ms
+[2026-05-09 21:42:19] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:167.521250 ms
+[2026-05-09 21:43:55] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:93.511542 ms
+[2026-05-11 16:58:16] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:4321018.077000 ms
+[Mon May 11 16:58:17 2026] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time: 28066.7 ms
+[2026-05-11 17:11:04] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:4319756.677000 ms
+[Mon May 11 17:11:05 2026] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time: 26702.3 ms
+[2026-05-11 17:12:23] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:538.003333 ms
+[Mon May 11 17:12:24 2026] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time: 1427.74 ms
+[2026-05-11 17:16:12] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:533.208625 ms
+[Mon May 11 17:16:13 2026] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time: 1526.52 ms
+[2026-05-09 23:53:20] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:62.798125 ms
+[2026-05-09 23:55:28] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:57.711500 ms
+[2026-05-10 00:01:49] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:48.080792 ms
+[2026-05-10 00:06:58] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:35.716625 ms
+[2026-05-10 00:08:41] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:66.378375 ms
+[2026-05-10 00:15:25] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:.815625 ms
+[Sun May 10 00:15:26 2026] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time: 583.351 ms
+[2026-05-10 00:16:30] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:.133167 ms
+[Sun May 10 00:16:31 2026] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time: 357.197 ms
+[2026-05-10 00:18:02] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:.236875 ms
+[Sun May 10 00:18:02 2026] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time: 370.204 ms
+[2026-05-10 00:18:51] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:7.970583 ms
+[2026-05-10 00:20:21] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:8.235750 ms
+[Sun May 10 00:20:22 2026] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time: 400.058 ms
+[2026-05-10 00:22:28] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:8.533542 ms
+[Sun May 10 00:22:28 2026] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time: 413.692 ms
+[2026-05-10 00:23:17] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:4297083.882000 ms
+[Sun May 10 00:23:17 2026] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time: 2605.97 ms
+[2026-05-10 00:31:11] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:18.764583 ms
+[Sun May 10 00:31:11 2026] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time: 703.737 ms
+[2026-05-10 00:35:40] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:30.567250 ms
+[2026-05-10 00:41:23] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:503.972917 ms
+[2026-05-10 00:42:31] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:1260.737291 ms
+[2026-05-10 00:49:03] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:764.659458 ms
+[2026-05-10 00:49:38] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:1520.331541 ms
+[2026-05-10 00:50:33] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:4.499459 ms
+[Sun May 10 00:50:44 2026] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time: 11492.4 ms
+[2026-05-10 00:52:41] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:7.116583 ms
+[Sun May 10 00:52:51 2026] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time: 10103.7 ms
+[Sun May 10 01:05:04 2026] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time: 345.117 ms
+[Sun May 10 01:15:45 2026] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time: 375.559 ms
+[Sun May 10 03:47:36 2026] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time: 355.708 ms
+[Sun May 10 11:47:49 2026] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time: 154.588 ms
+[Sun May 10 12:28:48 2026] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time: 898.156 ms
+[Sun May 10 12:41:34 2026] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time: 349.727 ms
+[Sun May 10 16:33:30 2026] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time: 8105.59 ms
+[Sun May 10 16:36:56 2026] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time: 260.805 ms
+[Sun May 10 16:37:34 2026] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time: 221.839 ms
+[2026-05-10 16:38:28] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:9.355583 ms
+[2026-05-10 16:40:34] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:4150.205167 ms
+[Sun May 10 16:40:42 2026] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time: 11808.2 ms
+[2026-05-10 16:41:26] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:1012.446458 ms
+[Sun May 10 16:41:28 2026] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time: 3260.1 ms
+[2026-05-10 16:56:09] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:61.258292 ms
+[Sun May 10 16:56:09 2026] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time: 423.913 ms
+[Sun May 10 17:36:44 2026] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time: 181.503 ms
+[Sun May 10 18:51:36 2026] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time: 203.725 ms
+[Sun May 10 18:52:30 2026] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time: 178.437 ms
+[Sun May 10 19:13:15 2026] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time: 205.158 ms
+[Sun May 10 20:11:33 2026] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time: 229.765 ms
+[Sun May 10 23:49:54 2026] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time: 215.114 ms
+[2026-05-11 14:46:29] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:90250.449292 ms
+[2026-05-11 17:52:41] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:937.994917 ms
+[Mon May 11 17:52:42 2026] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time: 2241.5 ms
+[2026-05-11 17:53:03] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:924.273667 ms
+[Mon May 11 17:53:04 2026] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time: 2185.74 ms
+[2026-05-11 18:20:27] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:348.709958 ms
+[2026-05-11 18:22:55] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:162.311042 ms
+[2026-05-11 18:26:23] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:179.505709 ms
+[2026-05-11 22:02:49] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:225.164875 ms
+[2026-05-11 22:10:16] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:304.618125 ms
+[2026-05-12 09:46:41] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:172.146667 ms
+[2026-05-12 09:47:46] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:151.252458 ms
+[2026-05-12 10:13:33] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:163.798167 ms
+[2026-05-12 10:15:49] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:152.048333 ms
+[2026-05-12 10:19:28] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:167.760334 ms
+[2026-05-12 10:21:03] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:166.420834 ms
+[2026-05-12 10:22:27] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:165.607375 ms
+[2026-05-12 10:26:16] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:164.268167 ms
+[Tue May 12 10:26:40 2026] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time: 24291.1 ms
+[2026-05-12 10:35:33] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:167.810125 ms
+[Tue May 12 10:36:00 2026] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time: 27100.1 ms
+[2026-05-12 11:54:53] Host: sota | Branch: high/para | Execution time:2242.255024 ms
+[Tue May 12 11:54:57 2026] Host: sota | Branch: high/para | Execution time: 5765.15 ms
+[2026-05-12 12:03:18] Host: sota | Branch: high/para | Execution time:304.739299 ms
+[Tue May 12 12:03:24 2026] Host: sota | Branch: high/para | Execution time: 6737.4 ms
+[2026-05-12 12:12:58] Host: sota | Branch: high/para | Execution time:134.871266 ms
+[Tue May 12 12:13:07 2026] Host: sota | Branch: high/para | Execution time: 9507.62 ms
+[2026-05-12 12:16:26] Host: sota | Branch: high/para | Execution time:2378.420267 ms
+[2026-05-13 14:17:37] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:1191.329084 ms
+[Wed May 13 14:17:39 2026] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time: 2748.82 ms
+[2026-05-13 14:51:30] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:1149.175042 ms
+[Wed May 13 14:51:31 2026] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time: 2690.26 ms
+[2026-05-13 15:07:00] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:1175.996042 ms
+[Wed May 13 15:07:02 2026] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time: 2658.56 ms
+[2026-05-13 15:08:29] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:1617.393583 ms
+[Wed May 13 15:08:31 2026] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time: 3149.91 ms
+[2026-05-13 15:13:02] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:1803.724250 ms
+[Wed May 13 15:13:03 2026] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time: 3323.85 ms
+[2026-05-13 16:35:41] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:1777.002917 ms
+[Wed May 13 16:35:43 2026] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time: 3482.04 ms
+[2026-05-13 07:46:55] Host: sota | Branch: high/para | Execution time:2601.291223 ms
+[Wed May 13 07:46:57 2026] Host: sota | Branch: high/para | Execution time: 4993.25 ms
+[2026-05-13 08:44:11] Host: sota | Branch: high/para | Execution time:1786.584173 ms
+[Wed May 13 08:44:14 2026] Host: sota | Branch: high/para | Execution time: 4653.15 ms
+[2026-05-13 08:46:55] Host: sota | Branch: high/para | Execution time:2392.711126 ms
+[Wed May 13 08:46:58 2026] Host: sota | Branch: high/para | Execution time: 5295.35 ms
+[2026-05-13 08:55:06] Host: sota | Branch: high/para | Execution time:314.454588 ms
+[Wed May 13 08:55:12 2026] Host: sota | Branch: high/para | Execution time: 5964.83 ms
+[2026-05-13 08:55:41] Host: sota | Branch: high/para | Execution time:242.572712 ms
+[Wed May 13 08:55:46 2026] Host: sota | Branch: high/para | Execution time: 5824.8 ms
+[2026-05-13 08:56:37] Host: sota | Branch: high/para | Execution time:319.130687 ms
+[Wed May 13 08:56:43 2026] Host: sota | Branch: high/para | Execution time: 6232.56 ms
+[2026-05-14 19:33:59] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:31.562667 ms
+[Thu May 14 19:33:59 2026] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time: 45.8005 ms
+[2026-05-14 19:34:53] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:33.065583 ms
+[Thu May 14 19:34:53 2026] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time: 47.3801 ms
+[2026-05-14 19:34:58] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:36.433583 ms
+[Thu May 14 19:34:58 2026] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time: 55.1764 ms
+[2026-05-14 19:35:38] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:222.192292 ms
+[Thu May 14 19:35:38 2026] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time: 658.285 ms
+[2026-05-14 19:36:04] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:41.995042 ms
+[Thu May 14 19:36:04 2026] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time: 56.7334 ms
+[2026-05-14 19:36:39] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:324.649625 ms
+[Thu May 14 19:36:39 2026] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time: 602.4 ms
+[2026-05-14 19:37:01] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:73.139292 ms
+[Thu May 14 19:37:01 2026] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time: 958.563 ms
+[2026-05-14 19:37:21] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:174.525167 ms
+[Thu May 14 19:37:21 2026] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time: 1232.4 ms
+[2026-05-14 19:41:04] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:83.419500 ms
+[Thu May 14 19:41:04 2026] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time: 1057.77 ms
+[2026-05-14 19:41:26] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:91.110875 ms
+[Thu May 14 19:41:26 2026] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time: 982.408 ms
+[2026-05-13 11:58:06] Host: sota | Branch: high/para | Execution time:7314257.654042 ms
+[Wed May 13 11:58:11 2026] Host: sota | Branch: high/para | Execution time: 7.32078e+06 ms
+[2026-05-14 05:25:04] Host: sota | Branch: high/para | Execution time:1808.428716 ms
+[Thu May 14 05:25:07 2026] Host: sota | Branch: high/para | Execution time: 4829.95 ms
+[2026-05-14 05:30:14] Host: sota | Branch: high/para | Execution time:1802.051527 ms
+[Thu May 14 05:30:17 2026] Host: sota | Branch: high/para | Execution time: 4770.85 ms
+[2026-05-14 05:31:00] Host: sota | Branch: high/para | Execution time:1793.259451 ms
+[Thu May 14 05:31:03 2026] Host: sota | Branch: high/para | Execution time: 4814.87 ms
+[2026-05-14 05:31:19] Host: sota | Branch: high/para | Execution time:1813.630451 ms
+[Thu May 14 05:31:22 2026] Host: sota | Branch: high/para | Execution time: 4828.74 ms
+[2026-05-14 05:31:28] Host: sota | Branch: high/para | Execution time:1800.180409 ms
+[Thu May 14 05:31:31 2026] Host: sota | Branch: high/para | Execution time: 4792.84 ms
+[2026-05-14 05:31:41] Host: sota | Branch: high/para | Execution time:1802.773832 ms
+[Thu May 14 05:31:44 2026] Host: sota | Branch: high/para | Execution time: 4750.67 ms
+[2026-05-14 05:32:18] Host: sota | Branch: high/para | Execution time:1065.359204 ms
+[Thu May 14 05:32:43 2026] Host: sota | Branch: high/para | Execution time: 26613.9 ms
+[2026-05-14 05:32:54] Host: sota | Branch: high/para | Execution time:1085.010595 ms
+[Thu May 14 05:33:19 2026] Host: sota | Branch: high/para | Execution time: 26740.4 ms
+[2026-05-14 05:34:21] Host: sota | Branch: high/para | Execution time:1092.919695 ms
+[Thu May 14 05:34:47 2026] Host: sota | Branch: high/para | Execution time: 26776.7 ms
+[2026-05-14 05:35:32] Host: sota | Branch: high/para | Execution time:1085.110903 ms
+[Thu May 14 05:35:57 2026] Host: sota | Branch: high/para | Execution time: 26769.3 ms
+[2026-05-14 05:36:18] Host: sota | Branch: high/para | Execution time:1069.155312 ms
+[Thu May 14 05:36:44 2026] Host: sota | Branch: high/para | Execution time: 26777.1 ms
+[2026-05-14 05:37:17] Host: sota | Branch: high/para | Execution time:480.244033 ms
+[Thu May 14 05:37:29 2026] Host: sota | Branch: high/para | Execution time: 12114.3 ms
+[2026-05-14 05:37:35] Host: sota | Branch: high/para | Execution time:491.284155 ms
+[Thu May 14 05:37:47 2026] Host: sota | Branch: high/para | Execution time: 12154.2 ms
+[2026-05-14 05:37:53] Host: sota | Branch: high/para | Execution time:492.155930 ms
+[Thu May 14 05:38:04 2026] Host: sota | Branch: high/para | Execution time: 12180.1 ms
+[2026-05-14 05:38:11] Host: sota | Branch: high/para | Execution time:490.415878 ms
+[Thu May 14 05:38:23 2026] Host: sota | Branch: high/para | Execution time: 12274.9 ms
+[2026-05-14 05:38:30] Host: sota | Branch: high/para | Execution time:495.990802 ms
+[Thu May 14 05:38:41 2026] Host: sota | Branch: high/para | Execution time: 12208.6 ms
+[2026-05-14 05:39:24] Host: sota | Branch: high/para | Execution time:243.270731 ms
+[Thu May 14 05:39:29 2026] Host: sota | Branch: high/para | Execution time: 5874.71 ms
+[2026-05-14 05:42:07] Host: sota | Branch: high/para | Execution time:242.110315 ms
+[Thu May 14 05:42:12 2026] Host: sota | Branch: high/para | Execution time: 5842.96 ms
+[2026-05-14 05:42:16] Host: sota | Branch: high/para | Execution time:244.507420 ms
+[Thu May 14 05:42:22 2026] Host: sota | Branch: high/para | Execution time: 5803.19 ms
+[2026-05-14 05:42:40] Host: sota | Branch: high/para | Execution time:231.643938 ms
+[Thu May 14 05:42:46 2026] Host: sota | Branch: high/para | Execution time: 5765.87 ms
+[2026-05-14 05:42:51] Host: sota | Branch: high/para | Execution time:229.340759 ms
+[Thu May 14 05:42:56 2026] Host: sota | Branch: high/para | Execution time: 5856.52 ms
+[2026-05-14 05:43:42] Host: sota | Branch: high/para | Execution time:127.634415 ms
+[Thu May 14 05:43:45 2026] Host: sota | Branch: high/para | Execution time: 3789.54 ms
+[2026-05-14 05:43:52] Host: sota | Branch: high/para | Execution time:129.718002 ms
+[Thu May 14 05:43:56 2026] Host: sota | Branch: high/para | Execution time: 3801.98 ms
+[2026-05-14 05:44:02] Host: sota | Branch: high/para | Execution time:132.769164 ms
+[Thu May 14 05:44:05 2026] Host: sota | Branch: high/para | Execution time: 3743.95 ms
+[2026-05-14 05:44:09] Host: sota | Branch: high/para | Execution time:136.784804 ms
+[Thu May 14 05:44:13 2026] Host: sota | Branch: high/para | Execution time: 3811.8 ms
+[2026-05-14 05:46:00] Host: sota | Branch: high/para | Execution time:131.929940 ms
+[Thu May 14 05:46:04 2026] Host: sota | Branch: high/para | Execution time: 3783.54 ms
+[2026-05-14 05:46:10] Host: sota | Branch: high/para | Execution time:129.127134 ms
+[2026-05-14 05:46:36] Host: sota | Branch: high/para | Execution time:74.158765 ms
+[Thu May 14 05:46:39 2026] Host: sota | Branch: high/para | Execution time: 2881.3 ms
+[2026-05-14 05:46:47] Host: sota | Branch: high/para | Execution time:89.116585 ms
+[Thu May 14 05:46:50 2026] Host: sota | Branch: high/para | Execution time: 2869.83 ms
+[2026-05-14 05:47:05] Host: sota | Branch: high/para | Execution time:62.932013 ms
+[Thu May 14 05:47:08 2026] Host: sota | Branch: high/para | Execution time: 2883.55 ms
+[2026-05-14 05:47:16] Host: sota | Branch: high/para | Execution time:74.214850 ms
+[Thu May 14 05:47:18 2026] Host: sota | Branch: high/para | Execution time: 2839.19 ms
+[2026-05-14 05:47:24] Host: sota | Branch: high/para | Execution time:75.464704 ms
+[Thu May 14 05:47:26 2026] Host: sota | Branch: high/para | Execution time: 2834.97 ms
+[2026-05-14 05:47:55] Host: sota | Branch: high/para | Execution time:53.000318 ms
+[Thu May 14 05:47:57 2026] Host: sota | Branch: high/para | Execution time: 2859.49 ms
+[2026-05-14 05:48:17] Host: sota | Branch: high/para | Execution time:59.266639 ms
+[Thu May 14 05:48:20 2026] Host: sota | Branch: high/para | Execution time: 2897.17 ms
+[2026-05-14 05:48:27] Host: sota | Branch: high/para | Execution time:58.109990 ms
+[Thu May 14 05:48:30 2026] Host: sota | Branch: high/para | Execution time: 2871.56 ms
+[2026-05-14 05:49:47] Host: sota | Branch: high/para | Execution time:52.956947 ms
+[Thu May 14 05:49:50 2026] Host: sota | Branch: high/para | Execution time: 2875.46 ms
+[2026-05-14 05:49:53] Host: sota | Branch: high/para | Execution time:58.948202 ms
+[Thu May 14 05:49:56 2026] Host: sota | Branch: high/para | Execution time: 2849.87 ms
+[2026-05-14 05:49:59] Host: sota | Branch: high/para | Execution time:59.944069 ms
+[Thu May 14 05:50:02 2026] Host: sota | Branch: high/para | Execution time: 2878.07 ms
+[2026-05-14 05:50:27] Host: sota | Branch: high/para | Execution time:55.564045 ms
+[Thu May 14 05:50:29 2026] Host: sota | Branch: high/para | Execution time: 2541.72 ms
+[2026-05-14 05:50:33] Host: sota | Branch: high/para | Execution time:57.601596 ms
+[Thu May 14 05:50:35 2026] Host: sota | Branch: high/para | Execution time: 2547.99 ms
+[2026-05-14 05:50:44] Host: sota | Branch: high/para | Execution time:48.322937 ms
+[Thu May 14 05:50:46 2026] Host: sota | Branch: high/para | Execution time: 2536.75 ms
+[2026-05-14 05:51:10] Host: sota | Branch: high/para | Execution time:53.835104 ms
+[Thu May 14 05:51:12 2026] Host: sota | Branch: high/para | Execution time: 2538.42 ms
+[2026-05-14 05:51:16] Host: sota | Branch: high/para | Execution time:52.679356 ms
+[Thu May 14 05:51:19 2026] Host: sota | Branch: high/para | Execution time: 2541.95 ms
+[2026-05-14 05:51:28] Host: sota | Branch: high/para | Execution time:57.634959 ms
+[Thu May 14 05:51:30 2026] Host: sota | Branch: high/para | Execution time: 2539.13 ms
+[2026-05-14 05:52:10] Host: sota | Branch: high/para | Execution time:129.872932 ms
+[Thu May 14 05:52:20 2026] Host: sota | Branch: high/para | Execution time: 9548.16 ms
+[2026-05-14 05:52:28] Host: sota | Branch: high/para | Execution time:131.901667 ms
+[Thu May 14 05:52:37 2026] Host: sota | Branch: high/para | Execution time: 9535.7 ms
+[2026-05-14 05:53:08] Host: sota | Branch: high/para | Execution time:130.372801 ms
+[Thu May 14 05:53:17 2026] Host: sota | Branch: high/para | Execution time: 9531.76 ms
+[2026-05-14 05:53:28] Host: sota | Branch: high/para | Execution time:131.983891 ms
+[Thu May 14 05:53:37 2026] Host: sota | Branch: high/para | Execution time: 9472.33 ms
+[2026-05-14 05:53:49] Host: sota | Branch: high/para | Execution time:129.831014 ms
+[Thu May 14 05:53:58 2026] Host: sota | Branch: high/para | Execution time: 9461.31 ms
+[2026-05-14 06:05:07] Host: sota | Branch: high/para | Execution time:588.554160 ms
+[Thu May 14 06:05:34 2026] Host: sota | Branch: high/para | Execution time: 26959.8 ms
+[2026-05-14 06:07:18] Host: sota | Branch: high/para | Execution time:52.745230 ms
+[Thu May 14 06:07:21 2026] Host: sota | Branch: high/para | Execution time: 2849.67 ms
+[2026-05-14 06:07:56] Host: sota | Branch: high/para | Execution time:586.774873 ms
+[2026-05-14 06:08:16] Host: sota | Branch: high/para | Execution time:587.668690 ms
+[Thu May 14 06:08:43 2026] Host: sota | Branch: high/para | Execution time: 26934.5 ms
+[2026-05-14 06:08:45] Host: sota | Branch: high/para | Execution time:573.950866 ms
+[2026-05-14 06:08:55] Host: sota | Branch: high/para | Execution time:577.761972 ms
+[Thu May 14 06:09:21 2026] Host: sota | Branch: high/para | Execution time: 26635.9 ms
+[2026-05-14 06:09:46] Host: sota | Branch: high/para | Execution time:3786.159244 ms
+[2026-05-14 06:10:06] Host: sota | Branch: high/para | Execution time:3784.352947 ms
+[2026-05-14 06:10:32] Host: sota | Branch: high/para | Execution time:3785.430608 ms
+[2026-05-14 06:11:19] Host: sota | Branch: high/para | Execution time:3788.126352 ms
+[2026-05-14 06:11:34] Host: sota | Branch: high/para | Execution time:3784.644724 ms
+[2026-05-14 06:12:17] Host: sota | Branch: high/para | Execution time:2375.894891 ms
+[2026-05-14 06:14:36] Host: sota | Branch: high/para | Execution time:2375.490363 ms
+[2026-05-14 06:14:49] Host: sota | Branch: high/para | Execution time:2372.836015 ms
+[2026-05-14 06:14:58] Host: sota | Branch: high/para | Execution time:2374.257120 ms
+[2026-05-14 06:15:07] Host: sota | Branch: high/para | Execution time:2374.908431 ms
+[2026-05-14 06:15:15] Host: sota | Branch: high/para | Execution time:2372.499704 ms
+[2026-05-14 06:17:23] Host: sota | Branch: high/para | Execution time:100748.163798 ms
+[2026-05-14 06:19:15] Host: sota | Branch: high/para | Execution time:100469.325519 ms
+[2026-05-14 06:21:27] Host: sota | Branch: high/para | Execution time:100815.923463 ms
+[2026-05-14 06:23:37] Host: sota | Branch: high/para | Execution time:101320.492150 ms
+[2026-05-14 06:25:33] Host: sota | Branch: high/para | Execution time:101203.391127 ms
+[2026-05-15 13:04:06] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:503.806125 ms
+[Fri May 15 13:04:39 2026] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time: 32940 ms

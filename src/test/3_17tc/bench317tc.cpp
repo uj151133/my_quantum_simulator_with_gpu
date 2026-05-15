@@ -1,7 +1,7 @@
 #include "bench317tc.hpp"
 
 void bench317tc() {
-    QMDDState ket_0 = state::Ket0();
+    QMDDSuite ket_0 = state::Ket0();
     QuantumCircuit circuit(3);
     circuit.addX(2);
     circuit.addCX(0, 2);

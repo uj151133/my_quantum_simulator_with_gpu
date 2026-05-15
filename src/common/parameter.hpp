@@ -19,11 +19,10 @@ public:
     struct GuiSettings {
         bool enabled = false;
     } gui;
-    struct ProcessSettings {
-        // int concurrency = 0;
-        bool parallel = false;
-        int parallelism = 0;
-    } process;
+    struct ParallelismSettings {
+        int fiber = 0;
+        int GPU = 0;
+    } parallelism;
     struct TableSettings {
         int size = 0;
     } table;

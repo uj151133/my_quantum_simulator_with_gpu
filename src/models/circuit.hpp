@@ -27,7 +27,7 @@ using namespace std;
 
 struct Part {
     Type type;
-    QMDDGate gate;
+    QMDDSuite gate;
 };
 
 template<typename T>
@@ -55,14 +55,14 @@ private:
     vector<int> swapTable_;
     string mode_;
     double totalTimeMs_ = .0;
-    queue<QMDDGate> gateQueue_;
-    QMDDState finalState_;
+    queue<QMDDSuite> gateQueue_;
+    
     int numQubits_;
     bool irEnabled_ = true;
-    vector<QMDDGate> pending_;
+    vector<QMDDSuite> pending_;
     vector<Core> metaQueue_;
     size_t execIdx_ = 0;
-    unordered_map<uint64_t, QMDDGate> fusedStore_;
+    unordered_map<uint64_t, QMDDSuite> fusedStore_;
     uint64_t nextFusedId_ = 1;
 
     inline int resolveQubit(int q) const {
@@ -85,6 +85,8 @@ private:
 
 public:
 
+    QMDDSuite finalState_;
+
     vector<vector<int>> quantumRegister_;
 
     void enableIR(bool on);
@@ -97,7 +99,7 @@ public:
     vector<Core> snapshotQueueWindow(size_t max_items) const;
     void fuseRanges(const vector<pair<int,int>>& ranges);
 
-    QuantumCircuit(int numQubitits, QMDDState initialState);
+    QuantumCircuit(int numQubitits, QMDDSuite initialState);
     QuantumCircuit(int numQubitits);
     
     ~QuantumCircuit() = default;
@@ -106,8 +108,8 @@ public:
     QuantumCircuit(QuantumCircuit&& other) = default;
     QuantumCircuit& operator=(QuantumCircuit&& other) = default;
 
-    queue<QMDDGate> getGateQueue() const;
-    QMDDState getFinalState() const;
+    queue<QMDDSuite> getGateQueue() const;
+    QMDDSuite getFinalState() const;
     double getTotalTimeMs() const;
 
     void setRegister(int registerIdx, int size);
@@ -194,7 +196,7 @@ public:
     void addMCT(const vector<int>& controlIndexes, int targetIndex);
     void addfFredkin(int controlIndex1, int controlIndex2, int targetIndex);
 
-    void addGate(int qubitIndex, const QMDDGate& gate);
+    void addGate(int qubitIndex, const QMDDSuite& gate);
 
     void addQFT(int numQubits);
     void addQFT();

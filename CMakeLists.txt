@@ -43,15 +43,6 @@ set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -flto")
 set(Python3_FIND_STRATEGY LOCATION)
 set(Python3_FIND_UNVERSIONED_NAMES FIRST)
 
-# if(UNIX AND NOT APPLE)
-#   # Ubuntu/Linux: Python 3.12系のみを許可（-DPython3_EXECUTABLE=... で上書き可）
-#   message(STATUS "Requiring Python 3.12.x on Linux. Override with -DPython3_EXECUTABLE=/path/to/python3.12")
-#   find_package(Python3 3.12 EXACT COMPONENTS Interpreter Development.Module REQUIRED)
-# else()
-#   # 他OSは既定（埋め込みは不要なので Module のみ）
-#   find_package(Python3 COMPONENTS Interpreter Development.Module REQUIRED)
-# endif()
-
 find_package(Python3 COMPONENTS Interpreter Development.Module Development.Embed REQUIRED)
 find_package(pybind11 CONFIG REQUIRED)
 
@@ -184,8 +175,6 @@ include_directories(SYSTEM
     ${Python3_INCLUDE_DIRS}
     ${YAML_CPP_INCLUDE_DIR}
     /opt/homebrew/include
-    # ${JAVA_HOME_ENV}/include
-    # ${JAVA_HOME_ENV}/include/darwin
     $ENV{JAVA_HOME}/include
     $ENV{JAVA_HOME}/include/darwin
     ${CMAKE_SOURCE_DIR}/src
@@ -204,7 +193,6 @@ if(APPLE)
 else()
     add_compile_definitions(CLOCK_MONOTONIC_ID=1)
 endif()
-
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -I${BOOST_ROOT}/include")
 
@@ -233,6 +221,57 @@ else()
     message(FATAL_ERROR "Unsupported architecture: ${CMAKE_SYSTEM_PROCESSOR}")
 endif()
 
+# === GPU backend auto-detect (NO option) ===
+set(GPU_BACKEND_SRC "")
+if(APPLE)
+    add_compile_definitions(USE_METAL)
+    set(GPU_BACKEND_SRC src/modules/Heian.mm)
+    set(METAL_SRC ${CMAKE_SOURCE_DIR}/src/modules/Heian.metal)
+    set(METAL_AIR ${CMAKE_BINARY_DIR}/Heian.air)
+    set(METAL_LIB ${CMAKE_BINARY_DIR}/Heian.metallib)
+
+    add_custom_command(
+        OUTPUT ${METAL_AIR}
+        COMMAND xcrun -sdk macosx metal -c ${METAL_SRC} -o ${METAL_AIR}
+        DEPENDS ${METAL_SRC}
+        COMMENT "Compiling Metal shader"
+    )
+
+    add_custom_command(
+        OUTPUT ${METAL_LIB}
+        COMMAND xcrun -sdk macosx metallib ${METAL_AIR} -o ${METAL_LIB}
+        DEPENDS ${METAL_AIR}
+        COMMENT "Linking Metal library"
+    )
+
+    add_custom_target(metal_shaders ALL DEPENDS ${METAL_LIB})
+else()
+    find_package(CUDAToolkit)
+
+    if(CUDAToolkit_FOUND)
+        # nvcc を明示的に探して、CMake の CUDA compiler として設定
+        find_program(NVCC_PATH NAMES nvcc HINTS /usr/local/cuda/bin ENV CUDA_HOME PATH_SUFFIXES bin)
+        if(NOT NVCC_PATH)
+            message(FATAL_ERROR "CUDAToolkit は見つかったが nvcc が見つかりません。CMAKE_CUDA_COMPILER を指定してください。")
+        endif()
+
+        if(NOT CMAKE_CUDA_COMPILER)
+            set(CMAKE_CUDA_COMPILER "${NVCC_PATH}" CACHE FILEPATH "CUDA compiler" FORCE)
+        endif()
+
+        # 自動検出失敗対策（必要なら 86/89 など固定値に変更）
+        if(NOT DEFINED CMAKE_CUDA_ARCHITECTURES)
+            set(CMAKE_CUDA_ARCHITECTURES native CACHE STRING "CUDA architectures")
+        endif()
+
+        enable_language(CUDA)
+        add_compile_definitions(USE_CUDA)
+        set(GPU_BACKEND_SRC src/modules/Heian.cu)
+    else()
+        message(FATAL_ERROR "No GPU backend available (Metal/CUDA not found)")
+    endif()
+endif()
+
 configure_file(${CMAKE_SOURCE_DIR}/config.yaml ${CMAKE_BINARY_DIR}/config.yaml COPYONLY)
 configure_file(${CMAKE_SOURCE_DIR}/cmake/qmdd_project.pth.in ${CMAKE_BINARY_DIR}/qmdd_project.pth @ONLY)
 find_library(GRAALVM_NATIVE_LIB
@@ -248,13 +287,11 @@ if(NOT GRAALVM_NATIVE_LIB)
     message(WARNING "  cd src/java")
     message(WARNING "  ./gradlew nativeCompile")
     
-    # ファイルの存在確認
     if(EXISTS "${GRAALVM_NATIVE_LIB_PATH}/${GRAALVM_NATIVE_LIB_NAME}")
         message(STATUS "File exists but not found by find_library, using direct path")
         set(GRAALVM_NATIVE_LIB "${GRAALVM_NATIVE_LIB_PATH}/${GRAALVM_NATIVE_LIB_NAME}")
     endif()
 endif()
-
 
 set(OPENQASM3_GRAMMAR_DIR ${CMAKE_SOURCE_DIR}/src/translator/OpenQASM3)
 set(OPENQASM3_GRAMMAR_FILE ${OPENQASM3_GRAMMAR_DIR}/OpenQASM3.g4)
@@ -265,7 +302,6 @@ if(NOT ANTLR_JAR)
         set(ANTLR_JAR "$ENV{ANTLR_JAR}")
     elseif(EXISTS "/opt/homebrew/Cellar/antlr/4.13.2/antlr-4.13.2-complete.jar")
         set(ANTLR_JAR "/opt/homebrew/Cellar/antlr/4.13.2/antlr-4.13.2-complete.jar")
-    # Linux(Ubuntu) の一般的な場所も探索
     elseif(EXISTS "/usr/share/java/antlr-4.13.2-complete.jar")
         set(ANTLR_JAR "/usr/share/java/antlr-4.13.2-complete.jar")
     elseif(EXISTS "/usr/share/java/antlr-4.13.1-complete.jar")
@@ -308,7 +344,6 @@ set(OPENQASM3_GEN_SRCS
     ${OPENQASM3_GEN_DIR}/OpenQASM3Visitor.cpp
 )
 
-
 add_custom_command(
     OUTPUT ${OPENQASM3_GEN_SRCS}
     COMMAND ${CMAKE_COMMAND} -E make_directory ${OPENQASM3_GEN_DIR}
@@ -324,14 +359,13 @@ add_custom_target(generate_qasm3 DEPENDS
     ${OPENQASM3_GEN_DIR}/OpenQASM3Visitor.cpp
 )
 
-# file(GLOB OPENQASM3_GEN_SRC "${OPENQASM3_GEN_DIR}/*.cpp")
 file(GLOB SOURCES CONFIGURE_DEPENDS "src/models/*.cpp" "src/common/*.cpp" "src/modules/*.cpp" "src/test/*/*.cpp" "src/translator/*/*.cpp" "src/opt/*.cpp")
 file(GLOB OPENQASM3_GEN_SRC CONFIGURE_DEPENDS "${OPENQASM3_GEN_DIR}/*.cpp")
-
 
 add_executable(qmdd_sim main.cpp ${SOURCES} ${C_SRC} ${ASM_SRC} ${OPENQASM3_GEN_SRC} src/common/timer.f90)
 add_dependencies(qmdd_sim copy_config build_java_lib generate_qasm3)
 target_include_directories(qmdd_sim PRIVATE ${GSL_INCLUDE_DIRS} ${OPENQASM3_GEN_DIR} ${ANTLR4_RUNTIME_INCLUDE_DIR})
+target_sources(qmdd_sim PRIVATE ${GPU_BACKEND_SRC})
 target_link_libraries(qmdd_sim PRIVATE
     pthread
     yaml-cpp::yaml-cpp
@@ -345,6 +379,14 @@ target_link_libraries(qmdd_sim PRIVATE
     $<$<BOOL:${GRAALVM_NATIVE_LIB}>:${GRAALVM_NATIVE_LIB}>
     $<$<BOOL:${ONNXRUNTIME_LIB}>:${ONNXRUNTIME_LIB}>
 )
+
+if(APPLE)
+    target_link_libraries(qmdd_sim PRIVATE
+        "-framework Metal"
+        "-framework Foundation"
+        "-framework CoreFoundation"
+    )
+endif()
 
 if(APPLE AND ONNXRUNTIME_LIB)
     get_filename_component(ONNX_LIB_DIR "${ONNXRUNTIME_LIB}" DIRECTORY)
@@ -382,6 +424,16 @@ add_library(qmdd_core MODULE
     ${ASM_SRC}
 )
 
+if(APPLE)
+    target_compile_definitions(qmdd_sim PRIVATE USE_METAL)
+    target_compile_definitions(qmdd_core PRIVATE USE_METAL)
+endif()
+
+if(TARGET metal_shaders)
+    add_dependencies(qmdd_sim metal_shaders)
+    add_dependencies(qmdd_core metal_shaders)
+endif()
+
 set_target_properties(qmdd_core PROPERTIES
     PREFIX ""
     OUTPUT_NAME "qmdd_core"
@@ -395,6 +447,7 @@ target_include_directories(qmdd_core PRIVATE
     ${Boost_INCLUDE_DIRS}
 )
 
+target_sources(qmdd_core PRIVATE ${GPU_BACKEND_SRC})
 target_link_libraries(qmdd_core PRIVATE
     pybind11::module
     pthread
@@ -405,10 +458,17 @@ target_link_libraries(qmdd_core PRIVATE
     ${GMP_LIB}
     Threads::Threads
     xxhash
-    # antlr4_runtime
     $<$<BOOL:${GRAALVM_NATIVE_LIB}>:${GRAALVM_NATIVE_LIB}>
     $<$<BOOL:${ONNXRUNTIME_LIB}>:${ONNXRUNTIME_LIB}>
 )
+
+if(APPLE)
+    target_link_libraries(qmdd_core PRIVATE
+        "-framework Metal"
+        "-framework Foundation"
+        "-framework CoreFoundation"
+    )
+endif()
 
 if(APPLE AND ONNXRUNTIME_LIB)
     get_filename_component(ONNX_LIB_DIR "${ONNXRUNTIME_LIB}" DIRECTORY)
@@ -419,16 +479,12 @@ if(APPLE AND ONNXRUNTIME_LIB)
 endif()
 
 if(UNIX AND NOT APPLE)
-    # set_target_properties(qmdd_core PRIVATE "-undefined" "dynamic_lookup")
     set_target_properties(qmdd_core PROPERTIES BUILD_RPATH "/usr/local/lib")
 endif()
-
-
 
 # make run ターゲットの追加（通常モード）
 if(APPLE)
     add_custom_target(run
-        # COMMAND DYLD_LIBRARY_PATH=/opt/homebrew/Cellar/openjdk@21/21.0.7/libexec/openjdk.jdk/Contents/Home/lib/server:$ENV{DYLD_LIBRARY_PATH} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qmdd_sim
         COMMAND DYLD_LIBRARY_PATH=$ENV{JAVA_HOME}/lib/server:$ENV{DYLD_LIBRARY_PATH} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qmdd_sim
         DEPENDS qmdd_sim
         WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
@@ -436,7 +492,6 @@ if(APPLE)
     )
 elseif(UNIX AND NOT APPLE)
     add_custom_target(run
-        # COMMAND LD_LIBRARY_PATH=/home/ark/.sdkman/candidates/java/current/lib/server:/home/ark/.sdkman/candidates/java/current/lib:$ENV{LD_LIBRARY_PATH} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qmdd_sim
         COMMAND LD_LIBRARY_PATH=$ENV{JAVA_HOME}/lib/server:$ENV{JAVA_HOME}/lib:$ENV{LD_LIBRARY_PATH} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qmdd_sim
         DEPENDS qmdd_sim
         WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
@@ -454,7 +509,6 @@ endif()
 # make run-server ターゲットの追加（IPCサーバーモード）
 if(APPLE)
     add_custom_target(run-server
-        # COMMAND DYLD_LIBRARY_PATH=/opt/homebrew/Cellar/openjdk@21/21.0.7/libexec/openjdk.jdk/Contents/Home/lib/server:$ENV{DYLD_LIBRARY_PATH} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qmdd_sim -s
         COMMAND DYLD_LIBRARY_PATH=$ENV{JAVA_HOME}/lib/server:$ENV{DYLD_LIBRARY_PATH} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qmdd_sim -s
         DEPENDS qmdd_sim
         WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
@@ -462,7 +516,6 @@ if(APPLE)
     )
 elseif(UNIX AND NOT APPLE)
     add_custom_target(run-server
-        # COMMAND LD_LIBRARY_PATH=/home/ark/.sdkman/candidates/java/current/lib/server:/home/ark/.sdkman/candidates/java/current/lib:$ENV{LD_LIBRARY_PATH} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qmdd_sim -s
         COMMAND LD_LIBRARY_PATH=$ENV{JAVA_HOME}/lib/server:$ENV{JAVA_HOME}/lib:$ENV{LD_LIBRARY_PATH} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qmdd_sim -s
         DEPENDS qmdd_sim
         WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
@@ -501,7 +554,6 @@ add_custom_target(build_java_lib
 
 if(APPLE)
     add_custom_target(run-translate
-        # COMMAND DYLD_LIBRARY_PATH=/opt/homebrew/Cellar/openjdk@21/21.0.7/libexec/openjdk.jdk/Contents/Home/lib/server:$ENV{DYLD_LIBRARY_PATH} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qmdd_sim -translate "$ENV{QASM_FILE}"
         COMMAND DYLD_LIBRARY_PATH=$ENV{JAVA_HOME}/lib/server:$ENV{DYLD_LIBRARY_PATH} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qmdd_sim -t "$ENV{QASM_FILE}"
         DEPENDS qmdd_sim
         WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
@@ -509,7 +561,6 @@ if(APPLE)
     )
 elseif(UNIX AND NOT APPLE)
     add_custom_target(run-translate
-        # COMMAND LD_LIBRARY_PATH=/home/ark/.sdkman/candidates/java/current/lib/server:/home/ark/.sdkman/candidates/java/current/lib:$ENV{LD_LIBRARY_PATH} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qmdd_sim -translate "$ENV{QASM_FILE}"
         COMMAND LD_LIBRARY_PATH=$ENV{JAVA_HOME}/lib/server:$ENV{JAVA_HOME}/lib:$ENV{LD_LIBRARY_PATH} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qmdd_sim -t "$ENV{QASM_FILE}"
         DEPENDS qmdd_sim
         WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}

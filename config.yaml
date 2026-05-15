@@ -1,9 +1,9 @@
 gui:
   enabled: false
 
-process:
-  parallel: true
-  parallelism: 7
+parallelism:
+  fiber: 1
+  GPU: 15
 
 table:
   size: 16777216

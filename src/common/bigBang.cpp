@@ -18,8 +18,8 @@ void birth() {
 
     /* edge initialization */
     i = complex<double>(.0, 1.0);
-    edgeZero = QMDDEdge(.0, 0);
-    edgeOne = QMDDEdge(1.0, 0);
+    edgeZero = QMDDEdge(.0);
+    edgeOne = QMDDEdge(1.0);
 
     /* gate initialization */
     identityEdge = gate::I().getInitialEdge();

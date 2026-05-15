@@ -7,18 +7,18 @@
 using namespace std;
 
 namespace state {
-    QMDDState Ket0();
-    QMDDState Ket1();
-    QMDDState KetPlus();
-    QMDDState KetMinus();
-    QMDDState KetI();
-    QMDDState KetIMinus();
+    QMDDSuite Ket0();
+    QMDDSuite Ket1();
+    QMDDSuite KetPlus();
+    QMDDSuite KetMinus();
+    QMDDSuite KetI();
+    QMDDSuite KetIMinus();
 
-    QMDDState Bra0();
-    QMDDState Bra1();
-    QMDDState BraPlus();
-    QMDDState BraMinus();
-    QMDDState BraI();
-    QMDDState BraIMinus();
+    QMDDSuite Bra0();
+    QMDDSuite Bra1();
+    QMDDSuite BraPlus();
+    QMDDSuite BraMinus();
+    QMDDSuite BraI();
+    QMDDSuite BraIMinus();
 }
 #endif

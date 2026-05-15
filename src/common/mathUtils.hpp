@@ -22,14 +22,16 @@
 #include "../modules/threadPool.hpp"
 #include "../common/operationCacheClient.hpp"
 #include "../common/bigBang.hpp"
+#include "../modules/backend.hpp"
+#include "../modules/Heian.h"
 
 using namespace std;
 // using namespace Eigen;
 
 namespace mathUtils {
-    QMDDEdge mul(const QMDDEdge& e0, const QMDDEdge& e1, bool parallelism = false, bool concurrency = false);
+    QMDDEdge mul(const QMDDEdge& e0, const QMDDEdge& e1, bool onFiber = false, int depth = 0);
     // QMDDEdge mulForDiagonal(const QMDDEdge& e0, const QMDDEdge& e1);
-    QMDDEdge add(const QMDDEdge& e0, const QMDDEdge& e1, bool parallelism = false, bool concurrency = false);
+    QMDDEdge add(const QMDDEdge& e0, const QMDDEdge& e1, int depth = 0);
     // QMDDEdge addForDiagonal(const QMDDEdge& e0, const QMDDEdge& e1);
     QMDDEdge kron(const QMDDEdge& e0, const QMDDEdge& e1, int depth = 0);
     // QMDDEdge kron(const QMDDEdge& e0, const QMDDEdge& e1);
@@ -49,6 +51,8 @@ namespace mathUtils {
     int findCoprimeBelow(int N);
 
     bool isMultiplePI(double theta, double eps = 1e-10);
+
+    bool isZERO(const complex<double>& z);
 
     template <class T, size_t N>
     double median(const array<T, N>& a) {
