@@ -40,7 +40,7 @@ else ifeq ($(shell uname), Linux)
 		pyenv global 3.12.7; \
 		sudo snap install cmake --classic; \
 		export PATH=$$PATH:/snap/bin; \
-		sudo apt-get install -y libomp-dev libyaml-cpp-dev libgmp-dev libgsl-dev cmake libboost-all-dev libantlr4-runtime-dev; \
+		sudo apt-get install -y libomp-dev libyaml-cpp-dev libgmp-dev libgsl-dev cmake libboost-all-dev libantlr4-runtime-dev nlohmann-json3-dev; \
 	fi
 	# $(MAKE) android-setup-linux
 endif
