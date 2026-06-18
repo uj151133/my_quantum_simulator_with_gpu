@@ -206,11 +206,19 @@ inline float2 evalDD(
         uint rb = (row >> shift) & 1u;
         uint cb = (col >> shift) & 1u;
         uint k  = (rb << 1) | cb;
-
         const GPUEdge e = edges[node * 4 + k];
         acc = cmul(acc, float2(e.re, e.im));
-
-        if (e.childIndex == -1) break;
+        if (e.childIndex == -1) {
+            // 残り (levels-1-level) ビットは identity 拡張: 対角のみ acc、非対角は 0
+            uint remaining = levels - 1 - level;
+            if (remaining > 0u) {
+                uint mask = (1u << remaining) - 1u;
+                if ((row & mask) != (col & mask)) {
+                    return float2(0.0, 0.0);
+                }
+            }
+            break;
+        }
         node = e.childIndex;
     }
     return acc;

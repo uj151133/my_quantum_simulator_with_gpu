@@ -214,12 +214,32 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
             return QMDDEdge(a.weight + b.weight);
         }
     }
+
+    if (a.isTerminal && !b.isTerminal) {
+        std::cerr << "\033[1;31m"
+                    << "[add] NON-ZERO TERMINAL x NODE  "
+                    << "depth=" << depth
+                    << "  a.weight=(" << a.weight.real() << "," << a.weight.imag() << ")"
+                    << "  b.sonKind=" << static_cast<int>(b.sonKind_)
+                    << " (1=QMDDNode,2=SVLeaf)"
+                    << "  b.key=" << b.key_
+                    << "  b.depth=" << b.depth
+                    << "\033[0m" << std::endl;
+    }
     if (a.key_ == b.key_) {
         return QMDDEdge(a.weight + b.weight, a.key_, a.son_);
     }
     if (depth >= PARAMETER.parallelism.GPU || a.sonKind_ == SonKind::SVLeaf || b.sonKind_ == SonKind::SVLeaf) {
         GPUInput A = farewell(a);
         GPUInput B = farewell(b);
+
+        if (A.dim == 0 || B.dim == 0) {
+            std::cerr << "\033[1;31m[add] DEGENERATE GPU dim A=" << A.dim
+                      << " B=" << B.dim
+                      << " a.sonKind=" << (int)a.sonKind_
+                      << " b.sonKind=" << (int)b.sonKind_
+                      << " depth=" << depth << "\033[0m" << std::endl;
+        }
 
         void* outRe = nullptr;
         void* outIm = nullptr;

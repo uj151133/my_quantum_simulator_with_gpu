@@ -80,11 +80,19 @@ __device__ Cx evalDD(
         uint32_t rb = (row >> shift) & 1u;
         uint32_t cb = (col >> shift) & 1u;
         uint32_t k  = (rb << 1) | cb;
-
         const GPUEdge e = edges[node * 4 + k];
         acc = cmul(acc, {static_cast<double>(e.re), static_cast<double>(e.im)});
-
-        if (e.childIndex == -1) break;
+        if (e.childIndex == -1) {
+            // 残り (levels-1-level) ビットは identity 拡張: 対角のみ acc、非対角は 0
+            uint32_t remaining = levels - 1 - level;
+            if (remaining > 0u) {
+                uint32_t mask = (1u << remaining) - 1u;
+                if ((row & mask) != (col & mask)) {
+                    return {0.0, 0.0};
+                }
+            }
+            break;
+        }
         node = e.childIndex;
     }
 

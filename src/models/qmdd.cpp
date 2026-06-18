@@ -172,18 +172,9 @@ vector<std::complex<double>> QMDDEdge::openKet() {
         //     << " weight=(" << e.weight.real() << "," << e.weight.imag() << ")\n";
 
         if (e.isTerminal) {
-            if (t.span == 1) {
-                result[t.base] += nextPrefix;
-                continue;
-            }
-            // span>1 でも terminal を許容する
-            // ほとんどのケース（特にゼロ終端）は区間全体が同値なので一括処理
-            if (nextPrefix == complex<double>(.0, .0)) {
-                continue; // 全部0加算なので何もしない
-            }
-            for (size_t i = 0; i < t.span; ++i) {
-                result[t.base + i] += nextPrefix;
-            }
+            // identity 規約: カット終端 w は w·I_{span} を表す。
+            // ket（列0）の読み出しでは I の列0 = e0 なので span 先頭の1要素だけ。
+            result[t.base] += nextPrefix;
             continue;
         }
 
