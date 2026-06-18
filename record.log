@@ -59136,3 +59136,6 @@
 [2026-05-14 06:25:33] Host: sota | Branch: high/para | Execution time:101203.391127 ms
 [2026-05-15 13:04:06] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time:503.806125 ms
 [Fri May 15 13:04:39 2026] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: high/para | Execution time: 32940 ms
+[2026-05-29 10:30:59] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: fix/gpu | Execution time:213.037333 ms
+[Fri May 29 10:31:25 2026] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: fix/gpu | Execution time: 26995.7 ms
+[2026-05-29 10:42:09] Host: mitsuishikaininnonotobukkukonpyuta.local | Branch: fix/gpu | Execution time:230.895750 ms

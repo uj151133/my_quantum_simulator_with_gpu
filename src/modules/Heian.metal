@@ -228,9 +228,10 @@ inline float2 evalInput(
 ) {
     if (hdr.kind == 2) { // SV
         float2 v = float2(inRe[tid], inIm[tid]);
-        return cmul(float2(hdr.root_re, hdr.root_im), v);
+        return applyRoot ? cmul(float2(hdr.root_re, hdr.root_im), v) : v;
     } else if (hdr.kind == 1) { // QMDD
-        return evalDD(edges, float2(hdr.root_re, hdr.root_im), row, col, hdr.dim);
+        float2 root = applyRoot ? float2(hdr.root_re, hdr.root_im) : float2(1.0, 0.0);
+        return evalDD(edges, root, row, col, hdr.dim);
     } else { // Terminal
         return float2(0.0, 0.0);
     }

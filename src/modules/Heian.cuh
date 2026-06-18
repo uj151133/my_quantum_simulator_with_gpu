@@ -65,7 +65,8 @@ __device__ Cx evalInput(
     const double* inIm,
     uint32_t row,
     uint32_t col,
-    uint32_t tid
+    uint32_t tid,
+    bool applyRoot
 );
 
 // kernels

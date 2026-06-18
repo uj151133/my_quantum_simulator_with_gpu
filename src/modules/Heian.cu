@@ -98,13 +98,15 @@ __device__ Cx evalInput(
     const double* inIm,
     uint32_t row,
     uint32_t col,
-    uint32_t tid
+    uint32_t tid,
+    bool applyRoot
 ) {
     if (hdr.kind == KIND_SV) {
         Cx v{inRe[tid], inIm[tid]};
-        return cmul({hdr.root_re, hdr.root_im}, v);
+        return applyRoot ? cmul({hdr.root_re, hdr.root_im}, v) : v;
     } else if (hdr.kind == KIND_QMDD) {
-        return evalDD(edges, {hdr.root_re, hdr.root_im}, row, col, hdr.dim);
+        Cx root = applyRoot ? Cx{hdr.root_re, hdr.root_im} : Cx{1.0, 0.0};
+        return evalDD(edges, root, row, col, hdr.dim);
     }
     return {0.0, 0.0};
 }
@@ -131,8 +133,8 @@ __global__ void mul_any2_kernel(
 
     Cx acc{0.0, 0.0};
     for (uint32_t k = 0; k < dim; ++k) {
-        Cx a = evalInput(hdrA, edgesA, inReA, inImA, row, k, row * dim + k);
-        Cx b = evalInput(hdrB, edgesB, inReB, inImB, k, col, k * dim + col);
+        Cx a = evalInput(hdrA, edgesA, inReA, inImA, row, k, row * dim + k, false);
+        Cx b = evalInput(hdrB, edgesB, inReB, inImB, k, col, k * dim + col, false);
         acc = cadd(acc, cmul(a, b));
     }
 
@@ -160,8 +162,8 @@ __global__ void add_any2_kernel(
     uint32_t row = tid / dim;
     uint32_t col = tid - row * dim;
 
-    Cx a = evalInput(hdrA, edgesA, inReA, inImA, row, col, tid);
-    Cx b = evalInput(hdrB, edgesB, inReB, inImB, row, col, tid);
+    Cx a = evalInput(hdrA, edgesA, inReA, inImA, row, col, tid, true);
+    Cx b = evalInput(hdrB, edgesB, inReB, inImB, row, col, tid, true);
     Cx v = cadd(a, b);
 
     outRe[tid] = v.re;
@@ -195,8 +197,8 @@ __global__ void kron_any2_kernel(
     uint32_t rowB = row % dimB;
     uint32_t colB = col % dimB;
 
-    Cx a = evalInput(hdrA, edgesA, inReA, inImA, rowA, colA, rowA * dimA + colA);
-    Cx b = evalInput(hdrB, edgesB, inReB, inImB, rowB, colB, rowB * dimB + colB);
+    Cx a = evalInput(hdrA, edgesA, inReA, inImA, rowA, colA, rowA * dimA + colA, false);
+    Cx b = evalInput(hdrB, edgesB, inReB, inImB, rowB, colB, rowB * dimB + colB, false);
     Cx v = cmul(a, b);
 
     outRe[tid] = v.re;
