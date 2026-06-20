@@ -508,7 +508,9 @@ void QuantumCircuit::normalizeLayer() {
             // cout << "Processing part of type: " << parts.front().type << " at depth " << depth << endl;
             if (parts.front().type != Type::VOID && parts.front().type != Type::ANKER) {
                 this->layer_[depth].push_back(parts.front().gate.getInitialEdge());
-            }
+            } else  {
+                this->layer_[depth].push_back(QMDDEdge(1.0));
+            } 
             parts.erase(parts.begin());
         }
     }
