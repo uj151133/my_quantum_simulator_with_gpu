@@ -17,6 +17,11 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, bool onFiber, in
     // cout << "\033[1;34mEntering mul: depth=" << depth << " a.weight=" << a.weight << " b.weight=" << b.weight << "\033[0m" << endl;
     if (depth >= PARAMETER.parallelism.GPU || a.sonKind_ == SonKind::SVLeaf || b.sonKind_ == SonKind::SVLeaf) {
         // cout << "\033[1;34mEntering mul: depth=" << depth << " a.weight=" << a.weight << " a.sonKind_=" << static_cast<int>(a.sonKind_) << " a.key_=" << a.key_ << " b.weight=" << b.weight << " b.sonKind_=" << static_cast<int>(b.sonKind_) << " b.key_=" << b.key_ << "\033[0m" << endl;
+        const int goalDepth = max(a.depth, b.depth);
+        
+        if (a.depth < goalDepth) a = mathUtils::beAuthentic(a, goalDepth);
+        if (b.depth < goalDepth) b = mathUtils::beAuthentic(b, goalDepth);
+        
         GPUInput A = farewell(a);
         GPUInput B = farewell(b);
 
@@ -218,6 +223,12 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
         return QMDDEdge(a.weight + b.weight, a.key_, a.son_);
     }
     if (depth >= PARAMETER.parallelism.GPU || a.sonKind_ == SonKind::SVLeaf || b.sonKind_ == SonKind::SVLeaf) {
+
+        const int goalDepth = max(a.depth, b.depth);
+        
+        if (a.depth < goalDepth) a = mathUtils::beAuthentic(a, goalDepth);
+        if (b.depth < goalDepth) b = mathUtils::beAuthentic(b, goalDepth);
+    
         GPUInput A = farewell(a);
         GPUInput B = farewell(b);
 
@@ -625,4 +636,12 @@ bool mathUtils::isMultiplePI(double theta, double eps) {
 
 bool mathUtils::isZERO(const complex<double>& z) {
     return z.real() == .0 && z.imag() == .0;
+}
+
+QMDDEdge mathUtils::beAuthentic(const QMDDEdge& e, int end) {
+    QMDDEdge out = e;
+    while (out.depth < end) {
+        out = mathUtils::kron(out, identityEdge, PARAMETER.parallelism.GPU);
+    }
+    return out;
 }

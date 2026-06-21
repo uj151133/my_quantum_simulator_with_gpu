@@ -54,6 +54,8 @@ namespace mathUtils {
 
     bool isZERO(const complex<double>& z);
 
+    QMDDEdge beAuthentic(const QMDDEdge& e, int end);
+
     template <class T, size_t N>
     double median(const array<T, N>& a) {
         static_assert(N > 0, "median: array must be non-empty");
