@@ -109,7 +109,7 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, bool onFiber, in
     }
 
 
-    bool allWeightsAreZero = true;
+    
     for (auto& ff : fiberFutures) {
         const auto& [indices, result] = ff.get();
         const auto& [i, j] = indices;
@@ -129,7 +129,7 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, bool onFiber, in
     //         }
     //     }
     // }
-
+    bool allWeightsAreZero = true;
     pair<double, double> tmpWeight = normalize(z, allWeightsAreZero);
 
     if (PARAMETER.cache.alive) {
