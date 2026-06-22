@@ -80,11 +80,19 @@ __device__ Cx evalDD(
         uint32_t rb = (row >> shift) & 1u;
         uint32_t cb = (col >> shift) & 1u;
         uint32_t k  = (rb << 1) | cb;
-
         const GPUEdge e = edges[node * 4 + k];
         acc = cmul(acc, {static_cast<double>(e.re), static_cast<double>(e.im)});
-
-        if (e.childIndex == -1) break;
+        if (e.childIndex == -1) {
+            // 残り (levels-1-level) ビットは identity 拡張: 対角のみ acc、非対角は 0
+            uint32_t remaining = levels - 1 - level;
+            if (remaining > 0u) {
+                uint32_t mask = (1u << remaining) - 1u;
+                if ((row & mask) != (col & mask)) {
+                    return {0.0, 0.0};
+                }
+            }
+            break;
+        }
         node = e.childIndex;
     }
 
@@ -98,13 +106,15 @@ __device__ Cx evalInput(
     const double* inIm,
     uint32_t row,
     uint32_t col,
-    uint32_t tid
+    uint32_t tid,
+    bool applyRoot
 ) {
     if (hdr.kind == KIND_SV) {
         Cx v{inRe[tid], inIm[tid]};
-        return cmul({hdr.root_re, hdr.root_im}, v);
+        return applyRoot ? cmul({hdr.root_re, hdr.root_im}, v) : v;
     } else if (hdr.kind == KIND_QMDD) {
-        return evalDD(edges, {hdr.root_re, hdr.root_im}, row, col, hdr.dim);
+        Cx root = applyRoot ? Cx{hdr.root_re, hdr.root_im} : Cx{1.0, 0.0};
+        return evalDD(edges, root, row, col, hdr.dim);
     }
     return {0.0, 0.0};
 }
@@ -131,8 +141,8 @@ __global__ void mul_any2_kernel(
 
     Cx acc{0.0, 0.0};
     for (uint32_t k = 0; k < dim; ++k) {
-        Cx a = evalInput(hdrA, edgesA, inReA, inImA, row, k, row * dim + k);
-        Cx b = evalInput(hdrB, edgesB, inReB, inImB, k, col, k * dim + col);
+        Cx a = evalInput(hdrA, edgesA, inReA, inImA, row, k, row * dim + k, false);
+        Cx b = evalInput(hdrB, edgesB, inReB, inImB, k, col, k * dim + col, false);
         acc = cadd(acc, cmul(a, b));
     }
 
@@ -160,8 +170,8 @@ __global__ void add_any2_kernel(
     uint32_t row = tid / dim;
     uint32_t col = tid - row * dim;
 
-    Cx a = evalInput(hdrA, edgesA, inReA, inImA, row, col, tid);
-    Cx b = evalInput(hdrB, edgesB, inReB, inImB, row, col, tid);
+    Cx a = evalInput(hdrA, edgesA, inReA, inImA, row, col, tid, true);
+    Cx b = evalInput(hdrB, edgesB, inReB, inImB, row, col, tid, true);
     Cx v = cadd(a, b);
 
     outRe[tid] = v.re;
@@ -195,70 +205,14 @@ __global__ void kron_any2_kernel(
     uint32_t rowB = row % dimB;
     uint32_t colB = col % dimB;
 
-    Cx a = evalInput(hdrA, edgesA, inReA, inImA, rowA, colA, rowA * dimA + colA);
-    Cx b = evalInput(hdrB, edgesB, inReB, inImB, rowB, colB, rowB * dimB + colB);
+    Cx a = evalInput(hdrA, edgesA, inReA, inImA, rowA, colA, rowA * dimA + colA, false);
+    Cx b = evalInput(hdrB, edgesB, inReB, inImB, rowB, colB, rowB * dimB + colB, false);
     Cx v = cmul(a, b);
 
     outRe[tid] = v.re;
     outIm[tid] = v.im;
 }
 
-__global__ void find_first_nonzero_kernel(
-    const double* re,
-    const double* im,
-    uint32_t total,
-    unsigned int* firstIdx
-) {
-    uint32_t tid = blockIdx.x * blockDim.x + threadIdx.x;
-    if (tid >= total) return;
-    if (isNonZero(re[tid], im[tid])) {
-        atomicMin(firstIdx, tid);
-    }
-}
-
-__global__ void write_coef_kernel(
-    const double* re,
-    const double* im,
-    const unsigned int* firstIdx,
-    double* coefRe,
-    double* coefIm
-) {
-    if (blockIdx.x != 0 || threadIdx.x != 0) return;
-    unsigned int idx = firstIdx[0];
-    if (idx == 0xFFFFFFFFu) {
-        coefRe[0] = 1.0;
-        coefIm[0] = 0.0;
-    } else {
-        coefRe[0] = re[idx];
-        coefIm[0] = im[idx];
-    }
-}
-
-__global__ void norm_apply_kernel(
-    double* re,
-    double* im,
-    uint32_t total,
-    const unsigned int* firstIdx,
-    const double* coefRe,
-    const double* coefIm
-) {
-    uint32_t tid = blockIdx.x * blockDim.x + threadIdx.x;
-    if (tid >= total) return;
-    if (firstIdx[0] == 0xFFFFFFFFu) return;
-
-    double cr = coefRe[0];
-    double ci = coefIm[0];
-    double denom = cr * cr + ci * ci;
-
-    double vr = re[tid];
-    double vi = im[tid];
-
-    double nr = (vr * cr + vi * ci) / denom;
-    double ni = (vi * cr - vr * ci) / denom;
-
-    re[tid] = nr;
-    im[tid] = ni;
-}
 
 __global__ void hash_serial_kernel(
     const double* re,
@@ -290,41 +244,15 @@ inline void run_postprocess(
     double* dOutRe,
     double* dOutIm,
     uint32_t total,
-    int64_t* outId,
-    double* outCoef
+    int64_t* outId
 ) {
-    unsigned int* dFirst = nullptr;
-    double* dCoefRe = nullptr;
-    double* dCoefIm = nullptr;
     uint64_t* dHash = nullptr;
-
-    CUDA_CHECK(cudaMalloc(&dFirst, sizeof(unsigned int)));
-    CUDA_CHECK(cudaMalloc(&dCoefRe, sizeof(double)));
-    CUDA_CHECK(cudaMalloc(&dCoefIm, sizeof(double)));
     CUDA_CHECK(cudaMalloc(&dHash, sizeof(uint64_t)));
-
-    unsigned int init = 0xFFFFFFFFu;
-    CUDA_CHECK(cudaMemcpy(dFirst, &init, sizeof(unsigned int), cudaMemcpyHostToDevice));
-
-    int block = 256;
-    int grid = static_cast<int>((total + block - 1) / block);
-
-    find_first_nonzero_kernel<<<grid, block>>>(dOutRe, dOutIm, total, dFirst);
-    write_coef_kernel<<<1, 1>>>(dOutRe, dOutIm, dFirst, dCoefRe, dCoefIm);
-    norm_apply_kernel<<<grid, block>>>(dOutRe, dOutIm, total, dFirst, dCoefRe, dCoefIm);
     hash_serial_kernel<<<1, 1>>>(dOutRe, dOutIm, total, dHash);
-
     CUDA_CHECK(cudaDeviceSynchronize());
-
     uint64_t h = 0;
-    CUDA_CHECK(cudaMemcpy(&outCoef[0], dCoefRe, sizeof(double), cudaMemcpyDeviceToHost));
-    CUDA_CHECK(cudaMemcpy(&outCoef[1], dCoefIm, sizeof(double), cudaMemcpyDeviceToHost));
     CUDA_CHECK(cudaMemcpy(&h, dHash, sizeof(uint64_t), cudaMemcpyDeviceToHost));
     *outId = static_cast<int64_t>(h);
-
-    cudaFree(dFirst);
-    cudaFree(dCoefRe);
-    cudaFree(dCoefIm);
     cudaFree(dHash);
 }
 
@@ -363,16 +291,14 @@ extern "C" void runMulAny2Wrapper(
         dOutRe, dOutIm
     );
 
-    double coef[2] = {0.0, 0.0};
-    run_postprocess(dOutRe, dOutIm, total, outId, coef);
+    run_postprocess(dOutRe, dOutIm, total, outId);
 
-    // Metal実装に合わせて rootA*rootB を掛ける
     double rA = static_cast<double>(A.root_re), iA = static_cast<double>(A.root_im);
     double rB = static_cast<double>(B.root_re), iB = static_cast<double>(B.root_im);
     double r = rA * rB - iA * iB;
     double i = rA * iB + iA * rB;
-    outCoef[0] = coef[0] * r - coef[1] * i;
-    outCoef[1] = coef[0] * i + coef[1] * r;
+    outCoef[0] = r;
+    outCoef[1] = i;
 
     if (outRe) *outRe = dOutRe;
     if (outIm) *outIm = dOutIm;
@@ -414,10 +340,9 @@ extern "C" void runAddAny2Wrapper(
         dOutRe, dOutIm
     );
 
-    double coef[2] = {0.0, 0.0};
-    run_postprocess(dOutRe, dOutIm, total, outId, coef);
-    outCoef[0] = coef[0];
-    outCoef[1] = coef[1];
+    run_postprocess(dOutRe, dOutIm, total, outId);
+    outCoef[0] = 1.0;
+    outCoef[1] = 0.0;
 
     if (outRe) *outRe = dOutRe;
     if (outIm) *outIm = dOutIm;
@@ -459,16 +384,15 @@ extern "C" void runKronAny2Wrapper(
         dOutRe, dOutIm
     );
 
-    double coef[2] = {0.0, 0.0};
-    run_postprocess(dOutRe, dOutIm, total, outId, coef);
+    run_postprocess(dOutRe, dOutIm, total, outId);
 
     // Metal実装に合わせて rootA*rootB を掛ける
     double rA = static_cast<double>(A.root_re), iA = static_cast<double>(A.root_im);
     double rB = static_cast<double>(B.root_re), iB = static_cast<double>(B.root_im);
     double r = rA * rB - iA * iB;
     double i = rA * iB + iA * rB;
-    outCoef[0] = coef[0] * r - coef[1] * i;
-    outCoef[1] = coef[0] * i + coef[1] * r;
+    outCoef[0] = r;
+    outCoef[1] = i;
 
     if (outRe) *outRe = dOutRe;
     if (outIm) *outIm = dOutIm;

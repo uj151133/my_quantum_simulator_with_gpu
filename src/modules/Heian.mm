@@ -74,84 +74,6 @@ static id<MTLComputePipelineState> getPSO(
     return pso;
 }
 
-static void runNormalizePass(
-    id<MTLDevice> device,
-    id<MTLLibrary> library,
-    id<MTLCommandBuffer> cmd,
-    id<MTLBuffer> outReBuf,
-    id<MTLBuffer> outImBuf,
-    id<MTLBuffer> outCoefBuf,
-    uint32_t total
-) {
-    id<MTLFunction> p1Fn = [library newFunctionWithName:@"norm_pass1"];
-    id<MTLFunction> p2Fn = [library newFunctionWithName:@"norm_pass2"];
-    id<MTLFunction> p3Fn = [library newFunctionWithName:@"norm_apply"];
-
-    id<MTLComputePipelineState> p1PSO = getPSO(device, library, @"norm_pass1");
-    id<MTLComputePipelineState> p2PSO = getPSO(device, library, @"norm_pass2");
-    id<MTLComputePipelineState> p3PSO = getPSO(device, library, @"norm_apply");
-
-    NSUInteger tg = p1PSO.maxTotalThreadsPerThreadgroup;
-    NSUInteger groups = (total + tg - 1) / tg;
-
-    id<MTLBuffer> groupIdxBuf =
-        [device newBufferWithLength:sizeof(uint32_t)*groups options:MTLResourceStorageModeShared];
-    id<MTLBuffer> groupValBuf =
-        [device newBufferWithLength:sizeof(float)*2*groups options:MTLResourceStorageModeShared];
-
-    id<MTLBuffer> totalBuf =
-        [device newBufferWithBytes:&total length:sizeof(uint32_t) options:MTLResourceStorageModeShared];
-    id<MTLBuffer> groupBuf =
-        [device newBufferWithBytes:&groups length:sizeof(uint32_t) options:MTLResourceStorageModeShared];
-
-    id<MTLBuffer> idxBuf =
-        [device newBufferWithLength:sizeof(uint32_t) options:MTLResourceStorageModeShared];
-
-    {
-        id<MTLComputeCommandEncoder> enc = [cmd computeCommandEncoder];
-        [enc setComputePipelineState:p1PSO];
-        [enc setBuffer:outReBuf offset:0 atIndex:0];
-        [enc setBuffer:outImBuf offset:0 atIndex:1];
-        [enc setBuffer:groupIdxBuf offset:0 atIndex:2];
-        [enc setBuffer:groupValBuf offset:0 atIndex:3];
-        [enc setBuffer:totalBuf offset:0 atIndex:4];
-
-        MTLSize grid = MTLSizeMake(groups * tg, 1, 1);
-        MTLSize tgs = MTLSizeMake(tg, 1, 1);
-        [enc dispatchThreads:grid threadsPerThreadgroup:tgs];
-        [enc endEncoding];
-    }
-
-    {
-        id<MTLComputeCommandEncoder> enc = [cmd computeCommandEncoder];
-        [enc setComputePipelineState:p2PSO];
-        [enc setBuffer:groupIdxBuf offset:0 atIndex:0];
-        [enc setBuffer:groupValBuf offset:0 atIndex:1];
-        [enc setBuffer:idxBuf offset:0 atIndex:2];
-        [enc setBuffer:outCoefBuf offset:0 atIndex:3];
-        [enc setBuffer:groupBuf offset:0 atIndex:4];
-
-        MTLSize grid = MTLSizeMake(1, 1, 1);
-        MTLSize tgs = MTLSizeMake(1, 1, 1);
-        [enc dispatchThreads:grid threadsPerThreadgroup:tgs];
-        [enc endEncoding];
-    }
-
-    {
-        id<MTLComputeCommandEncoder> enc = [cmd computeCommandEncoder];
-        [enc setComputePipelineState:p3PSO];
-        [enc setBuffer:outReBuf offset:0 atIndex:0];
-        [enc setBuffer:outImBuf offset:0 atIndex:1];
-        [enc setBuffer:idxBuf offset:0 atIndex:2];
-        [enc setBuffer:outCoefBuf offset:0 atIndex:3];
-        [enc setBuffer:totalBuf offset:0 atIndex:4];
-
-        MTLSize grid = MTLSizeMake(total, 1, 1);
-        MTLSize tgs = MTLSizeMake(p3PSO.maxTotalThreadsPerThreadgroup, 1, 1);
-        [enc dispatchThreads:grid threadsPerThreadgroup:tgs];
-        [enc endEncoding];
-    }
-}
 
 void runHash2Pass(
     id<MTLDevice> device,
@@ -223,8 +145,7 @@ static void runMulAny2(
     id<MTLBuffer> inImBufB,
     id<MTLBuffer> outReBuf,
     id<MTLBuffer> outImBuf,
-    id<MTLBuffer> outIdBuf,
-    id<MTLBuffer> outCoefBuf
+    id<MTLBuffer> outIdBuf
 ) {
     // id<MTLCommandQueue> queue = [device newCommandQueue];
 
@@ -262,7 +183,6 @@ static void runMulAny2(
     [enc dispatchThreads:grid threadsPerThreadgroup:tgs];
     [enc endEncoding];
 
-    runNormalizePass(device, library, cmd, outReBuf, outImBuf, outCoefBuf, total);
     runHash2Pass(device, library, cmd, outReBuf, outImBuf, outIdBuf, total);
 
     [cmd commit];
@@ -283,8 +203,7 @@ static void runAddAny2(
     id<MTLBuffer> inImBufB,
     id<MTLBuffer> outReBuf,
     id<MTLBuffer> outImBuf,
-    id<MTLBuffer> outIdBuf,
-    id<MTLBuffer> outCoefBuf
+    id<MTLBuffer> outIdBuf
 ) {
     // id<MTLCommandQueue> queue = [device newCommandQueue];
 
@@ -322,7 +241,6 @@ static void runAddAny2(
     [enc dispatchThreads:grid threadsPerThreadgroup:tgs];
     [enc endEncoding];
 
-    runNormalizePass(device, library, cmd, outReBuf, outImBuf, outCoefBuf, total);
     runHash2Pass(device, library, cmd, outReBuf, outImBuf, outIdBuf, total);
 
     [cmd commit];
@@ -344,8 +262,7 @@ static void runKronAny2(
     id<MTLBuffer> inImBufB,
     id<MTLBuffer> outReBuf,
     id<MTLBuffer> outImBuf,
-    id<MTLBuffer> outIdBuf,
-    id<MTLBuffer> outCoefBuf
+    id<MTLBuffer> outIdBuf
 ) {
     // id<MTLCommandQueue> queue = [device newCommandQueue];
 
@@ -383,7 +300,6 @@ static void runKronAny2(
     [enc dispatchThreads:grid threadsPerThreadgroup:tgs];
     [enc endEncoding];
 
-    runNormalizePass(device, library, cmd, outReBuf, outImBuf, outCoefBuf, total);
     runHash2Pass(device, library, cmd, outReBuf, outImBuf, outIdBuf, total);
 
     [cmd commit];
@@ -427,8 +343,6 @@ extern "C" void runMulAny2Wrapper(
 
         id<MTLBuffer> outIdBuf = [ctx.device newBufferWithLength:sizeof(uint64_t) options:MTLResourceStorageModeShared];
 
-        id<MTLBuffer> outCoefBuf = [ctx.device newBufferWithLength:sizeof(float)*2 options:MTLResourceStorageModeShared];
-
 
         runMulAny2(
             ctx.device, ctx.library, ctx.queue,
@@ -441,8 +355,7 @@ extern "C" void runMulAny2Wrapper(
             inImBufB,
             outReBuf,
             outImBuf,
-            outIdBuf,
-            outCoefBuf
+            outIdBuf
         );
 
         if (outRe) { [outReBuf retain]; *outRe = (__bridge void*)outReBuf; }
@@ -453,18 +366,10 @@ extern "C" void runMulAny2Wrapper(
         }
 
         if (outCoef) {
-            float* c = (float*)outCoefBuf.contents;
-            float coefRe = c[0];
-            float coefIm = c[1];
-
             float rA = (float)A.root_re, iA = (float)A.root_im;
             float rB = (float)B.root_re, iB = (float)B.root_im;
-            float r = rA*rB - iA*iB;
-            float i = rA*iB + iA*rB;
-
-            // coef * (rootA*rootB)
-            outCoef[0] = coefRe * r - coefIm * i;
-            outCoef[1] = coefRe * i + coefIm * r;
+            outCoef[0] = rA*rB - iA*iB;
+            outCoef[1] = rA*iB + iA*rB;
         }
 
         float* re = (float*)outReBuf.contents;
@@ -512,8 +417,6 @@ extern "C" void runAddAny2Wrapper(
 
         id<MTLBuffer> outIdBuf = [ctx.device newBufferWithLength:sizeof(uint64_t) options:MTLResourceStorageModeShared];
 
-        id<MTLBuffer> outCoefBuf = [ctx.device newBufferWithLength:sizeof(float)*2 options:MTLResourceStorageModeShared];
-
         runAddAny2(
             ctx.device, ctx.library, ctx.queue,
             hdrA, hdrB,
@@ -525,8 +428,7 @@ extern "C" void runAddAny2Wrapper(
             inImBufB,
             outReBuf,
             outImBuf,
-            outIdBuf,
-            outCoefBuf
+            outIdBuf
         );
 
         if (outRe) { [outReBuf retain]; *outRe = (__bridge void*)outReBuf; }
@@ -535,10 +437,10 @@ extern "C" void runAddAny2Wrapper(
         if (outId) {
             *outId = *(int64_t*)outIdBuf.contents;
         }
+
         if (outCoef) {
-            float* c = (float*)outCoefBuf.contents;
-            outCoef[0] = c[0];
-            outCoef[1] = c[1];
+            outCoef[0] = 1.0f;
+            outCoef[1] = 0.0f;
         }
 
         float* re = (float*)outReBuf.contents;
@@ -586,8 +488,6 @@ extern "C" void runKronAny2Wrapper(
 
         id<MTLBuffer> outIdBuf = [ctx.device newBufferWithLength:sizeof(uint64_t) options:MTLResourceStorageModeShared];
 
-        id<MTLBuffer> outCoefBuf = [ctx.device newBufferWithLength:sizeof(float)*2 options:MTLResourceStorageModeShared];
-
         runKronAny2(
             ctx.device, ctx.library, ctx.queue,
             hdrA, hdrB,
@@ -599,8 +499,7 @@ extern "C" void runKronAny2Wrapper(
             inImBufB,
             outReBuf,
             outImBuf,
-            outIdBuf,
-            outCoefBuf
+            outIdBuf
         );
 
         if (outRe) { [outReBuf retain]; *outRe = (__bridge void*)outReBuf; }
@@ -611,16 +510,10 @@ extern "C" void runKronAny2Wrapper(
         }
 
         if (outCoef) {
-            float* c = (float*)outCoefBuf.contents;
-            float coefRe = c[0];
-            float coefIm = c[1];
-
             float rA = (float)A.root_re, iA = (float)A.root_im;
             float rB = (float)B.root_re, iB = (float)B.root_im;
-            float r = rA*rB - iA*iB;
-            float i = rA*iB + iA*rB;
-            outCoef[0] = coefRe * r - coefIm * i;
-            outCoef[1] = coefRe * i + coefIm * r;
+            outCoef[0] = rA*rB - iA*iB;
+            outCoef[1] = rA*iB + iA*rB;
         }
 
         float* re = (float*)outReBuf.contents;

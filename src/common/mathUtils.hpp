@@ -47,12 +47,22 @@ namespace mathUtils {
     complex<double> cot(complex<double> theta);
 
     double sumOfSquares(const vector<complex<double>>& vec);
+    double logSumExp(double logA, double logB);
+    double logWeightNormSq(double scaledNormSq, double logScale);
+    double probabilityFromLogWeights(double logP0, double logP1);
     vector<int> createRange(int start, int end);
     int findCoprimeBelow(int N);
 
     bool isMultiplePI(double theta, double eps = 1e-10);
 
     bool isZERO(const complex<double>& z);
+
+    pair<double, double> toLogPolar(const complex<double>& w);
+    complex<double> toComplex(double magnitude, double angle);
+
+    pair<double, double> normalize(vector<vector<QMDDEdge>>& e, bool& allWeightsAreZero);
+
+    QMDDEdge beAuthentic(const QMDDEdge& e, int end);
 
     template <class T, size_t N>
     double median(const array<T, N>& a) {

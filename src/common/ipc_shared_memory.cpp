@@ -245,10 +245,12 @@ SimulationResult SharedMemoryIPCServer::processCircuitRequest(const CircuitReque
         // 実際のfinalStateを取得
         auto finalState = circuit.getFinalState();
         std::stringstream finalStateStream;
+        const QMDDEdge& finalEdge = finalState.getInitialEdge();
+        const complex<double> finalWeight = mathUtils::toComplex(finalEdge.magnitude, finalEdge.angle);
         finalStateStream << "Final QMDD state computed with " << request.gates.size() 
                         << " gates on " << request.num_qubits << " qubits - "
-                        << "Initial edge weight: " << finalState.getInitialEdge().weight
-                        << ", Unique table key: " << finalState.getInitialEdge().key_;
+                        << "Initial edge weight: " << finalWeight
+                        << ", Unique table key: " << finalEdge.key_;
         
         // 詳細なシミュレーションログを手動で生成（実際のsimulate()ログを含む）
         std::stringstream simulationLogBuilder;
@@ -264,13 +266,15 @@ SimulationResult SharedMemoryIPCServer::processCircuitRequest(const CircuitReque
         // ゲートごとの詳細情報を生成（シミュレーション後の状態情報を含む）
         auto currentState = circuit.getFinalState();
         for (size_t i = 0; i < request.gates.size(); i++) {
+            const QMDDEdge& edge = currentState.getInitialEdge();
+            const complex<double> weight = mathUtils::toComplex(edge.magnitude, edge.angle);
             simulationLogBuilder << "Gate " << i << ": " << request.gates[i].type << " on qubit " << request.gates[i].qubits[0] << "\n";
-            simulationLogBuilder << "  Weight: " << currentState.getInitialEdge().weight << "\n";
-            simulationLogBuilder << "  Key: " << currentState.getInitialEdge().key_ << "\n";
+            simulationLogBuilder << "  Weight: " << weight << "\n";
+            simulationLogBuilder << "  Key: " << edge.key_ << "\n";
         }
         
-        simulationLogBuilder << "Final state weight: " << finalState.getInitialEdge().weight << "\n";
-        simulationLogBuilder << "Final state key: " << finalState.getInitialEdge().key_ << "\n";
+        simulationLogBuilder << "Final state weight: " << finalWeight << "\n";
+        simulationLogBuilder << "Final state key: " << finalEdge.key_ << "\n";
         
         result.success = true;
         result.executionTime = duration.count() / 1000.0;

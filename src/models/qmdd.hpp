@@ -14,8 +14,8 @@
 #include <tuple>
 #include <boost/fiber/all.hpp>
 #include <stack>
+#include <limits> 
 #include "sv.hpp"
-#include "memo.hpp"
 
 using namespace std;
 
@@ -50,30 +50,23 @@ using SonVariant = variant<monostate, shared_ptr<QMDDNode>, shared_ptr<SVLeaf>>;
 
 
 struct QMDDEdge{
-    complex<double> weight = complex<double>(.0, .0);
+    // complex<double> weight = complex<double>(.0, .0);
+    double magnitude = -std::numeric_limits<double>::infinity();
+    double angle = std::numeric_limits<double>::quiet_NaN();
     int64_t key_ = 0;
-    // shared_ptr<QMDDNode> sonNode_ = nullptr;
-    // shared_ptr<SVLeaf> sonLeaf_ = nullptr;
     SonVariant son_ = monostate();
     SonKind sonKind_ = SonKind::Terminal;
     bool isTerminal = true;
     int depth = 0;
 
     QMDDEdge();
-    QMDDEdge(complex<double> w);
-    QMDDEdge(double w);
-    QMDDEdge(complex<double> w, SonVariant son);
-    QMDDEdge(double w, SonVariant son);
-    QMDDEdge(complex<double> w, int64_t key, SonVariant son);
-    QMDDEdge(double w, int64_t key, SonVariant son);
-    QMDDEdge(complex<double> w, int64_t key, SonKind kind);
-    QMDDEdge(double w, int64_t key, SonKind kind);
-    // QMDDEdge(complex<double> w, int64_t key, shared_ptr<QMDDNode> n, shared_ptr<SVLeaf> l, SonKind kind);
+    QMDDEdge(const pair<double, double>& polar);
+    QMDDEdge(const pair<double, double>& polar, SonVariant son);
+    QMDDEdge(const pair<double, double>& polar, int64_t key, SonVariant son);
+    QMDDEdge(const pair<double, double>& polar, int64_t key, SonKind kind);
     QMDDEdge(const QMDDEdge& other) = default;
-    // shared_ptr<QMDDNode> getStartNode() const;
-    // shared_ptr<SVLeaf> getStartLeaf() const;
     SonVariant getSon() const;
-    vector<complex<double>> openKet();
+    vector<complex<double>> openKet(double* outLogScale = nullptr) const;
     ~QMDDEdge() = default;
     QMDDEdge& operator=(const QMDDEdge& other) = default;
     bool operator==(const QMDDEdge& other) const;
@@ -95,7 +88,6 @@ struct QMDDNode {
     bool operator==(const QMDDNode& other) const;
     bool operator!=(const QMDDNode& other) const;
     friend ostream& operator<<(ostream& os, const QMDDNode& node);
-    vector<complex<double>> getWeights() const;
 };
 
 class QMDDGate{
@@ -134,6 +126,7 @@ class QMDDSuite{
     QMDDEdge initialEdge_;
 public:
     QMDDSuite(QMDDEdge edge = QMDDEdge());
+    QMDDSuite(const pair<double, double>& polar, SonVariant son);
     QMDDSuite(const QMDDSuite& other) = default;
     ~QMDDSuite() = default;
     QMDDEdge getInitialEdge() const;

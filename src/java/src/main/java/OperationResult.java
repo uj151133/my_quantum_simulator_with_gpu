@@ -1,1 +1,1 @@
-public record OperationResult(double real, double imag, long uniqueTableKey) {}
+public record OperationResult(double magnitude, double angle, long uniqueTableKey) {}

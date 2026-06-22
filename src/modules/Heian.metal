@@ -14,120 +14,6 @@ struct GPUInputHeader {
     uint dim;      // sv.size（=行列の一辺）
 };
 
-struct NormVal {
-    float re;
-    float im;
-};
-
-inline bool isNonZero(float re, float im) {
-    return (re != 0.0) || (im != 0.0);
-}
-
-kernel void norm_pass1(
-    const device float* outRe      [[buffer(0)]],
-    const device float* outIm      [[buffer(1)]],
-    device uint* groupBestIdx       [[buffer(2)]],
-    device NormVal* groupBestVal    [[buffer(3)]],
-    constant uint& total                      [[buffer(4)]],
-    uint tid                        [[thread_position_in_grid]],
-    uint tg_id                      [[threadgroup_position_in_grid]],
-    uint tg_tid                     [[thread_index_in_threadgroup]],
-    uint tg_size                    [[threads_per_threadgroup]]
-) {
-    uint idx = 0xFFFFFFFFu;
-    NormVal v{0.0, 0.0};
-
-    if (tid < total) {
-        float re = outRe[tid];
-        float im = outIm[tid];
-        if (isNonZero(re, im)) {
-            idx = tid;
-            v = {re, im};
-        }
-    }
-
-    threadgroup uint bestIdx[1024];
-    threadgroup NormVal bestVal[1024];
-    bestIdx[tg_tid] = idx;
-    bestVal[tg_tid] = v;
-    threadgroup_barrier(mem_flags::mem_threadgroup);
-
-    for (uint s = tg_size / 2; s > 0; s >>= 1) {
-        if (tg_tid < s) {
-            uint idx2 = bestIdx[tg_tid + s];
-            if (idx2 < bestIdx[tg_tid]) {
-                bestIdx[tg_tid] = idx2;
-                bestVal[tg_tid] = bestVal[tg_tid + s];
-            }
-        }
-        threadgroup_barrier(mem_flags::mem_threadgroup);
-    }
-
-    if (tg_tid == 0) {
-        groupBestIdx[tg_id] = bestIdx[0];
-        groupBestVal[tg_id] = bestVal[0];
-    }
-}
-
-// pass2: 全groupの最小idxを選ぶ
-kernel void norm_pass2(
-    const device uint* groupBestIdx [[buffer(0)]],
-    const device NormVal* groupBestVal [[buffer(1)]],
-    device uint* outIndex           [[buffer(2)]],
-    device NormVal* outCoef         [[buffer(3)]],
-    constant uint& groupCount       [[buffer(4)]],
-    uint tid                        [[thread_position_in_grid]]
-) {
-    if (tid != 0) return;
-
-    uint bestIdx = 0xFFFFFFFFu;
-    NormVal bestVal{1.0, 0.0};
-
-    for (uint i = 0; i < groupCount; ++i) {
-        uint idx = groupBestIdx[i];
-        if (idx < bestIdx) {
-            bestIdx = idx;
-            bestVal = groupBestVal[i];
-        }
-    }
-
-    // 非ゼロが無かった場合
-    if (bestIdx == 0xFFFFFFFFu) {
-        bestIdx = 0xFFFFFFFFu;
-        bestVal = {1.0, 0.0};
-    }
-
-    outIndex[0] = bestIdx;
-    outCoef[0] = bestVal;
-}
-
-// pass3: 係数で割る（非ゼロが無かったら何もしない）
-kernel void norm_apply(
-    device float* outRe     [[buffer(0)]],
-    device float* outIm     [[buffer(1)]],
-    const device uint* idxBuf [[buffer(2)]],
-    const device NormVal* coefBuf [[buffer(3)]],
-    constant uint& total               [[buffer(4)]],
-    uint tid                 [[thread_position_in_grid]]
-) {
-    if (tid >= total) return;
-    if (idxBuf[0] == 0xFFFFFFFFu) return;
-
-    float cr = coefBuf[0].re;
-    float ci = coefBuf[0].im;
-
-    // v / c = v * conj(c) / |c|^2
-    float denom = cr*cr + ci*ci;
-    float re = outRe[tid];
-    float im = outIm[tid];
-
-    float nr = (re*cr + im*ci) / denom;
-    float ni = (im*cr - re*ci) / denom;
-
-    outRe[tid] = nr;
-    outIm[tid] = ni;
-}
-
 inline float2 cmul(float2 a, float2 b) {
     return float2(a.x*b.x - a.y*b.y, a.x*b.y + a.y*b.x);
 }
@@ -206,11 +92,19 @@ inline float2 evalDD(
         uint rb = (row >> shift) & 1u;
         uint cb = (col >> shift) & 1u;
         uint k  = (rb << 1) | cb;
-
         const GPUEdge e = edges[node * 4 + k];
         acc = cmul(acc, float2(e.re, e.im));
-
-        if (e.childIndex == -1) break;
+        if (e.childIndex == -1) {
+            // 残り (levels-1-level) ビットは identity 拡張: 対角のみ acc、非対角は 0
+            uint remaining = levels - 1 - level;
+            if (remaining > 0u) {
+                uint mask = (1u << remaining) - 1u;
+                if ((row & mask) != (col & mask)) {
+                    return float2(0.0, 0.0);
+                }
+            }
+            break;
+        }
         node = e.childIndex;
     }
     return acc;
@@ -228,9 +122,10 @@ inline float2 evalInput(
 ) {
     if (hdr.kind == 2) { // SV
         float2 v = float2(inRe[tid], inIm[tid]);
-        return cmul(float2(hdr.root_re, hdr.root_im), v);
+        return applyRoot ? cmul(float2(hdr.root_re, hdr.root_im), v) : v;
     } else if (hdr.kind == 1) { // QMDD
-        return evalDD(edges, float2(hdr.root_re, hdr.root_im), row, col, hdr.dim);
+        float2 root = applyRoot ? float2(hdr.root_re, hdr.root_im) : float2(1.0, 0.0);
+        return evalDD(edges, root, row, col, hdr.dim);
     } else { // Terminal
         return float2(0.0, 0.0);
     }

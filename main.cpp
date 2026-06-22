@@ -59,17 +59,16 @@ void execute() {
     // qaoa16MQT();
     // amplitudeEstimation18MQT();
     // efficientSU2Ansatz18MQT();
-    qnn18MQT();
+    // qnn18MQT();
     // realAmplitudes18MQT();
     // twoLocalAnsatz18MQT();
     // qftEntangled18MQT();
     // qpeInexact18MQT();
     // randomRotate(13, 200);
-    // shor18MQT();
+    shor18MQT();
     // bench9symml();
 
     // randomCX(3, 5000, true);
-    // Memo::getInstance().printAllEntries();
 }
 
 bool translateAndExecuteQASM(const string& qasm_file) {

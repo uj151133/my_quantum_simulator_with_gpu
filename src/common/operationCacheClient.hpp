@@ -21,7 +21,7 @@ using namespace std;
 
 
 extern "C" {
-    void cacheInsert(graal_isolatethread_t* thread, int64_t key, double real, double imag, int64_t uniqueTableKey);
+    void cacheInsert(graal_isolatethread_t* thread, int64_t key, double magnitude, double angle, int64_t uniqueTableKey);
     int cacheFind(graal_isolatethread_t* thread, int64_t key, void* out);
     void saveCacheToSQLite(graal_isolatethread_t* thread);
 }
