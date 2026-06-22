@@ -10,13 +10,13 @@ int64_t calculation::generateUniqueTableKey(const shared_ptr<QMDDNode>& node) {
             buffer.insert(buffer.end(), rowIdx_bytes, rowIdx_bytes + sizeof(size_t));
             const uint8_t* colIdx_bytes = reinterpret_cast<const uint8_t*>(&colIdx);
             buffer.insert(buffer.end(), colIdx_bytes, colIdx_bytes + sizeof(size_t));
-            double real = edge.weight.real();
-            double imag = edge.weight.imag();
-            const uint8_t* real_bytes = reinterpret_cast<const uint8_t*>(&real);
-            const uint8_t* imag_bytes = reinterpret_cast<const uint8_t*>(&imag);
+            double magnitude = edge.magnitude;
+            double angle = edge.angle;
+            const uint8_t* magnitude_bytes = reinterpret_cast<const uint8_t*>(&magnitude);
+            const uint8_t* angle_bytes = reinterpret_cast<const uint8_t*>(&angle);
 
-            buffer.insert(buffer.end(), real_bytes, real_bytes + sizeof(double));
-            buffer.insert(buffer.end(), imag_bytes, imag_bytes + sizeof(double));
+            buffer.insert(buffer.end(), magnitude_bytes, magnitude_bytes + sizeof(double));
+            buffer.insert(buffer.end(), angle_bytes, angle_bytes + sizeof(double));
 
             const uint8_t* key_bytes = reinterpret_cast<const uint8_t*>(&edge.key_);
             buffer.insert(buffer.end(), key_bytes, key_bytes + sizeof(size_t));

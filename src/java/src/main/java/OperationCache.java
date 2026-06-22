@@ -63,8 +63,8 @@ public class OperationCache {
     }
 
     @CEntryPoint(name = "cacheInsert")
-    public static void nativeInsert(IsolateThread thread, long key, double real, double imag, long uniqueTableKey) {
-        CACHE.put(key, new OperationResult(real, imag, uniqueTableKey));
+    public static void nativeInsert(IsolateThread thread, long key, double magnitude, double angle, long uniqueTableKey) {
+        CACHE.put(key, new OperationResult(magnitude, angle, uniqueTableKey));
     }
 
     public static OperationResult find(long key) {
@@ -78,8 +78,8 @@ public class OperationCache {
             return 0;
         }
 
-        out.writeDouble(0, result.real());
-        out.writeDouble(8, result.imag());
+        out.writeDouble(0, result.magnitude());
+        out.writeDouble(8, result.angle());
         out.writeLong(16, result.uniqueTableKey());
         return 1;
     }
@@ -114,8 +114,8 @@ public class OperationCache {
             Long key = entry.getKey();
             OperationResult result = entry.getValue();
             
-            System.out.printf("Entry %d: Key=%d, Real=%.6f, Imag=%.6f, UniqueTableKey=%d%n", 
-                ++count, key, result.real(), result.imag(), result.uniqueTableKey());
+            System.out.printf("Entry %d: Key=%d, Magnitude=%.6f, Angle=%.6f, UniqueTableKey=%d%n", 
+                ++count, key, result.magnitude(), result.angle(), result.uniqueTableKey());
         }
         
         if (count == 0) {
@@ -149,8 +149,8 @@ public class OperationCache {
                     OperationResult result = entry.getValue();
                     
                     pstmt.setLong(1, key);
-                    pstmt.setDouble(2, result.real());
-                    pstmt.setDouble(3, result.imag());
+                    pstmt.setDouble(2, result.magnitude());
+                    pstmt.setDouble(3, result.angle());
                     pstmt.setLong(4, result.uniqueTableKey());
                     
                     pstmt.executeUpdate();

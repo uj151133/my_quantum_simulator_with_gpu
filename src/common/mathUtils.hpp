@@ -54,7 +54,10 @@ namespace mathUtils {
 
     bool isZERO(const complex<double>& z);
 
-    double normalize(vector<vector<QMDDEdge>>& e, bool& allWeightsAreZero);
+    pair<double, double> toLogPolar(const complex<double>& w);
+    complex<double> toComplex(double magnitude, double angle);
+
+    pair<double, double> normalize(vector<vector<QMDDEdge>>& e, bool& allWeightsAreZero);
 
     QMDDEdge beAuthentic(const QMDDEdge& e, int end);
 

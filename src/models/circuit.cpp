@@ -509,8 +509,8 @@ void QuantumCircuit::normalizeLayer() {
             if (parts.front().type != Type::VOID && parts.front().type != Type::ANKER) {
                 this->layer_[depth].push_back(parts.front().gate.getInitialEdge());
             } else  {
-                this->layer_[depth].push_back(QMDDEdge(1.0));
-            } 
+                this->layer_[depth].push_back(edgeOne);
+            }
             parts.erase(parts.begin());
         }
     }
@@ -1398,7 +1398,11 @@ void QuantumCircuit::addRzz(int qubitIndex1, int qubitIndex2, double phi) {
                 basedIndex >>= 1;
                 // basedIndex <<= 1;
             }
-            partialRzz[i].weight = parity ? exp(i * phi / 2) : exp(-i * phi / 2);
+            const pair<double, double> phase = mathUtils::toLogPolar(
+                parity ? exp(complex<double>(0, phi / 2)) : exp(complex<double>(0, -phi / 2))
+            );
+            partialRzz[i].magnitude = phase.first;
+            partialRzz[i].angle = phase.second;
         }
         customRzz = accumulate(partialRzz.begin() + 1, partialRzz.end(), partialRzz[0], [](const QMDDEdge& accumulated, const QMDDEdge& current) {
             return mathUtils::add(accumulated, current);
@@ -1633,7 +1637,8 @@ void QuantumCircuit::addCU(int controlIndex, int targetIndex, double theta, doub
     }
     array<QMDDEdge, 2> partialCU;
 
-    QMDDEdge U(gate::U(theta, phi, lambda).getInitialEdge().weight * exp(i * gamma), gate::U(theta, phi, lambda).getInitialEdge().getSon());
+    const QMDDEdge& uEdge = gate::U(theta, phi, lambda).getInitialEdge();
+    QMDDEdge U({uEdge.magnitude, uEdge.angle + gamma}, uEdge.getSon());
 
     if (maxIndex == controlIndex) {
         partialCU[0] = braketZero;
@@ -1847,7 +1852,7 @@ void QuantumCircuit::addOracle(int omega) {
     for (auto it = customBrkt.rbegin() + 1; it != customBrkt.rend(); ++it, --depthBrkt) {
         partialBrkt = mathUtils::kron(*it, partialBrkt, depthBrkt);
     }
-    QMDDEdge partialCZ2 = QMDDEdge(-2.0, partialBrkt.key_, SonKind::QMDDNode);
+    QMDDEdge partialCZ2 = QMDDEdge(mathUtils::toLogPolar(-2.0), partialBrkt.key_, SonKind::QMDDNode);
 
     QMDDEdge customCZ = threadPool.submitFiber([&]() { return mathUtils::add(partialCZ1, partialCZ2); }).get();
     if (this->mode_ == "sparse") {
@@ -1874,7 +1879,7 @@ void QuantumCircuit::addDiffuser() {
     for (auto it = customBrkt.rbegin() + 1; it != customBrkt.rend(); ++it, --depthBrkt) {
         partialBrkt = mathUtils::kron(*it, partialBrkt, depthBrkt);
     }
-    QMDDEdge partialCZ2 = QMDDEdge(-2.0, partialBrkt.key_, SonKind::QMDDNode);
+    QMDDEdge partialCZ2 = QMDDEdge(mathUtils::toLogPolar(-2.0), partialBrkt.key_, SonKind::QMDDNode);
 
     QMDDEdge customCZ = threadPool.submitFiber([&]() { return mathUtils::add(partialCZ1, partialCZ2); }).get();
 
@@ -1909,7 +1914,7 @@ void QuantumCircuit::reset(int qubitIndex) {
 
 void QuantumCircuit::globalPhase(double lamda) {
     if (this->mode_ == "sparse") {
-        this->gateQueue_.push(QMDDEdge(exp(i * lamda)));
+        this->gateQueue_.push(QMDDEdge(mathUtils::toLogPolar(exp(i * lamda))));
     }
     return;
 }
@@ -2038,10 +2043,18 @@ int QuantumCircuit::measure(int qubitIndex) {
     double random_value = dist(gen);
 
     if (random_value < p0) {
-        this->finalState_ = QMDDSuite(QMDDEdge(result0.weight * (1.0 / sqrt(p0)), result0.key_, result0.getSon()));
+        this->finalState_ = QMDDSuite(QMDDEdge(
+            mathUtils::toLogPolar(mathUtils::toComplex(result0.magnitude, result0.angle) * (1.0 / sqrt(p0))),
+            result0.key_,
+            result0.getSon()
+        ));
         return 0;
     } else {
-        this->finalState_ = QMDDSuite(QMDDEdge(result1.weight * (1.0 / sqrt(p1)), result1.key_, result1.getSon()));
+        this->finalState_ = QMDDSuite(QMDDEdge(
+            mathUtils::toLogPolar(mathUtils::toComplex(result1.magnitude, result1.angle) * (1.0 / sqrt(p1))),
+            result1.key_,
+            result1.getSon()
+        ));
         return 1;
     }
 }

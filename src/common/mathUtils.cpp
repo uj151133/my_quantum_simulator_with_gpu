@@ -6,12 +6,16 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, bool onFiber, in
     QMDDEdge b = e1;
     if (b.isTerminal) std::swap(a, b);
     if (a.sonKind_ == SonKind::Terminal) {
-        if (a.weight == .0) {
+        if (a.magnitude == -numeric_limits<double>::infinity()) {
             return a;
-        } else if (a.weight == 1.0){
+        } else if (a.magnitude == 0.0 && a.angle == 0.0) {
             return b;
         } else {
-            return QMDDEdge(a.weight * b.weight, b.key_, b.son_);
+            return QMDDEdge(
+                {a.magnitude + b.magnitude, a.angle + b.angle},
+                b.key_,
+                b.son_
+            );
         }
     }
     // cout << "\033[1;34mEntering mul: depth=" << depth << " a.weight=" << a.weight << " b.weight=" << b.weight << "\033[0m" << endl;
@@ -34,7 +38,11 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, bool onFiber, in
         runMulAny2Wrapper(A, B,
                         &outRe, &outIm,
                         &outId, outCoef);
-        return QMDDEdge(complex<double>(outCoef[0], outCoef[1]), outId, make_shared<SVLeaf>(A.dim, outRe, outIm));
+        return QMDDEdge(
+            toLogPolar(complex<double>(outCoef[0], outCoef[1])),
+            outId,
+            make_shared<SVLeaf>(A.dim, outRe, outIm)
+        );
     }
 
     bool concurrency = depth < PARAMETER.parallelism.fiber;
@@ -43,9 +51,14 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, bool onFiber, in
     OperationCacheClient& cache = OperationCacheClient::getInstance();
     if (PARAMETER.cache.alive) {
         if (auto existingEdge = cache.find(operationCacheKey, onFiber)) {
-            if (existingEdge->weight != .0 && existingEdge->key_ != 0) {
-                QMDDEdge result = QMDDEdge(existingEdge->weight * a.weight * b.weight, existingEdge->getSon());
-                return result;
+            if (existingEdge->magnitude != -numeric_limits<double>::infinity() && existingEdge->key_ != 0) {
+                return QMDDEdge(
+                    {
+                        existingEdge->magnitude + a.magnitude + b.magnitude,
+                        existingEdge->angle + a.angle + b.angle
+                    },
+                    existingEdge->getSon()
+                );
             }
         }
     }
@@ -76,8 +89,8 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, bool onFiber, in
                     boost::fibers::async([&, i, j]() -> pair<pair<size_t, size_t>, QMDDEdge> {
                         QMDDEdge answer = edgeZero;
                         for (size_t k = 0; k < 2; k++) {
-                            QMDDEdge p(n0->edges[i][k].weight, n0->edges[i][k].getSon());
-                            QMDDEdge q(n1->edges[k][j].weight, n1->edges[k][j].getSon());
+                            QMDDEdge p({n0->edges[i][k].magnitude, n0->edges[i][k].angle}, n0->edges[i][k].getSon());
+                            QMDDEdge q({n1->edges[k][j].magnitude, n1->edges[k][j].angle}, n1->edges[k][j].getSon());
                             answer = mathUtils::add(answer, mathUtils::mul(p, q, true, depth + 1), depth + 1);
                         }
                         return {{i, j}, answer};
@@ -86,8 +99,8 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, bool onFiber, in
             } else {
                 QMDDEdge answer = edgeZero;
                 for (size_t k = 0; k < 2; k++) {
-                    QMDDEdge p(n0->edges[i][k].weight, n0->edges[i][k].getSon());
-                    QMDDEdge q(n1->edges[k][j].weight, n1->edges[k][j].getSon());
+                    QMDDEdge p({n0->edges[i][k].magnitude, n0->edges[i][k].angle}, n0->edges[i][k].getSon());
+                    QMDDEdge q({n1->edges[k][j].magnitude, n1->edges[k][j].angle}, n1->edges[k][j].getSon());
                     answer = mathUtils::add(answer, mathUtils::mul(p, q, onFiber, depth + 1), depth + 1);
                 }
                 z[i][j] = answer;
@@ -117,12 +130,16 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, bool onFiber, in
     //     }
     // }
 
-    double tmpWeight = normalize(z, allWeightsAreZero);
+    pair<double, double> tmpWeight = normalize(z, allWeightsAreZero);
 
     if (PARAMETER.cache.alive) {
         cache.insert(operationCacheKey, QMDDEdge(tmpWeight, make_shared<QMDDNode>(z)), onFiber);
     }
-    QMDDEdge result = allWeightsAreZero ? edgeZero : QMDDEdge(a.weight * b.weight * tmpWeight, make_shared<QMDDNode>(z));
+
+    QMDDEdge result = allWeightsAreZero ? edgeZero : QMDDEdge(
+        {a.magnitude + b.magnitude + tmpWeight.first, a.angle + b.angle + tmpWeight.second},
+        make_shared<QMDDNode>(z)
+    );
     return result;
 }
 
@@ -213,14 +230,18 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
     QMDDEdge b = e1;
     if (b.isTerminal) std::swap(a, b);
     if (a.isTerminal) {
-        if (a.weight == .0) {
+        if (a.magnitude == -numeric_limits<double>::infinity()) {
             return b;
         } else if (b.isTerminal) {
-            return QMDDEdge(a.weight + b.weight);
+            return QMDDEdge(toLogPolar(toComplex(a.magnitude, a.angle) + toComplex(b.magnitude, b.angle)));
         }
     }
     if (a.key_ == b.key_) {
-        return QMDDEdge(a.weight + b.weight, a.key_, a.son_);
+        return QMDDEdge(
+            toLogPolar(toComplex(a.magnitude, a.angle) + toComplex(b.magnitude, b.angle)),
+            a.key_,
+            a.son_
+        );
     }
     if (depth >= PARAMETER.parallelism.GPU || a.sonKind_ == SonKind::SVLeaf || b.sonKind_ == SonKind::SVLeaf) {
 
@@ -241,7 +262,11 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
         runAddAny2Wrapper(A, B,
                         &outRe, &outIm,
                         &outId, outCoef);
-        return QMDDEdge(complex<double>(outCoef[0], outCoef[1]), outId, make_shared<SVLeaf>(A.dim, outRe, outIm));
+        return QMDDEdge(
+            toLogPolar(complex<double>(outCoef[0], outCoef[1])),
+            outId,
+            make_shared<SVLeaf>(A.dim, outRe, outIm)
+        );
     }
 
     bool concurrency = depth < PARAMETER.parallelism.fiber;
@@ -262,15 +287,27 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
             if (concurrency) {
                 fiberFutures.emplace_back(
                     boost::fibers::async([&, i, j]() -> pair<pair<size_t, size_t>, QMDDEdge> {
-                        QMDDEdge p(a.weight * n0->edges[i][j].weight, n0->edges[i][j].getSon());
-                        QMDDEdge q(b.weight * n1->edges[i][j].weight, n1->edges[i][j].getSon());
+                        QMDDEdge p(
+                            {a.magnitude + n0->edges[i][j].magnitude, a.angle + n0->edges[i][j].angle},
+                            n0->edges[i][j].getSon()
+                        );
+                        QMDDEdge q(
+                            {b.magnitude + n1->edges[i][j].magnitude, b.angle + n1->edges[i][j].angle},
+                            n1->edges[i][j].getSon()
+                        );
                         QMDDEdge r = mathUtils::add(p, q, depth + 1);
                         return {{i, j}, r};
                     })
                 );
             } else {
-                QMDDEdge p(a.weight * n0->edges[i][j].weight, n0->edges[i][j].getSon());
-                QMDDEdge q(b.weight * n1->edges[i][j].weight, n1->edges[i][j].getSon());
+                QMDDEdge p(
+                    {a.magnitude + n0->edges[i][j].magnitude, a.angle + n0->edges[i][j].angle},
+                    n0->edges[i][j].getSon()
+                );
+                QMDDEdge q(
+                    {b.magnitude + n1->edges[i][j].magnitude, b.angle + n1->edges[i][j].angle},
+                    n1->edges[i][j].getSon()
+                );
                 z[i][j] = mathUtils::add(p, q, depth + 1);
             }
         }
@@ -297,7 +334,7 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
     // }
     bool allWeightsAreZero = true;
 
-    double tmpWeight = normalize(z, allWeightsAreZero);
+    pair<double, double> tmpWeight = normalize(z, allWeightsAreZero);
 
     QMDDEdge result = allWeightsAreZero ? edgeZero : QMDDEdge(tmpWeight, make_shared<QMDDNode>(z));
     return result;
@@ -384,12 +421,16 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
 
 QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
     if (e0.isTerminal) {
-        if (e0.weight == .0) {
+        if (e0.magnitude == -numeric_limits<double>::infinity()) {
             return e0;
-        }else if (e0.weight == 1.0) {
+        } else if (e0.magnitude == 0.0 && e0.angle == 0.0) {
             return e1;
         } else {
-            return QMDDEdge(e0.weight * e1.weight, e1.key_, e1.son_);
+            return QMDDEdge(
+                {e0.magnitude + e1.magnitude, e0.angle + e1.angle},
+                e1.key_,
+                e1.son_
+            );
         }
     }
 
@@ -405,7 +446,11 @@ QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
         runKronAny2Wrapper(A, B,
                         &outRe, &outIm,
                         &outId, outCoef);
-        return QMDDEdge(complex<double>(outCoef[0], outCoef[1]), outId, make_shared<SVLeaf>(A.dim * B.dim, outRe, outIm));
+        return QMDDEdge(
+            toLogPolar(complex<double>(outCoef[0], outCoef[1])),
+            outId,
+            make_shared<SVLeaf>(A.dim * B.dim, outRe, outIm)
+        );
     }
     shared_ptr<QMDDNode> n0 = get<shared_ptr<QMDDNode>>(e0.getSon());
 
@@ -431,8 +476,11 @@ QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
 
     bool allWeightsAreZero = true;
     
-    double tmpWeight = normalize(z, allWeightsAreZero);
-    QMDDEdge result = allWeightsAreZero ? edgeZero : QMDDEdge(e0.weight * tmpWeight, make_shared<QMDDNode>(z));
+    pair<double, double> tmpWeight = normalize(z, allWeightsAreZero);
+    QMDDEdge result = allWeightsAreZero ? edgeZero : QMDDEdge(
+        {e0.magnitude + tmpWeight.first, e0.angle + tmpWeight.second},
+        make_shared<QMDDNode>(z)
+    );
     return result;
 }
 
@@ -540,7 +588,7 @@ QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
 
 QMDDEdge mathUtils::dyad(const QMDDEdge& e0, const QMDDEdge& e1) {
     if (e0.isTerminal || e1.isTerminal) {
-        return QMDDEdge(e0.weight * e1.weight);
+        return QMDDEdge({e0.magnitude + e1.magnitude, e0.angle + e1.angle});
     }
     shared_ptr<QMDDNode> n0 = get<shared_ptr<QMDDNode>>(e0.getSon());
     shared_ptr<QMDDNode> n1 = get<shared_ptr<QMDDNode>>(e1.getSon());
@@ -551,7 +599,7 @@ QMDDEdge mathUtils::dyad(const QMDDEdge& e0, const QMDDEdge& e1) {
         }
     }
     QMDDEdge result;
-    result = QMDDEdge(1.0, make_shared<QMDDNode>(z));
+    result = QMDDEdge(toLogPolar(complex<double>(1.0, 0.0)), make_shared<QMDDNode>(z));
     return result;
 }
 
@@ -637,25 +685,51 @@ bool mathUtils::isZERO(const complex<double>& z) {
     return z.real() == .0 && z.imag() == .0;
 }
 
-double mathUtils::normalize(vector<vector<QMDDEdge>>& e, bool& allWeightsAreZero) {
-    double coef = .0;
+pair<double, double> mathUtils::toLogPolar(const complex<double>& w) {
+    if (isZERO(w)) {
+        return {-numeric_limits<double>::infinity(), numeric_limits<double>::quiet_NaN()};
+    }
+    double angle = arg(w);
+    if (!isnan(angle)) {
+        angle = remainder(angle, 2.0 * M_PI);
+    }
+    return {log(abs(w)), angle};
+}
+
+complex<double> mathUtils::toComplex(double magnitude, double angle) {
+    if (magnitude == -numeric_limits<double>::infinity()) {
+        return {0.0, 0.0};
+    }
+    return polar(exp(magnitude), angle);
+}
+
+pair<double, double> mathUtils::normalize(vector<vector<QMDDEdge>>& e, bool& allWeightsAreZero) {
+    allWeightsAreZero = true;
+    pair<double, double> tmpWeight = {
+        -numeric_limits<double>::infinity(),
+        numeric_limits<double>::quiet_NaN()
+    };
+
     for (size_t i = 0; i < 2; ++i) {
         for (size_t j = 0; j < 2; ++j) {
-            coef += norm(e[i][j].weight);
+            if (e[i][j].magnitude == -numeric_limits<double>::infinity()) {
+                continue;
+            }
+
+            allWeightsAreZero = false;
+
+            if (tmpWeight.first == -numeric_limits<double>::infinity()) {
+                tmpWeight = {e[i][j].magnitude, e[i][j].angle};
+                e[i][j].magnitude = 0.0;
+                e[i][j].angle = 0.0;
+            } else {
+                e[i][j].magnitude -= tmpWeight.first;
+                e[i][j].angle = remainder(e[i][j].angle - tmpWeight.second, 2.0 * M_PI);
+            }
         }
     }
-    if (coef == .0) {
-        allWeightsAreZero = true;
-        return .0;
-    }
-    allWeightsAreZero = false;
-    coef = sqrt(coef);
-    for (size_t i = 0; i < 2; ++i) {
-        for (size_t j = 0; j < 2; ++j) {
-            e[i][j].weight /= coef;
-        }
-    }
-    return coef;
+
+    return tmpWeight;
 }
 
 

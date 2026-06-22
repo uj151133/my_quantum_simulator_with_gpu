@@ -355,8 +355,7 @@ extern "C" void runMulAny2Wrapper(
             inImBufB,
             outReBuf,
             outImBuf,
-            outIdBuf,
-            outCoefBuf
+            outIdBuf
         );
 
         if (outRe) { [outReBuf retain]; *outRe = (__bridge void*)outReBuf; }
@@ -429,8 +428,7 @@ extern "C" void runAddAny2Wrapper(
             inImBufB,
             outReBuf,
             outImBuf,
-            outIdBuf,
-            outCoefBuf
+            outIdBuf
         );
 
         if (outRe) { [outReBuf retain]; *outRe = (__bridge void*)outReBuf; }
@@ -501,8 +499,7 @@ extern "C" void runKronAny2Wrapper(
             inImBufB,
             outReBuf,
             outImBuf,
-            outIdBuf,
-            outCoefBuf
+            outIdBuf
         );
 
         if (outRe) { [outReBuf retain]; *outRe = (__bridge void*)outReBuf; }
