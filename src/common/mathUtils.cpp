@@ -57,8 +57,7 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, bool onFiber, in
     shared_ptr<QMDDNode> n1 = get<shared_ptr<QMDDNode>>(b.getSon());
 
     vector<vector<QMDDEdge>> z(2, vector<QMDDEdge>(2, edgeZero));
-    complex<double> tmpWeight = .0;
-    bool allWeightsAreZero = true;
+    
 
     vector<boost::fibers::future<pair<pair<size_t, size_t>, QMDDEdge>>> fiberFutures;
 
@@ -98,26 +97,28 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, bool onFiber, in
     }
 
 
-
+    bool allWeightsAreZero = false;
     for (auto& ff : fiberFutures) {
         const auto& [indices, result] = ff.get();
         const auto& [i, j] = indices;
         z[i][j] = result;
     }
 
-    for (size_t i = 0; i < 2; i++) {
-        for (size_t j = 0; j < 2; j++) {
-            if (z[i][j].weight != .0) {
-                allWeightsAreZero = false;
-                if (tmpWeight == .0) {
-                    tmpWeight = z[i][j].weight;
-                    z[i][j].weight = 1.0;
-                } else {
-                    z[i][j].weight /= tmpWeight;
-                }
-            }
-        }
-    }
+    // for (size_t i = 0; i < 2; i++) {
+    //     for (size_t j = 0; j < 2; j++) {
+    //         if (z[i][j].weight != .0) {
+    //             allWeightsAreZero = false;
+    //             if (tmpWeight == .0) {
+    //                 tmpWeight = z[i][j].weight;
+    //                 z[i][j].weight = 1.0;
+    //             } else {
+    //                 z[i][j].weight /= tmpWeight;
+    //             }
+    //         }
+    //     }
+    // }
+
+    double tmpWeight = normalize(z, allWeightsAreZero);
 
     if (PARAMETER.cache.alive) {
         cache.insert(operationCacheKey, QMDDEdge(tmpWeight, make_shared<QMDDNode>(z)), onFiber);
@@ -249,9 +250,8 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
 
     shared_ptr<QMDDNode> n0 = get<shared_ptr<QMDDNode>>(a.getSon());
     shared_ptr<QMDDNode> n1 = get<shared_ptr<QMDDNode>>(b.getSon());
-    bool allWeightsAreZero = true;
     vector<vector<QMDDEdge>> z(2, vector<QMDDEdge>(2, edgeZero));
-    complex<double> tmpWeight = .0;
+
 
     vector<boost::fibers::future<pair<pair<size_t, size_t>, QMDDEdge>>> fiberFutures;
 
@@ -284,19 +284,22 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
         z[i][j] = result;
     }
 
-    for (size_t i = 0; i < 2; i++) {
-        for (size_t j = 0; j < 2; j++) {
-            if (z[i][j].weight != .0) {
-                allWeightsAreZero = false;
-                if (tmpWeight == .0) {
-                    tmpWeight = z[i][j].weight;
-                    z[i][j].weight = 1.0;
-                } else {
-                    z[i][j].weight /= tmpWeight;
-                }
-            }
-        }
-    }
+    // for (size_t i = 0; i < 2; i++) {
+    //     for (size_t j = 0; j < 2; j++) {
+    //         if (z[i][j].weight != .0) {
+    //             allWeightsAreZero = false;
+    //             if (tmpWeight == .0) {
+    //                 tmpWeight = z[i][j].weight;
+    //                 z[i][j].weight = 1.0;
+    //             } else {
+    //                 z[i][j].weight /= tmpWeight;
+    //             }
+    //         }
+    //     }
+    // }
+    bool allWeightsAreZero = false;
+
+    double tmpWeight = normalize(z, allWeightsAreZero);
 
     QMDDEdge result = allWeightsAreZero ? edgeZero : QMDDEdge(tmpWeight, make_shared<QMDDNode>(z));
     return result;
@@ -412,27 +415,28 @@ QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
     if (!n0) { std::cerr << "kron: n0 is null (key=" << e0.key_ << ", weight= " << e0.weight << ")\n"; }
 
     vector<vector<QMDDEdge>> z(2, vector<QMDDEdge>(2));
-    complex<double> tmpWeight = .0;
-    bool allWeightsAreZero = true;
 
     for (size_t i = 0; i < 2; i++) {
         for (size_t j = 0; j < 2; j++) {
             z[i][j] = mathUtils::kron(n0->edges[i][j], e1, depth + 1);
 
-            if (z[i][j].weight != .0) {
-                allWeightsAreZero = false;
-                if (tmpWeight == .0) {
-                    tmpWeight = z[i][j].weight;
-                    z[i][j].weight = 1.0;
-                }else if (tmpWeight != .0) {
-                    z[i][j].weight /= tmpWeight;
-                } else {
-                    cout << "⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️" << endl;
-                }
-            }
+            // if (z[i][j].weight != .0) {
+            //     allWeightsAreZero = false;
+            //     if (tmpWeight == .0) {
+            //         tmpWeight = z[i][j].weight;
+            //         z[i][j].weight = 1.0;
+            //     }else if (tmpWeight != .0) {
+            //         z[i][j].weight /= tmpWeight;
+            //     } else {
+            //         cout << "⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️" << endl;
+            //     }
+            // }
         }
     }
 
+    bool allWeightsAreZero = false;
+    
+    double tmpWeight = normalize(z, allWeightsAreZero);
     QMDDEdge result = allWeightsAreZero ? edgeZero : QMDDEdge(e0.weight * tmpWeight, make_shared<QMDDNode>(z));
     return result;
 }
@@ -637,6 +641,28 @@ bool mathUtils::isMultiplePI(double theta, double eps) {
 bool mathUtils::isZERO(const complex<double>& z) {
     return z.real() == .0 && z.imag() == .0;
 }
+
+double mathUtils::normalize(vector<vector<QMDDEdge>>& e, bool& allWeightsAreZero) {
+    double coef = .0;
+    for (size_t i = 0; i < 2; ++i) {
+        for (size_t j = 0; j < 2; ++j) {
+            coef += norm(e[i][j].weight);
+        }
+    }
+    if (coef == .0) {
+        allWeightsAreZero = true;
+        return .0;
+    }
+    allWeightsAreZero = false;
+    coef = sqrt(coef);
+    for (size_t i = 0; i < 2; ++i) {
+        for (size_t j = 0; j < 2; ++j) {
+            e[i][j].weight /= coef;
+        }
+    }
+    return coef;
+}
+
 
 QMDDEdge mathUtils::beAuthentic(const QMDDEdge& e, int end) {
     QMDDEdge out = e;
