@@ -47,7 +47,7 @@ QMDDEdge::QMDDEdge(complex<double> w, int64_t key, SonKind kind)
         if (this->sonKind_ == SonKind::QMDDNode) {
             this->son_ = UniqueTable::getInstance().find(this->key_);
         } else {
-            this->son_ = Memo::getInstance().find(this->key_);
+            throw std::runtime_error("QMDDEdge(w, key, SonKind::SVLeaf) is unsupported; pass shared_ptr<SVLeaf> instead");
         }
     }
     this->calculateDepth();
@@ -60,7 +60,7 @@ QMDDEdge::QMDDEdge(double w, int64_t key, SonKind kind)
     if (this->sonKind_ == SonKind::QMDDNode) {
         this->son_ = UniqueTable::getInstance().find(this->key_);
     } else {
-        this->son_ = Memo::getInstance().find(this->key_);
+        throw std::runtime_error("QMDDEdge(w, key, SonKind::SVLeaf) is unsupported; pass shared_ptr<SVLeaf> instead");
     }
     this->calculateDepth();
     // cout << "Edge created with weight: " << weight << " and key_: " << key_ << " and isTerminal: " << isTerminal << endl;
@@ -278,7 +278,6 @@ void QMDDEdge::Noah() {
             if (!child) throw std::runtime_error("SVLeaf child is null");
             this->sonKind_ = SonKind::SVLeaf;
             this->isTerminal = false;
-            Memo::getInstance().insert(this->key_, child);
             this->calculateDepth();
         }
     }, this->son_);

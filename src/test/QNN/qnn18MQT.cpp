@@ -131,10 +131,6 @@ void qnn18MQT() {
     qc.addRy(17, (5.076820509783505));
     qc.addBarrier();
 
-
-    // cout << qc.finalState_ << endl;
-
-    // Memo::getInstance().printAllEntries();
     
     meas[0] = qc.measure(0);
     meas[1] = qc.measure(1);

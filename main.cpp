@@ -69,7 +69,6 @@ void execute() {
     // bench9symml();
 
     // randomCX(3, 5000, true);
-    // Memo::getInstance().printAllEntries();
 }
 
 bool translateAndExecuteQASM(const string& qasm_file) {

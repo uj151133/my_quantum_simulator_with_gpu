@@ -34,7 +34,6 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, bool onFiber, in
         runMulAny2Wrapper(A, B,
                         &outRe, &outIm,
                         &outId, outCoef);
-        // std::cerr << "GPU mul result: outId=" << outId << " outCoef=(" << outCoef[0] << "," << outCoef[1] << ")\n";
         return QMDDEdge(complex<double>(outCoef[0], outCoef[1]), outId, make_shared<SVLeaf>(A.dim, outRe, outIm));
     }
 
@@ -97,7 +96,7 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, bool onFiber, in
     }
 
 
-    bool allWeightsAreZero = false;
+    bool allWeightsAreZero = true;
     for (auto& ff : fiberFutures) {
         const auto& [indices, result] = ff.get();
         const auto& [i, j] = indices;
@@ -242,7 +241,6 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
         runAddAny2Wrapper(A, B,
                         &outRe, &outIm,
                         &outId, outCoef);
-        std::cerr << "GPU add result: outId=" << outId << " outCoef=(" << outCoef[0] << "," << outCoef[1] << ")\n";
         return QMDDEdge(complex<double>(outCoef[0], outCoef[1]), outId, make_shared<SVLeaf>(A.dim, outRe, outIm));
     }
 
@@ -297,7 +295,7 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
     //         }
     //     }
     // }
-    bool allWeightsAreZero = false;
+    bool allWeightsAreZero = true;
 
     double tmpWeight = normalize(z, allWeightsAreZero);
 
@@ -407,12 +405,9 @@ QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
         runKronAny2Wrapper(A, B,
                         &outRe, &outIm,
                         &outId, outCoef);
-        // std::cerr << "GPU kron result: outId=" << outId << " outCoef=(" << outCoef[0] << "," << outCoef[1] << ")\n";
         return QMDDEdge(complex<double>(outCoef[0], outCoef[1]), outId, make_shared<SVLeaf>(A.dim * B.dim, outRe, outIm));
     }
     shared_ptr<QMDDNode> n0 = get<shared_ptr<QMDDNode>>(e0.getSon());
-
-    if (!n0) { std::cerr << "kron: n0 is null (key=" << e0.key_ << ", weight= " << e0.weight << ")\n"; }
 
     vector<vector<QMDDEdge>> z(2, vector<QMDDEdge>(2));
 
@@ -434,7 +429,7 @@ QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
         }
     }
 
-    bool allWeightsAreZero = false;
+    bool allWeightsAreZero = true;
     
     double tmpWeight = normalize(z, allWeightsAreZero);
     QMDDEdge result = allWeightsAreZero ? edgeZero : QMDDEdge(e0.weight * tmpWeight, make_shared<QMDDNode>(z));

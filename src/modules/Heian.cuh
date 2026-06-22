@@ -94,22 +94,6 @@ __global__ void kron_any2_kernel(
     double* outRe, double* outIm
 );
 
-__global__ void find_first_nonzero_kernel(
-    const double* re, const double* im, uint32_t total, unsigned int* firstIdx
-);
-
-__global__ void write_coef_kernel(
-    const double* re, const double* im,
-    const unsigned int* firstIdx,
-    double* coefRe, double* coefIm
-);
-
-__global__ void norm_apply_kernel(
-    double* re, double* im, uint32_t total,
-    const unsigned int* firstIdx,
-    const double* coefRe, const double* coefIm
-);
-
 __global__ void hash_serial_kernel(
     const double* re, const double* im, uint32_t total, uint64_t* outId
 );
@@ -121,8 +105,7 @@ void run_postprocess(
     double* dOutRe,
     double* dOutIm,
     uint32_t total,
-    int64_t* outId,
-    double* outCoef
+    int64_t* outId
 );
 
 } // namespace heian_cuda
