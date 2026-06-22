@@ -47,6 +47,9 @@ namespace mathUtils {
     complex<double> cot(complex<double> theta);
 
     double sumOfSquares(const vector<complex<double>>& vec);
+    double logSumExp(double logA, double logB);
+    double logWeightNormSq(double scaledNormSq, double logScale);
+    double probabilityFromLogWeights(double logP0, double logP1);
     vector<int> createRange(int start, int end);
     int findCoprimeBelow(int N);
 

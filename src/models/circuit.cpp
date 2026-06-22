@@ -2031,27 +2031,38 @@ int QuantumCircuit::measure(int qubitIndex) {
     QMDDEdge result0 = threadPool.submitFiber([&]() { return mathUtils::mul(m0.getInitialEdge(), this->finalState_.getInitialEdge()); }).get();
     QMDDEdge result1 = threadPool.submitFiber([&]() { return mathUtils::mul(m1.getInitialEdge(), this->finalState_.getInitialEdge()); }).get();
 
-    vector<complex<double>> v0 = result0.openKet();
-    vector<complex<double>> v1 = result1.openKet();
+    double logScale0 = 0.0;
+    double logScale1 = 0.0;
+    vector<complex<double>> v0 = result0.openKet(&logScale0);
+    vector<complex<double>> v1 = result1.openKet(&logScale1);
 
-    double p0 = mathUtils::sumOfSquares(v0);
-    double p1 = mathUtils::sumOfSquares(v1);
+    const double scaledP0 = mathUtils::sumOfSquares(v0);
+    const double scaledP1 = mathUtils::sumOfSquares(v1);
+    const double logP0 = mathUtils::logWeightNormSq(scaledP0, logScale0);
+    const double logP1 = mathUtils::logWeightNormSq(scaledP1, logScale1);
+    const double prob0 = mathUtils::probabilityFromLogWeights(logP0, logP1);
 
     random_device rd;
     mt19937 gen(rd());
     uniform_real_distribution<> dist(0.0, 1.0);
-    double random_value = dist(gen);
+    const double random_value = dist(gen);
 
-    if (random_value < p0) {
+    if (random_value < prob0) {
+        if (scaledP0 <= 0.0) {
+            throw runtime_error("measure: zero probability branch selected");
+        }
         this->finalState_ = QMDDSuite(QMDDEdge(
-            mathUtils::toLogPolar(mathUtils::toComplex(result0.magnitude, result0.angle) * (1.0 / sqrt(p0))),
+            {result0.magnitude - logScale0 - 0.5 * std::log(scaledP0), result0.angle},
             result0.key_,
             result0.getSon()
         ));
         return 0;
     } else {
+        if (scaledP1 <= 0.0) {
+            throw runtime_error("measure: zero probability branch selected");
+        }
         this->finalState_ = QMDDSuite(QMDDEdge(
-            mathUtils::toLogPolar(mathUtils::toComplex(result1.magnitude, result1.angle) * (1.0 / sqrt(p1))),
+            {result1.magnitude - logScale1 - 0.5 * std::log(scaledP1), result1.angle},
             result1.key_,
             result1.getSon()
         ));

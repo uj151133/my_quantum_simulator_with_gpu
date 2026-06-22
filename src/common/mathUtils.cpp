@@ -652,6 +652,31 @@ double mathUtils::sumOfSquares(const vector<complex<double>>& vec) {
     });
 }
 
+double mathUtils::logSumExp(double logA, double logB) {
+    if (!std::isfinite(logA) || logA == -numeric_limits<double>::infinity()) return logB;
+    if (!std::isfinite(logB) || logB == -numeric_limits<double>::infinity()) return logA;
+    if (logA > logB) return logA + std::log1p(std::exp(logB - logA));
+    return logB + std::log1p(std::exp(logA - logB));
+}
+
+double mathUtils::logWeightNormSq(double scaledNormSq, double logScale) {
+    if (scaledNormSq <= 0.0) {
+        return -numeric_limits<double>::infinity();
+    }
+    if (logScale == 0.0) {
+        return std::log(scaledNormSq);
+    }
+    return 2.0 * logScale + std::log(scaledNormSq);
+}
+
+double mathUtils::probabilityFromLogWeights(double logP0, double logP1) {
+    const double logSum = logSumExp(logP0, logP1);
+    if (!std::isfinite(logSum) || logSum == -numeric_limits<double>::infinity()) {
+        return 0.0;
+    }
+    return std::exp(logP0 - logSum);
+}
+
 vector<int> mathUtils::createRange(int start, int end) {
     int min = std::min(start, end);
     int max = std::max(start, end);

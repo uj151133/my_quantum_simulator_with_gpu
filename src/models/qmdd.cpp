@@ -12,6 +12,34 @@ double unity(double angle) {
     return std::remainder(angle, 2.0 * M_PI);
 }
 
+bool isZeroEdge(const QMDDEdge& edge) {
+    return edge.magnitude == -std::numeric_limits<double>::infinity();
+}
+
+void addLogPolarContribution(
+    vector<complex<double>>& result,
+    double& maxLog,
+    size_t idx,
+    double logMag,
+    double angle
+) {
+    if (logMag == -std::numeric_limits<double>::infinity()) return;
+    if (std::isnan(angle)) return;
+
+    if (maxLog == -std::numeric_limits<double>::infinity()) {
+        maxLog = logMag;
+    } else if (logMag > maxLog) {
+        const double scale = std::exp(maxLog - logMag);
+        for (auto& c : result) {
+            c *= scale;
+        }
+        maxLog = logMag;
+    }
+
+    const double w = std::exp(logMag - maxLog);
+    result[idx] += std::polar(w, angle);
+}
+
 } // namespace
 
 /////////////////////////////////////
@@ -53,17 +81,6 @@ SonVariant QMDDEdge::getSon() const {
 
 namespace {
 
-complex<double> edgeCoeff(const QMDDEdge& edge) {
-    if (edge.magnitude == -std::numeric_limits<double>::infinity()) {
-        return {0.0, 0.0};
-    }
-    return polar(exp(edge.magnitude), edge.angle);
-}
-
-bool isZeroEdge(const QMDDEdge& edge) {
-    return edge.magnitude == -std::numeric_limits<double>::infinity();
-}
-
 vector<complex<double>> readKetFromSVLeaf(const shared_ptr<SVLeaf>& leaf) {
     if (!leaf) throw runtime_error("readKetFromSVLeaf: leaf is null");
     const size_t dim = leaf->dim;
@@ -87,16 +104,23 @@ vector<complex<double>> readKetFromSVLeaf(const shared_ptr<SVLeaf>& leaf) {
 
 struct KetTask {
     QMDDEdge edge;
-    complex<double> prefix;
+    double logMag;
+    double angle;
     size_t base;
     size_t span;
 };
 
 } // namespace
 
-vector<complex<double>> QMDDEdge::openKet() {
+vector<complex<double>> QMDDEdge::openKet(double* outLogScale) const {
     if (this->isTerminal) {
-        return {edgeCoeff(*this)};
+        if (outLogScale) {
+            *outLogScale = isZeroEdge(*this) ? -std::numeric_limits<double>::infinity() : this->magnitude;
+        }
+        if (isZeroEdge(*this)) {
+            return {{0.0, 0.0}};
+        }
+        return {std::polar(1.0, this->angle)};
     }
 
     if (this->depth < 0) {
@@ -105,19 +129,25 @@ vector<complex<double>> QMDDEdge::openKet() {
 
     const size_t dim = static_cast<size_t>(1) << static_cast<size_t>(this->depth);
     vector<complex<double>> result(dim, {0.0, 0.0});
+    double maxLog = -std::numeric_limits<double>::infinity();
 
     stack<KetTask> st;
-    st.push(KetTask{*this, {1.0, 0.0}, 0, dim});
+    st.push(KetTask{*this, 0.0, 0.0, 0, dim});
 
     while (!st.empty()) {
         KetTask task = st.top();
         st.pop();
 
         const QMDDEdge& edge = task.edge;
-        const complex<double> prefix = task.prefix * edgeCoeff(edge);
+        if (isZeroEdge(edge)) {
+            continue;
+        }
+
+        const double nextLog = task.logMag + edge.magnitude;
+        const double nextAngle = unity(task.angle + edge.angle);
 
         if (edge.isTerminal) {
-            result[task.base] += prefix;
+            addLogPolarContribution(result, maxLog, task.base, nextLog, nextAngle);
             continue;
         }
 
@@ -129,7 +159,14 @@ vector<complex<double>> QMDDEdge::openKet() {
                 throw runtime_error("openKet: SVLeaf dim mismatch");
             }
             for (size_t i = 0; i < task.span; ++i) {
-                result[task.base + i] += prefix * ket[i];
+                const complex<double>& amp = ket[i];
+                if (amp == complex<double>(0.0, 0.0)) continue;
+                const double leafLog = std::log(std::abs(amp));
+                const double leafAngle = std::arg(amp);
+                addLogPolarContribution(
+                    result, maxLog, task.base + i,
+                    nextLog + leafLog, unity(nextAngle + leafAngle)
+                );
             }
             continue;
         }
@@ -154,8 +191,22 @@ vector<complex<double>> QMDDEdge::openKet() {
         }
 
         const size_t half = task.span / 2;
-        st.push(KetTask{node->edges[1][0], prefix, task.base + half, half});
-        st.push(KetTask{node->edges[0][0], prefix, task.base, half});
+        st.push(KetTask{node->edges[1][0], nextLog, nextAngle, task.base + half, half});
+        st.push(KetTask{node->edges[0][0], nextLog, nextAngle, task.base, half});
+    }
+
+    if (outLogScale) {
+        *outLogScale = maxLog;
+    }
+
+    if (maxLog > -std::numeric_limits<double>::infinity() && maxLog > -700.0) {
+        const double scale = std::exp(maxLog);
+        for (auto& c : result) {
+            c *= scale;
+        }
+        if (outLogScale) {
+            *outLogScale = 0.0;
+        }
     }
 
     return result;

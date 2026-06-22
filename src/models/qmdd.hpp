@@ -66,7 +66,7 @@ struct QMDDEdge{
     QMDDEdge(const pair<double, double>& polar, int64_t key, SonKind kind);
     QMDDEdge(const QMDDEdge& other) = default;
     SonVariant getSon() const;
-    vector<complex<double>> openKet();
+    vector<complex<double>> openKet(double* outLogScale = nullptr) const;
     ~QMDDEdge() = default;
     QMDDEdge& operator=(const QMDDEdge& other) = default;
     bool operator==(const QMDDEdge& other) const;
