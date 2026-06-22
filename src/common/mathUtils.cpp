@@ -96,7 +96,7 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, bool onFiber, in
     }
 
 
-    bool allWeightsAreZero = true;
+    
     for (auto& ff : fiberFutures) {
         const auto& [indices, result] = ff.get();
         const auto& [i, j] = indices;
@@ -116,8 +116,8 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, bool onFiber, in
     //         }
     //     }
     // }
-
-    double tmpWeight = normalize(z, allWeightsAreZero);
+    bool allWeightsAreZero = true;
+    complex<double> tmpWeight = normalize(z, allWeightsAreZero);
 
     if (PARAMETER.cache.alive) {
         cache.insert(operationCacheKey, QMDDEdge(tmpWeight, make_shared<QMDDNode>(z)), onFiber);
@@ -297,7 +297,7 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
     // }
     bool allWeightsAreZero = true;
 
-    double tmpWeight = normalize(z, allWeightsAreZero);
+    complex<double> tmpWeight = normalize(z, allWeightsAreZero);
 
     QMDDEdge result = allWeightsAreZero ? edgeZero : QMDDEdge(tmpWeight, make_shared<QMDDNode>(z));
     return result;
@@ -431,7 +431,7 @@ QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
 
     bool allWeightsAreZero = true;
     
-    double tmpWeight = normalize(z, allWeightsAreZero);
+    complex<double> tmpWeight = normalize(z, allWeightsAreZero);
     QMDDEdge result = allWeightsAreZero ? edgeZero : QMDDEdge(e0.weight * tmpWeight, make_shared<QMDDNode>(z));
     return result;
 }
@@ -637,22 +637,36 @@ bool mathUtils::isZERO(const complex<double>& z) {
     return z.real() == .0 && z.imag() == .0;
 }
 
-double mathUtils::normalize(vector<vector<QMDDEdge>>& e, bool& allWeightsAreZero) {
-    double coef = .0;
-    for (size_t i = 0; i < 2; ++i) {
-        for (size_t j = 0; j < 2; ++j) {
-            coef += norm(e[i][j].weight);
-        }
-    }
-    if (coef == .0) {
-        allWeightsAreZero = true;
-        return .0;
-    }
-    allWeightsAreZero = false;
-    coef = sqrt(coef);
-    for (size_t i = 0; i < 2; ++i) {
-        for (size_t j = 0; j < 2; ++j) {
-            e[i][j].weight /= coef;
+complex <double> mathUtils::normalize(vector<vector<QMDDEdge>>& e, bool& allWeightsAreZero) {
+    complex<double> coef = .0;
+    // for (size_t i = 0; i < 2; ++i) {
+    //     for (size_t j = 0; j < 2; ++j) {
+    //         coef += norm(e[i][j].weight);
+    //     }
+    // }
+    // if (coef == .0) {
+    //     allWeightsAreZero = true;
+    //     return .0;
+    // }
+    // allWeightsAreZero = false;
+    // coef = sqrt(coef);
+    // for (size_t i = 0; i < 2; ++i) {
+    //     for (size_t j = 0; j < 2; ++j) {
+    //         e[i][j].weight /= coef;
+    //     }
+    // }
+    allWeightsAreZero = true;
+    for (size_t i = 0; i < 2; i++) {
+        for (size_t j = 0; j < 2; j++) {
+            if (e[i][j].weight != .0) {
+                allWeightsAreZero = false;
+                if (coef == .0) {
+                    coef = e[i][j].weight;
+                    e[i][j].weight = 1.0;
+                } else {
+                    e[i][j].weight /= coef;
+                }
+            }
         }
     }
     return coef;

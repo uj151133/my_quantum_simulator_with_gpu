@@ -54,7 +54,7 @@ namespace mathUtils {
 
     bool isZERO(const complex<double>& z);
 
-    double normalize(vector<vector<QMDDEdge>>& e, bool& allWeightsAreZero);
+    complex<double> normalize(vector<vector<QMDDEdge>>& e, bool& allWeightsAreZero);
 
     QMDDEdge beAuthentic(const QMDDEdge& e, int end);
 
