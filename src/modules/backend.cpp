@@ -1,5 +1,6 @@
 #include "backend.hpp"
 #include "../common/mathUtils.hpp"
+#include <cstdio>
 
 namespace {
 
@@ -89,6 +90,63 @@ GPUInput flattenQMDD(const QMDDEdge& root) {
     return out;
 }
 
+// === DEBUG: SVLeaf の実部・虚部が両方とも全ゼロになっていないか検査する ============
+// 1 にすると検査有効。GPU->host コピーが入るので調査が終わったら 0 に戻すこと。
+#ifndef SVLEAF_ZERO_CHECK
+#define SVLEAF_ZERO_CHECK 1
+#endif
+
+#if SVLEAF_ZERO_CHECK
+static bool bufferIsAllZero(void* handle, size_t total) {
+    if (!handle || total == 0) return false;
+
+    // まず先頭だけサンプル走査（普通のバッファはここで非ゼロが見つかり即終了）。
+    const size_t sample = total < 4096 ? total : 4096;
+    std::vector<float> host(sample, 0.0f);
+    if (!copyGpuBufferToHostFloat(handle, host.data(), sample)) {
+        // コピーできない場合はゼロ判定しない（誤検知防止）
+        return false;
+    }
+    for (size_t i = 0; i < sample; ++i) {
+        if (host[i] != 0.0f) return false;
+    }
+    if (sample == total) return true;
+
+    // サンプルが全ゼロのときだけ全体を厳密確認。
+    host.assign(total, 0.0f);
+    if (!copyGpuBufferToHostFloat(handle, host.data(), total)) return false;
+    for (size_t i = 0; i < total; ++i) {
+        if (host[i] != 0.0f) return false;
+    }
+    return true;
+}
+
+static void warnIfZeroSVLeaf(const char* where, const shared_ptr<SVLeaf>& leaf) {
+    const size_t dim = leaf->dim;
+    if (dim == 0) return;
+    const size_t total = dim * dim;
+
+    // まず実部だけ確認。実部に非ゼロがあれば「零行列」ではないので即終了（虚部コピー不要）。
+    if (!bufferIsAllZero(leaf->reBuf, total)) return;
+    // 実部が全ゼロのときだけ虚部を確認。
+    if (!bufferIsAllZero(leaf->imBuf, total)) return;
+
+    // ここに来たら実部・虚部とも全ゼロ。点滅＋白文字／赤背景で目立たせる。
+    fprintf(stderr,
+        "\033[5;1;97;41m"
+        "######## ZERO SVLeaf DETECTED @%s "
+        "leaf=%p re=%p im=%p dim=%zu use_count=%ld ########"
+        "\033[0m\n",
+        where,
+        static_cast<void*>(leaf.get()),
+        leaf->reBuf,
+        leaf->imBuf,
+        dim,
+        leaf.use_count());
+    fflush(stderr);
+}
+#endif // SVLEAF_ZERO_CHECK
+
 GPUInput wrapSV(const QMDDEdge& root) {
 
     GPUInput out;
@@ -99,6 +157,11 @@ GPUInput wrapSV(const QMDDEdge& root) {
     if (!leaf) {
         throw runtime_error("wrapSVEdge: edge does not reference SVLeaf.");
     }
+
+#if SVLEAF_ZERO_CHECK
+    warnIfZeroSVLeaf("wrapSV", leaf);
+#endif
+
     out.dim = static_cast<uint32_t>(leaf->dim);
 
     out.sv.reHandle = leaf->reBuf;
