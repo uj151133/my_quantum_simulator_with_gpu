@@ -1,6 +1,7 @@
 #include "backend.hpp"
 #include "../common/mathUtils.hpp"
 #include <cstdio>
+#include <cstdlib>
 
 namespace {
 
@@ -91,9 +92,10 @@ GPUInput flattenQMDD(const QMDDEdge& root) {
 }
 
 // === DEBUG: SVLeaf の実部・虚部が両方とも全ゼロになっていないか検査する ============
-// 1 にすると検査有効。GPU->host コピーが入るので調査が終わったら 0 に戻すこと。
+// 1 にすると検査有効。GPU->host コピーが毎回入って非常に重い（マシンが落ちる）ので、
+// 原因特定済みの今は 0（無効）。再調査したいときだけ 1 に戻すこと。
 #ifndef SVLEAF_ZERO_CHECK
-#define SVLEAF_ZERO_CHECK 1
+#define SVLEAF_ZERO_CHECK 0
 #endif
 
 #if SVLEAF_ZERO_CHECK
@@ -121,7 +123,11 @@ static bool bufferIsAllZero(void* handle, size_t total) {
     return true;
 }
 
-static void warnIfZeroSVLeaf(const char* where, const shared_ptr<SVLeaf>& leaf) {
+static void warnIfZeroSVLeaf(const char* where, const QMDDEdge& root, const shared_ptr<SVLeaf>& leaf) {
+    // 重みがゼロ（zero edge）なら中身が全ゼロでも正常（疎ブロック）なので無視。
+    // 「重みは非ゼロなのに中身が全ゼロ」= 正規化的にあり得ない矛盾だけを拾う。
+    if (isZeroEdge(root)) return;
+
     const size_t dim = leaf->dim;
     if (dim == 0) return;
     const size_t total = dim * dim;
@@ -131,19 +137,23 @@ static void warnIfZeroSVLeaf(const char* where, const shared_ptr<SVLeaf>& leaf) 
     // 実部が全ゼロのときだけ虚部を確認。
     if (!bufferIsAllZero(leaf->imBuf, total)) return;
 
-    // ここに来たら実部・虚部とも全ゼロ。点滅＋白文字／赤背景で目立たせる。
+    // ここに来たら「重み非ゼロなのに中身全ゼロ」= 正規化的にあり得ない矛盾。
+    // 最初の1件で即停止する（フラッド＆過負荷でマシンが落ちるのを防ぐ）。
+    // 直前の stdout の "Gate Idx: N" がそのまま犯人ゲート。
     fprintf(stderr,
         "\033[5;1;97;41m"
-        "######## ZERO SVLeaf DETECTED @%s "
-        "leaf=%p re=%p im=%p dim=%zu use_count=%ld ########"
+        "######## ZERO-BUFFER w/ NONZERO WEIGHT @%s "
+        "mag=%g angle=%g leaf=%p re=%p im=%p dim=%zu use_count=%ld ######## (aborting)"
         "\033[0m\n",
         where,
+        root.magnitude, root.angle,
         static_cast<void*>(leaf.get()),
         leaf->reBuf,
         leaf->imBuf,
         dim,
         leaf.use_count());
     fflush(stderr);
+    std::abort();
 }
 #endif // SVLEAF_ZERO_CHECK
 
@@ -159,7 +169,7 @@ GPUInput wrapSV(const QMDDEdge& root) {
     }
 
 #if SVLEAF_ZERO_CHECK
-    warnIfZeroSVLeaf("wrapSV", leaf);
+    warnIfZeroSVLeaf("wrapSV", root, leaf);
 #endif
 
     out.dim = static_cast<uint32_t>(leaf->dim);

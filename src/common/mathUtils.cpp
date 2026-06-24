@@ -1,4 +1,28 @@
 #include "mathUtils.hpp"
+#include <cstdio>
+#include <atomic>
+
+// === DEBUG: GPU 演算結果のうち「全ゼロ行列（=ゼロエッジ）」の割合を数える ===
+// デバイスコピーは行わず outCoef だけを見るので、ほぼ無コスト。
+#ifndef GPU_ZERO_STAT
+#define GPU_ZERO_STAT 1
+#endif
+#if GPU_ZERO_STAT
+static std::atomic<uint64_t> g_gpuOps{0};
+static std::atomic<uint64_t> g_gpuZero{0};
+// coefRe/coefIm は wrapper が返す最終エッジ重み（線形）。両方0＝結果が全ゼロ行列（ゼロエッジ）。
+static void dbgCountGpuResult(double coefRe, double coefIm) {
+    const uint64_t n = ++g_gpuOps;
+    if (coefRe == 0.0 && coefIm == 0.0) ++g_gpuZero;
+    if (n % 2000 == 0) {
+        const uint64_t z = g_gpuZero.load();
+        fprintf(stderr, "[gpu-zero-stat] ops=%llu zero=%llu (%.1f%%)\n",
+                (unsigned long long)n, (unsigned long long)z,
+                100.0 * (double)z / (double)n);
+        fflush(stderr);
+    }
+}
+#endif
 
 QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, bool onFiber, int depth) {
     // cout << "\033[1;34mEntering mul: depth=" << depth << " e0.weight=" << e0.weight << " e0.sonKind_=" << static_cast<int>(e0.sonKind_) << " e0.key_=" << e0.key_ << " e1.weight=" << e1.weight << " e1.sonKind_=" << static_cast<int>(e1.sonKind_) << " e1.key_=" << e1.key_ << "\033[0m" << endl;
@@ -38,6 +62,9 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, bool onFiber, in
         runMulAny2Wrapper(A, B,
                         &outRe, &outIm,
                         &outId, outCoef);
+#if GPU_ZERO_STAT
+        dbgCountGpuResult(outCoef[0], outCoef[1]);
+#endif
         return QMDDEdge(
             toLogPolar(complex<double>(outCoef[0], outCoef[1])),
             outId,
@@ -262,6 +289,9 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
         runAddAny2Wrapper(A, B,
                         &outRe, &outIm,
                         &outId, outCoef);
+#if GPU_ZERO_STAT
+        dbgCountGpuResult(outCoef[0], outCoef[1]);
+#endif
         return QMDDEdge(
             toLogPolar(complex<double>(outCoef[0], outCoef[1])),
             outId,
@@ -446,6 +476,9 @@ QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
         runKronAny2Wrapper(A, B,
                         &outRe, &outIm,
                         &outId, outCoef);
+#if GPU_ZERO_STAT
+        dbgCountGpuResult(outCoef[0], outCoef[1]);
+#endif
         return QMDDEdge(
             toLogPolar(complex<double>(outCoef[0], outCoef[1])),
             outId,

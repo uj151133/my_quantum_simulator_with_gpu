@@ -1,4 +1,82 @@
 #include "circuit.hpp"
+#include <unordered_set>
+#include <vector>
+#include <limits>
+#include <cstdio>
+
+// === DEBUG: 最終状態の葉(SVLeaf)ブロックのゼロ率を測る ===
+// simulate のゲートループ「最後の1回」だけ呼ぶので、各ステップは一切重くならない。
+// 状態スナップショット指標：いま状態 DD に含まれるユニークな SVLeaf のうち
+//   - zeroBufSV : re/im 両方が全ゼロのブロック数（正規化修正後は 0 が期待値）
+//   - zeroEdges : ゼロエッジ（枝刈り済みの葉スロット＝正常な疎ブロック）
+// を数える。「演算の累積カウンタ」(gpu-zero-stat) とは別物。
+#ifndef STATE_ZERO_METRIC
+#define STATE_ZERO_METRIC 1
+#endif
+#if STATE_ZERO_METRIC
+namespace {
+inline bool dbgIsZeroEdge(const QMDDEdge& e) {
+    return e.magnitude == -std::numeric_limits<double>::infinity();
+}
+bool dbgSvBufAllZero(void* h, size_t total) {
+    if (!h || total == 0) return false;
+    const size_t s = total < 4096 ? total : 4096;     // まず先頭サンプル
+    std::vector<float> host(s, 0.0f);
+    if (!copyGpuBufferToHostFloat(h, host.data(), s)) return false;
+    for (size_t i = 0; i < s; ++i) if (host[i] != 0.0f) return false;
+    if (s == total) return true;
+    host.assign(total, 0.0f);                          // サンプルが全ゼロなら全体確認
+    if (!copyGpuBufferToHostFloat(h, host.data(), total)) return false;
+    for (size_t i = 0; i < total; ++i) if (host[i] != 0.0f) return false;
+    return true;
+}
+struct DbgStateStats {
+    uint64_t uniqueNodes = 0;
+    uint64_t svLeaves = 0;
+    uint64_t zeroBufSV = 0;
+    uint64_t zeroEdges = 0;
+    uint64_t terminalEdges = 0;
+};
+void dbgWalkState(const QMDDEdge& e,
+                  std::unordered_set<int64_t>& seenNodes,
+                  std::unordered_set<const void*>& seenLeaves,
+                  DbgStateStats& s) {
+    if (dbgIsZeroEdge(e)) { s.zeroEdges++; return; }
+    if (e.sonKind_ == SonKind::Terminal) { s.terminalEdges++; return; }
+    if (e.sonKind_ == SonKind::SVLeaf) {
+        auto leaf = std::get<std::shared_ptr<SVLeaf>>(e.getSon());
+        if (!leaf) return;
+        if (!seenLeaves.insert(leaf.get()).second) return; // 共有ブロックは1回だけ
+        s.svLeaves++;
+        const size_t total = leaf->dim * leaf->dim;
+        if (dbgSvBufAllZero(leaf->reBuf, total) && dbgSvBufAllZero(leaf->imBuf, total))
+            s.zeroBufSV++;
+        return;
+    }
+    auto node = std::get<std::shared_ptr<QMDDNode>>(e.getSon());
+    if (!node) return;
+    if (!seenNodes.insert(e.key_).second) return;          // uniqueTableKey で dedup
+    s.uniqueNodes++;
+    for (auto& row : node->edges)
+        for (auto& c : row)
+            dbgWalkState(c, seenNodes, seenLeaves, s);
+}
+void dbgReportStateZeroMetric(const QMDDEdge& root) {
+    DbgStateStats s;
+    std::unordered_set<int64_t> seenNodes;
+    std::unordered_set<const void*> seenLeaves;
+    dbgWalkState(root, seenNodes, seenLeaves, s);
+    const double pct = s.svLeaves ? 100.0 * (double)s.zeroBufSV / (double)s.svLeaves : 0.0;
+    fprintf(stderr,
+        "\n[state-zero-metric] (final state) uniqueNodes=%llu svLeaves=%llu "
+        "zeroBufSV=%llu (%.3f%% of SV) zeroEdges=%llu terminals=%llu\n",
+        (unsigned long long)s.uniqueNodes, (unsigned long long)s.svLeaves,
+        (unsigned long long)s.zeroBufSV, pct,
+        (unsigned long long)s.zeroEdges, (unsigned long long)s.terminalEdges);
+    fflush(stderr);
+}
+} // namespace
+#endif
 
 // const unordered_set<string> cancer = {"H", "V", "Vdg", "VDG", "Rx", "RX", "Ry", "RY"};
 
@@ -1945,6 +2023,11 @@ void QuantumCircuit::criticalExecute() {
                 mathUtils::mul(currentGate.getInitialEdge(), this->finalState_.getInitialEdge())
             );
         }
+
+#if STATE_ZERO_METRIC
+        // ループ終了後（=最後の状態）に一度だけ測定。各ステップは重くならない。
+        dbgReportStateZeroMetric(this->finalState_.getInitialEdge());
+#endif
     }).get();
 }
 
