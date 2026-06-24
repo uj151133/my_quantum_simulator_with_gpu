@@ -213,6 +213,62 @@ __global__ void kron_any2_kernel(
     outIm[tid] = v.im;
 }
 
+__global__ void find_first_nonzero_kernel(
+    const double* re,
+    const double* im,
+    uint32_t total,
+    unsigned int* firstIdx
+) {
+    uint32_t tid = blockIdx.x * blockDim.x + threadIdx.x;
+    if (tid >= total) return;
+    if (isNonZero(re[tid], im[tid])) {
+        atomicMin(firstIdx, tid);
+    }
+}
+
+__global__ void write_coef_kernel(
+    const double* re,
+    const double* im,
+    const unsigned int* firstIdx,
+    double* coefRe,
+    double* coefIm
+) {
+    if (blockIdx.x != 0 || threadIdx.x != 0) return;
+    unsigned int idx = firstIdx[0];
+    if (idx == 0xFFFFFFFFu) {
+        coefRe[0] = 1.0;
+        coefIm[0] = 0.0;
+    } else {
+        coefRe[0] = re[idx];
+        coefIm[0] = im[idx];
+    }
+}
+
+__global__ void norm_apply_kernel(
+    double* re,
+    double* im,
+    uint32_t total,
+    const unsigned int* firstIdx,
+    const double* coefRe,
+    const double* coefIm
+) {
+    uint32_t tid = blockIdx.x * blockDim.x + threadIdx.x;
+    if (tid >= total) return;
+    if (firstIdx[0] == 0xFFFFFFFFu) return;
+
+    double cr = coefRe[0];
+    double ci = coefIm[0];
+    double denom = cr * cr + ci * ci;
+
+    double vr = re[tid];
+    double vi = im[tid];
+
+    double nr = (vr * cr + vi * ci) / denom;
+    double ni = (vi * cr - vr * ci) / denom;
+
+    re[tid] = nr;
+    im[tid] = ni;
+}
 
 __global__ void hash_serial_kernel(
     const double* re,
@@ -244,15 +300,41 @@ inline void run_postprocess(
     double* dOutRe,
     double* dOutIm,
     uint32_t total,
-    int64_t* outId
+    int64_t* outId,
+    double* outCoef
 ) {
+    unsigned int* dFirst = nullptr;
+    double* dCoefRe = nullptr;
+    double* dCoefIm = nullptr;
     uint64_t* dHash = nullptr;
+
+    CUDA_CHECK(cudaMalloc(&dFirst, sizeof(unsigned int)));
+    CUDA_CHECK(cudaMalloc(&dCoefRe, sizeof(double)));
+    CUDA_CHECK(cudaMalloc(&dCoefIm, sizeof(double)));
     CUDA_CHECK(cudaMalloc(&dHash, sizeof(uint64_t)));
+
+    unsigned int init = 0xFFFFFFFFu;
+    CUDA_CHECK(cudaMemcpy(dFirst, &init, sizeof(unsigned int), cudaMemcpyHostToDevice));
+
+    int block = 256;
+    int grid = static_cast<int>((total + block - 1) / block);
+
+    find_first_nonzero_kernel<<<grid, block>>>(dOutRe, dOutIm, total, dFirst);
+    write_coef_kernel<<<1, 1>>>(dOutRe, dOutIm, dFirst, dCoefRe, dCoefIm);
+    norm_apply_kernel<<<grid, block>>>(dOutRe, dOutIm, total, dFirst, dCoefRe, dCoefIm);
     hash_serial_kernel<<<1, 1>>>(dOutRe, dOutIm, total, dHash);
+
     CUDA_CHECK(cudaDeviceSynchronize());
+
     uint64_t h = 0;
+    CUDA_CHECK(cudaMemcpy(&outCoef[0], dCoefRe, sizeof(double), cudaMemcpyDeviceToHost));
+    CUDA_CHECK(cudaMemcpy(&outCoef[1], dCoefIm, sizeof(double), cudaMemcpyDeviceToHost));
     CUDA_CHECK(cudaMemcpy(&h, dHash, sizeof(uint64_t), cudaMemcpyDeviceToHost));
     *outId = static_cast<int64_t>(h);
+
+    cudaFree(dFirst);
+    cudaFree(dCoefRe);
+    cudaFree(dCoefIm);
     cudaFree(dHash);
 }
 
@@ -291,14 +373,15 @@ extern "C" void runMulAny2Wrapper(
         dOutRe, dOutIm
     );
 
-    run_postprocess(dOutRe, dOutIm, total, outId);
+    double coef[2] = {0.0, 0.0};
+    run_postprocess(dOutRe, dOutIm, total, outId, coef);
 
     double rA = static_cast<double>(A.root_re), iA = static_cast<double>(A.root_im);
     double rB = static_cast<double>(B.root_re), iB = static_cast<double>(B.root_im);
     double r = rA * rB - iA * iB;
     double i = rA * iB + iA * rB;
-    outCoef[0] = r;
-    outCoef[1] = i;
+    outCoef[0] = coef[0] * r - coef[1] * i;
+    outCoef[1] = coef[0] * i + coef[1] * r;
 
     if (outRe) *outRe = dOutRe;
     if (outIm) *outIm = dOutIm;
@@ -340,9 +423,10 @@ extern "C" void runAddAny2Wrapper(
         dOutRe, dOutIm
     );
 
-    run_postprocess(dOutRe, dOutIm, total, outId);
-    outCoef[0] = 1.0;
-    outCoef[1] = 0.0;
+    double coef[2] = {0.0, 0.0};
+    run_postprocess(dOutRe, dOutIm, total, outId, coef);
+    outCoef[0] = coef[0];
+    outCoef[1] = coef[1];
 
     if (outRe) *outRe = dOutRe;
     if (outIm) *outIm = dOutIm;
@@ -384,15 +468,15 @@ extern "C" void runKronAny2Wrapper(
         dOutRe, dOutIm
     );
 
-    run_postprocess(dOutRe, dOutIm, total, outId);
+    double coef[2] = {0.0, 0.0};
+    run_postprocess(dOutRe, dOutIm, total, outId, coef);
 
-    // Metal実装に合わせて rootA*rootB を掛ける
     double rA = static_cast<double>(A.root_re), iA = static_cast<double>(A.root_im);
     double rB = static_cast<double>(B.root_re), iB = static_cast<double>(B.root_im);
     double r = rA * rB - iA * iB;
     double i = rA * iB + iA * rB;
-    outCoef[0] = r;
-    outCoef[1] = i;
+    outCoef[0] = coef[0] * r - coef[1] * i;
+    outCoef[1] = coef[0] * i + coef[1] * r;
 
     if (outRe) *outRe = dOutRe;
     if (outIm) *outIm = dOutIm;
