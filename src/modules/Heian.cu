@@ -236,7 +236,7 @@ __global__ void write_coef_kernel(
     if (blockIdx.x != 0 || threadIdx.x != 0) return;
     unsigned int idx = firstIdx[0];
     if (idx == 0xFFFFFFFFu) {
-        coefRe[0] = 1.0;
+        coefRe[0] = 0.0;
         coefIm[0] = 0.0;
     } else {
         coefRe[0] = re[idx];

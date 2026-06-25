@@ -94,7 +94,7 @@ kernel void norm_pass2(
     // 非ゼロが無かった場合
     if (bestIdx == 0xFFFFFFFFu) {
         bestIdx = 0xFFFFFFFFu;
-        bestVal = {1.0, 0.0};
+        bestVal = {0.0, 0.0};
     }
 
     outIndex[0] = bestIdx;
