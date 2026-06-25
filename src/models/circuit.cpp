@@ -959,14 +959,14 @@ void QuantumCircuit::addCX(int controlIndex, int targetIndex) {
         }
         for (int index = maxIndex - 1; index >= minIndex; index--) {
             if (index == controlIndex) {
-                partialCX[0] = mathUtils::kron(braketZero, partialCX[0], index - minIndex);
-                partialCX[1] = mathUtils::kron(braketOne, partialCX[1], index - minIndex);
+                partialCX[0] = mathUtils::kron(braketZero, partialCX[0], index);
+                partialCX[1] = mathUtils::kron(braketOne, partialCX[1], index);
             } else if (index == targetIndex) {
-                partialCX[0] = mathUtils::kron(identityEdge, partialCX[0], index - minIndex);
-                partialCX[1] = mathUtils::kron(gate::X().getInitialEdge(), partialCX[1], index - minIndex);
+                partialCX[0] = mathUtils::kron(identityEdge, partialCX[0], index);
+                partialCX[1] = mathUtils::kron(gate::X().getInitialEdge(), partialCX[1], index);
             } else {
-                partialCX[0] = mathUtils::kron(identityEdge, partialCX[0], index - minIndex);
-                partialCX[1] = mathUtils::kron(identityEdge, partialCX[1], index - minIndex);
+                partialCX[0] = mathUtils::kron(identityEdge, partialCX[0], index);
+                partialCX[1] = mathUtils::kron(identityEdge, partialCX[1], index);
             }
         }
         // customCX = mathUtils::add(partialCX[0], partialCX[1]);
@@ -999,14 +999,14 @@ void QuantumCircuit::addVarCX(int controlIndex, int targetIndex) {
         }
         for (int index = maxIndex - 1; index >= minIndex; index--){
             if (index == controlIndex) {
-                partialVarCX[0] = mathUtils::kron(braketZero, partialVarCX[0], index - minIndex);
-                partialVarCX[1] = mathUtils::kron(braketOne, partialVarCX[1], index - minIndex);
+                partialVarCX[0] = mathUtils::kron(braketZero, partialVarCX[0], index);
+                partialVarCX[1] = mathUtils::kron(braketOne, partialVarCX[1], index);
             } else if (index == targetIndex) {
-                partialVarCX[0] = mathUtils::kron(gate::X().getInitialEdge(), partialVarCX[0], index - minIndex);
-                partialVarCX[1] = mathUtils::kron(identityEdge, partialVarCX[1], index - minIndex);
+                partialVarCX[0] = mathUtils::kron(gate::X().getInitialEdge(), partialVarCX[0], index);
+                partialVarCX[1] = mathUtils::kron(identityEdge, partialVarCX[1], index);
             } else {
-                partialVarCX[0] = mathUtils::kron(identityEdge, partialVarCX[0], index - minIndex);
-                partialVarCX[1] = mathUtils::kron(identityEdge, partialVarCX[1], index - minIndex);
+                partialVarCX[0] = mathUtils::kron(identityEdge, partialVarCX[0], index);
+                partialVarCX[1] = mathUtils::kron(identityEdge, partialVarCX[1], index);
             }
         }
         // customVarCX = mathUtils::add(partialVarCX[0], partialVarCX[1]);
@@ -1035,14 +1035,14 @@ void QuantumCircuit::addCY(int controlIndex, int targetIndex) {
     }
     for (int index = maxIndex - 1; index >= minIndex; index--) {
         if (index == controlIndex) {
-            partialCY[0] = mathUtils::kron(braketZero, partialCY[0], index - minIndex);
-            partialCY[1] = mathUtils::kron(braketOne, partialCY[1], index - minIndex);
+            partialCY[0] = mathUtils::kron(braketZero, partialCY[0], index);
+            partialCY[1] = mathUtils::kron(braketOne, partialCY[1], index);
         } else if (index == targetIndex) {
-            partialCY[0] = mathUtils::kron(identityEdge, partialCY[0], index - minIndex);
-            partialCY[1] = mathUtils::kron(gate::Y().getInitialEdge(), partialCY[1], index - minIndex);
+            partialCY[0] = mathUtils::kron(identityEdge, partialCY[0], index);
+            partialCY[1] = mathUtils::kron(gate::Y().getInitialEdge(), partialCY[1], index);
         } else {
-            partialCY[0] = mathUtils::kron(identityEdge, partialCY[0], index - minIndex);
-            partialCY[1] = mathUtils::kron(identityEdge, partialCY[1], index - minIndex);
+            partialCY[0] = mathUtils::kron(identityEdge, partialCY[0], index);
+            partialCY[1] = mathUtils::kron(identityEdge, partialCY[1], index);
         }
     }
     // QMDDEdge customCY = mathUtils::add(partialCY[0], partialCY[1]);
@@ -1078,14 +1078,14 @@ void QuantumCircuit::addCZ(int controlIndex, int targetIndex) {
         }
         for (int index = maxIndex - 1; index >= minIndex; index--){
             if (index == controlIndex) {
-                partialCZ[0] = mathUtils::kron(braketZero, partialCZ[0], index - minIndex);
-                partialCZ[1] = mathUtils::kron(braketOne, partialCZ[1], index - minIndex);
+                partialCZ[0] = mathUtils::kron(braketZero, partialCZ[0], index);
+                partialCZ[1] = mathUtils::kron(braketOne, partialCZ[1], index);
             } else if (index == targetIndex) {
-                partialCZ[0] = mathUtils::kron(identityEdge, partialCZ[0], index - minIndex);
-                partialCZ[1] = mathUtils::kron(gate::Z().getInitialEdge(), partialCZ[1], index - minIndex);
+                partialCZ[0] = mathUtils::kron(identityEdge, partialCZ[0], index);
+                partialCZ[1] = mathUtils::kron(gate::Z().getInitialEdge(), partialCZ[1], index);
             } else {
-                partialCZ[0] = mathUtils::kron(identityEdge, partialCZ[0], index - minIndex);
-                partialCZ[1] = mathUtils::kron(identityEdge, partialCZ[1], index - minIndex);
+                partialCZ[0] = mathUtils::kron(identityEdge, partialCZ[0], index);
+                partialCZ[1] = mathUtils::kron(identityEdge, partialCZ[1], index);
             }
         }
         // customCZ = mathUtils::add(partialCZ[0], partialCZ[1]);
@@ -1175,14 +1175,14 @@ void QuantumCircuit::addCP(int controlIndex, int targetIndex, double phi) {
         }
         for (int index = maxIndex - 1; index >= minIndex; index--) {
             if (index == controlIndex) {
-                partialCP[0] = mathUtils::kron(braketZero, partialCP[0], index - minIndex);
-                partialCP[1] = mathUtils::kron(braketOne, partialCP[1], index - minIndex);
+                partialCP[0] = mathUtils::kron(braketZero, partialCP[0], index);
+                partialCP[1] = mathUtils::kron(braketOne, partialCP[1], index);
             } else if (index == targetIndex) {
-                partialCP[0] = mathUtils::kron(identityEdge, partialCP[0], index - minIndex);
-                partialCP[1] = mathUtils::kron(gate::P(phi).getInitialEdge(), partialCP[1], index - minIndex);
+                partialCP[0] = mathUtils::kron(identityEdge, partialCP[0], index);
+                partialCP[1] = mathUtils::kron(gate::P(phi).getInitialEdge(), partialCP[1], index);
             } else {
-                partialCP[0] = mathUtils::kron(identityEdge, partialCP[0], index - minIndex);
-                partialCP[1] = mathUtils::kron(identityEdge, partialCP[1], index - minIndex);
+                partialCP[0] = mathUtils::kron(identityEdge, partialCP[0], index);
+                partialCP[1] = mathUtils::kron(identityEdge, partialCP[1], index);
             }
         }
         customCP = threadPool.submitFiber([&]() { return mathUtils::add(partialCP[0], partialCP[1]); }).get();
@@ -1214,14 +1214,14 @@ void QuantumCircuit::addCS(int controlIndex, int targetIndex) {
         }
         for (int index = maxIndex - 1; index >= minIndex; index--) {
             if (index == controlIndex) {
-                partialCS[0] = mathUtils::kron(braketZero, partialCS[0], index - minIndex);
-                partialCS[1] = mathUtils::kron(braketOne, partialCS[1], index - minIndex);
+                partialCS[0] = mathUtils::kron(braketZero, partialCS[0], index);
+                partialCS[1] = mathUtils::kron(braketOne, partialCS[1], index);
             } else if (index == targetIndex) {
-                partialCS[0] = mathUtils::kron(identityEdge, partialCS[0], index - minIndex);
-                partialCS[1] = mathUtils::kron(gate::S().getInitialEdge(), partialCS[1], index - minIndex);
+                partialCS[0] = mathUtils::kron(identityEdge, partialCS[0], index);
+                partialCS[1] = mathUtils::kron(gate::S().getInitialEdge(), partialCS[1], index);
             } else {
-                partialCS[0] = mathUtils::kron(identityEdge, partialCS[0], index - minIndex);
-                partialCS[1] = mathUtils::kron(identityEdge, partialCS[1], index - minIndex);
+                partialCS[0] = mathUtils::kron(identityEdge, partialCS[0], index);
+                partialCS[1] = mathUtils::kron(identityEdge, partialCS[1], index);
             }
         }
         // customCS = mathUtils::add(partialCS[0], partialCS[1]);
@@ -1266,14 +1266,14 @@ void QuantumCircuit::addCH(int controlIndex, int targetIndex) {
     }
     for (int index = maxIndex - 1; index >= minIndex; index--) {
         if (index == controlIndex) {
-            partialCH[0] = mathUtils::kron(braketZero, partialCH[0], index - minIndex);
-            partialCH[1] = mathUtils::kron(braketOne, partialCH[1], index - minIndex);
+            partialCH[0] = mathUtils::kron(braketZero, partialCH[0], index);
+            partialCH[1] = mathUtils::kron(braketOne, partialCH[1], index);
         } else if (index == targetIndex) {
-            partialCH[0] = mathUtils::kron(identityEdge, partialCH[0], index - minIndex);
-            partialCH[1] = mathUtils::kron(gate::H().getInitialEdge(), partialCH[1], index - minIndex);
+            partialCH[0] = mathUtils::kron(identityEdge, partialCH[0], index);
+            partialCH[1] = mathUtils::kron(gate::H().getInitialEdge(), partialCH[1], index);
         } else {
-            partialCH[0] = mathUtils::kron(identityEdge, partialCH[0], index - minIndex);
-            partialCH[1] = mathUtils::kron(identityEdge, partialCH[1], index - minIndex);
+            partialCH[0] = mathUtils::kron(identityEdge, partialCH[0], index);
+            partialCH[1] = mathUtils::kron(identityEdge, partialCH[1], index);
         }
     }
     // QMDDEdge customCH = mathUtils::add(partialCH[0], partialCH[1]);
@@ -1435,10 +1435,10 @@ void QuantumCircuit::addFREDKIN(int controlIndex, int targetIndex1, int targetIn
         }
         for (int index = maxIndex - 1; index >= minIndex; index--) {
             if (index == controlIndex) {
-                partialFredkin[0] = mathUtils::kron(braketZero, partialFredkin[0], index - minIndex);
-                partialFredkin[1] = mathUtils::kron(braketOne, partialFredkin[1], index - minIndex);
+                partialFredkin[0] = mathUtils::kron(braketZero, partialFredkin[0], index);
+                partialFredkin[1] = mathUtils::kron(braketOne, partialFredkin[1], index);
             } else if (index == targetIndex1) {
-                partialFredkin[0] = mathUtils::kron(identityEdge, partialFredkin[0], index - minIndex);
+                partialFredkin[0] = mathUtils::kron(identityEdge, partialFredkin[0], index);
             }
         }
         QMDDEdge customFredkin;
@@ -1532,14 +1532,14 @@ void QuantumCircuit::addCRx(int controlIndex, int targetIndex, double theta) {
     }
     for (int index = maxIndex - 1; index >= minIndex; index--) {
         if (index == controlIndex) {
-            partialCRx[0] = mathUtils::kron(braketZero, partialCRx[0], index - minIndex);
-            partialCRx[1] = mathUtils::kron(braketOne, partialCRx[1], index - minIndex);
+            partialCRx[0] = mathUtils::kron(braketZero, partialCRx[0], index);
+            partialCRx[1] = mathUtils::kron(braketOne, partialCRx[1], index);
         } else if (index == targetIndex) {
-            partialCRx[0] = mathUtils::kron(identityEdge, partialCRx[0], index - minIndex);
-            partialCRx[1] = mathUtils::kron(gate::Rx(theta).getInitialEdge(), partialCRx[1], index - minIndex);
+            partialCRx[0] = mathUtils::kron(identityEdge, partialCRx[0], index);
+            partialCRx[1] = mathUtils::kron(gate::Rx(theta).getInitialEdge(), partialCRx[1], index);
         } else {
-            partialCRx[0] = mathUtils::kron(identityEdge, partialCRx[0], index - minIndex);
-            partialCRx[1] = mathUtils::kron(identityEdge, partialCRx[1], index - minIndex);
+            partialCRx[0] = mathUtils::kron(identityEdge, partialCRx[0], index);
+            partialCRx[1] = mathUtils::kron(identityEdge, partialCRx[1], index);
         }
     }
     // QMDDEdge customCRx = mathUtils::add(partialCRx[0], partialCRx[1]);
@@ -1567,14 +1567,14 @@ void QuantumCircuit::addCRy(int controlIndex, int targetIndex, double theta) {
     }
     for (int index = maxIndex - 1; index >= minIndex; index--) {
         if (index == controlIndex) {
-            partialCRy[0] = mathUtils::kron(braketZero, partialCRy[0], index - minIndex);
-            partialCRy[1] = mathUtils::kron(braketOne, partialCRy[1], index - minIndex);
+            partialCRy[0] = mathUtils::kron(braketZero, partialCRy[0], index);
+            partialCRy[1] = mathUtils::kron(braketOne, partialCRy[1], index);
         } else if (index == targetIndex) {
-            partialCRy[0] = mathUtils::kron(identityEdge, partialCRy[0], index - minIndex);
-            partialCRy[1] = mathUtils::kron(gate::Ry(theta).getInitialEdge(), partialCRy[1], index - minIndex);
+            partialCRy[0] = mathUtils::kron(identityEdge, partialCRy[0], index);
+            partialCRy[1] = mathUtils::kron(gate::Ry(theta).getInitialEdge(), partialCRy[1], index);
         } else {
-            partialCRy[0] = mathUtils::kron(identityEdge, partialCRy[0], index - minIndex);
-            partialCRy[1] = mathUtils::kron(identityEdge, partialCRy[1], index - minIndex);
+            partialCRy[0] = mathUtils::kron(identityEdge, partialCRy[0], index);
+            partialCRy[1] = mathUtils::kron(identityEdge, partialCRy[1], index);
         }
     }
     // QMDDEdge customCRy = mathUtils::add(partialCRy[0], partialCRy[1]);
@@ -1606,14 +1606,14 @@ void QuantumCircuit::addCRz(int controlIndex, int targetIndex, double theta) {
     }
     for (int index = maxIndex - 1; index >= minIndex; index--) {
         if (index == controlIndex) {
-            partialCRz[0] = mathUtils::kron(braketZero, partialCRz[0], index - minIndex);
-            partialCRz[1] = mathUtils::kron(braketOne, partialCRz[1], index - minIndex);
+            partialCRz[0] = mathUtils::kron(braketZero, partialCRz[0], index);
+            partialCRz[1] = mathUtils::kron(braketOne, partialCRz[1], index);
         } else if (index == targetIndex) {
-            partialCRz[0] = mathUtils::kron(identityEdge, partialCRz[0], index - minIndex);
-            partialCRz[1] = mathUtils::kron(gate::Rz(theta).getInitialEdge(), partialCRz[1], index - minIndex);
+            partialCRz[0] = mathUtils::kron(identityEdge, partialCRz[0], index);
+            partialCRz[1] = mathUtils::kron(gate::Rz(theta).getInitialEdge(), partialCRz[1], index);
         } else {
-            partialCRz[0] = mathUtils::kron(identityEdge, partialCRz[0], index - minIndex);
-            partialCRz[1] = mathUtils::kron(identityEdge, partialCRz[1], index - minIndex);
+            partialCRz[0] = mathUtils::kron(identityEdge, partialCRz[0], index);
+            partialCRz[1] = mathUtils::kron(identityEdge, partialCRz[1], index);
         }
     }
     // QMDDEdge customCRz = mathUtils::add(partialCRz[0], partialCRz[1]);
@@ -1649,14 +1649,14 @@ void QuantumCircuit::addCU(int controlIndex, int targetIndex, double theta, doub
     }
     for (int index = maxIndex - 1; index >= minIndex; index--) {
         if (index == controlIndex) {
-            partialCU[0] = mathUtils::kron(braketZero, partialCU[0], index - minIndex);
-            partialCU[1] = mathUtils::kron(braketOne, partialCU[1], index - minIndex);
+            partialCU[0] = mathUtils::kron(braketZero, partialCU[0], index);
+            partialCU[1] = mathUtils::kron(braketOne, partialCU[1], index);
         } else if (index == targetIndex) {
-            partialCU[0] = mathUtils::kron(identityEdge, partialCU[0], index - minIndex);
-            partialCU[1] = mathUtils::kron(U, partialCU[1], index - minIndex);
+            partialCU[0] = mathUtils::kron(identityEdge, partialCU[0], index);
+            partialCU[1] = mathUtils::kron(U, partialCU[1], index);
         } else {
-            partialCU[0] = mathUtils::kron(identityEdge, partialCU[0], index - minIndex);
-            partialCU[1] = mathUtils::kron(identityEdge, partialCU[1], index - minIndex);
+            partialCU[0] = mathUtils::kron(identityEdge, partialCU[0], index);
+            partialCU[1] = mathUtils::kron(identityEdge, partialCU[1], index);
         }
     }
     // QMDDEdge customCU = mathUtils::add(partialCU[0], partialCU[1]);
