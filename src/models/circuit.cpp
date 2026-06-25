@@ -1,4 +1,6 @@
 #include "circuit.hpp"
+#include <chrono>
+#include <cstdio>
 
 // const unordered_set<string> cancer = {"H", "V", "Vdg", "VDG", "Rx", "RX", "Ry", "RY"};
 
@@ -1920,6 +1922,10 @@ void QuantumCircuit::globalPhase(double lamda) {
 }
 
 
+extern "C" size_t gpuAllocatedBytes();  // プロファイル用（Heian.mm / Heian.cu）
+extern "C" int64_t liveSVLeafCount();   // プロファイル用（sv.cpp）
+extern "C" size_t  maxSVLeafDim();      // プロファイル用（sv.cpp）
+
 void QuantumCircuit::criticalExecute() {
     const size_t gateNum = g_tls_gate_num;
     threadPool.submitFiber([&, gateNum]() {
@@ -1927,11 +1933,17 @@ void QuantumCircuit::criticalExecute() {
 
         int i = 0;
 
+        // --- 簡易プロファイル：N ゲートごとに「1ゲートあたりの時間」と「GPU使用メモリ」を出す ---
+        // per-gate 時間が増え続ける／GPUメモリが増え続ける → TLSキャッシュ等の蓄積が原因。
+        const int PROF_EVERY = 200;
+        auto profT0 = std::chrono::steady_clock::now();
+        int  profLast = 0;
+
         while (!this->gateQueue_.empty()) {
             QMDDSuite currentGate = this->gateQueue_.front();
 
             if (PARAMETER.circuit.verbose) {
-                cout << "Gate Idx: " << i++ << " / " << gateNum << endl;
+                cout << "Gate Idx: " << i << " / " << gateNum << endl;
                 cout << "Current gate: " << currentGate << endl;
                 cout << "Current state: " << this->finalState_ << endl;
                 cout << "============================================================\n" << endl;
@@ -1944,6 +1956,19 @@ void QuantumCircuit::criticalExecute() {
             this->finalState_ = QMDDSuite(
                 mathUtils::mul(currentGate.getInitialEdge(), this->finalState_.getInitialEdge())
             );
+
+            ++i;
+            if ((i % PROF_EVERY) == 0) {
+                auto now = std::chrono::steady_clock::now();
+                double ms = std::chrono::duration<double, std::milli>(now - profT0).count();
+                int n = i - profLast;
+                double mb = (double)gpuAllocatedBytes() / (1024.0 * 1024.0);
+                fprintf(stderr, "[prof] gate=%d  %.2f ms/gate (last %d)  GPU=%.1f MB  liveSVLeaf=%lld  maxDim=%zu\n",
+                        i, n > 0 ? ms / n : 0.0, n, mb, (long long)liveSVLeafCount(), maxSVLeafDim());
+                fflush(stderr);
+                profT0 = now;
+                profLast = i;
+            }
         }
     }).get();
 }

@@ -58,6 +58,12 @@ static id<MTLBuffer> ensureSharedBuf(id<MTLDevice> dev, id<MTLBuffer>& slot, NSU
     return slot;
 }
 
+// プロファイル用：Metal デバイスが現在確保しているメモリ量（バイト）
+extern "C" size_t gpuAllocatedBytes() {
+    auto& ctx = getMetalContext();
+    return (size_t)[ctx.device currentAllocatedSize];
+}
+
 static id<MTLComputePipelineState> getPSO(
     id<MTLDevice> device,
     id<MTLLibrary> library,

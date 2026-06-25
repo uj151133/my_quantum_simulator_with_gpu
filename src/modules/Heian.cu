@@ -569,6 +569,13 @@ extern "C" void runKronAny2Wrapper(
     // edges は g_edgeA / g_edgeB で使い回すので cudaFree しない
 }
 
+// プロファイル用：現在 GPU 上で使用中のメモリ量（バイト）= total - free
+extern "C" size_t gpuAllocatedBytes() {
+    size_t freeB = 0, totalB = 0;
+    if (cudaMemGetInfo(&freeB, &totalB) != cudaSuccess) return 0;
+    return totalB - freeB;
+}
+
 extern "C" void releaseGpuBuffer(void* p) {
     if (!p) return;
     cudaFree(p);
