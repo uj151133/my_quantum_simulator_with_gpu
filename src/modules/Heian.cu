@@ -4,10 +4,41 @@
 #include <limits>
 #include <cstring>
 #include <stdexcept>
+#include <mutex>
+#include <unordered_map>
 
 #include "Heian.h"
 #include "backend.hpp"
 #include "../models/sv.hpp"
+
+// === GPU 出力バッファのプール（サイズ別フリーリスト） ===========================
+// 毎op の cudaMalloc/cudaFree をやめ、解放されたバッファを使い回す。
+// SVLeaf の releaseGpuBuffer はここに返す（cudaFree しない）→ メモリ churn を止める。
+static std::mutex g_poolMx;
+static std::unordered_map<size_t, std::vector<void*>> g_freePool;  // bytes → 空きポインタ
+static std::unordered_map<void*, size_t> g_ptrSize;                // ポインタ → bytes
+
+static void* poolAlloc(size_t bytes) {
+    std::lock_guard<std::mutex> lk(g_poolMx);
+    auto& bucket = g_freePool[bytes];
+    void* p = nullptr;
+    if (!bucket.empty()) {
+        p = bucket.back();
+        bucket.pop_back();
+    } else {
+        if (cudaMalloc(&p, bytes) != cudaSuccess) return nullptr;
+    }
+    g_ptrSize[p] = bytes;
+    return p;
+}
+
+static void poolFree(void* p) {
+    if (!p) return;
+    std::lock_guard<std::mutex> lk(g_poolMx);
+    auto it = g_ptrSize.find(p);
+    if (it == g_ptrSize.end()) { cudaFree(p); return; }  // プール外（保険）
+    g_freePool[it->second].push_back(p);                  // バケットに返す（cudaFreeしない）
+}
 
 namespace {
 
@@ -431,8 +462,8 @@ extern "C" void runMulAny2Wrapper(
 
     double* dOutRe = nullptr;
     double* dOutIm = nullptr;
-    CUDA_CHECK(cudaMalloc(&dOutRe, bytes));
-    CUDA_CHECK(cudaMalloc(&dOutIm, bytes));
+    dOutRe = (double*)poolAlloc(bytes);   // プールから取得（無ければ cudaMalloc）
+    dOutIm = (double*)poolAlloc(bytes);
 
     int block = 256;
     int grid = static_cast<int>((total + block - 1) / block);
@@ -497,8 +528,8 @@ extern "C" void runAddAny2Wrapper(
 
     double* dOutRe = nullptr;
     double* dOutIm = nullptr;
-    CUDA_CHECK(cudaMalloc(&dOutRe, bytes));
-    CUDA_CHECK(cudaMalloc(&dOutIm, bytes));
+    dOutRe = (double*)poolAlloc(bytes);   // プールから取得（無ければ cudaMalloc）
+    dOutIm = (double*)poolAlloc(bytes);
 
     int block = 256;
     int grid = static_cast<int>((total + block - 1) / block);
@@ -541,8 +572,8 @@ extern "C" void runKronAny2Wrapper(
 
     double* dOutRe = nullptr;
     double* dOutIm = nullptr;
-    CUDA_CHECK(cudaMalloc(&dOutRe, bytes));
-    CUDA_CHECK(cudaMalloc(&dOutIm, bytes));
+    dOutRe = (double*)poolAlloc(bytes);   // プールから取得（無ければ cudaMalloc）
+    dOutIm = (double*)poolAlloc(bytes);
 
     int block = 256;
     int grid = static_cast<int>((total + block - 1) / block);
@@ -570,8 +601,7 @@ extern "C" void runKronAny2Wrapper(
 }
 
 extern "C" void releaseGpuBuffer(void* p) {
-    if (!p) return;
-    cudaFree(p);
+    poolFree(p);   // cudaFree せずプールに返して使い回す
 }
 
 // 既存コード互換（qmdd.cpp が float で読んでいるため）

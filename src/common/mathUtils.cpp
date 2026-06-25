@@ -235,11 +235,12 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
     QMDDEdge b = e1;
     if (b.isTerminal) std::swap(a, b);
     if (a.isTerminal) {
-        if (a.magnitude == -numeric_limits<double>::infinity()) {
-            return b;
-        } else if (b.isTerminal) {
+        if (b.isTerminal) {
             return QMDDEdge(toLogPolar(toComplex(a.magnitude, a.angle) + toComplex(b.magnitude, b.angle)));
         }
+        // a が終端（ゼロ/スカラ/NaN退化）で b がノード：次元が合わないので b を返す。
+        // -inf(ゼロ) も NaN(退化) もここで吸収し、fall-through で get<QMDDNode>(終端) を踏むのを防ぐ。
+        return b;
     }
     if (a.key_ == b.key_) {
         return QMDDEdge(

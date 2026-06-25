@@ -1,5 +1,8 @@
 #import <Metal/Metal.h>
 #include <cstring>
+#include <mutex>
+#include <unordered_map>
+#include <vector>
 #include "../models/sv.hpp"
 #include "../models/qmdd.hpp"
 #include "backend.hpp"
@@ -47,15 +50,42 @@ static MetalContext& getMetalContext() {
 struct MtlScratch {
     id<MTLBuffer> outId   = nil;   // sizeof(uint64_t)
     id<MTLBuffer> outCoef = nil;   // sizeof(float)*2
+    // runNormalizePass / runHash2Pass 用（毎op 生成していたものを使い回す）
+    id<MTLBuffer> groupIdx = nil;  // grow-only
+    id<MTLBuffer> groupVal = nil;  // grow-only
+    id<MTLBuffer> idxBuf   = nil;  // 固定 4B
+    id<MTLBuffer> normTotal = nil; // 内容 total
+    id<MTLBuffer> normGroup = nil; // 内容 groups
+    id<MTLBuffer> partial  = nil;  // grow-only
+    id<MTLBuffer> hashTotal = nil; // 内容 total
+    id<MTLBuffer> hashGroup = nil; // 内容 groups
+    // runMulAny2 用
+    id<MTLBuffer> dimBuf = nil;     // 内容 dim
+    id<MTLBuffer> hdrA   = nil;     // 内容 GPUInputHeader
+    id<MTLBuffer> hdrB   = nil;
+    id<MTLBuffer> svHdr  = nil;
+    id<MTLBuffer> edgesA = nil;     // grow-only
+    id<MTLBuffer> edgesB = nil;     // grow-only
+    id<MTLBuffer> denseARe = nil;   // grow-only
+    id<MTLBuffer> denseAIm = nil;
+    id<MTLBuffer> denseBRe = nil;
+    id<MTLBuffer> denseBIm = nil;
 };
 static thread_local MtlScratch g_mtl;
 
-// 固定サイズの共有バッファを「無ければ1回だけ作って」使い回す
+// 固定サイズの共有バッファを「無ければ作る／足りなければ作り直す」で使い回す（grow-only）
 static id<MTLBuffer> ensureSharedBuf(id<MTLDevice> dev, id<MTLBuffer>& slot, NSUInteger len) {
-    if (slot == nil) {
+    if (slot == nil || slot.length < len) {
         slot = [dev newBufferWithLength:len options:MTLResourceStorageModeShared];
     }
     return slot;
+}
+
+// 上に加えてホストの内容を毎op 書き込む版（newBufferWithBytes の使い回し版）
+static id<MTLBuffer> ensureSharedBytes(id<MTLDevice> dev, id<MTLBuffer>& slot, const void* src, NSUInteger len) {
+    id<MTLBuffer> b = ensureSharedBuf(dev, slot, len);
+    memcpy(b.contents, src, len);
+    return b;
 }
 
 static id<MTLComputePipelineState> getPSO(
@@ -102,29 +132,20 @@ static void runNormalizePass(
     id<MTLBuffer> outCoefBuf,
     uint32_t total
 ) {
-    id<MTLFunction> p1Fn = [library newFunctionWithName:@"norm_pass1"];
-    id<MTLFunction> p2Fn = [library newFunctionWithName:@"norm_pass2"];
-    id<MTLFunction> p3Fn = [library newFunctionWithName:@"norm_apply"];
-
     id<MTLComputePipelineState> p1PSO = getPSO(device, library, @"norm_pass1");
     id<MTLComputePipelineState> p2PSO = getPSO(device, library, @"norm_pass2");
     id<MTLComputePipelineState> p3PSO = getPSO(device, library, @"norm_apply");
 
     NSUInteger tg = p1PSO.maxTotalThreadsPerThreadgroup;
     NSUInteger groups = (total + tg - 1) / tg;
+    uint32_t groups32 = (uint32_t)groups;
 
-    id<MTLBuffer> groupIdxBuf =
-        [device newBufferWithLength:sizeof(uint32_t)*groups options:MTLResourceStorageModeShared];
-    id<MTLBuffer> groupValBuf =
-        [device newBufferWithLength:sizeof(float)*2*groups options:MTLResourceStorageModeShared];
-
-    id<MTLBuffer> totalBuf =
-        [device newBufferWithBytes:&total length:sizeof(uint32_t) options:MTLResourceStorageModeShared];
-    id<MTLBuffer> groupBuf =
-        [device newBufferWithBytes:&groups length:sizeof(uint32_t) options:MTLResourceStorageModeShared];
-
-    id<MTLBuffer> idxBuf =
-        [device newBufferWithLength:sizeof(uint32_t) options:MTLResourceStorageModeShared];
+    // 毎op 生成をやめ、thread_local スクラッチを使い回す（grow-only / 内容書き込み）
+    id<MTLBuffer> groupIdxBuf = ensureSharedBuf(device, g_mtl.groupIdx, sizeof(uint32_t) * groups);
+    id<MTLBuffer> groupValBuf = ensureSharedBuf(device, g_mtl.groupVal, sizeof(float) * 2 * groups);
+    id<MTLBuffer> totalBuf    = ensureSharedBytes(device, g_mtl.normTotal, &total, sizeof(uint32_t));
+    id<MTLBuffer> groupBuf    = ensureSharedBytes(device, g_mtl.normGroup, &groups32, sizeof(uint32_t));
+    id<MTLBuffer> idxBuf      = ensureSharedBuf(device, g_mtl.idxBuf, sizeof(uint32_t));
 
     {
         id<MTLComputeCommandEncoder> enc = [cmd computeCommandEncoder];
@@ -181,22 +202,17 @@ void runHash2Pass(
     id<MTLBuffer> outIdBuf,
     uint32_t total
 ) {
-    id<MTLFunction> p1Fn = [library newFunctionWithName:@"hash_pass1"];
-    id<MTLFunction> p2Fn = [library newFunctionWithName:@"hash_pass2"];
     id<MTLComputePipelineState> p1PSO = getPSO(device, library, @"hash_pass1");
     id<MTLComputePipelineState> p2PSO = getPSO(device, library, @"hash_pass2");
 
     NSUInteger tg = p1PSO.maxTotalThreadsPerThreadgroup;
     NSUInteger groups = (total + tg - 1) / tg;
+    uint32_t groups32 = (uint32_t)groups;
 
-    id<MTLBuffer> partialBuf =
-        [device newBufferWithLength:sizeof(uint64_t)*groups options:MTLResourceStorageModeShared];
-
-    id<MTLBuffer> totalBuf =
-        [device newBufferWithBytes:&total length:sizeof(uint32_t) options:MTLResourceStorageModeShared];
-
-    id<MTLBuffer> groupBuf =
-        [device newBufferWithBytes:&groups length:sizeof(uint32_t) options:MTLResourceStorageModeShared];
+    // 毎op 生成をやめ、thread_local スクラッチを使い回す
+    id<MTLBuffer> partialBuf = ensureSharedBuf(device, g_mtl.partial, sizeof(uint64_t) * groups);
+    id<MTLBuffer> totalBuf   = ensureSharedBytes(device, g_mtl.hashTotal, &total, sizeof(uint32_t));
+    id<MTLBuffer> groupBuf   = ensureSharedBytes(device, g_mtl.hashGroup, &groups32, sizeof(uint32_t));
 
     // pass1
     {
@@ -249,11 +265,11 @@ static void runMulAny2(
     uint32_t total = dim * dim;
     size_t denseBytes = (size_t)total * sizeof(float);
 
-    id<MTLBuffer> dimBuf = [device newBufferWithBytes:&dim length:sizeof(uint32_t) options:MTLResourceStorageModeShared];
-    id<MTLBuffer> hdrBufA = [device newBufferWithBytes:&hdrA length:sizeof(GPUInputHeader) options:MTLResourceStorageModeShared];
-    id<MTLBuffer> hdrBufB = [device newBufferWithBytes:&hdrB length:sizeof(GPUInputHeader) options:MTLResourceStorageModeShared];
-    id<MTLBuffer> edgesBufA = edgesA_bytes ? [device newBufferWithBytes:edgesA length:edgesA_bytes options:MTLResourceStorageModeShared] : nil;
-    id<MTLBuffer> edgesBufB = edgesB_bytes ? [device newBufferWithBytes:edgesB length:edgesB_bytes options:MTLResourceStorageModeShared] : nil;
+    id<MTLBuffer> dimBuf  = ensureSharedBytes(device, g_mtl.dimBuf, &dim, sizeof(uint32_t));
+    id<MTLBuffer> hdrBufA = ensureSharedBytes(device, g_mtl.hdrA, &hdrA, sizeof(GPUInputHeader));
+    id<MTLBuffer> hdrBufB = ensureSharedBytes(device, g_mtl.hdrB, &hdrB, sizeof(GPUInputHeader));
+    id<MTLBuffer> edgesBufA = edgesA_bytes ? ensureSharedBytes(device, g_mtl.edgesA, edgesA, edgesA_bytes) : nil;
+    id<MTLBuffer> edgesBufB = edgesB_bytes ? ensureSharedBytes(device, g_mtl.edgesB, edgesB, edgesB_bytes) : nil;
 
     id<MTLCommandBuffer> cmd = [queue commandBuffer];
 
@@ -267,8 +283,8 @@ static void runMulAny2(
     id<MTLBuffer> bRe = inReBufB, bIm = inImBufB;
 
     if (hdrA.kind == 1u) {  // QMDDNode → dense 化
-        aRe = [device newBufferWithLength:denseBytes options:MTLResourceStorageModeShared];
-        aIm = [device newBufferWithLength:denseBytes options:MTLResourceStorageModeShared];
+        aRe = ensureSharedBuf(device, g_mtl.denseARe, denseBytes);
+        aIm = ensureSharedBuf(device, g_mtl.denseAIm, denseBytes);
         id<MTLComputeCommandEncoder> enc = [cmd computeCommandEncoder];
         [enc setComputePipelineState:matPSO];
         [enc setBuffer:hdrBufA   offset:0 atIndex:0];
@@ -282,8 +298,8 @@ static void runMulAny2(
         [enc endEncoding];
     }
     if (hdrB.kind == 1u) {  // QMDDNode → dense 化
-        bRe = [device newBufferWithLength:denseBytes options:MTLResourceStorageModeShared];
-        bIm = [device newBufferWithLength:denseBytes options:MTLResourceStorageModeShared];
+        bRe = ensureSharedBuf(device, g_mtl.denseBRe, denseBytes);
+        bIm = ensureSharedBuf(device, g_mtl.denseBIm, denseBytes);
         id<MTLComputeCommandEncoder> enc = [cmd computeCommandEncoder];
         [enc setComputePipelineState:matPSO];
         [enc setBuffer:hdrBufB   offset:0 atIndex:0];
@@ -299,7 +315,7 @@ static void runMulAny2(
 
     // --- mul_any2 を「両方 SV 扱い（dense）」で実行：evalDD 無しの素直な dense matmul ---
     GPUInputHeader svHdr; svHdr.kind = 2u; svHdr.root_re = 1.0f; svHdr.root_im = 0.0f; svHdr.dim = dim;
-    id<MTLBuffer> svHdrBuf = [device newBufferWithBytes:&svHdr length:sizeof(GPUInputHeader) options:MTLResourceStorageModeShared];
+    id<MTLBuffer> svHdrBuf = ensureSharedBytes(device, g_mtl.svHdr, &svHdr, sizeof(GPUInputHeader));
 
     id<MTLComputePipelineState> pso = getPSO(device, library, @"mul_any2");
     id<MTLComputeCommandEncoder> enc = [cmd computeCommandEncoder];
