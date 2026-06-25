@@ -150,6 +150,34 @@ __global__ void mul_any2_kernel(
     outIm[tid] = acc.im;
 }
 
+// QMDD/SV を dense な dim×dim (re/im) に「一度だけ」展開する。
+// QMDD は各マス evalDD を1回（従来 mul 本体で行ごとに dim 回 再走査していたのを排除）。
+// SV は既に dense なのでそのままコピー。
+__global__ void materialize_kernel(
+    GPUInputHeaderCUDA hdr,
+    const GPUEdge* edges,
+    const double* inRe,
+    const double* inIm,
+    double* outRe,
+    double* outIm,
+    uint32_t dim
+) {
+    uint32_t tid = blockIdx.x * blockDim.x + threadIdx.x;
+    uint32_t total = dim * dim;
+    if (tid >= total) return;
+    uint32_t row = tid / dim;
+    uint32_t col = tid - row * dim;
+
+    Cx v{0.0, 0.0};
+    if (hdr.kind == KIND_SV) {
+        v = Cx{inRe[tid], inIm[tid]};
+    } else if (hdr.kind == KIND_QMDD) {
+        v = evalDD(edges, Cx{1.0, 0.0}, row, col, dim);
+    }
+    outRe[tid] = v.re;
+    outIm[tid] = v.im;
+}
+
 __global__ void add_any2_kernel(
     GPUInputHeaderCUDA hdrA,
     GPUInputHeaderCUDA hdrB,
@@ -328,6 +356,24 @@ struct DeviceEdgeScratch {
 thread_local DeviceEdgeScratch g_edgeA;
 thread_local DeviceEdgeScratch g_edgeB;
 
+// dense 化したオペランド用の使い回しバッファ（re/im、grow-only、スレッドごと）
+struct DenseScratch {
+    double* re = nullptr;
+    double* im = nullptr;
+    size_t  cap = 0;  // 要素数
+    void ensure(size_t n) {
+        if (n > cap) {
+            if (re) cudaFree(re);
+            if (im) cudaFree(im);
+            CUDA_CHECK(cudaMalloc(&re, n * sizeof(double)));
+            CUDA_CHECK(cudaMalloc(&im, n * sizeof(double)));
+            cap = n;
+        }
+    }
+};
+thread_local DenseScratch g_denseA;
+thread_local DenseScratch g_denseB;
+
 inline void run_postprocess(
     double* dOutRe,
     double* dOutIm,
@@ -391,9 +437,26 @@ extern "C" void runMulAny2Wrapper(
     int block = 256;
     int grid = static_cast<int>((total + block - 1) / block);
 
+    // --- Stage 1: QMDD オペランドを dense 化（SV はハンドルをそのまま使う）---
+    const double* aRe = dInReA; const double* aIm = dInImA;
+    const double* bRe = dInReB; const double* bIm = dInImB;
+    if (A.kind == SonKind::QMDDNode) {
+        g_denseA.ensure(total);
+        materialize_kernel<<<grid, block>>>(hdrA, dEdgesA, nullptr, nullptr, g_denseA.re, g_denseA.im, dim);
+        aRe = g_denseA.re; aIm = g_denseA.im;
+    }
+    if (B.kind == SonKind::QMDDNode) {
+        g_denseB.ensure(total);
+        materialize_kernel<<<grid, block>>>(hdrB, dEdgesB, nullptr, nullptr, g_denseB.re, g_denseB.im, dim);
+        bRe = g_denseB.re; bIm = g_denseB.im;
+    }
+
+    // mul_any2_kernel を「両方 SV 扱い（dense）」で実行：evalDD 無しの素直な dense matmul
+    GPUInputHeaderCUDA svA = hdrA; svA.kind = KIND_SV;
+    GPUInputHeaderCUDA svB = hdrB; svB.kind = KIND_SV;
     mul_any2_kernel<<<grid, block>>>(
-        hdrA, hdrB, dEdgesA, dEdgesB,
-        dInReA, dInImA, dInReB, dInImB,
+        svA, svB, dEdgesA, dEdgesB,
+        aRe, aIm, bRe, bIm,
         dOutRe, dOutIm
     );
 

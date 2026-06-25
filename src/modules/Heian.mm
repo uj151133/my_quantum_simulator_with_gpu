@@ -245,39 +245,79 @@ static void runMulAny2(
     id<MTLBuffer> outIdBuf,
     id<MTLBuffer> outCoefBuf
 ) {
-    // id<MTLCommandQueue> queue = [device newCommandQueue];
+    uint32_t dim = hdrA.dim;          // A,B 同 dim 前提
+    uint32_t total = dim * dim;
+    size_t denseBytes = (size_t)total * sizeof(float);
 
-    NSError* error = nil;
-    id<MTLComputePipelineState> pso = getPSO(device, library, @"mul_any2");
-
+    id<MTLBuffer> dimBuf = [device newBufferWithBytes:&dim length:sizeof(uint32_t) options:MTLResourceStorageModeShared];
     id<MTLBuffer> hdrBufA = [device newBufferWithBytes:&hdrA length:sizeof(GPUInputHeader) options:MTLResourceStorageModeShared];
     id<MTLBuffer> hdrBufB = [device newBufferWithBytes:&hdrB length:sizeof(GPUInputHeader) options:MTLResourceStorageModeShared];
-
     id<MTLBuffer> edgesBufA = edgesA_bytes ? [device newBufferWithBytes:edgesA length:edgesA_bytes options:MTLResourceStorageModeShared] : nil;
     id<MTLBuffer> edgesBufB = edgesB_bytes ? [device newBufferWithBytes:edgesB length:edgesB_bytes options:MTLResourceStorageModeShared] : nil;
 
     id<MTLCommandBuffer> cmd = [queue commandBuffer];
+
+    // --- Stage 1: QMDD オペランドを dense 化（SV は既に dense なのでそのまま使う）---
+    id<MTLComputePipelineState> matPSO = getPSO(device, library, @"materialize_any");
+    NSUInteger matTG = matPSO.maxTotalThreadsPerThreadgroup;
+    MTLSize matGrid = MTLSizeMake(total, 1, 1);
+    MTLSize matTgs  = MTLSizeMake(matTG, 1, 1);
+
+    id<MTLBuffer> aRe = inReBufA, aIm = inImBufA;   // SV ならハンドルをそのまま
+    id<MTLBuffer> bRe = inReBufB, bIm = inImBufB;
+
+    if (hdrA.kind == 1u) {  // QMDDNode → dense 化
+        aRe = [device newBufferWithLength:denseBytes options:MTLResourceStorageModeShared];
+        aIm = [device newBufferWithLength:denseBytes options:MTLResourceStorageModeShared];
+        id<MTLComputeCommandEncoder> enc = [cmd computeCommandEncoder];
+        [enc setComputePipelineState:matPSO];
+        [enc setBuffer:hdrBufA   offset:0 atIndex:0];
+        [enc setBuffer:edgesBufA offset:0 atIndex:1];
+        [enc setBuffer:inReBufA  offset:0 atIndex:2];
+        [enc setBuffer:inImBufA  offset:0 atIndex:3];
+        [enc setBuffer:aRe       offset:0 atIndex:4];
+        [enc setBuffer:aIm       offset:0 atIndex:5];
+        [enc setBuffer:dimBuf    offset:0 atIndex:6];
+        [enc dispatchThreads:matGrid threadsPerThreadgroup:matTgs];
+        [enc endEncoding];
+    }
+    if (hdrB.kind == 1u) {  // QMDDNode → dense 化
+        bRe = [device newBufferWithLength:denseBytes options:MTLResourceStorageModeShared];
+        bIm = [device newBufferWithLength:denseBytes options:MTLResourceStorageModeShared];
+        id<MTLComputeCommandEncoder> enc = [cmd computeCommandEncoder];
+        [enc setComputePipelineState:matPSO];
+        [enc setBuffer:hdrBufB   offset:0 atIndex:0];
+        [enc setBuffer:edgesBufB offset:0 atIndex:1];
+        [enc setBuffer:inReBufB  offset:0 atIndex:2];
+        [enc setBuffer:inImBufB  offset:0 atIndex:3];
+        [enc setBuffer:bRe       offset:0 atIndex:4];
+        [enc setBuffer:bIm       offset:0 atIndex:5];
+        [enc setBuffer:dimBuf    offset:0 atIndex:6];
+        [enc dispatchThreads:matGrid threadsPerThreadgroup:matTgs];
+        [enc endEncoding];
+    }
+
+    // --- mul_any2 を「両方 SV 扱い（dense）」で実行：evalDD 無しの素直な dense matmul ---
+    GPUInputHeader svHdr; svHdr.kind = 2u; svHdr.root_re = 1.0f; svHdr.root_im = 0.0f; svHdr.dim = dim;
+    id<MTLBuffer> svHdrBuf = [device newBufferWithBytes:&svHdr length:sizeof(GPUInputHeader) options:MTLResourceStorageModeShared];
+
+    id<MTLComputePipelineState> pso = getPSO(device, library, @"mul_any2");
     id<MTLComputeCommandEncoder> enc = [cmd computeCommandEncoder];
     [enc setComputePipelineState:pso];
-
-    [enc setBuffer:hdrBufA   offset:0 atIndex:0];
-    [enc setBuffer:hdrBufB   offset:0 atIndex:1];
-    [enc setBuffer:edgesBufA offset:0 atIndex:2];
-    [enc setBuffer:edgesBufB offset:0 atIndex:3];
-    [enc setBuffer:inReBufA  offset:0 atIndex:4];
-    [enc setBuffer:inImBufA  offset:0 atIndex:5];
-    [enc setBuffer:inReBufB  offset:0 atIndex:6];
-    [enc setBuffer:inImBufB  offset:0 atIndex:7];
+    [enc setBuffer:svHdrBuf  offset:0 atIndex:0];
+    [enc setBuffer:svHdrBuf  offset:0 atIndex:1];
+    [enc setBuffer:edgesBufA offset:0 atIndex:2];   // kind=SV なので未使用
+    [enc setBuffer:edgesBufB offset:0 atIndex:3];   // 同上
+    [enc setBuffer:aRe       offset:0 atIndex:4];
+    [enc setBuffer:aIm       offset:0 atIndex:5];
+    [enc setBuffer:bRe       offset:0 atIndex:6];
+    [enc setBuffer:bIm       offset:0 atIndex:7];
     [enc setBuffer:outReBuf  offset:0 atIndex:8];
     [enc setBuffer:outImBuf  offset:0 atIndex:9];
-
-    uint32_t dim = hdrA.dim;
-    uint32_t total = dim * dim;
 
     MTLSize grid = MTLSizeMake(total, 1, 1);
     NSUInteger tg = pso.maxTotalThreadsPerThreadgroup;
     MTLSize tgs = MTLSizeMake(tg, 1, 1);
-
     [enc dispatchThreads:grid threadsPerThreadgroup:tgs];
     [enc endEncoding];
 

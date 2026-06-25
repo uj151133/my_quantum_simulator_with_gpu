@@ -245,6 +245,36 @@ inline float2 evalInput(
     }
 }
 
+// QMDD/SV を dense な dim×dim (re/im) に「一度だけ」展開する。
+// QMDD は各マス evalDD を1回（従来は mul 本体で行ごとに dim 回 再走査していた）。
+// SV は既に dense なのでそのままコピー。
+kernel void materialize_any(
+    const device GPUInputHeader& hdr [[buffer(0)]],
+    const device GPUEdge* edges      [[buffer(1)]],
+    const device float* inRe         [[buffer(2)]],
+    const device float* inIm         [[buffer(3)]],
+    device float* outRe              [[buffer(4)]],
+    device float* outIm              [[buffer(5)]],
+    constant uint& dim               [[buffer(6)]],
+    uint tid                         [[thread_position_in_grid]]
+) {
+    uint total = dim * dim;
+    if (tid >= total) return;
+    uint row = tid / dim;
+    uint col = tid - row * dim;
+
+    float2 v;
+    if (hdr.kind == 2u) {            // SV: 既に dense
+        v = float2(inRe[tid], inIm[tid]);
+    } else if (hdr.kind == 1u) {     // QMDD: evalDD を1回（applyRoot=false 相当の root=(1,0)）
+        v = evalDD(edges, float2(1.0, 0.0), row, col, dim);
+    } else {
+        v = float2(0.0, 0.0);
+    }
+    outRe[tid] = v.x;
+    outIm[tid] = v.y;
+}
+
 kernel void mul_any2(
     const device GPUInputHeader& hdrA [[buffer(0)]],
     const device GPUInputHeader& hdrB [[buffer(1)]],
