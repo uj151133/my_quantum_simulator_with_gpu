@@ -35,9 +35,14 @@ QMDDEdge mathUtils::mul(const QMDDEdge& e0, const QMDDEdge& e1, bool onFiber, in
         int64_t outId = 0;
         gpu_precision outCoef[2] = {.0f, .0f};
 
-        runMulAny2Wrapper(A, B,
-                        &outRe, &outIm,
-                        &outId, outCoef);
+        runMulAny2Wrapper(A, B, &outRe, &outIm, &outId, outCoef);
+
+        if (outCoef[0] == .0f && outCoef[1] == .0f) {
+            releaseGpuBuffer(outRe);
+            releaseGpuBuffer(outIm);
+            return edgeZero;
+        }
+        
         return QMDDEdge(
             toLogPolar(complex<double>(outCoef[0], outCoef[1])),
             outId,
@@ -259,9 +264,14 @@ QMDDEdge mathUtils::add(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
         int64_t outId = 0;
         gpu_precision outCoef[2] = {.0f, .0f};
 
-        runAddAny2Wrapper(A, B,
-                        &outRe, &outIm,
-                        &outId, outCoef);
+        runAddAny2Wrapper(A, B, &outRe, &outIm, &outId, outCoef);
+
+        if (outCoef[0] == .0f && outCoef[1] == .0f) {
+            releaseGpuBuffer(outRe);
+            releaseGpuBuffer(outIm);
+            return edgeZero;
+        }
+        
         return QMDDEdge(
             toLogPolar(complex<double>(outCoef[0], outCoef[1])),
             outId,
@@ -443,9 +453,14 @@ QMDDEdge mathUtils::kron(const QMDDEdge& e0, const QMDDEdge& e1, int depth) {
         int64_t outId = 0;
         gpu_precision outCoef[2] = {.0f, .0f};
 
-        runKronAny2Wrapper(A, B,
-                        &outRe, &outIm,
-                        &outId, outCoef);
+        runKronAny2Wrapper(A, B, &outRe, &outIm, &outId, outCoef);
+
+        if (outCoef[0] == .0f && outCoef[1] == .0f) {
+            releaseGpuBuffer(outRe);
+            releaseGpuBuffer(outIm);
+            return edgeZero;
+        }
+        
         return QMDDEdge(
             toLogPolar(complex<double>(outCoef[0], outCoef[1])),
             outId,
