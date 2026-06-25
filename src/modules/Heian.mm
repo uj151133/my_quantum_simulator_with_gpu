@@ -39,6 +39,25 @@ static MetalContext& getMetalContext() {
     return ctx;
 }
 
+// === 使い回しスクラッチ（OSスレッドごと）=========================================
+// Metal も per-op の newBuffer をやめ、固定サイズの一時バッファは使い回す。
+// fiber が複数スレッドで走るので thread_local（共有するとデータ競合）。各 op は
+// waitUntilCompleted まで同期するので、同一スレッド内での使い回しは安全。
+// ARC で消えないよう strong 参照（id）で保持する。
+struct MtlScratch {
+    id<MTLBuffer> outId   = nil;   // sizeof(uint64_t)
+    id<MTLBuffer> outCoef = nil;   // sizeof(float)*2
+};
+static thread_local MtlScratch g_mtl;
+
+// 固定サイズの共有バッファを「無ければ1回だけ作って」使い回す
+static id<MTLBuffer> ensureSharedBuf(id<MTLDevice> dev, id<MTLBuffer>& slot, NSUInteger len) {
+    if (slot == nil) {
+        slot = [dev newBufferWithLength:len options:MTLResourceStorageModeShared];
+    }
+    return slot;
+}
+
 static id<MTLComputePipelineState> getPSO(
     id<MTLDevice> device,
     id<MTLLibrary> library,
@@ -425,9 +444,9 @@ extern "C" void runMulAny2Wrapper(
         id<MTLBuffer> outReBuf = [ctx.device newBufferWithLength:outBytes options:MTLResourceStorageModeShared];
         id<MTLBuffer> outImBuf = [ctx.device newBufferWithLength:outBytes options:MTLResourceStorageModeShared];
 
-        id<MTLBuffer> outIdBuf = [ctx.device newBufferWithLength:sizeof(uint64_t) options:MTLResourceStorageModeShared];
+        id<MTLBuffer> outIdBuf = ensureSharedBuf(ctx.device, g_mtl.outId, sizeof(uint64_t));
 
-        id<MTLBuffer> outCoefBuf = [ctx.device newBufferWithLength:sizeof(float)*2 options:MTLResourceStorageModeShared];
+        id<MTLBuffer> outCoefBuf = ensureSharedBuf(ctx.device, g_mtl.outCoef, sizeof(float)*2);
 
 
         runMulAny2(
@@ -510,9 +529,9 @@ extern "C" void runAddAny2Wrapper(
         id<MTLBuffer> outReBuf = [ctx.device newBufferWithLength:outBytes options:MTLResourceStorageModeShared];
         id<MTLBuffer> outImBuf = [ctx.device newBufferWithLength:outBytes options:MTLResourceStorageModeShared];
 
-        id<MTLBuffer> outIdBuf = [ctx.device newBufferWithLength:sizeof(uint64_t) options:MTLResourceStorageModeShared];
+        id<MTLBuffer> outIdBuf = ensureSharedBuf(ctx.device, g_mtl.outId, sizeof(uint64_t));
 
-        id<MTLBuffer> outCoefBuf = [ctx.device newBufferWithLength:sizeof(float)*2 options:MTLResourceStorageModeShared];
+        id<MTLBuffer> outCoefBuf = ensureSharedBuf(ctx.device, g_mtl.outCoef, sizeof(float)*2);
 
         runAddAny2(
             ctx.device, ctx.library, ctx.queue,
@@ -585,9 +604,9 @@ extern "C" void runKronAny2Wrapper(
         id<MTLBuffer> outReBuf = [ctx.device newBufferWithLength:outBytes options:MTLResourceStorageModeShared];
         id<MTLBuffer> outImBuf = [ctx.device newBufferWithLength:outBytes options:MTLResourceStorageModeShared];
 
-        id<MTLBuffer> outIdBuf = [ctx.device newBufferWithLength:sizeof(uint64_t) options:MTLResourceStorageModeShared];
+        id<MTLBuffer> outIdBuf = ensureSharedBuf(ctx.device, g_mtl.outId, sizeof(uint64_t));
 
-        id<MTLBuffer> outCoefBuf = [ctx.device newBufferWithLength:sizeof(float)*2 options:MTLResourceStorageModeShared];
+        id<MTLBuffer> outCoefBuf = ensureSharedBuf(ctx.device, g_mtl.outCoef, sizeof(float)*2);
 
         runKronAny2(
             ctx.device, ctx.library, ctx.queue,

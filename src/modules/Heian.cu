@@ -288,13 +288,45 @@ __global__ void hash_serial_kernel(
     outId[0] = h;
 }
 
-inline GPUEdge* toDeviceEdges(const std::vector<GPUEdge>& edges) {
-    if (edges.empty()) return nullptr;
-    GPUEdge* d = nullptr;
-    CUDA_CHECK(cudaMalloc(&d, edges.size() * sizeof(GPUEdge)));
-    CUDA_CHECK(cudaMemcpy(d, edges.data(), edges.size() * sizeof(GPUEdge), cudaMemcpyHostToDevice));
-    return d;
-}
+// === 使い回しスクラッチ（OSスレッドごと） =====================================
+// cudaMalloc/cudaFree は毎回 GPU と同期する重い処理。固定サイズの一時バッファは
+// 一度だけ確保して thread_local に使い回し、毎op の malloc/free を撲滅する。
+// fiber が複数 OS スレッドで走るので thread_local（共有するとデータ競合になる）。
+
+// run_postprocess 用の固定サイズ一時バッファ（一度確保したら解放しない）
+struct PostprocScratch {
+    unsigned int* dFirst  = nullptr;
+    double*       dCoefRe = nullptr;
+    double*       dCoefIm = nullptr;
+    uint64_t*     dHash   = nullptr;
+    void ensure() {
+        if (dFirst) return;                 // 既に確保済みなら何もしない
+        CUDA_CHECK(cudaMalloc(&dFirst,  sizeof(unsigned int)));
+        CUDA_CHECK(cudaMalloc(&dCoefRe, sizeof(double)));
+        CUDA_CHECK(cudaMalloc(&dCoefIm, sizeof(double)));
+        CUDA_CHECK(cudaMalloc(&dHash,   sizeof(uint64_t)));
+    }
+};
+thread_local PostprocScratch g_post;
+
+// 可変長 edge 用：必要量が今の容量を超えたときだけ作り直す（grow-only）
+struct DeviceEdgeScratch {
+    GPUEdge* d   = nullptr;
+    size_t   cap = 0;  // 要素数
+    GPUEdge* upload(const std::vector<GPUEdge>& edges) {
+        if (edges.empty()) return nullptr;
+        if (edges.size() > cap) {           // 足りないときだけ再確保
+            if (d) cudaFree(d);
+            CUDA_CHECK(cudaMalloc(&d, edges.size() * sizeof(GPUEdge)));
+            cap = edges.size();
+        }
+        CUDA_CHECK(cudaMemcpy(d, edges.data(),
+                              edges.size() * sizeof(GPUEdge), cudaMemcpyHostToDevice));
+        return d;
+    }
+};
+thread_local DeviceEdgeScratch g_edgeA;
+thread_local DeviceEdgeScratch g_edgeB;
 
 inline void run_postprocess(
     double* dOutRe,
@@ -303,17 +335,13 @@ inline void run_postprocess(
     int64_t* outId,
     double* outCoef
 ) {
-    unsigned int* dFirst = nullptr;
-    double* dCoefRe = nullptr;
-    double* dCoefIm = nullptr;
-    uint64_t* dHash = nullptr;
+    g_post.ensure();                        // 初回だけ確保、以降は使い回し
+    unsigned int* dFirst  = g_post.dFirst;
+    double*       dCoefRe = g_post.dCoefRe;
+    double*       dCoefIm = g_post.dCoefIm;
+    uint64_t*     dHash   = g_post.dHash;
 
-    CUDA_CHECK(cudaMalloc(&dFirst, sizeof(unsigned int)));
-    CUDA_CHECK(cudaMalloc(&dCoefRe, sizeof(double)));
-    CUDA_CHECK(cudaMalloc(&dCoefIm, sizeof(double)));
-    CUDA_CHECK(cudaMalloc(&dHash, sizeof(uint64_t)));
-
-    unsigned int init = 0xFFFFFFFFu;
+    unsigned int init = 0xFFFFFFFFu;        // dFirst は毎回リセットが必要
     CUDA_CHECK(cudaMemcpy(dFirst, &init, sizeof(unsigned int), cudaMemcpyHostToDevice));
 
     int block = 256;
@@ -331,11 +359,7 @@ inline void run_postprocess(
     CUDA_CHECK(cudaMemcpy(&outCoef[1], dCoefIm, sizeof(double), cudaMemcpyDeviceToHost));
     CUDA_CHECK(cudaMemcpy(&h, dHash, sizeof(uint64_t), cudaMemcpyDeviceToHost));
     *outId = static_cast<int64_t>(h);
-
-    cudaFree(dFirst);
-    cudaFree(dCoefRe);
-    cudaFree(dCoefIm);
-    cudaFree(dHash);
+    // ★ ここで cudaFree しない（次の op で使い回す）
 }
 
 } // namespace
@@ -356,8 +380,8 @@ extern "C" void runMulAny2Wrapper(
     auto* dInReB = (B.kind == SonKind::SVLeaf) ? static_cast<const double*>(B.sv.reHandle) : nullptr;
     auto* dInImB = (B.kind == SonKind::SVLeaf) ? static_cast<const double*>(B.sv.imHandle) : nullptr;
 
-    GPUEdge* dEdgesA = (A.kind == SonKind::QMDDNode) ? toDeviceEdges(A.qmdd.edges) : nullptr;
-    GPUEdge* dEdgesB = (B.kind == SonKind::QMDDNode) ? toDeviceEdges(B.qmdd.edges) : nullptr;
+    GPUEdge* dEdgesA = (A.kind == SonKind::QMDDNode) ? g_edgeA.upload(A.qmdd.edges) : nullptr;
+    GPUEdge* dEdgesB = (B.kind == SonKind::QMDDNode) ? g_edgeB.upload(B.qmdd.edges) : nullptr;
 
     double* dOutRe = nullptr;
     double* dOutIm = nullptr;
@@ -386,8 +410,7 @@ extern "C" void runMulAny2Wrapper(
     if (outRe) *outRe = dOutRe;
     if (outIm) *outIm = dOutIm;
 
-    if (dEdgesA) cudaFree(dEdgesA);
-    if (dEdgesB) cudaFree(dEdgesB);
+    // edges は g_edgeA / g_edgeB で使い回すので cudaFree しない
 }
 
 extern "C" void runAddAny2Wrapper(
@@ -406,8 +429,8 @@ extern "C" void runAddAny2Wrapper(
     auto* dInReB = (B.kind == SonKind::SVLeaf) ? static_cast<const double*>(B.sv.reHandle) : nullptr;
     auto* dInImB = (B.kind == SonKind::SVLeaf) ? static_cast<const double*>(B.sv.imHandle) : nullptr;
 
-    GPUEdge* dEdgesA = (A.kind == SonKind::QMDDNode) ? toDeviceEdges(A.qmdd.edges) : nullptr;
-    GPUEdge* dEdgesB = (B.kind == SonKind::QMDDNode) ? toDeviceEdges(B.qmdd.edges) : nullptr;
+    GPUEdge* dEdgesA = (A.kind == SonKind::QMDDNode) ? g_edgeA.upload(A.qmdd.edges) : nullptr;
+    GPUEdge* dEdgesB = (B.kind == SonKind::QMDDNode) ? g_edgeB.upload(B.qmdd.edges) : nullptr;
 
     double* dOutRe = nullptr;
     double* dOutIm = nullptr;
@@ -431,8 +454,7 @@ extern "C" void runAddAny2Wrapper(
     if (outRe) *outRe = dOutRe;
     if (outIm) *outIm = dOutIm;
 
-    if (dEdgesA) cudaFree(dEdgesA);
-    if (dEdgesB) cudaFree(dEdgesB);
+    // edges は g_edgeA / g_edgeB で使い回すので cudaFree しない
 }
 
 extern "C" void runKronAny2Wrapper(
@@ -451,8 +473,8 @@ extern "C" void runKronAny2Wrapper(
     auto* dInReB = (B.kind == SonKind::SVLeaf) ? static_cast<const double*>(B.sv.reHandle) : nullptr;
     auto* dInImB = (B.kind == SonKind::SVLeaf) ? static_cast<const double*>(B.sv.imHandle) : nullptr;
 
-    GPUEdge* dEdgesA = (A.kind == SonKind::QMDDNode) ? toDeviceEdges(A.qmdd.edges) : nullptr;
-    GPUEdge* dEdgesB = (B.kind == SonKind::QMDDNode) ? toDeviceEdges(B.qmdd.edges) : nullptr;
+    GPUEdge* dEdgesA = (A.kind == SonKind::QMDDNode) ? g_edgeA.upload(A.qmdd.edges) : nullptr;
+    GPUEdge* dEdgesB = (B.kind == SonKind::QMDDNode) ? g_edgeB.upload(B.qmdd.edges) : nullptr;
 
     double* dOutRe = nullptr;
     double* dOutIm = nullptr;
@@ -481,8 +503,7 @@ extern "C" void runKronAny2Wrapper(
     if (outRe) *outRe = dOutRe;
     if (outIm) *outIm = dOutIm;
 
-    if (dEdgesA) cudaFree(dEdgesA);
-    if (dEdgesB) cudaFree(dEdgesB);
+    // edges は g_edgeA / g_edgeB で使い回すので cudaFree しない
 }
 
 extern "C" void releaseGpuBuffer(void* p) {
