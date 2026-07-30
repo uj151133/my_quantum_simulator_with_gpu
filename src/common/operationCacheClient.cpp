@@ -11,8 +11,8 @@ thread_local std::list<int64_t> OperationCacheClient::TLSLru_;
 mutex OperationCacheClient::isolateMutex_;
 
 struct alignas(8) NativeOperationResult24 {
-    double magnitude;
-    double angle;
+    double real;
+    double imag;
     int64_t uniqueTableKey;
 };
 
@@ -94,7 +94,7 @@ void OperationCacheClient::insert(int64_t key, const QMDDEdge& edge, bool useTLS
 __attribute__((hot, flatten))
 void OperationCacheClient::insertGlobal(int64_t key, const QMDDEdge& edge) {
     graal_isolatethread_t* thread = this->getThreadLocalThread();
-    cacheInsert(thread, key, edge.magnitude, edge.angle, edge.key_);
+    cacheInsert(thread, key, edge.weight.real(), edge.weight.imag(), edge.key_);
 }
 
 __attribute__((hot, flatten))
@@ -107,7 +107,11 @@ optional<QMDDEdge> OperationCacheClient::findGlobal(int64_t key) {
         return nullopt;
     }
 
-    return QMDDEdge({out.magnitude, out.angle}, out.uniqueTableKey, SonKind::QMDDNode);
+    return make_optional<QMDDEdge>(
+        complex<double>(out.real, out.imag),
+        out.uniqueTableKey,
+        SonKind::QMDDNode
+    );
 }
 
 inline void OperationCacheClient::tlsTouch_(unordered_map<int64_t, TLSEntry>::iterator it) {

@@ -1,16 +1,14 @@
 #include "backend.hpp"
-#include "../common/mathUtils.hpp"
 
 namespace {
 
-static inline bool isZeroEdge(const QMDDEdge& edge) {
-    return edge.magnitude == -numeric_limits<double>::infinity();
+static inline bool isZeroWeight(const complex<double>& w) {
+    return w.real() == .0 && w.imag() == .0;
 }
 
 static inline void setRootWeight(GPUInput& out, const QMDDEdge& root) {
-    const complex<double> w = mathUtils::toComplex(root.magnitude, root.angle);
-    out.root_re = static_cast<gpu_precision>(w.real());
-    out.root_im = static_cast<gpu_precision>(w.imag());
+    out.root_re = static_cast<gpu_precision>(root.weight.real());
+    out.root_im = static_cast<gpu_precision>(root.weight.imag());
 }
 
 static void fillNode(
@@ -30,11 +28,10 @@ static void fillNode(
             const QMDDEdge& e = node->edges[i][j];
 
             GPUEdge ge;
-            const complex<double> w = mathUtils::toComplex(e.magnitude, e.angle);
-            ge.re = static_cast<gpu_precision>(w.real());
-            ge.im = static_cast<gpu_precision>(w.imag());
+            ge.re = static_cast<gpu_precision>(e.weight.real());
+            ge.im = static_cast<gpu_precision>(e.weight.imag());
 
-            if (e.isTerminal || e.key_ == 0 || isZeroEdge(e)) {
+            if (e.isTerminal || e.key_ == 0 || isZeroWeight(e.weight)) {
                 ge.childIndex = -1;
             } else {
                 const int64_t childKey = e.key_;
@@ -65,7 +62,7 @@ static void fillNode(
 }
 
 GPUInput flattenQMDD(const QMDDEdge& root) {
-    if (root.isTerminal || root.key_ == 0 || isZeroEdge(root)) {
+    if (root.isTerminal || root.key_ == 0 || isZeroWeight(root.weight)) {
         GPUInput out;
         out.kind = SonKind::Terminal;
         setRootWeight(out, root);
