@@ -445,6 +445,11 @@ extern "C" void runMulAny2Wrapper(
     const GPUInput& A, const GPUInput& B,
     void** outRe, void** outIm, int64_t* outId, gpu_precision* outCoef
 ) {
+    if (A.kind != SonKind::Terminal && B.kind != SonKind::Terminal && A.dim != B.dim) {
+    fprintf(stderr, "DIM MISMATCH @mul: A.dim=%u B.dim=%u kindA=%d kindB=%d\n",
+            A.dim, B.dim, (int)A.kind, (int)B.kind);
+    fflush(stderr); abort();
+}
     GPUInputHeaderCUDA hdrA = makeHeader(A);
     GPUInputHeaderCUDA hdrB = makeHeader(B);
 
@@ -511,6 +516,11 @@ extern "C" void runAddAny2Wrapper(
     const GPUInput& A, const GPUInput& B,
     void** outRe, void** outIm, int64_t* outId, gpu_precision* outCoef
 ) {
+    if (A.kind != SonKind::Terminal && B.kind != SonKind::Terminal && A.dim != B.dim) {
+    fprintf(stderr, "DIM MISMATCH @add: A.dim=%u B.dim=%u kindA=%d kindB=%d\n",
+            A.dim, B.dim, (int)A.kind, (int)B.kind);
+    fflush(stderr); abort();
+}
     GPUInputHeaderCUDA hdrA = makeHeader(A);
     GPUInputHeaderCUDA hdrB = makeHeader(B);
 

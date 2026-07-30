@@ -2,16 +2,16 @@ gui:
   enabled: false
 
 parallelism:
-  fiber: 1
-  GPU: 15
+  fiber: 0
+  GPU: 13
 
 table:
   size: 16777216
 
 cache:
   alive: true
-  size: 1048576
-  TLSSize: 823543
+  size: 524288 # 2^19
+  TLSSize: 117649 # 7^6
 
 circuit:
   mode: "dynamic" # "sparse", "moderate", "dense", "dynamic"
