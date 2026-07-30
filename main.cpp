@@ -64,7 +64,7 @@ void execute() {
     // twoLocalAnsatz18MQT();
     // qftEntangled18MQT();
     // qpeInexact18MQT();
-    // randomRotate(13, 200);
+    // randomRotate(18, 1000);
     shor18MQT();
     // bench9symml();
 
@@ -208,6 +208,20 @@ int main(int argc, char* argv[]) {
         // execute();
 
         cout << "Total entries: " << UniqueTable::getInstance().getTotalEntryCount() << endl;
+
+        // Print profiling statistics
+        cout << "\n========== CPU-SIDE PROFILING STATISTICS ==========" << endl;
+        cout << "mul() calls: GPU=" << g_profiling.mul_gpu_count << ", CPU=" << g_profiling.mul_cpu_count << endl;
+        cout << "add() calls: GPU=" << g_profiling.add_gpu_count << ", CPU=" << g_profiling.add_cpu_count << endl;
+        cout << "kron() calls: GPU=" << g_profiling.kron_gpu_count << ", CPU=" << g_profiling.kron_cpu_count << endl;
+        cout << "Total GPU wrapper calls: " << g_profiling.mul_gpu_count + g_profiling.add_gpu_count + g_profiling.kron_gpu_count << endl;
+        cout << "Wrapper-measured GPU time: " << g_profiling.gpu_time_ms << " ms" << endl;
+        cout << "SVLeaf instances: " << g_profiling.svleaf_count << ", total elements: " << g_profiling.svleaf_total_elements << endl;
+        if (g_profiling.svleaf_count > 0) {
+            cout << "Avg SVLeaf size: " << (g_profiling.svleaf_total_elements / g_profiling.svleaf_count) << " elements" << endl;
+        }
+        cout << "========================================================" << endl;
+        cout << "(GPU-side details logged to stderr during execution)" << endl;
     }
     threadPool.shutdown();
     cout << "Program finished successfully." << endl;
