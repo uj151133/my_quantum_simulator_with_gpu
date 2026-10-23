@@ -34,33 +34,33 @@ namespace {
                 string val = line.substr(pos + 1);
                 trim(key);
                 trim(val);
-                data_[section][key] = val;
+                this->data_[section][key] = val;
             }
             return true;
         }
 
         string getString(const string& section, const string& key, const string& def) const {
-            auto sit = data_.find(section);
-            if (sit == data_.end()) return def;
+            auto sit = this->data_.find(section);
+            if (sit == this->data_.end()) return def;
             auto kit = sit->second.find(key);
             if (kit == sit->second.end()) return def;
             return kit->second;
         }
 
         bool getBool(const string& section, const string& key, bool def) const {
-            auto s = toLower(getString(section, key, def ? "true" : "false"));
+            auto s = toLower(this->getString(section, key, def ? "true" : "false"));
             if (s == "true" || s == "1" || s == "yes" || s == "on") return true;
             if (s == "false" || s == "0" || s == "no" || s == "off") return false;
             return def;
         }
 
         int getInt(const string& section, const string& key, int def) const {
-            auto s = getString(section, key, to_string(def));
+            auto s = this->getString(section, key, to_string(def));
             try { return stoi(s); } catch (...) { return def; }
         }
 
         double getDouble(const string& section, const string& key, double def) const {
-            auto s = getString(section, key, to_string(def));
+            auto s = this->getString(section, key, to_string(def));
             try { return stod(s); } catch (...) { return def; }
         }
 
@@ -90,7 +90,7 @@ Parameter::Parameter() {}
 
 void Parameter::load() {
     fileUtils::resolveFilePath();
-    loadFromFile(fileUtils::CONFIG_PATH.string(), fileUtils::SETTING_PATH.string());
+    this->loadFromFile(fileUtils::CONFIG_PATH.string(), fileUtils::SETTING_PATH.string());
 }
 
 void Parameter::loadFromFile(const string& yamlFilepath, const string& iniFilepath) {
@@ -109,6 +109,9 @@ void Parameter::loadFromFile(const string& yamlFilepath, const string& iniFilepa
                 // this->process.concurrency = config["process"]["concurrency"].as<int>();
                 this->parallelism.fiber = config["parallelism"]["fiber"].as<int>();
                 this->parallelism.GPU = config["parallelism"]["GPU"].as<int>();
+                if (config["parallelism"]["threads"]) {
+                    this->parallelism.threads = config["parallelism"]["threads"].as<int>();
+                }
             }
 
             if (config["table"]) {
@@ -118,7 +121,7 @@ void Parameter::loadFromFile(const string& yamlFilepath, const string& iniFilepa
             if (config["cache"]) {
                 this->cache.alive = config["cache"]["alive"].as<bool>();
                 this->cache.size = config["cache"]["size"].as<int>();
-                this->cache.TLSSize = config["cache"]["TLSSize"].as<int>();
+                this->cache.FLSSize = config["cache"]["FLSSize"].as<int>();
             }
 
             if (config["circuit"]) {
@@ -149,56 +152,56 @@ void Parameter::loadFromFile(const string& yamlFilepath, const string& iniFilepa
         }
 
         // Scheduler.Heuristics
-        schedulerHeuristics.alive        = ini.getBool("Scheduler.Heuristics", "alive", schedulerHeuristics.alive);
-        schedulerHeuristics.costDiag    = ini.getDouble("Scheduler.Heuristics", "cost_diag", schedulerHeuristics.costDiag);
-        schedulerHeuristics.costAnti    = ini.getDouble("Scheduler.Heuristics", "cost_anti", schedulerHeuristics.costAnti);
-        schedulerHeuristics.costPerm    = ini.getDouble("Scheduler.Heuristics", "cost_perm", schedulerHeuristics.costPerm);
-        schedulerHeuristics.costGeneral = ini.getDouble("Scheduler.Heuristics", "cost_general", schedulerHeuristics.costGeneral);
+        this->schedulerHeuristics.alive        = ini.getBool("Scheduler.Heuristics", "alive", this->schedulerHeuristics.alive);
+        this->schedulerHeuristics.costDiag    = ini.getDouble("Scheduler.Heuristics", "cost_diag", this->schedulerHeuristics.costDiag);
+        this->schedulerHeuristics.costAnti    = ini.getDouble("Scheduler.Heuristics", "cost_anti", this->schedulerHeuristics.costAnti);
+        this->schedulerHeuristics.costPerm    = ini.getDouble("Scheduler.Heuristics", "cost_perm", this->schedulerHeuristics.costPerm);
+        this->schedulerHeuristics.costGeneral = ini.getDouble("Scheduler.Heuristics", "cost_general", this->schedulerHeuristics.costGeneral);
 
         // Scheduler.AI
-        schedulerAI.alive                = ini.getBool("Scheduler.AI", "alive", schedulerAI.alive);
+        this->schedulerAI.alive                = ini.getBool("Scheduler.AI", "alive", this->schedulerAI.alive);
         // Fuser.Heuristics
-        fuserHeuristics.alive                    = ini.getBool("Fuser.Heuristics", "alive", fuserHeuristics.alive);
-        fuserHeuristics.scoreDiagPerGate      = ini.getDouble("Fuser.Heuristics", "score_diag_per_gate", fuserHeuristics.scoreDiagPerGate);
-        fuserHeuristics.scoreSameAxisPerGate = ini.getDouble("Fuser.Heuristics", "score_same_axis_per_gate", fuserHeuristics.scoreSameAxisPerGate);
-        fuserHeuristics.scorePhaseGadget       = ini.getDouble("Fuser.Heuristics", "score_phase_gadget", fuserHeuristics.scorePhaseGadget);
-        fuserHeuristics.scoreHcxh               = ini.getDouble("Fuser.Heuristics", "score_hcxh", fuserHeuristics.scoreHcxh);
-        fuserHeuristics.modelBonus              = ini.getDouble("Fuser.Heuristics", "model_bonus", fuserHeuristics.modelBonus);
+        this->fuserHeuristics.alive                    = ini.getBool("Fuser.Heuristics", "alive", this->fuserHeuristics.alive);
+        this->fuserHeuristics.scoreDiagPerGate      = ini.getDouble("Fuser.Heuristics", "score_diag_per_gate", this->fuserHeuristics.scoreDiagPerGate);
+        this->fuserHeuristics.scoreSameAxisPerGate = ini.getDouble("Fuser.Heuristics", "score_same_axis_per_gate", this->fuserHeuristics.scoreSameAxisPerGate);
+        this->fuserHeuristics.scorePhaseGadget       = ini.getDouble("Fuser.Heuristics", "score_phase_gadget", this->fuserHeuristics.scorePhaseGadget);
+        this->fuserHeuristics.scoreHcxh               = ini.getDouble("Fuser.Heuristics", "score_hcxh", this->fuserHeuristics.scoreHcxh);
+        this->fuserHeuristics.modelBonus              = ini.getDouble("Fuser.Heuristics", "model_bonus", this->fuserHeuristics.modelBonus);
 
         // Fuser.AI
-        fuserAI.alive                     = ini.getBool("Fuser.AI", "alive", fuserAI.alive);
+        this->fuserAI.alive                     = ini.getBool("Fuser.AI", "alive", this->fuserAI.alive);
 
         // General
-        general.rl                 = ini.getBool("General", "rl", general.rl);
-        general.windowSize        = ini.getInt("General", "window_size", general.windowSize);
-        general.topKLevels       = ini.getInt("General", "top_k_levels", general.topKLevels);
-        general.sigDim            = ini.getInt("General", "sig_dim", general.sigDim);
-        general.gateFeatDim      = ini.getInt("General", "gate_feat_dim", general.gateFeatDim);
-        general.maxQubits         = ini.getInt("General", "max_qubits", general.maxQubits);
+        this->general.rl                 = ini.getBool("General", "rl", this->general.rl);
+        this->general.windowSize        = ini.getInt("General", "window_size", this->general.windowSize);
+        this->general.topKLevels       = ini.getInt("General", "top_k_levels", this->general.topKLevels);
+        this->general.sigDim            = ini.getInt("General", "sig_dim", this->general.sigDim);
+        this->general.gateFeatDim      = ini.getInt("General", "gate_feat_dim", this->general.gateFeatDim);
+        this->general.maxQubits         = ini.getInt("General", "max_qubits", this->general.maxQubits);
 
-        general.gamma              = ini.getDouble("General", "gamma", general.gamma);
-        general.lam                = ini.getDouble("General", "lam", general.lam);
-        general.lr                 = ini.getDouble("General", "lr", general.lr);
-        general.clipEps           = ini.getDouble("General", "clip_eps", general.clipEps);
-        general.entCoef           = ini.getDouble("General", "ent_coef", general.entCoef);
-        general.vfCoef            = ini.getDouble("General", "vf_coef", general.vfCoef);
-        general.updateEpochs      = ini.getInt("General", "update_epochs", general.updateEpochs);
-        general.device             = ini.getString("General", "device", general.device);
-        general.useCppReward     = ini.getBool("General", "use_cpp_reward", general.useCppReward);
-        general.cppRewardProb    = ini.getDouble("General", "cpp_reward_prob", general.cppRewardProb);
-        general.cppRewardAlpha   = ini.getDouble("General", "cpp_reward_alpha", general.cppRewardAlpha);
+        this->general.gamma              = ini.getDouble("General", "gamma", this->general.gamma);
+        this->general.lam                = ini.getDouble("General", "lam", this->general.lam);
+        this->general.lr                 = ini.getDouble("General", "lr", this->general.lr);
+        this->general.clipEps           = ini.getDouble("General", "clip_eps", this->general.clipEps);
+        this->general.entCoef           = ini.getDouble("General", "ent_coef", this->general.entCoef);
+        this->general.vfCoef            = ini.getDouble("General", "vf_coef", this->general.vfCoef);
+        this->general.updateEpochs      = ini.getInt("General", "update_epochs", this->general.updateEpochs);
+        this->general.device             = ini.getString("General", "device", this->general.device);
+        this->general.useCppReward     = ini.getBool("General", "use_cpp_reward", this->general.useCppReward);
+        this->general.cppRewardProb    = ini.getDouble("General", "cpp_reward_prob", this->general.cppRewardProb);
+        this->general.cppRewardAlpha   = ini.getDouble("General", "cpp_reward_alpha", this->general.cppRewardAlpha);
     });
 }
 
 void Parameter::print() const {
-    cout << "GUI:\n  enabled: " << (gui.enabled ? "true" : "false") << endl;
-    cout << "Parallelism:\n  fiber: " << parallelism.fiber
-              << "\n  GPU: " << parallelism.GPU << endl;
-    cout << "Scheduler.Heuristics:\n  alive: " << (schedulerHeuristics.alive ? "true" : "false")
-              << "\n  costDiag: " << schedulerHeuristics.costDiag
-              << "\n  costAnti: " << schedulerHeuristics.costAnti
-              << "\n  costPerm: " << schedulerHeuristics.costPerm
-              << "\n  costGeneral: " << schedulerHeuristics.costGeneral << endl;
-    cout << "General:\n  device: " << general.device
-              << "\n  lr: " << general.lr << endl;
+    cout << "GUI:\n  enabled: " << (this->gui.enabled ? "true" : "false") << endl;
+    cout << "Parallelism:\n  fiber: " << this->parallelism.fiber
+              << "\n  GPU: " << this->parallelism.GPU << endl;
+    cout << "Scheduler.Heuristics:\n  alive: " << (this->schedulerHeuristics.alive ? "true" : "false")
+              << "\n  costDiag: " << this->schedulerHeuristics.costDiag
+              << "\n  costAnti: " << this->schedulerHeuristics.costAnti
+              << "\n  costPerm: " << this->schedulerHeuristics.costPerm
+              << "\n  costGeneral: " << this->schedulerHeuristics.costGeneral << endl;
+    cout << "General:\n  device: " << this->general.device
+              << "\n  lr: " << this->general.lr << endl;
 }

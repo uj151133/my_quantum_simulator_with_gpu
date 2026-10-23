@@ -2,16 +2,18 @@ gui:
   enabled: false
 
 parallelism:
-  fiber: 1
-  GPU: 15
+  fiber: 5     # 再帰のこの深さまで fiber を生成する（実測の最良は 4〜5）
+  GPU: 6       # 再帰の深さ閾値。この深さ以下を密葉として GPU で扱う（= 下位 n-6 量子ビット。18 量子ビットなら 12 ビット分）。
+               # 16 回路ベンチの最良は「下位 6 ビットを GPU」で、これは n-6 に相当する（回路の量子ビット数に依存）
+  threads: 8   # スレッドプールのワーカー数（0 = 論理コア数）。GPU 併用時は 4〜8 が最速、CPU のみなら 16〜32
 
 table:
   size: 16777216
 
 cache:
   alive: true
-  size: 1048576
-  TLSSize: 823543
+  size: 524288 # 2^19
+  FLSSize: 117649 # 7^6
 
 circuit:
   mode: "dynamic" # "sparse", "moderate", "dense", "dynamic"

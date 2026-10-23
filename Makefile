@@ -10,11 +10,24 @@ INSTALL_DIR = $(HOME)/.local/bin
 # clean:
 # 	rm -rf $(BUILD_DIR) *.cpython-310-darwin.so
 
+# mimalloc は任意依存。brew (macOS) / apt (Linux) で入れたものは cmake が自動で見つける。
+# sudo が使えない Linux では `make mimalloc` でソースから $(MIMALLOC_PREFIX) に入れると、build 時に自動で参照する。
+MIMALLOC_PREFIX ?= $(HOME)/opt/mimalloc
+MIMALLOC_VERSION ?= v2.1.7
+CMAKE_EXTRA_ARGS ?= $(if $(wildcard $(MIMALLOC_PREFIX)/lib/cmake),-DCMAKE_PREFIX_PATH=$(MIMALLOC_PREFIX),)
+
 .PHONY: build
 build:
 	mkdir -p $(BUILD_DIR)
-	cd $(BUILD_DIR) && cmake ..
+	cd $(BUILD_DIR) && cmake .. $(CMAKE_EXTRA_ARGS)
 	$(MAKE) -C $(BUILD_DIR)
+
+.PHONY: mimalloc
+mimalloc:
+	rm -rf /tmp/mimalloc-src && git clone -q --depth 1 --branch $(MIMALLOC_VERSION) https://github.com/microsoft/mimalloc.git /tmp/mimalloc-src
+	cmake -S /tmp/mimalloc-src -B /tmp/mimalloc-src/build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$(MIMALLOC_PREFIX) -DMI_BUILD_TESTS=OFF
+	cmake --build /tmp/mimalloc-src/build -j && cmake --install /tmp/mimalloc-src/build
+	@echo "mimalloc installed to $(MIMALLOC_PREFIX); 'make build' will pick it up"
 
 .PHONY: install
 install:
@@ -23,14 +36,14 @@ ifeq ($(shell uname), Darwin)
 	xcode-select --install || (sudo xcode-select --switch /Applications/Xcode.app/Contents/Developer && sudo xcodebuild -runFirstLaunch)
 	xcrun simctl create "iOS17.2" "iPhone 15" "iOS17.2" 2>/dev/null || true
 	brew update
-	brew install mpfr libmpc gh git libomp yaml-cpp gmp gsl cmake boost openjdk@17 git-lfs xxhash antlr4-cpp-runtime gcc
+	brew install mpfr libmpc gh git libomp yaml-cpp gmp gsl cmake boost openjdk@17 git-lfs xxhash antlr4-cpp-runtime gcc mimalloc
 	# $(MAKE) android-setup-mac
 else ifeq ($(shell uname), Linux)
 	if [ -f /etc/fedora-release ]; then \
 		sudo dnf install -y libomp yaml-cpp gmp-devel gsl-devel cmake boost-devel; \
 	else \
 		sudo apt-get update; \
-		sudo apt-get install -y make build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev openjdk-21-jdk libxxhash-dev lldb pybind11-dev; \
+		sudo apt-get install -y make build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev openjdk-21-jdk libxxhash-dev lldb pybind11-dev libmimalloc-dev; \
 		git clone https://github.com/pyenv/pyenv.git ~/.pyenv; \
 		echo 'export PYENV_ROOT="$$HOME/.pyenv"' >> ~/.bashrc; \
 		echo 'command -v pyenv >/dev/null || export PATH="$$PYENV_ROOT/bin:$$PATH"' >> ~/.bashrc; \

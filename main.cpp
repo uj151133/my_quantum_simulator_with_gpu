@@ -64,7 +64,7 @@ void execute() {
     // twoLocalAnsatz18MQT();
     // qftEntangled18MQT();
     // qpeInexact18MQT();
-    // randomRotate(13, 200);
+    // randomRotate(18, 1000);
     shor18MQT();
     // bench9symml();
 
@@ -208,6 +208,7 @@ int main(int argc, char* argv[]) {
         // execute();
 
         cout << "Total entries: " << UniqueTable::getInstance().getTotalEntryCount() << endl;
+
     }
     threadPool.shutdown();
     cout << "Program finished successfully." << endl;

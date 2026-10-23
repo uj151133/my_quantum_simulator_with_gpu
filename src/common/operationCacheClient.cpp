@@ -1,22 +1,20 @@
 #include "operationCacheClient.hpp"
+#include <boost/fiber/fss.hpp>
+#include <atomic>
 
 // static auto alienacheInsert = cacheInsert;
 // static auto alienCacheFind = cacheFind;
 
 thread_local graal_isolatethread_t* OperationCacheClient::thread_local_thread = nullptr;
-// thread_local unordered_map<int64_t, QMDDEdge> OperationCacheClient::TLSCache_;
-thread_local unordered_map<int64_t, OperationCacheClient::TLSEntry> OperationCacheClient::TLSCache_;
-thread_local std::list<int64_t> OperationCacheClient::TLSLru_;
-
 mutex OperationCacheClient::isolateMutex_;
 
 struct alignas(8) NativeOperationResult24 {
-    double magnitude;
-    double angle;
+    double real;
+    double imag;
     int64_t uniqueTableKey;
 };
 
-OperationCacheClient::OperationCacheClient() : tlsCapacity_(PARAMETER.cache.TLSSize), isolate_(nullptr) {
+OperationCacheClient::OperationCacheClient() : flsCapacity_(PARAMETER.cache.FLSSize), isolate_(nullptr) {
     lock_guard<mutex> lock(this->isolateMutex_);
     if (graal_create_isolate(nullptr, &this->isolate_, nullptr) != 0) {
         throw runtime_error("Failed to create GraalVM isolate for OperationCache");
@@ -43,7 +41,7 @@ inline graal_isolatethread_t* OperationCacheClient::getThreadLocalThread() {
     if (thread_local_thread != nullptr) {
             return thread_local_thread;
         }
-    return initializeNewThread();
+    return this->initializeNewThread();
 }
 
 graal_isolatethread_t* OperationCacheClient::initializeNewThread() {
@@ -55,46 +53,48 @@ graal_isolatethread_t* OperationCacheClient::initializeNewThread() {
         throw runtime_error("Failed to attach thread to GraalVM isolate");
     }
     
-    #ifdef DEBUG
-    cout << "New thread attached to GraalVM isolate: " << thread_local_thread << endl;
-    #endif
-    
     return thread_local_thread;
 }
 
-optional<QMDDEdge> OperationCacheClient::find(int64_t key, bool useTLS) {
-    if (useTLS) {
-        auto it = TLSCache_.find(key);
-        if (it == TLSCache_.end()) return nullopt;
-        tlsTouch_(it);
-        return it->second.edge;
+OperationCacheClient::FlsEntry& OperationCacheClient::fls() {
+    static boost::fibers::fiber_specific_ptr<FlsEntry> slot;
+    FlsEntry* p = slot.get();
+    if (!p) { p = new FlsEntry(); slot.reset(p); }
+    return *p;
+}
+
+optional<QMDDEdge> OperationCacheClient::find(int64_t key, bool useLocal) {
+    if (useLocal) {
+        auto& d = fls();
+        auto it = d.cache.find(key);
+        if (it == d.cache.end()) return nullopt;
+        return it->second;
     }
     return this->findGlobal(key);
 }
 
-void OperationCacheClient::insert(int64_t key, const QMDDEdge& edge, bool useTLS) {
-    if (useTLS) {
-        const int64_t cap = this->tlsCapacity_;
-
-        auto it = TLSCache_.find(key);
-        if (it != TLSCache_.end()) {
-            it->second.edge = edge;
-            tlsTouch_(it);
-            return;
-        }
-
-        TLSLru_.push_front(key);
-        TLSCache_.emplace(key, TLSEntry{edge, TLSLru_.begin()});
-        tlsEvict_();
+void OperationCacheClient::insert(int64_t key, const QMDDEdge& edge, bool useLocal) {
+    if (useLocal) {
+        const int64_t cap = this->flsCapacity_;
+        auto& d = fls();
+        auto it = d.cache.find(key);
+        if (it != d.cache.end()) { it->second = edge; return; }
+        d.cache.emplace(key, edge);
+        if (cap == 0 || (int64_t)d.cache.size() > cap) d.cache.clear();
         return;
     }
     this->insertGlobal(key, edge);
 }
 
+void OperationCacheClient::clearFiberLocalCache() {
+    auto& d = fls();
+    d.cache.clear();
+}
+
 __attribute__((hot, flatten))
 void OperationCacheClient::insertGlobal(int64_t key, const QMDDEdge& edge) {
     graal_isolatethread_t* thread = this->getThreadLocalThread();
-    cacheInsert(thread, key, edge.magnitude, edge.angle, edge.key_);
+    cacheInsert(thread, key, edge.weight.real(), edge.weight.imag(), edge.key_);
 }
 
 __attribute__((hot, flatten))
@@ -107,27 +107,11 @@ optional<QMDDEdge> OperationCacheClient::findGlobal(int64_t key) {
         return nullopt;
     }
 
-    return QMDDEdge({out.magnitude, out.angle}, out.uniqueTableKey, SonKind::QMDDNode);
-}
-
-inline void OperationCacheClient::tlsTouch_(unordered_map<int64_t, TLSEntry>::iterator it) {
-    // move to front (MRU), O(1)
-    TLSLru_.splice(TLSLru_.begin(), TLSLru_, it->second.it);
-    it->second.it = TLSLru_.begin();
-}
-
-inline void OperationCacheClient::tlsEvict_() {
-    const int64_t cap = this->tlsCapacity_;
-    if (cap == 0) {
-        TLSCache_.clear();
-        TLSLru_.clear();
-        return;
-    }
-    while (TLSCache_.size() > cap) {
-        const int64_t victim = TLSLru_.back(); // LRU
-        TLSLru_.pop_back();
-        TLSCache_.erase(victim);
-    }
+    return make_optional<QMDDEdge>(
+        complex<double>(out.real, out.imag),
+        out.uniqueTableKey,
+        SonKind::QMDDNode
+    );
 }
 
 void OperationCacheClient::cleanup() {
@@ -152,19 +136,19 @@ OperationCacheClient& OperationCacheClient::getInstance() {
     return *instance;
 }
 
-void OperationCacheClient::flushThreadLocalToGlobal() {
-    if (this->TLSCache_.empty()) return;
-    for (const auto& kv : this->TLSCache_) {
-        insertGlobal(kv.first, kv.second.edge);
+void OperationCacheClient::flushFiberLocalToGlobal() {
+    auto& d = fls();
+    if (d.cache.empty()) return;
+    for (const auto& kv : d.cache) {
+        this->insertGlobal(kv.first, kv.second);
     }
-    this->TLSCache_.clear();
-    TLSLru_.clear();
+    d.cache.clear();
 }
 
 void OperationCacheClient::saveCacheToSQLite() {
-    graal_isolatethread_t* thread = getThreadLocalThread();
+    graal_isolatethread_t* thread = this->getThreadLocalThread();
     if (thread == nullptr) {
-        thread = initializeNewThread();
+        thread = this->initializeNewThread();
         if (thread == nullptr) {
             throw runtime_error("Failed to create isolate thread for SQLite save");
         }

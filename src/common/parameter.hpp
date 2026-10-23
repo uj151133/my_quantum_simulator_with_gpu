@@ -22,6 +22,7 @@ public:
     struct ParallelismSettings {
         int fiber = 0;
         int GPU = 0;
+        int threads = 0;
     } parallelism;
     struct TableSettings {
         int size = 0;
@@ -29,7 +30,7 @@ public:
     struct CacheSettings {
         bool alive = false;
         int size = 0;
-        int TLSSize = 0;
+        int FLSSize = 0;   // ファイバー局所キャッシュの容量（エントリ数）
     } cache;
     struct DealerSettings {
         bool alive = false;

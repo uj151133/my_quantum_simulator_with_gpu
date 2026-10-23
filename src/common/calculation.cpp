@@ -1,32 +1,23 @@
 #include "calculation.hpp"
+#include <cstring>
 
-int64_t calculation::generateUniqueTableKey(const shared_ptr<QMDDNode>& node) {
-    vector<uint8_t> buffer;
-    size_t rowIdx = 0;
+int64_t calculation::generateUniqueTableKey(const QMDDNode* node) {
+    uint64_t buf[12];
+    size_t n = 0;
     for (const auto& edgeRow : node->edges) {
-        size_t colIdx = 0;
         for (const auto& edge : edgeRow) {
-            const uint8_t* rowIdx_bytes = reinterpret_cast<const uint8_t*>(&rowIdx);
-            buffer.insert(buffer.end(), rowIdx_bytes, rowIdx_bytes + sizeof(size_t));
-            const uint8_t* colIdx_bytes = reinterpret_cast<const uint8_t*>(&colIdx);
-            buffer.insert(buffer.end(), colIdx_bytes, colIdx_bytes + sizeof(size_t));
-            double magnitude = edge.magnitude;
-            double angle = edge.angle;
-            const uint8_t* magnitude_bytes = reinterpret_cast<const uint8_t*>(&magnitude);
-            const uint8_t* angle_bytes = reinterpret_cast<const uint8_t*>(&angle);
-
-            buffer.insert(buffer.end(), magnitude_bytes, magnitude_bytes + sizeof(double));
-            buffer.insert(buffer.end(), angle_bytes, angle_bytes + sizeof(double));
-
-            const uint8_t* key_bytes = reinterpret_cast<const uint8_t*>(&edge.key_);
-            buffer.insert(buffer.end(), key_bytes, key_bytes + sizeof(size_t));
-            colIdx++;
+            const double re = edge.weight.real();
+            const double im = edge.weight.imag();
+            uint64_t reBits, imBits;
+            memcpy(&reBits, &re, sizeof(reBits));
+            memcpy(&imBits, &im, sizeof(imBits));
+            buf[n++] = static_cast<uint64_t>(edge.key_);
+            buf[n++] = reBits;
+            buf[n++] = imBits;
         }
-        rowIdx++;
     }
-    // return llabs(XXH3_64bits(buffer.data(), buffer.size()));
-
-    return XXH3_64bits(buffer.data(), buffer.size());
+    const uint64_t h = XXH3_64bits(buf, sizeof(buf)) & 0x7FFFFFFFFFFFFFFFULL;
+    return static_cast<int64_t>(h == 0 ? 1 : h);
 }
 
 int64_t calculation::generateOperationCacheKey(const OperationKey& key) {

@@ -2,7 +2,7 @@
 #define BACKEND_HPP
 
 #include "../models/qmdd.hpp"
-#include "../models/sv.hpp"
+#include "../models/arrayLeaf.hpp"
 #include <cstddef>
 #include <cstdint>
 #include <vector>
@@ -42,7 +42,10 @@ struct GPUInput {
     GPUSV sv;
 
     uint32_t dim = 0;
+    uint32_t pad = 1;
 };
+
+inline uint32_t effDim(const GPUInput& in) { return in.dim * in.pad; }
 
 GPUInput flattenQMDD(const QMDDEdge& root);
 

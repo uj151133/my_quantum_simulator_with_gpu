@@ -68,6 +68,18 @@ make
 sudo make install
 ```
 
+### mimalloc (optional)
+malloc を mimalloc に置き換えると CPU 側が数%〜1 割速くなる。無くてもビルドできる。
+```zsh
+# macOS
+brew install mimalloc
+# Linux（ソースビルド、sudo 不要）
+git clone --depth 1 --branch v2.1.7 https://github.com/microsoft/mimalloc.git && cd mimalloc
+cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$HOME/opt/mimalloc && cmake --build build -j && cmake --install build
+# 本体の configure 時に場所を渡す
+cmake .. -DCMAKE_PREFIX_PATH=$HOME/opt/mimalloc
+```
+
 ### nlohmann/json (macOS)
 ```zsh
 brew install nlohmann-json
