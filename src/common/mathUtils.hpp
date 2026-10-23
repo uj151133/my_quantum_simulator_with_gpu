@@ -23,13 +23,18 @@
 #include "../common/operationCacheClient.hpp"
 #include "../common/bigBang.hpp"
 #include "../modules/backend.hpp"
+// GPU バックエンドのヘッダ。公開 API は両者で同じ内容（それぞれのファイル冒頭の注意を参照）。
+#if defined(USE_METAL)
 #include "../modules/Heian.h"
+#else
+#include "../modules/Heian.cuh"
+#endif
 
 using namespace std;
 // using namespace Eigen;
 
 namespace mathUtils {
-    QMDDEdge mul(const QMDDEdge& e0, const QMDDEdge& e1, bool onFiber = false, int depth = 0);
+    QMDDEdge mul(const QMDDEdge& e0, const QMDDEdge& e1, int depth = 0);
     // QMDDEdge mulForDiagonal(const QMDDEdge& e0, const QMDDEdge& e1);
     QMDDEdge add(const QMDDEdge& e0, const QMDDEdge& e1, int depth = 0);
     // QMDDEdge addForDiagonal(const QMDDEdge& e0, const QMDDEdge& e1);
@@ -54,9 +59,6 @@ namespace mathUtils {
 
     bool isZERO(const complex<double>& z);
 
-    double normalize(vector<vector<QMDDEdge>>& e, bool& allWeightsAreZero);
-
-    QMDDEdge beAuthentic(const QMDDEdge& e, int end);
 
     template <class T, size_t N>
     double median(const array<T, N>& a) {

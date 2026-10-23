@@ -12,20 +12,20 @@ using namespace IPC;
 
 // SharedMemoryIPCServer implementation
 SharedMemoryIPCServer::SharedMemoryIPCServer() {
-    sharedData = new SharedMemoryData();
+    this->sharedData = new SharedMemoryData();
 }
 
 SharedMemoryIPCServer::~SharedMemoryIPCServer() {
-    stop();
-    delete sharedData;
+    this->stop();
+    delete this->sharedData;
 }
 
 bool SharedMemoryIPCServer::initialize() {
-    return sharedData != nullptr;
+    return this->sharedData != nullptr;
 }
 
 void SharedMemoryIPCServer::run() {
-    isRunning = true;
+    this->isRunning = true;
     std::cout << "SharedMemory IPC Server started (supports file-based and memory-based IPC)" << std::endl;
     
     // ファイルベースIPC用のディレクトリを作成
@@ -44,7 +44,7 @@ void SharedMemoryIPCServer::run() {
     
     std::cout << "File-based IPC monitoring: " << tempDir << std::endl;
     
-    while (isRunning) {
+    while (this->isRunning) {
         try {
             // **ファイルベースIPCをチェック**
             if (std::ifstream(flagFile)) {
@@ -64,11 +64,11 @@ void SharedMemoryIPCServer::run() {
                     std::remove(flagFile.c_str());
                     
                     // リクエストを処理
-                    CircuitRequest circuitReq = parseRequest(requestStr);
-                    SimulationResult result = processCircuitRequest(circuitReq);
+                    CircuitRequest circuitReq = this->parseRequest(requestStr);
+                    SimulationResult result = this->processCircuitRequest(circuitReq);
                     
                     // レスポンスファイルに書き込み
-                    std::string response = serializeResult(result);
+                    std::string response = this->serializeResult(result);
                     std::ofstream responseStream(responseFile);
                     if (responseStream.is_open()) {
                         responseStream << response;
@@ -83,19 +83,19 @@ void SharedMemoryIPCServer::run() {
             }
             
             // **メモリベースIPCもチェック（後方互換性のため）**
-            if (sharedData && sharedData->hasRequest) {
+            if (this->sharedData && this->sharedData->hasRequest) {
                 std::cout << "🧠 Memory-based IPC request detected!" << std::endl;
-                std::string requestStr(sharedData->requestData);
-                CircuitRequest circuitReq = parseRequest(requestStr);
-                SimulationResult result = processCircuitRequest(circuitReq);
+                std::string requestStr(this->sharedData->requestData);
+                CircuitRequest circuitReq = this->parseRequest(requestStr);
+                SimulationResult result = this->processCircuitRequest(circuitReq);
                 
-                std::string response = serializeResult(result);
-                size_t responseSize = std::min(response.size(), sizeof(sharedData->responseData) - 1);
-                std::memcpy(sharedData->responseData, response.c_str(), responseSize);
-                sharedData->responseData[responseSize] = '\0';
-                sharedData->responseSize = responseSize;
-                sharedData->hasResponse = true;
-                sharedData->hasRequest = false;
+                std::string response = this->serializeResult(result);
+                size_t responseSize = std::min(response.size(), sizeof(this->sharedData->responseData) - 1);
+                std::memcpy(this->sharedData->responseData, response.c_str(), responseSize);
+                this->sharedData->responseData[responseSize] = '\0';
+                this->sharedData->responseSize = responseSize;
+                this->sharedData->hasResponse = true;
+                this->sharedData->hasRequest = false;
             }
         } catch (const std::exception& e) {
             std::cout << "❌ IPC Server error: " << e.what() << std::endl;
@@ -104,7 +104,7 @@ void SharedMemoryIPCServer::run() {
             errorResult.success = false;
             errorResult.errorMessage = e.what();
             
-            std::string response = serializeResult(errorResult);
+            std::string response = this->serializeResult(errorResult);
             
             // ファイルベースのエラーレスポンス
             std::ofstream errorResponseStream(responseFile);
@@ -115,13 +115,13 @@ void SharedMemoryIPCServer::run() {
             std::remove(flagFile.c_str()); // エラー時もフラグを削除
             
             // メモリベースのエラーレスポンス
-            if (sharedData && sharedData->hasRequest) {
-                size_t responseSize = std::min(response.size(), sizeof(sharedData->responseData) - 1);
-                std::memcpy(sharedData->responseData, response.c_str(), responseSize);
-                sharedData->responseData[responseSize] = '\0';
-                sharedData->responseSize = responseSize;
-                sharedData->hasResponse = true;
-                sharedData->hasRequest = false;
+            if (this->sharedData && this->sharedData->hasRequest) {
+                size_t responseSize = std::min(response.size(), sizeof(this->sharedData->responseData) - 1);
+                std::memcpy(this->sharedData->responseData, response.c_str(), responseSize);
+                this->sharedData->responseData[responseSize] = '\0';
+                this->sharedData->responseSize = responseSize;
+                this->sharedData->hasResponse = true;
+                this->sharedData->hasRequest = false;
             }
         }
         
@@ -130,7 +130,7 @@ void SharedMemoryIPCServer::run() {
 }
 
 void SharedMemoryIPCServer::stop() {
-    isRunning = false;
+    this->isRunning = false;
 }
 
 SimulationResult SharedMemoryIPCServer::processCircuitRequest(const CircuitRequest& request) {
@@ -336,38 +336,38 @@ std::string SharedMemoryIPCServer::serializeResult(const SimulationResult& resul
 
 // SharedMemoryIPCClient implementation
 SharedMemoryIPCClient::SharedMemoryIPCClient() {
-    sharedData = new SharedMemoryData();
+    this->sharedData = new SharedMemoryData();
 }
 
 SharedMemoryIPCClient::~SharedMemoryIPCClient() {
-    delete sharedData;
+    delete this->sharedData;
 }
 
 bool SharedMemoryIPCClient::initialize() {
-    return sharedData != nullptr;
+    return this->sharedData != nullptr;
 }
 
 SimulationResult SharedMemoryIPCClient::sendRequest(const CircuitRequest& request) {
     SimulationResult result;
     
     try {
-        std::string requestStr = serializeRequest(request);
+        std::string requestStr = this->serializeRequest(request);
         
-        size_t requestSize = std::min(requestStr.size(), sizeof(sharedData->requestData) - 1);
-        std::memcpy(sharedData->requestData, requestStr.c_str(), requestSize);
-        sharedData->requestData[requestSize] = '\0';
-        sharedData->requestSize = requestSize;
-        sharedData->hasRequest = true;
-        sharedData->hasResponse = false;
+        size_t requestSize = std::min(requestStr.size(), sizeof(this->sharedData->requestData) - 1);
+        std::memcpy(this->sharedData->requestData, requestStr.c_str(), requestSize);
+        this->sharedData->requestData[requestSize] = '\0';
+        this->sharedData->requestSize = requestSize;
+        this->sharedData->hasRequest = true;
+        this->sharedData->hasResponse = false;
         
-        while (!sharedData->hasResponse) {
+        while (!this->sharedData->hasResponse) {
             std::this_thread::sleep_for(std::chrono::milliseconds(1));
         }
         
-        std::string responseStr(sharedData->responseData);
-        result = parseResponse(responseStr);
+        std::string responseStr(this->sharedData->responseData);
+        result = this->parseResponse(responseStr);
         
-        sharedData->hasResponse = false;
+        this->sharedData->hasResponse = false;
         
     } catch (const std::exception& e) {
         result.success = false;

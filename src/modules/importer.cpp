@@ -56,7 +56,7 @@ struct SchedulerONNX::Impl {
     {
         if (!fs::exists(model_path))
             throw runtime_error("ONNX model not found: " + model_path);
-        session = Ort::Session(env, model_path.c_str(), opts);
+        this->session = Ort::Session(this->env, model_path.c_str(), this->opts);
     }
 
     vector<int> run(const vector<Core>& ops){
@@ -80,7 +80,7 @@ struct SchedulerONNX::Impl {
         const char* in_names[]  = { kInputName };
         const char* out_names[] = { kOutputName };
 
-        auto outputs = session.Run(Ort::RunOptions{nullptr},
+        auto outputs = this->session.Run(Ort::RunOptions{nullptr},
                                    in_names,  &in_tensor, 1,
                                    out_names, 1);
         if (outputs.size() != 1 || !outputs[0].IsTensor())

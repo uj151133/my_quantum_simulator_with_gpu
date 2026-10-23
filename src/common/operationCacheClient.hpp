@@ -34,18 +34,11 @@ private:
     inline graal_isolatethread_t* getThreadLocalThread();
     graal_isolatethread_t* initializeNewThread();
 
-    // static thread_local unordered_map<int64_t, QMDDEdge> TLSCache_;
-    struct TLSEntry {
-        QMDDEdge edge;
-        list<int64_t>::iterator it; // points into TLSLru_ (front=MRU, back=LRU)
+    struct FlsEntry {
+        unordered_map<int64_t, QMDDEdge> cache;
     };
-
-    static thread_local unordered_map<int64_t, TLSEntry> TLSCache_;
-    static thread_local std::list<int64_t> TLSLru_;
-    const int64_t tlsCapacity_;
-
-    inline void tlsTouch_(unordered_map<int64_t, TLSEntry>::iterator it);
-    inline void tlsEvict_();
+    static FlsEntry& fls();
+    const int64_t flsCapacity_;
 
     optional<QMDDEdge> findGlobal(int64_t key);
     void insertGlobal(int64_t key, const QMDDEdge& edge);
@@ -54,12 +47,13 @@ public:
     OperationCacheClient();
     ~OperationCacheClient();
 
-    optional<QMDDEdge> find(int64_t key, bool useTLS);
-    void insert(int64_t key, const QMDDEdge& edge, bool useTLS);
+    optional<QMDDEdge> find(int64_t key, bool useLocal);
+    void insert(int64_t key, const QMDDEdge& edge, bool useLocal);
+    void clearFiberLocalCache();
 
     static OperationCacheClient& getInstance();
     void cleanup();
-    void flushThreadLocalToGlobal();
+    void flushFiberLocalToGlobal();
 
     void saveCacheToSQLite();
 };

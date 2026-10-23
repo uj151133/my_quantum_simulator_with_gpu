@@ -1,4 +1,6 @@
 #include "threadPool.hpp"
+#include "../common/parameter.hpp"
+#include <algorithm>
 
 ThreadPool threadPool;
 
@@ -11,60 +13,70 @@ bool ThreadPool::isFiberWorkerThread_() {
 }
 
 ThreadPool::ThreadPool(size_t numThreads)
-    : workerCount_(numThreads == 0 ? 1 : numThreads) {
-    startWorkers_(workerCount_);
+    : workerCount_(numThreads) {}   // 0 = 起動時に config / hardware_concurrency から決める
+
+void ThreadPool::ensureStarted_() {
+    std::call_once(this->startOnce_, [this]() {
+        size_t n = this->workerCount_;
+        if (n == 0) n = static_cast<size_t>(std::max(0, PARAMETER.parallelism.threads));
+        if (n == 0) n = std::thread::hardware_concurrency();
+        if (n == 0) n = 1;
+        this->workerCount_ = n;
+        this->startWorkers_(n);
+    });
 }
 
 void ThreadPool::shutdown() {
-    stopWorkers_();
-    wait();
+    this->stopWorkers_();
+    this->wait();
 }
 
 ThreadPool::~ThreadPool() {
-    shutdown();
+    this->shutdown();
 }
 
 bool ThreadPool::postFiber(FiberJob job) {
-    if (!running_.load(std::memory_order_acquire)) return false;
-    return queue_.push(std::move(job)) == boost::fibers::channel_op_status::success;
+    this->ensureStarted_();
+    if (!this->running_.load(std::memory_order_acquire)) return false;
+    return this->queue_.push(std::move(job)) == boost::fibers::channel_op_status::success;
 }
 
 void ThreadPool::wait() {
-    for (auto& t : workers_) {
+    for (auto& t : this->workers_) {
         if (t.joinable()) t.join();
     }
-    workers_.clear();
+    this->workers_.clear();
 }
 
 void ThreadPool::startWorkers_(size_t n) {
-    running_.store(true, std::memory_order_release);
+    this->running_.store(true, std::memory_order_release);
 
     {
-        std::lock_guard<std::mutex> lk(startMx_);
-        started_ = 0;
+        std::lock_guard<std::mutex> lk(this->startMx_);
+        this->started_ = 0;
     }
 
-    workers_.reserve(n);
+    this->workers_.reserve(n);
     for (size_t i = 0; i < n; ++i) {
-        workers_.emplace_back([this]() { workerLoop_(); });
+        this->workers_.emplace_back([this]() { this->workerLoop_(); });
     }
 
     // 全ワーカーがスケジューラ初期化を終えるまで待つ（work_stealing の前提を満たす）
-    std::unique_lock<std::mutex> lk(startMx_);
-    startCv_.wait(lk, [this]() { return started_ == workerCount_; });
+    std::unique_lock<std::mutex> lk(this->startMx_);
+    this->startCv_.wait(lk, [this]() { return this->started_ == this->workerCount_; });
 }
 
 void ThreadPool::stopWorkers_() {
-    const bool wasRunning = running_.exchange(false, std::memory_order_acq_rel);
+    const bool wasRunning = this->running_.exchange(false, std::memory_order_acq_rel);
     if (!wasRunning) return;
-    queue_.close();
+    this->queue_.close();
 }
 
 void ThreadPool::markWorkerStarted_() {
-    std::lock_guard<std::mutex> lk(startMx_);
-    ++started_;
-    if (started_ == workerCount_) {
-        startCv_.notify_all();
+    std::lock_guard<std::mutex> lk(this->startMx_);
+    ++this->started_;
+    if (this->started_ == this->workerCount_) {
+        this->startCv_.notify_all();
     }
 }
 
@@ -77,18 +89,17 @@ void ThreadPool::workerLoop_() {
         installed = true;
 
         const std::uint32_t participants =
-            static_cast<std::uint32_t>(workerCount_ > 0 ? workerCount_ : 1);
+            static_cast<std::uint32_t>(this->workerCount_ > 0 ? this->workerCount_ : 1);
 
-        // work stealing を有効化（idle時はsuspend）
-        boost::fibers::use_scheduling_algorithm<boost::fibers::algo::work_stealing>(participants, true);
+        boost::fibers::use_scheduling_algorithm<boost::fibers::algo::work_stealing>(participants, false);
 
         // 初期化完了を通知（全員揃うのを待つ）
-        markWorkerStarted_();
+        this->markWorkerStarted_();
     }
 
-    while (running_.load(std::memory_order_acquire)) {
+    while (this->running_.load(std::memory_order_acquire)) {
         FiberJob job;
-        const auto st = queue_.pop(job);
+        const auto st = this->queue_.pop(job);
         if (st != boost::fibers::channel_op_status::success) break;
 
         // job自体は “そのまま実行” でまず安定させる（内部でspawnしたfiberはsteal対象になり得る）

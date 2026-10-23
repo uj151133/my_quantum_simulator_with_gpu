@@ -36,3 +36,10 @@ AI/qmdd_core.so
 # Gradle cache
 .gradle/
 **/.gradle/
+
+# Python 仮想環境（AI/libs 用。1GB 超あるので追跡しない）
+AI/.venv/
+AI/.venv1/
+
+# 測定結果の出力先
+results/

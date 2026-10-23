@@ -37,7 +37,7 @@ struct Core {
     static string tagToShape(const string& tagU);
     static bool isSymmetric2QTag(const string& tagU);
 
-    inline bool is2Q() const { return qubits.size()==2; }
+    inline bool is2Q() const { return this->qubits.size()==2; }
     pair<int,int> orderedPair() const;
     pair<int,int> unorderedKey() const;
     void normalize();

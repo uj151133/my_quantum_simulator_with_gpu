@@ -2,35 +2,46 @@
 #define UNIQUETABLE_HPP
 
 #include <atomic>
+#include <array>
 #include <vector>
-#include <memory>
 #include <iostream>
-// #include <shared_mutex>
 #include "../common/parameter.hpp"
 #include "qmdd.hpp"
 
 using namespace std;
 
-struct Entry {
-    int64_t key;
-    weak_ptr<QMDDNode> value;
-    Entry* next;
-    Entry(int64_t k, weak_ptr<QMDDNode> v, Entry* n=nullptr) : key(k), value(v), next(n) {}
-};
-
 class UniqueTable {
 private:
+    static inline void cpuRelax() {
+#if defined(__x86_64__) || defined(__i386__)
+        __builtin_ia32_pause();
+#elif defined(__aarch64__) || defined(__arm__)
+        __asm__ __volatile__("yield");
+#endif
+    }
+    struct SpinLock {
+        std::atomic_flag f = ATOMIC_FLAG_INIT;
+        void lock()   { while (this->f.test_and_set(std::memory_order_acquire)) { cpuRelax(); } }
+        void unlock() { this->f.clear(std::memory_order_release); }
+    };
+    static constexpr size_t LOCK_SHARDS = 8192;
     const int64_t tableSize_;
-    vector<atomic<Entry*>> table_;
+    vector<atomic<QMDDNode*>> table_;
+    mutable array<SpinLock, LOCK_SHARDS> locks_;
     UniqueTable();
     int64_t hash(int64_t hashKey) const;
+    size_t shard(int64_t idx) const { return static_cast<size_t>(idx) & (LOCK_SHARDS - 1); }
 
 public:
     UniqueTable(const UniqueTable&) = delete;
     UniqueTable& operator=(const UniqueTable&) = delete;
     static UniqueTable& getInstance();
-    void insert(int64_t hashKey, const shared_ptr<QMDDNode>& node);
-    shared_ptr<QMDDNode> find(int64_t hashKey) const;
+
+    QMDDNode* insert(int64_t hashKey, QMDDNode* node);
+    QMDDNode* find(int64_t hashKey);
+
+    void release(QMDDNode* node);
+
     void printAllEntries() const;
     void printNodeNum() const;
     int getTotalEntryCount() const;

@@ -1,4 +1,8 @@
 #include "qmdd.hpp"
+#include <stdexcept>
+#include <algorithm>
+#include <vector>
+#include <atomic>
 #include "uniqueTable.hpp"
 #include "../common/calculation.hpp"
 #include "../common/mathUtils.hpp"
@@ -16,67 +20,48 @@ QMDDEdge::QMDDEdge(complex<double> w)
 QMDDEdge::QMDDEdge(double w)
 :weight(complex<double>(w, .0)) {}
 
-QMDDEdge::QMDDEdge(complex<double> w, SonVariant son)
-    : weight(w), son_(son) {
-    this->Noah();
-    // cout << "Edge created with weight: " << weight << " and key_: " << key_ << " and isTerminal: " << isTerminal << endl;
-}
+static inline uintptr_t tagNode(QMDDNode* n) { return reinterpret_cast<uintptr_t>(n) | uintptr_t(1); }
+static inline uintptr_t tagLeaf(ArrayLeaf* l)   { return reinterpret_cast<uintptr_t>(l) | uintptr_t(2); }
 
-QMDDEdge::QMDDEdge(double w, SonVariant son)
-    : weight(complex<double>(w, .0)), son_(son){
+QMDDEdge::QMDDEdge(complex<double> w, QMDDNode* node)
+    : weight(w), son_(node ? tagNode(node) : 0), sonKind_(node ? SonKind::QMDDNode : SonKind::Terminal), isTerminal(node == nullptr) {
     this->Noah();
-    // cout << "Edge created with weight: " << weight << " and key_: " << key_ << " and isTerminal: " << isTerminal << endl;
 }
+QMDDEdge::QMDDEdge(double w, QMDDNode* node) : QMDDEdge(complex<double>(w, .0), node) {}
 
-QMDDEdge::QMDDEdge(complex<double> w, int64_t key, SonVariant son)
-    : weight(w), key_(key), son_(son) {
+QMDDEdge::QMDDEdge(complex<double> w, ArrayLeaf* leaf)
+    : weight(w), son_(leaf ? tagLeaf(leaf) : 0), sonKind_(leaf ? SonKind::ArrayLeaf : SonKind::Terminal), isTerminal(leaf == nullptr) {
+    this->retain_();
     this->Noah();
-    // cout << "Edge created with weight: " << weight << " and key_: " << key_ << " and isTerminal: " << isTerminal << endl;
 }
+QMDDEdge::QMDDEdge(double w, ArrayLeaf* leaf) : QMDDEdge(complex<double>(w, .0), leaf) {}
 
-QMDDEdge::QMDDEdge(double w, int64_t key, SonVariant son)
-    : weight(complex<double>(w, .0)), key_(key), son_(son) {
+QMDDEdge::QMDDEdge(complex<double> w, int64_t key, QMDDNode* node)
+    : weight(w), key_(key), son_(node ? tagNode(node) : 0), sonKind_(node ? SonKind::QMDDNode : SonKind::Terminal), isTerminal(node == nullptr) {
     this->Noah();
-    // cout << "Edge created with weight: " << weight << " and key_: " << key_ << " and isTerminal: " << isTerminal << endl;
 }
+QMDDEdge::QMDDEdge(double w, int64_t key, QMDDNode* node) : QMDDEdge(complex<double>(w, .0), key, node) {}
+
+QMDDEdge::QMDDEdge(complex<double> w, int64_t key, ArrayLeaf* leaf)
+    : weight(w), key_(key), son_(leaf ? tagLeaf(leaf) : 0), sonKind_(leaf ? SonKind::ArrayLeaf : SonKind::Terminal), isTerminal(leaf == nullptr) {
+    this->retain_();
+    this->Noah();
+}
+QMDDEdge::QMDDEdge(double w, int64_t key, ArrayLeaf* leaf) : QMDDEdge(complex<double>(w, .0), key, leaf) {}
 
 QMDDEdge::QMDDEdge(complex<double> w, int64_t key, SonKind kind)
     : weight(w), key_(w != complex<double>(.0, .0) ? key : 0), isTerminal(this->key_ == 0) {
-    this->sonKind_ = kind;
-    if (this->key_ != 0) {
-        if (this->sonKind_ == SonKind::QMDDNode) {
-            this->son_ = UniqueTable::getInstance().find(this->key_);
-        } else {
-            throw std::runtime_error("QMDDEdge(w, key, SonKind::SVLeaf) is unsupported; pass shared_ptr<SVLeaf> instead");
-        }
+    if (this->key_ == 0) { this->sonKind_ = SonKind::Terminal; return; }
+    if (kind != SonKind::QMDDNode) {
+        throw std::runtime_error("QMDDEdge(w, key, SonKind::ArrayLeaf) is unsupported; pass ArrayLeaf* instead");
     }
-    this->calculateDepth();
-    // cout << "Edge created with weight: " << weight << " and key_: " << key_ << " and isTerminal: " << isTerminal << endl;
+    QMDDNode* n = UniqueTable::getInstance().find(this->key_);   // 見つかれば参照 +1 済み
+    if (!n) throw std::runtime_error("QMDDEdge(w, key, kind): node for key not found in unique table");
+    this->sonKind_ = SonKind::QMDDNode;
+    this->son_ = tagNode(n);
 }
+QMDDEdge::QMDDEdge(double w, int64_t key, SonKind kind) : QMDDEdge(complex<double>(w, .0), key, kind) {}
 
-QMDDEdge::QMDDEdge(double w, int64_t key, SonKind kind)
-    : weight(complex<double>(w, .0)), key_(w != .0 ? key : 0), isTerminal(this->key_ == 0) {
-    if (this->key_ != 0) this->sonKind_ = kind;
-    if (this->sonKind_ == SonKind::QMDDNode) {
-        this->son_ = UniqueTable::getInstance().find(this->key_);
-    } else {
-        throw std::runtime_error("QMDDEdge(w, key, SonKind::SVLeaf) is unsupported; pass shared_ptr<SVLeaf> instead");
-    }
-    this->calculateDepth();
-    // cout << "Edge created with weight: " << weight << " and key_: " << key_ << " and isTerminal: " << isTerminal << endl;
-}
-
-// shared_ptr<QMDDNode> QMDDEdge::getStartNode() const {
-//     return this->sonNode_;
-// }
-
-// shared_ptr<SVLeaf> QMDDEdge::getStartLeaf() const {
-//     return this->sonLeaf_;
-// }
-
-SonVariant QMDDEdge::getSon() const {
-    return this->son_;
-}
 
 // vector<complex<double>> QMDDEdge::getAllElementsForKet() {
 //     vector<complex<double>> result;
@@ -111,23 +96,26 @@ SonVariant QMDDEdge::getSon() const {
 
 namespace {
 
-    static std::vector<std::complex<double>> readKetFromSVLeaf(const std::shared_ptr<SVLeaf>& leaf) {
-        if (!leaf) throw std::runtime_error("readKetFromSVLeaf: leaf is null");
-        const size_t dim = leaf->dim;
+    static std::vector<std::complex<double>> readKetFromArrayLeaf(const ArrayLeaf* leaf) {
+        if (!leaf) throw std::runtime_error("readKetFromArrayLeaf: leaf is null");
+        const size_t dim = leaf->dim();
         if (dim == 0) return {};
 
         const size_t total = dim * dim;
-        std::vector<float> re(total, 0.0f), im(total, 0.0f);
+        std::vector<double> re(total, 0.0), im(total, 0.0);
 
-        if (!copyGpuBufferToHostFloat(leaf->reBuf, re.data(), total) ||
-            !copyGpuBufferToHostFloat(leaf->imBuf, im.data(), total)) {
-            throw std::runtime_error("readKetFromSVLeaf: failed to copy GPU buffer");
+        // 全要素ゼロの成分はバッファを持たない（容量削減）。その場合は 0 のまま。
+        if (leaf->reBuf && !copyGpuBufferToHostDouble(leaf->reBuf, re.data(), total)) {
+            throw std::runtime_error("readKetFromArrayLeaf: failed to copy GPU buffer");
+        }
+        if (leaf->imBuf && !copyGpuBufferToHostDouble(leaf->imBuf, im.data(), total)) {
+            throw std::runtime_error("readKetFromArrayLeaf: failed to copy GPU buffer");
         }
 
         std::vector<std::complex<double>> ket(dim, {0.0, 0.0});
         for (size_t r = 0; r < dim; ++r) {
             const size_t idx = r * dim; // col=0
-            ket[r] = {static_cast<double>(re[idx]), static_cast<double>(im[idx])};
+            ket[r] = {re[idx], im[idx]};
         }
         return ket;
     }
@@ -145,11 +133,12 @@ vector<std::complex<double>> QMDDEdge::openKet() {
         return {this->weight};
     }
 
-    if (this->depth < 0) {
-        throw std::runtime_error("getAllElementsForKet: negative depth");
+    const int lv = this->level();
+    if (lv < 0) {
+        throw std::runtime_error("getAllElementsForKet: negative level");
     }
 
-    const size_t dim = static_cast<size_t>(1) << static_cast<size_t>(this->depth);
+    const size_t dim = static_cast<size_t>(1) << static_cast<size_t>(lv);
     std::vector<std::complex<double>> result(dim, {0.0, 0.0});
 
     std::stack<KetTask> st;
@@ -161,15 +150,6 @@ vector<std::complex<double>> QMDDEdge::openKet() {
 
         const QMDDEdge& e = t.edge;
         const std::complex<double> nextPrefix = t.prefix * e.weight;
-        // std::cerr
-        //     << "[openKet] pop"
-        //     << " span=" << t.span
-        //     << " base=" << t.base
-        //     << " depth=" << e.depth
-        //     << " isTerminal=" << e.isTerminal
-        //     << " sonKind=" << static_cast<int>(e.sonKind_)
-        //     << " key=" << e.key_
-        //     << " weight=(" << e.weight.real() << "," << e.weight.imag() << ")\n";
 
         if (e.isTerminal) {
             // identity 規約: カット終端 w は w·I_{span} を表す。
@@ -178,12 +158,11 @@ vector<std::complex<double>> QMDDEdge::openKet() {
             continue;
         }
 
-        if (e.sonKind_ == SonKind::SVLeaf) {
-            auto leaf = get<shared_ptr<SVLeaf>>(e.getSon());
-            auto ket = readKetFromSVLeaf(leaf);
+        if (e.sonKind_ == SonKind::ArrayLeaf) {
+            auto ket = readKetFromArrayLeaf(e.leaf());
 
             if (ket.size() != t.span) {
-                throw std::runtime_error("getAllElementsForKet: SVLeaf dim mismatch");
+                throw std::runtime_error("getAllElementsForKet: ArrayLeaf dim mismatch");
             }
             for (size_t i = 0; i < t.span; ++i) {
                 result[t.base + i] += nextPrefix * ket[i];
@@ -195,7 +174,7 @@ vector<std::complex<double>> QMDDEdge::openKet() {
             throw std::runtime_error("getAllElementsForKet: unknown son kind");
         }
 
-        auto node = std::get<std::shared_ptr<QMDDNode>>(e.getSon());
+        const QMDDNode* node = e.node();
         if (!node) throw std::runtime_error("getAllElementsForKet: null QMDD node");
 
         if (node->edges.size() != 2 || node->edges[0].size() != 2 || node->edges[1].size() != 2) {
@@ -211,12 +190,6 @@ vector<std::complex<double>> QMDDEdge::openKet() {
             throw std::runtime_error("getAllElementsForKet: invalid span");
         }
         const size_t half = t.span / 2;
-        // std::cerr
-        //     << "[openKet] split"
-        //     << " parent_span=" << t.span
-        //     << " half=" << half
-        //     << " left(depth=" << node->edges[0][0].depth << ", key=" << node->edges[0][0].key_ << ")"
-        //     << " right(depth=" << node->edges[1][0].depth << ", key=" << node->edges[1][0].key_ << ")\n";
 
         // stackはLIFOなので、0側が先に処理されるよう 1->0 の順でpush
         st.push(KetTask{node->edges[1][0], nextPrefix, t.base + half, half});
@@ -243,13 +216,13 @@ ostream& operator<<(ostream& os, const QMDDEdge& edge) {
     os << "Weight = " << edge.weight
         << ", Key = " << (edge.key_ == 0 ? "Null" : std::to_string(edge.key_))
         << ", isTerminal = " << edge.isTerminal
-        << ", SonKind = " << (edge.sonKind_ == SonKind::Terminal ? "Terminal" : (edge.sonKind_ == SonKind::QMDDNode ? "QMDDNode" : "SVLeaf"))
-        << ", Depth = " << edge.depth
+        << ", SonKind = " << (edge.sonKind_ == SonKind::Terminal ? "Terminal" : (edge.sonKind_ == SonKind::QMDDNode ? "QMDDNode" : "ArrayLeaf"))
+        << ", Level = " << edge.level()
         << "\n";
 
     // if (edge.sonKind_ == SonKind::QMDDNode) {
     //     os << "    SonNode: " << *edge.sonNode_ << "\n";
-    // } else if (edge.sonKind_ == SonKind::SVLeaf) {
+    // } else if (edge.sonKind_ == SonKind::ArrayLeaf) {
     //     os << "    SonLeaf: " << *edge.sonLeaf_  << "\n";
     // } else {
     //     os << "    NULL" << "\n";
@@ -259,50 +232,74 @@ ostream& operator<<(ostream& os, const QMDDEdge& edge) {
 }
 
 void QMDDEdge::Noah() {
-    visit([&](auto const& child) {
-        using T = decay_t<decltype(child)>;
-        if constexpr (std::is_same_v<T, monostate>) {
-            this->sonKind_ = SonKind::Terminal;
+    switch (this->sonKind_) {
+        case SonKind::Terminal:
             this->isTerminal = true;
             this->key_ = 0;
-        } else if constexpr (std::is_same_v<T, shared_ptr<QMDDNode>>) {
-            if (!child) throw std::runtime_error("QMDDNode child is null");
-            this->sonKind_ = SonKind::QMDDNode;
+            this->son_ = 0;
+            return;
+        case SonKind::QMDDNode: {
+            QMDDNode* n = this->node();
+            if (!n) throw std::runtime_error("QMDDNode child is null");
             this->isTerminal = false;
             if (this->key_ == 0) {
-                this->key_ = calculation::generateUniqueTableKey(child);
+                this->key_ = (n->key != 0) ? n->key : calculation::generateUniqueTableKey(n);
             }
-            UniqueTable::getInstance().insert(this->key_, child);
-            this->calculateDepth();
-        } else if constexpr (std::is_same_v<T, shared_ptr<SVLeaf>>) {
-            if (!child) throw std::runtime_error("SVLeaf child is null");
-            this->sonKind_ = SonKind::SVLeaf;
-            this->isTerminal = false;
-            this->calculateDepth();
+            // ユニークテーブルに登録。同内容が既にあればそれに差し替え、未登録の複製はここで捨てる。
+            // insert は返すノードの参照カウントを +1 して返す（このエッジが所有する）。
+            QMDDNode* canonical = UniqueTable::getInstance().insert(this->key_, n);
+            if (canonical != n && n->key == 0) delete n;   // 未登録の複製はここで捨てる（子エッジの参照はデストラクタが返す）
+            this->son_ = tagNode(canonical);
+            return;
         }
-    }, this->son_);
+        case SonKind::ArrayLeaf: {
+            ArrayLeaf* l = this->leaf();
+            if (!l) throw std::runtime_error("ArrayLeaf child is null");
+            this->isTerminal = false;
+            if (this->key_ == 0) {
+                this->key_ = l->id != 0 ? l->id : static_cast<int64_t>(reinterpret_cast<uintptr_t>(l));
+            }
+            return;
+        }
+    }
 }
 
-void QMDDEdge::calculateDepth() {
-    if (this->sonKind_ == SonKind::Terminal) {
-        this->depth = 0;
-    } else if (this->sonKind_ == SonKind::SVLeaf) {
-        if (holds_alternative<monostate>(this->son_)) {
-            throw std::runtime_error("QMDDEdge::calculateDepth: sonLeaf_ is null");
-        }
-        this->depth = static_cast<int>(log2(get<shared_ptr<SVLeaf>>(this->son_)->dim));
+// ---- 根の参照カウント ----
+static std::atomic<bool> g_releaseDisabled{false};
+void disableEdgeReleaseAtExit() { g_releaseDisabled.store(true, std::memory_order_relaxed); }
+
+void QMDDEdge::retain_() const {
+    const uintptr_t tag = this->son_ & uintptr_t(3);
+    if (tag == uintptr_t(1)) {
+        reinterpret_cast<QMDDNode*>(this->son_ & ~uintptr_t(3))->refCount.fetch_add(1, std::memory_order_relaxed);
+    } else if (tag == uintptr_t(2)) {
+        reinterpret_cast<ArrayLeaf*>(this->son_ & ~uintptr_t(3))->refCount.fetch_add(1, std::memory_order_relaxed);
     }
-    else {
-        vector<int> depths;
-        for (const auto& edgeRow : get<shared_ptr<QMDDNode>>(this->son_)->edges) {
-            for (const auto& edge : edgeRow) {
-                depths.push_back(edge.depth);
-            }
+}
+void QMDDEdge::release_() {
+    if (g_releaseDisabled.load(std::memory_order_relaxed)) return;   // 終了処理中は解放しない（OS に任せる）
+    const uintptr_t tag = this->son_ & uintptr_t(3);
+    if (tag == uintptr_t(1)) {
+        QMDDNode* n = reinterpret_cast<QMDDNode*>(this->son_ & ~uintptr_t(3));
+        if (n->refCount.fetch_sub(1, std::memory_order_acq_rel) == 1) {
+            UniqueTable::getInstance().release(n);   // テーブルから外して delete（他スレッドが拾い直していれば何もしない）
         }
-        // return 1 + this->getStartNode()->edges[0][0].depth;
-        this->depth = 1 + *max_element(depths.begin(), depths.end());
+    } else if (tag == uintptr_t(2)) {
+        ArrayLeaf* l = reinterpret_cast<ArrayLeaf*>(this->son_ & ~uintptr_t(3));
+        if (l->refCount.fetch_sub(1, std::memory_order_acq_rel) == 1) delete l;   // GPU バッファはデストラクタが返す
     }
-    return;
+}
+
+ArrayLeaf* pluck(size_t dim, void* reBuf, void* imBuf, int64_t id) {
+    return new ArrayLeaf(dim, reBuf, imBuf, id);   // 所有は最初にこれを包む QMDDEdge へ
+}
+
+int QMDDEdge::level() const {
+    switch (this->sonKind_) {
+        case SonKind::Terminal: return 0;
+        case SonKind::ArrayLeaf:   return this->leaf()->level;
+        default:                return this->node()->level;
+    }
 }
 
 /////////////////////////////////////
@@ -311,21 +308,26 @@ void QMDDEdge::calculateDepth() {
 //
 /////////////////////////////////////
 
-QMDDNode::QMDDNode(const vector<vector<QMDDEdge>>& edges) : edges(edges) {}
+static int levelOf(const EdgeMatrix& e) {
+    int m = 0;
+    for (const auto& row : e) for (const auto& x : row) m = std::max(m, x.level());
+    return 1 + m;
+}
 
-QMDDNode& QMDDNode::operator=(QMDDNode&& other) noexcept {
-    if (this != &other) {
-        this->edges = std::move(other.edges);
-        other.edges.clear();
+QMDDNode::QMDDNode(const EdgeMatrix& edges) : edges(edges), level(levelOf(this->edges)) {}
+QMDDNode::QMDDNode(EdgeMatrix&& edges) noexcept : edges(std::move(edges)), level(levelOf(this->edges)) {}
+
+QMDDNode::QMDDNode(const vector<vector<QMDDEdge>>& e) {
+    if (e.size() != 2 || e[0].size() != 2 || e[1].size() != 2) {
+        throw std::invalid_argument("QMDDNode: edges must be 2x2");
     }
-    return *this;
+    this->edges = {{ {e[0][0], e[0][1]}, {e[1][0], e[1][1]} }};
+    this->level = levelOf(this->edges);
 }
 
 bool QMDDNode::operator==(const QMDDNode& other) const {
-    if (this->edges.size() != other.edges.size()) return false;
-    for (size_t i = 0; i < edges.size(); ++i) {
-        if (this->edges[i].size() != other.edges[i].size()) return false;
-        for (size_t j = 0; j < edges[i].size(); ++j) {
+    for (size_t i = 0; i < 2; ++i) {
+        for (size_t j = 0; j < 2; ++j) {
             if (this->edges[i][j] != other.edges[i][j]) return false;
         }
     }
@@ -338,9 +340,9 @@ bool QMDDNode::operator!=(const QMDDNode& other) const {
 
 ostream& operator<<(ostream& os, const QMDDNode& node) {
     os << "Node with " << node.edges.size() << " rows of edges \n";
-    for (int i = 0; i < node.edges.size(); i++) {
-        for (int j = 0; j < node.edges[i].size(); j++) {
-            auto edge = node.edges[i][j];
+    for (size_t i = 0; i < node.edges.size(); i++) {
+        for (size_t j = 0; j < node.edges[i].size(); j++) {
+            const auto& edge = node.edges[i][j];
             os << "    Edge (" << i << ", " << j << "): " << edge << "\n";
         }
     }
@@ -365,7 +367,7 @@ vector<complex<double>> QMDDNode::getWeights() const {
 /////////////////////////////////////
 
 QMDDGate::QMDDGate(QMDDEdge edge)
-    : initialEdge_(edge){}
+    : initialEdge_(edge) {}
 
 // shared_ptr<QMDDNode> QMDDGate::getStartNode() const {
 //     return this->initialEdge_.getStartNode();

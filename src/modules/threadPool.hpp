@@ -18,7 +18,7 @@
 
 class ThreadPool {
 public:
-    explicit ThreadPool(size_t numThreads = std::thread::hardware_concurrency());
+    explicit ThreadPool(size_t numThreads = 0);
     ~ThreadPool();
     void shutdown();
 
@@ -53,7 +53,8 @@ public:
             return fut;
         }
 
-        const bool ok = postFiber([prom, fn = std::forward<F>(f)]() mutable {
+        this->ensureStarted_();
+        const bool ok = this->postFiber([prom, fn = std::forward<F>(f)]() mutable {
             try {
                 if constexpr (std::is_void_v<R>) {
                     fn();
@@ -88,6 +89,8 @@ private:
     std::condition_variable startCv_;
     size_t started_{0};
 
+    std::once_flag startOnce_;
+    void ensureStarted_();
     void startWorkers_(size_t n);
     void stopWorkers_();
     void workerLoop_();

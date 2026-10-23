@@ -1,7 +1,7 @@
 #ifndef QMDD_HPP
 #define QMDD_HPP
 
-#include <variant>
+#include <atomic>
 #include <iostream>
 #include <complex>
 #include <cstring>
@@ -14,7 +14,7 @@
 #include <tuple>
 #include <boost/fiber/all.hpp>
 #include <stack>
-#include "sv.hpp"
+#include "arrayLeaf.hpp"
 
 using namespace std;
 
@@ -37,7 +37,7 @@ enum class OperationType {
 enum class SonKind : uint8_t {
     Terminal,
     QMDDNode,
-    SVLeaf
+    ArrayLeaf
 };
 
 // using OperationKey = tuple<QMDDEdge, OperationType, QMDDEdge>;
@@ -45,57 +45,96 @@ using OperationKey = pair<int64_t, int64_t>;
 
 using OperationResult = pair<complex<double>, int64_t>;
 
-using SonVariant = variant<monostate, shared_ptr<QMDDNode>, shared_ptr<SVLeaf>>;
-
-
 struct QMDDEdge{
     complex<double> weight = complex<double>(.0, .0);
     int64_t key_ = 0;
-    // shared_ptr<QMDDNode> sonNode_ = nullptr;
-    // shared_ptr<SVLeaf> sonLeaf_ = nullptr;
-    SonVariant son_ = monostate();
+    uintptr_t son_ = 0;
     SonKind sonKind_ = SonKind::Terminal;
     bool isTerminal = true;
-    int depth = 0;
 
     QMDDEdge();
     QMDDEdge(complex<double> w);
     QMDDEdge(double w);
-    QMDDEdge(complex<double> w, SonVariant son);
-    QMDDEdge(double w, SonVariant son);
-    QMDDEdge(complex<double> w, int64_t key, SonVariant son);
-    QMDDEdge(double w, int64_t key, SonVariant son);
+    QMDDEdge(complex<double> w, QMDDNode* node);
+    QMDDEdge(double w, QMDDNode* node);
+    QMDDEdge(complex<double> w, ArrayLeaf* leaf);
+    QMDDEdge(double w, ArrayLeaf* leaf);
+    QMDDEdge(complex<double> w, int64_t key, QMDDNode* node);
+    QMDDEdge(double w, int64_t key, QMDDNode* node);
+    QMDDEdge(complex<double> w, int64_t key, ArrayLeaf* leaf);
+    QMDDEdge(double w, int64_t key, ArrayLeaf* leaf);
     QMDDEdge(complex<double> w, int64_t key, SonKind kind);
     QMDDEdge(double w, int64_t key, SonKind kind);
-    // QMDDEdge(complex<double> w, int64_t key, shared_ptr<QMDDNode> n, shared_ptr<SVLeaf> l, SonKind kind);
-    QMDDEdge(const QMDDEdge& other) = default;
-    // shared_ptr<QMDDNode> getStartNode() const;
-    // shared_ptr<SVLeaf> getStartLeaf() const;
-    SonVariant getSon() const;
+    QMDDEdge(const QMDDEdge& other)
+        : weight(other.weight), key_(other.key_), son_(other.son_), sonKind_(other.sonKind_), isTerminal(other.isTerminal) { this->retain_(); }
+    QMDDEdge& operator=(const QMDDEdge& other) {
+        if (this != &other) {
+            other.retain_();
+            this->release_();
+            this->weight = other.weight; this->key_ = other.key_; this->son_ = other.son_; this->sonKind_ = other.sonKind_; this->isTerminal = other.isTerminal;
+        }
+        return *this;
+    }
+    // ムーブは所有を移すだけで参照カウントを触らない（コピーはアトミックな +1、元が消えるとき −1 が要る）。
+    // 移した後の元は「重み 0 の終端」にしておくので、そのデストラクタは何もしない。
+    // noexcept にしておかないと vector の再確保でムーブが使われない。
+    QMDDEdge(QMDDEdge&& other) noexcept
+        : weight(other.weight), key_(other.key_), son_(other.son_), sonKind_(other.sonKind_), isTerminal(other.isTerminal) {
+        other.weight = complex<double>(.0, .0); other.key_ = 0; other.son_ = 0;
+        other.sonKind_ = SonKind::Terminal; other.isTerminal = true;
+    }
+    QMDDEdge& operator=(QMDDEdge&& other) noexcept {
+        if (this != &other) {
+            this->release_();
+            this->weight = other.weight; this->key_ = other.key_; this->son_ = other.son_; this->sonKind_ = other.sonKind_; this->isTerminal = other.isTerminal;
+            other.weight = complex<double>(.0, .0); other.key_ = 0; other.son_ = 0;
+            other.sonKind_ = SonKind::Terminal; other.isTerminal = true;
+        }
+        return *this;
+    }
+    ~QMDDEdge() { this->release_(); }
+
+    QMDDNode* node() const { return this->sonKind_ == SonKind::QMDDNode ? reinterpret_cast<QMDDNode*>(this->son_ & ~uintptr_t(3)) : nullptr; }
+    ArrayLeaf* leaf() const { return this->sonKind_ == SonKind::ArrayLeaf   ? reinterpret_cast<ArrayLeaf*>(this->son_ & ~uintptr_t(3))   : nullptr; }
+
     vector<complex<double>> openKet();
-    ~QMDDEdge() = default;
-    QMDDEdge& operator=(const QMDDEdge& other) = default;
     bool operator==(const QMDDEdge& other) const;
     bool operator!=(const QMDDEdge& other) const;
     friend ostream& operator<<(ostream& os, const QMDDEdge& edge);
     void Noah();
-    void calculateDepth();
+    int level() const;
+private:
+    void retain_() const;    // 子の参照カウント +1（終端なら何もしない）
+    void release_();         // 子の参照カウント -1。0 になったら解放
 };
 
-struct QMDDNode {
-    vector<vector<QMDDEdge>> edges;
 
+using EdgeMatrix = std::array<std::array<QMDDEdge, 2>, 2>;
+
+struct QMDDNode {
+    EdgeMatrix edges;
+    int level = 0;   // このノードが担当する量子ビットの位置（1 始まり）。= 1 + 子の level の最大。生成時に確定し、以後不変
+    int64_t key = 0;                      // ユニークテーブルに登録されたときのキー（0 = 未登録）
+    std::atomic<uint32_t> refCount{0};    // このノードを指すエッジの数。0 になった瞬間にテーブルから外して解放
+    QMDDNode* next = nullptr;             // ユニークテーブルのバケット内の鎖
+
+    explicit QMDDNode(const EdgeMatrix& edges);
+    explicit QMDDNode(EdgeMatrix&& edges) noexcept;
     QMDDNode(const vector<vector<QMDDEdge>>& edges);
     ~QMDDNode() = default;
-    QMDDNode(const QMDDNode& other) = default;
-    QMDDNode& operator=(const QMDDNode& other) = default;
-    QMDDNode(QMDDNode&& other) noexcept = default;
-    QMDDNode& operator=(QMDDNode&& other) noexcept;
+    QMDDNode(const QMDDNode& other) : edges(other.edges), level(other.level) {}   // 内容だけ複製（登録情報は写さない）
+    QMDDNode& operator=(const QMDDNode& other) = delete;
+    QMDDNode(QMDDNode&& other) = delete;
+    QMDDNode& operator=(QMDDNode&& other) = delete;
     bool operator==(const QMDDNode& other) const;
     bool operator!=(const QMDDNode& other) const;
     friend ostream& operator<<(ostream& os, const QMDDNode& node);
     vector<complex<double>> getWeights() const;
 };
+void disableEdgeReleaseAtExit();
+template <class... Args>
+inline QMDDNode* bet(Args&&... args) { return new QMDDNode(std::forward<Args>(args)...); }
+ArrayLeaf* pluck(size_t dim, void* reBuf, void* imBuf, int64_t id);
 
 class QMDDGate{
 private:

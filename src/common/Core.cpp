@@ -4,7 +4,7 @@ const unordered_set<string> cancerSTAGE4 = {"H", "V", "Vdg", "VDG"};
 const unordered_set<string> cancerSTAGE3 = {"Rx", "RX", "Ry", "RY"};
 
 bool Core::isCancer() const {
-    return (cancerSTAGE4.contains(this->tag) || cancerSTAGE3.contains(this->tag)) && !(mathUtils::isMultiplePI(this->theta));
+    return (cancerSTAGE4.contains(this->tag) || (cancerSTAGE3.contains(this->tag)) && !(mathUtils::isMultiplePI(this->theta)));
 }
 
 string Core::upper(string s){
@@ -34,26 +34,26 @@ bool Core::isSymmetric2QTag(const string& tagU){
 }
 
 pair<int,int> Core::orderedPair() const{
-    return (qubits.size()==2) ? pair<int,int>{qubits[0], qubits[1]} : pair<int,int>{-1,-1};
+    return (this->qubits.size()==2) ? pair<int,int>{this->qubits[0], this->qubits[1]} : pair<int,int>{-1,-1};
 }
 
 pair<int,int> Core::unorderedKey() const{
-    if (qubits.size()!=2) return {-1,-1};
-    int a = qubits[0], b = qubits[1];
+    if (this->qubits.size()!=2) return {-1,-1};
+    int a = this->qubits[0], b = this->qubits[1];
     return (a<b) ? pair<int,int>{a,b} : pair<int,int>{b,a};
 }
 
 void Core::normalize(){
-    tag = upper(tag);
+    this->tag = upper(this->tag);
 
     {
         unordered_set<int> seen;
-        vector<int> uniq; uniq.reserve(qubits.size());
-        for(int q : qubits){
+        vector<int> uniq; uniq.reserve(this->qubits.size());
+        for(int q : this->qubits){
             if(seen.insert(q).second) uniq.push_back(q);
         }
-        qubits.swap(uniq);
+        this->qubits.swap(uniq);
     }
 
-    shape = tagToShape(tag);
+    this->shape = tagToShape(this->tag);
 }

@@ -12,7 +12,7 @@ static inline void setRootWeight(GPUInput& out, const QMDDEdge& root) {
 }
 
 static void fillNode(
-    const shared_ptr<QMDDNode>& node,
+    const QMDDNode* node,
     int32_t nodeIndex,
     unordered_map<int64_t, int32_t>& keyToIndex,
     vector<GPUEdge>& outEdges
@@ -45,7 +45,7 @@ static void fillNode(
                     const size_t childBase = static_cast<size_t>(newIndex) * 4;
                     if (outEdges.size() < childBase + 4) outEdges.resize(childBase + 4);
 
-                    fillNode(get<shared_ptr<QMDDNode>>(e.getSon()), newIndex, keyToIndex, outEdges);
+                    fillNode(e.node(), newIndex, keyToIndex, outEdges);
 
                     ge.childIndex = newIndex;
                 } else {
@@ -72,7 +72,7 @@ GPUInput flattenQMDD(const QMDDEdge& root) {
     GPUInput out;
     out.kind = SonKind::QMDDNode;
     setRootWeight(out, root);
-    out.dim = 1u << root.depth;
+    out.dim = 1u << root.level();
 
     unordered_map<int64_t, int32_t> keyToIndex;
     keyToIndex.reserve(1024);
@@ -81,7 +81,7 @@ GPUInput flattenQMDD(const QMDDEdge& root) {
 
     out.qmdd.edges.resize(4);
 
-    fillNode(get<shared_ptr<QMDDNode>>(root.getSon()), 0, keyToIndex, out.qmdd.edges);
+    fillNode(root.node(), 0, keyToIndex, out.qmdd.edges);
 
     return out;
 }
@@ -89,14 +89,14 @@ GPUInput flattenQMDD(const QMDDEdge& root) {
 GPUInput wrapSV(const QMDDEdge& root) {
 
     GPUInput out;
-    out.kind = SonKind::SVLeaf;
+    out.kind = SonKind::ArrayLeaf;
     setRootWeight(out, root);
 
-    shared_ptr<SVLeaf> leaf = get<shared_ptr<SVLeaf>>(root.getSon());
+    const ArrayLeaf* leaf = root.leaf();
     if (!leaf) {
-        throw runtime_error("wrapSVEdge: edge does not reference SVLeaf.");
+        throw runtime_error("wrapSVEdge: edge does not reference ArrayLeaf.");
     }
-    out.dim = static_cast<uint32_t>(leaf->dim);
+    out.dim = static_cast<uint32_t>(leaf->dim());
 
     out.sv.reHandle = leaf->reBuf;
     out.sv.imHandle = leaf->imBuf;
@@ -108,7 +108,7 @@ GPUInput farewell(const QMDDEdge& root) {
     switch (root.sonKind_) {
         case SonKind::QMDDNode:
             return flattenQMDD(root);
-        case SonKind::SVLeaf:
+        case SonKind::ArrayLeaf:
             return wrapSV(root);
         case SonKind::Terminal: {
             GPUInput out;

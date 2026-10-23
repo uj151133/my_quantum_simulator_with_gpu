@@ -226,6 +226,8 @@ set(GPU_BACKEND_SRC "")
 if(APPLE)
     add_compile_definitions(USE_METAL)
     set(GPU_BACKEND_SRC src/modules/Heian.mm)
+    # Heian.mm は ARC 前提（バッファの所有権を __bridge_retained / __bridge_transfer で受け渡す）
+    set_source_files_properties(src/modules/Heian.mm PROPERTIES COMPILE_OPTIONS "-fobjc-arc")
     set(METAL_SRC ${CMAKE_SOURCE_DIR}/src/modules/Heian.metal)
     set(METAL_AIR ${CMAKE_BINARY_DIR}/Heian.air)
     set(METAL_LIB ${CMAKE_BINARY_DIR}/Heian.metallib)
@@ -394,6 +396,17 @@ if(APPLE AND ONNXRUNTIME_LIB)
         BUILD_RPATH "${ONNX_LIB_DIR}"
         INSTALL_RPATH "@loader_path;${ONNX_LIB_DIR}"
     )
+endif()
+
+# mimalloc（任意）: 見つかれば malloc / free / new / delete を mimalloc に置き換える。ソース側の変更は不要。
+#   Linux: ソースビルドしたものを -DCMAKE_PREFIX_PATH=$HOME/opt/mimalloc で指す（apt の libmimalloc-dev でも可）
+#   macOS: brew install mimalloc（/opt/homebrew 配下は自動で見つかる）
+find_package(mimalloc CONFIG QUIET)
+if(mimalloc_FOUND)
+    target_link_libraries(qmdd_sim PRIVATE mimalloc)
+    message(STATUS "mimalloc: ${MIMALLOC_LIBRARY_DIR}")
+else()
+    message(STATUS "mimalloc: not found -> system malloc")
 endif()
 
 if(UNIX AND NOT APPLE)
