@@ -32,6 +32,10 @@ struct GPUSV {
     void* imHandle = nullptr;
 };
 
+// 行列の意味上の形（ビットで持つ。両方立つこともある：スカラーや零行列）
+constexpr uint32_t SHAPE_COL  = 1u;   // 第 0 列以外がゼロ
+constexpr uint32_t SHAPE_DIAG = 2u;   // 非対角がゼロ
+
 struct GPUInput {
     SonKind kind;
 
@@ -43,9 +47,17 @@ struct GPUInput {
 
     uint32_t dim = 0;
     uint32_t pad = 1;
+
+    uint32_t shape = 0;               // SHAPE_* の組（pad を掛ける前の形）
+    uint32_t store = STORE_GENERAL;   // ArrayLeaf のバッファの持ち方（LeafStore）
 };
 
 inline uint32_t effDim(const GPUInput& in) { return in.dim * in.pad; }
+
+enum class GpuOp { Mul, Add, Kron };
+
+// 結果の密葉をどの持ち方で作るか。オペランドの形から決め、config（leaf.column / leaf.diagonal）で絞る。
+uint32_t outputStore(GpuOp op, const GPUInput& A, const GPUInput& B);
 
 GPUInput flattenQMDD(const QMDDEdge& root);
 

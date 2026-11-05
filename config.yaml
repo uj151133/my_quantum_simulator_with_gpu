@@ -15,6 +15,10 @@ cache:
   size: 524288 # 2^19
   FLSSize: 117649 # 7^6
 
+leaf:              # 密葉（GPU 上の dim×dim ブロック）の持ち方
+  column: true     # 列ベクトルになる密葉は第 0 列だけ持つ（dim 要素）
+  diagonal: true   # 対角行列になる密葉は対角だけ持つ（dim 要素）
+
 circuit:
   mode: "dynamic" # "sparse", "moderate", "dense", "dynamic"
   cancerMax: 1

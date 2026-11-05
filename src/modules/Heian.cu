@@ -133,6 +133,17 @@ __device__ Cx evalDD(
     return acc;
 }
 
+// 結果の t 番目の要素が (row, col) のどこにあたるか。持ち方（LeafStore）ごとに並びが違う。
+__device__ inline void elemPos(uint32_t store, uint32_t dim, uint32_t t, uint32_t& row, uint32_t& col) {
+    if (store == STORE_COLUMN)        { row = t; col = 0u; }
+    else if (store == STORE_DIAGONAL) { row = t; col = t; }
+    else                              { row = t / dim; col = t - row * dim; }
+}
+
+__device__ inline uint32_t elemCountD(uint32_t store, uint32_t dim) {
+    return store == STORE_GENERAL ? dim * dim : dim;
+}
+
 __device__ Cx evalInput(
     const GPUInputHeaderCUDA& hdr,
     const GPUEdge* edges,
@@ -140,7 +151,6 @@ __device__ Cx evalInput(
     const double* inIm,
     uint32_t row,
     uint32_t col,
-    uint32_t tid,
     bool applyRoot
 ) {
     // 単位行列パディング（A ⊗ I_pad）を実体化せず添字変換で表す。
@@ -149,17 +159,47 @@ __device__ Cx evalInput(
         if ((row % hdr.pad) != (col % hdr.pad)) return {0.0, 0.0};
         row /= hdr.pad;
         col /= hdr.pad;
-        tid = row * hdr.dim + col;
     }
     if (hdr.kind == KIND_SV) {
+        // 持ち方に応じて (row, col) をバッファの位置に直す。持っていない位置は 0。
+        uint32_t idx;
+        if (hdr.store == STORE_COLUMN)        { if (col != 0u) return {0.0, 0.0}; idx = row; }
+        else if (hdr.store == STORE_DIAGONAL) { if (row != col) return {0.0, 0.0}; idx = row; }
+        else                                  { idx = row * hdr.dim + col; }
         // 全要素ゼロの成分はバッファを持たない（容量削減）。その場合は 0 とみなす。
-        Cx v{inRe ? inRe[tid] : 0.0, inIm ? inIm[tid] : 0.0};
+        Cx v{inRe ? inRe[idx] : 0.0, inIm ? inIm[idx] : 0.0};
         return applyRoot ? cmul({hdr.root_re, hdr.root_im}, v) : v;
     } else if (hdr.kind == KIND_QMDD) {
         Cx root = applyRoot ? Cx{hdr.root_re, hdr.root_im} : Cx{1.0, 0.0};
         return evalDD(edges, root, row, col, hdr.dim);
     }
     return {0.0, 0.0};
+}
+
+// mul の結果の (row, col) 要素。対角の葉は k = row（A 側）か k = col（B 側）だけが非ゼロなので、
+// その 1 項だけを計算する（0 の項を足さないだけで結果は同じ。符号付きゼロも +0 に揃える）。
+__device__ inline bool isDiagLeaf(const GPUInputHeaderCUDA& h) {
+    return h.kind == KIND_SV && h.store == STORE_DIAGONAL;
+}
+
+__device__ inline Cx mulElem(
+    const GPUInputHeaderCUDA& hA, const GPUEdge* eA, const double* reA, const double* imA,
+    const GPUInputHeaderCUDA& hB, const GPUEdge* eB, const double* reB, const double* imB,
+    uint32_t row, uint32_t col, uint32_t dim
+) {
+    Cx acc{0.0, 0.0};
+    if (isDiagLeaf(hA)) {
+        acc = cadd(acc, cmul(evalInput(hA, eA, reA, imA, row, row, false), evalInput(hB, eB, reB, imB, row, col, false)));
+    } else if (isDiagLeaf(hB)) {
+        acc = cadd(acc, cmul(evalInput(hA, eA, reA, imA, row, col, false), evalInput(hB, eB, reB, imB, col, col, false)));
+    } else {
+        for (uint32_t k = 0; k < dim; ++k) {
+            Cx a = evalInput(hA, eA, reA, imA, row, k, false);
+            Cx b = evalInput(hB, eB, reB, imB, k, col, false);
+            acc = cadd(acc, cmul(a, b));
+        }
+    }
+    return acc;
 }
 
 __global__ void mul_any2_kernel(
@@ -172,22 +212,17 @@ __global__ void mul_any2_kernel(
     const double* inReB,
     const double* inImB,
     double* outRe,
-    double* outIm
+    double* outIm,
+    uint32_t outStore
 ) {
     uint32_t tid = blockIdx.x * blockDim.x + threadIdx.x;
     uint32_t dim = effDimH(hdrB);
-    uint32_t total = dim * dim;
-    if (tid >= total) return;
+    if (tid >= elemCountD(outStore, dim)) return;
 
-    uint32_t row = tid / dim;
-    uint32_t col = tid - row * dim;
+    uint32_t row, col;
+    elemPos(outStore, dim, tid, row, col);
 
-    Cx acc{0.0, 0.0};
-    for (uint32_t k = 0; k < dim; ++k) {
-        Cx a = evalInput(hdrA, edgesA, inReA, inImA, row, k, row * dim + k, false);
-        Cx b = evalInput(hdrB, edgesB, inReB, inImB, k, col, k * dim + col, false);
-        acc = cadd(acc, cmul(a, b));
-    }
+    Cx acc = mulElem(hdrA, edgesA, inReA, inImA, hdrB, edgesB, inReB, inImB, row, col, dim);
 
     outRe[tid] = acc.re;
     outIm[tid] = acc.im;
@@ -231,18 +266,18 @@ __global__ void add_any2_kernel(
     const double* inReB,
     const double* inImB,
     double* outRe,
-    double* outIm
+    double* outIm,
+    uint32_t outStore
 ) {
     uint32_t tid = blockIdx.x * blockDim.x + threadIdx.x;
     uint32_t dim = effDimH(hdrB);           // pad 込みの一辺（ラッパーの total と揃える）
-    uint32_t total = dim * dim;
-    if (tid >= total) return;
+    if (tid >= elemCountD(outStore, dim)) return;
 
-    uint32_t row = tid / dim;
-    uint32_t col = tid - row * dim;
+    uint32_t row, col;
+    elemPos(outStore, dim, tid, row, col);
 
-    Cx a = evalInput(hdrA, edgesA, inReA, inImA, row, col, tid, true);
-    Cx b = evalInput(hdrB, edgesB, inReB, inImB, row, col, tid, true);
+    Cx a = evalInput(hdrA, edgesA, inReA, inImA, row, col, true);
+    Cx b = evalInput(hdrB, edgesB, inReB, inImB, row, col, true);
     Cx v = cadd(a, b);
 
     outRe[tid] = v.re;
@@ -259,25 +294,24 @@ __global__ void kron_any2_kernel(
     const double* inReB,
     const double* inImB,
     double* outRe,
-    double* outIm
+    double* outIm,
+    uint32_t outStore
 ) {
     uint32_t tid = blockIdx.x * blockDim.x + threadIdx.x;
-    uint32_t dimA = effDimH(hdrA);
     uint32_t dimB = effDimH(hdrB);
-    uint32_t dimOut = dimA * dimB;
-    uint32_t total = dimOut * dimOut;
-    if (tid >= total) return;
+    uint32_t dimOut = effDimH(hdrA) * dimB;
+    if (tid >= elemCountD(outStore, dimOut)) return;
 
-    uint32_t row = tid / dimOut;
-    uint32_t col = tid - row * dimOut;
+    uint32_t row, col;
+    elemPos(outStore, dimOut, tid, row, col);
 
     uint32_t rowA = row / dimB;
     uint32_t colA = col / dimB;
     uint32_t rowB = row % dimB;
     uint32_t colB = col % dimB;
 
-    Cx a = evalInput(hdrA, edgesA, inReA, inImA, rowA, colA, rowA * dimA + colA, false);
-    Cx b = evalInput(hdrB, edgesB, inReB, inImB, rowB, colB, rowB * dimB + colB, false);
+    Cx a = evalInput(hdrA, edgesA, inReA, inImA, rowA, colA, false);
+    Cx b = evalInput(hdrB, edgesB, inReB, inImB, rowB, colB, false);
     Cx v = cmul(a, b);
 
     outRe[tid] = v.re;
@@ -569,8 +603,8 @@ struct DenseScratch {
 // dense 化できる上限。カーネルは tid を uint32_t で索引しているので 2^32 要素は
 // そもそも扱えず、8B/要素なのでメモリにも載らない。黙って uint32 をラップさせると
 // bytes=0 で確保して未初期化メモリを読むため、ここで明示的に落とす。
-static inline uint32_t checkedTotal(const char* op, uint64_t dim) {
-    const uint64_t total = dim * dim;
+static inline uint32_t checkedElems(const char* op, uint64_t dim, uint32_t store) {
+    const uint64_t total = (store == STORE_GENERAL) ? dim * dim : dim;
     if (total > 0x7FFFFFFFull) {
         fprintf(stderr,
                 "FATAL @%s: dense block too large: dim=%llu -> %llu elements "
@@ -607,7 +641,8 @@ struct JobDescCUDA {
     const double*  inReB;  const double* inImB;
     double*        outRe;  double*       outIm;
     uint32_t dim;          // 結果の一辺
-    uint32_t total;        // dim * dim
+    uint32_t total;        // 結果の要素数（持ち方で決まる。GENERAL なら dim*dim、列・対角なら dim）
+    uint32_t outStore;     // 結果の持ち方（LeafStore）
     uint32_t firstBlock;   // このジョブの先頭ブロック番号
     uint32_t partialOff;   // 部分和バッファ内のオフセット
     uint32_t nBlocks;
@@ -833,7 +868,7 @@ inline void run_postprocess(
 } // namespace
 
 // --- 演算カーネル（バッチ版）------------------------------------------------
-// 中身は既存の *_any2_kernel と同一。添字に [op] が付いただけ。
+// 1 ブロックは 1 ジョブに属し、ジョブの記述子（[op]）を引いて計算する。
 __global__ void batch_op_kernel(const JobDescCUDA* jobs,
                                 const uint32_t* blockToOp,
                                 uint32_t opKind) {
@@ -842,34 +877,24 @@ __global__ void batch_op_kernel(const JobDescCUDA* jobs,
     const uint32_t tid = (blockIdx.x - j.firstBlock) * blockDim.x + threadIdx.x;
     if (tid >= j.total) return;
 
+    // 結果の tid 番目が (row, col) のどこか（持ち方で並びが違う）
+    uint32_t row, col;
+    elemPos(j.outStore, j.dim, tid, row, col);
+
     Cx v{0.0, 0.0};
     if (opKind == BATCH_OP_MUL) {
-        const uint32_t dim = j.dim;
-        const uint32_t row = tid / dim, col = tid - row * dim;
-        Cx acc{0.0, 0.0};
-        for (uint32_t k = 0; k < dim; ++k) {
-            Cx a = evalInput(j.hdrA, j.edgesA, j.inReA, j.inImA, row, k, row * dim + k, false);
-            Cx b = evalInput(j.hdrB, j.edgesB, j.inReB, j.inImB, k, col, k * dim + col, false);
-            acc = cadd(acc, cmul(a, b));
-        }
-        v = acc;
+        v = mulElem(j.hdrA, j.edgesA, j.inReA, j.inImA, j.hdrB, j.edgesB, j.inReB, j.inImB, row, col, j.dim);
     } else if (opKind == BATCH_OP_ADD) {
-        const uint32_t dim = j.dim;
-        const uint32_t row = tid / dim, col = tid - row * dim;
-        Cx a = evalInput(j.hdrA, j.edgesA, j.inReA, j.inImA, row, col, tid, true);
-        Cx b = evalInput(j.hdrB, j.edgesB, j.inReB, j.inImB, row, col, tid, true);
+        Cx a = evalInput(j.hdrA, j.edgesA, j.inReA, j.inImA, row, col, true);
+        Cx b = evalInput(j.hdrB, j.edgesB, j.inReB, j.inImB, row, col, true);
         v = cadd(a, b);
     } else {  // KRON
-        // 実効次元（dim × pad）を使うこと。素の dim で割ると、桁合わせが入った
-        // オペランドで行・列の対応が崩れる。単発版 kron_any2_kernel は effDimH を
-        // 使っており、バッチ版だけ素の dim なのは取りこぼしだった。
-        const uint32_t dimA = effDimH(j.hdrA), dimB = effDimH(j.hdrB);
-        const uint32_t dimOut = j.dim;
-        const uint32_t row = tid / dimOut, col = tid - row * dimOut;
+        // 実効次元（dim × pad）で行・列を分解すること（素の dim だと桁合わせで崩れる）
+        const uint32_t dimB = effDimH(j.hdrB);
         const uint32_t rowA = row / dimB, colA = col / dimB;
         const uint32_t rowB = row % dimB, colB = col % dimB;
-        Cx a = evalInput(j.hdrA, j.edgesA, j.inReA, j.inImA, rowA, colA, rowA * dimA + colA, false);
-        Cx b = evalInput(j.hdrB, j.edgesB, j.inReB, j.inImB, rowB, colB, rowB * dimB + colB, false);
+        Cx a = evalInput(j.hdrA, j.edgesA, j.inReA, j.inImA, rowA, colA, false);
+        Cx b = evalInput(j.hdrB, j.edgesB, j.inReB, j.inImB, rowB, colB, false);
         v = cmul(a, b);
     }
     j.outRe[tid] = v.re;
@@ -988,9 +1013,9 @@ static void runBatchCommon(uint32_t opKind, BatchJob* jobs, int nJobs) {
         const uint64_t dim64 = (opKind == BATCH_OP_KRON)
                              ? static_cast<uint64_t>(effDim(A)) * effDim(B)
                              : static_cast<uint64_t>(effDim(A));
-        const uint32_t total = checkedTotal(
+        const uint32_t total = checkedElems(
             opKind == BATCH_OP_MUL ? "mul(batch)" :
-            opKind == BATCH_OP_ADD ? "add(batch)" : "kron(batch)", dim64);
+            opKind == BATCH_OP_ADD ? "add(batch)" : "kron(batch)", dim64, jobs[i].outStore);
         jobs[i].dim   = static_cast<uint32_t>(dim64);
         jobs[i].outRe = poolAlloc(static_cast<size_t>(total) * sizeof(double));
         jobs[i].outIm = poolAlloc(static_cast<size_t>(total) * sizeof(double));
@@ -1012,8 +1037,9 @@ static void runBatchCommon(uint32_t opKind, BatchJob* jobs, int nJobs) {
         }
         d.outRe = static_cast<double*>(jobs[i].outRe);
         d.outIm = static_cast<double*>(jobs[i].outIm);
-        d.dim   = jobs[i].dim;
-        d.total = total;
+        d.dim      = jobs[i].dim;
+        d.total    = total;
+        d.outStore = jobs[i].outStore;
 
         const uint32_t g = (total + block - 1) / block;
         d.firstBlock = static_cast<uint32_t>(blockToOp.size());
@@ -1134,7 +1160,7 @@ extern "C" void runAddBatchWrapper(BatchJob* jobs, int n)  { runBatchCommon(BATC
 extern "C" void runKronBatchWrapper(BatchJob* jobs, int n) { runBatchCommon(BATCH_OP_KRON, jobs, n); }
 
 extern "C" void runMulAny2Wrapper(
-    const GPUInput& A, const GPUInput& B,
+    const GPUInput& A, const GPUInput& B, uint32_t outStore,
     void** outRe, void** outIm, int64_t* outId, gpu_precision* outCoef
 ) {
     SlotGuard slot;                     // 作業一式を借りる（返却は自動）
@@ -1142,7 +1168,8 @@ extern "C" void runMulAny2Wrapper(
     GPUInputHeaderCUDA hdrB = makeHeader(B);
 
     const uint32_t dim = effDimH(hdrA);
-    const uint32_t total = checkedTotal("mul", static_cast<uint64_t>(dim));
+    const uint32_t dense = checkedElems("mul", static_cast<uint64_t>(dim), STORE_GENERAL);  // dense 化の大きさ
+    const uint32_t total = checkedElems("mul", static_cast<uint64_t>(dim), outStore);       // 結果の要素数
     const size_t bytes = static_cast<size_t>(total) * sizeof(double);
 
     auto* dInReA = (A.kind == SonKind::ArrayLeaf) ? static_cast<const double*>(A.sv.reHandle) : nullptr;
@@ -1158,32 +1185,34 @@ extern "C" void runMulAny2Wrapper(
     dOutIm = (double*)poolAlloc(bytes);
     int block = QMDD_BLOCK;
     int grid = static_cast<int>((total + block - 1) / block);
+    int denseGrid = static_cast<int>((dense + block - 1) / block);
 
     // --- Stage 1: QMDD オペランドを dense 化（SV はハンドルをそのまま使う）---
     const double* aRe = dInReA; const double* aIm = dInImA;
     const double* bRe = dInReB; const double* bIm = dInImB;
     if (A.kind == SonKind::QMDDNode) {
-        slot->denseA.ensure(total);
-        materialize_kernel<<<grid, block, 0, slot->stream>>>(hdrA, dEdgesA, nullptr, nullptr, slot->denseA.re, slot->denseA.im, dim);
+        slot->denseA.ensure(dense);
+        materialize_kernel<<<denseGrid, block, 0, slot->stream>>>(hdrA, dEdgesA, nullptr, nullptr, slot->denseA.re, slot->denseA.im, dim);
         aRe = slot->denseA.re; aIm = slot->denseA.im;
     }
     if (B.kind == SonKind::QMDDNode) {
-        slot->denseB.ensure(total);
-        materialize_kernel<<<grid, block, 0, slot->stream>>>(hdrB, dEdgesB, nullptr, nullptr, slot->denseB.re, slot->denseB.im, dim);
+        slot->denseB.ensure(dense);
+        materialize_kernel<<<denseGrid, block, 0, slot->stream>>>(hdrB, dEdgesB, nullptr, nullptr, slot->denseB.re, slot->denseB.im, dim);
         bRe = slot->denseB.re; bIm = slot->denseB.im;
     }
 
     // mul_any2_kernel を「両方 SV 扱い（dense）」で実行：evalDD 無しの素直な dense matmul
     // materialize 済みの dense は既に実効サイズ（パディング適用後）なので、
     // ここで pad を 1 に戻さないと evalInput が二重にパディングを掛けてしまう。
-    GPUInputHeaderCUDA svA = hdrA; svA.kind = KIND_SV; svA.dim = dim; svA.pad = 1u;
-    GPUInputHeaderCUDA svB = hdrB; svB.kind = KIND_SV; svB.dim = dim; svB.pad = 1u;
-    if (A.kind == SonKind::ArrayLeaf) { svA.dim = hdrA.dim; svA.pad = hdrA.pad; }  // 未展開なら元のまま
-    if (B.kind == SonKind::ArrayLeaf) { svB.dim = hdrB.dim; svB.pad = hdrB.pad; }
+    // dense 化したものは dim×dim を全部持つ（GENERAL）。
+    GPUInputHeaderCUDA svA = hdrA; svA.kind = KIND_SV; svA.dim = dim; svA.pad = 1u; svA.store = STORE_GENERAL;
+    GPUInputHeaderCUDA svB = hdrB; svB.kind = KIND_SV; svB.dim = dim; svB.pad = 1u; svB.store = STORE_GENERAL;
+    if (A.kind == SonKind::ArrayLeaf) { svA.dim = hdrA.dim; svA.pad = hdrA.pad; svA.store = hdrA.store; }  // 未展開なら元のまま
+    if (B.kind == SonKind::ArrayLeaf) { svB.dim = hdrB.dim; svB.pad = hdrB.pad; svB.store = hdrB.store; }
     mul_any2_kernel<<<grid, block, 0, slot->stream>>>(
         svA, svB, dEdgesA, dEdgesB,
         aRe, aIm, bRe, bIm,
-        dOutRe, dOutIm
+        dOutRe, dOutIm, outStore
     );
 
     double coef[2] = {0.0, 0.0};
@@ -1214,7 +1243,7 @@ extern "C" void runMulAny2Wrapper(
 }
 
 extern "C" void runAddAny2Wrapper(
-    const GPUInput& A, const GPUInput& B,
+    const GPUInput& A, const GPUInput& B, uint32_t outStore,
     void** outRe, void** outIm, int64_t* outId, gpu_precision* outCoef
 ) {
     SlotGuard slot;                     // 作業一式を借りる（返却は自動）
@@ -1222,7 +1251,7 @@ extern "C" void runAddAny2Wrapper(
     GPUInputHeaderCUDA hdrB = makeHeader(B);
 
     const uint32_t dim = effDimH(hdrA);
-    const uint32_t total = checkedTotal("add", static_cast<uint64_t>(dim));
+    const uint32_t total = checkedElems("add", static_cast<uint64_t>(dim), outStore);
     const size_t bytes = static_cast<size_t>(total) * sizeof(double);
 
     auto* dInReA = (A.kind == SonKind::ArrayLeaf) ? static_cast<const double*>(A.sv.reHandle) : nullptr;
@@ -1243,7 +1272,7 @@ extern "C" void runAddAny2Wrapper(
     add_any2_kernel<<<grid, block, 0, slot->stream>>>(
         hdrA, hdrB, dEdgesA, dEdgesB,
         dInReA, dInImA, dInReB, dInImB,
-        dOutRe, dOutIm
+        dOutRe, dOutIm, outStore
     );
 
     double coef[2] = {0.0, 0.0};
@@ -1269,7 +1298,7 @@ extern "C" void runAddAny2Wrapper(
 }
 
 extern "C" void runKronAny2Wrapper(
-    const GPUInput& A, const GPUInput& B,
+    const GPUInput& A, const GPUInput& B, uint32_t outStore,
     void** outRe, void** outIm, int64_t* outId, gpu_precision* outCoef
 ) {
     SlotGuard slot;                     // 作業一式を借りる（返却は自動）
@@ -1277,8 +1306,7 @@ extern "C" void runKronAny2Wrapper(
     GPUInputHeaderCUDA hdrB = makeHeader(B);
 
     const uint64_t dimOut64 = static_cast<uint64_t>(effDimH(hdrA)) * effDimH(hdrB);
-    const uint32_t total = checkedTotal("kron", dimOut64);
-    const uint32_t dimOut = static_cast<uint32_t>(dimOut64);
+    const uint32_t total = checkedElems("kron", dimOut64, outStore);
     const size_t bytes = static_cast<size_t>(total) * sizeof(double);
 
     auto* dInReA = (A.kind == SonKind::ArrayLeaf) ? static_cast<const double*>(A.sv.reHandle) : nullptr;
@@ -1299,7 +1327,7 @@ extern "C" void runKronAny2Wrapper(
     kron_any2_kernel<<<grid, block, 0, slot->stream>>>(
         hdrA, hdrB, dEdgesA, dEdgesB,
         dInReA, dInImA, dInReB, dInImB,
-        dOutRe, dOutIm
+        dOutRe, dOutIm, outStore
     );
 
     double coef[2] = {0.0, 0.0};

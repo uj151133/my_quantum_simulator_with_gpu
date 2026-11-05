@@ -70,8 +70,9 @@ struct MtlScratch {
 
 // dense 化できる上限。シェーダは tid を uint で索引しているので 2^32 要素は扱えず、
 // メモリにも載らない。uint32 が黙ってラップして不正なバッファを作るのを防ぐ。
-static inline uint32_t checkedTotal(const char* op, uint64_t dim) {
-    const uint64_t total = dim * dim;
+// store（LeafStore）が列・対角なら要素数は dim、一般なら dim*dim。
+static inline uint32_t checkedElems(const char* op, uint64_t dim, uint32_t store) {
+    const uint64_t total = (store == STORE_GENERAL) ? dim * dim : dim;
     if (total > 0x7FFFFFFFull) {
         fprintf(stderr,
                 "FATAL @%s: dense block too large: dim=%llu -> %llu elements. "
@@ -491,9 +492,10 @@ struct MtlOutputs {
     id<MTLBuffer> im   = nil;
     id<MTLBuffer> hash = nil;   // uint64_t
     id<MTLBuffer> coef = nil;   // NormValHost
+    uint32_t      store = STORE_GENERAL;   // 結果の持ち方（LeafStore）
 };
 
-// 結果の一辺（pad 込み）。kron は掛け算になるので 64 ビットで返し、checkedTotal で検査する。
+// 結果の一辺（pad 込み）。kron は掛け算になるので 64 ビットで返し、checkedElems で検査する。
 static uint64_t resultDim(BatchOpKind op, const GPUInputHeader& a, const GPUInputHeader& b) {
     return op == BATCH_OP_KRON ? (uint64_t)effDimH(a) * effDimH(b) : (uint64_t)effDimH(a);
 }
@@ -536,8 +538,9 @@ static void encodeMulAny2(MtlScratch& sc, MetalContext& ctx, id<MTLCommandBuffer
                           const MtlOperand& A, const MtlOperand& B, const MtlOutputs& out) {
     id<MTLDevice> device = ctx.device;
     const uint32_t dim   = effDimH(A.hdr);     // A,B 同 dim 前提（パディング後の実効サイズ）
-    const uint32_t total = checkedTotal("mul", (uint64_t)dim);
-    const size_t denseBytes = (size_t)total * sizeof(float);
+    const uint32_t dense = checkedElems("mul", (uint64_t)dim, STORE_GENERAL);   // dense 化の大きさ
+    const uint32_t total = checkedElems("mul", (uint64_t)dim, out.store);       // 結果の要素数
+    const size_t denseBytes = (size_t)dense * sizeof(float);
 
     id<MTLBuffer> dimBuf    = ensureSharedBytes(device, sc.dimBuf, &dim, sizeof(uint32_t));
     id<MTLBuffer> hdrBufA   = ensureSharedBytes(device, sc.hdrA, &A.hdr, sizeof(GPUInputHeader));
@@ -547,7 +550,7 @@ static void encodeMulAny2(MtlScratch& sc, MetalContext& ctx, id<MTLCommandBuffer
 
     // --- Stage 1: QMDD オペランドを dense 化（ArrayLeaf は既に dense なのでそのまま使う）---
     id<MTLComputePipelineState> matPSO = getPSO(device, ctx.library, @"materialize_any");
-    const MTLSize matGrid = MTLSizeMake(total, 1, 1);
+    const MTLSize matGrid = MTLSizeMake(dense, 1, 1);
     const MTLSize matTgs  = MTLSizeMake(matPSO.maxTotalThreadsPerThreadgroup, 1, 1);
 
     id<MTLBuffer> aRe = A.re, aIm = A.im;
@@ -580,14 +583,14 @@ static void encodeMulAny2(MtlScratch& sc, MetalContext& ctx, id<MTLCommandBuffer
     // --- mul_any2 を「両方 SV 扱い（dense）」で実行：evalDD 無しの素直な dense matmul ---
     // materialize 済みの dense は既に実効サイズ（パディング適用後）なので、
     // pad を 1 に戻さないと evalInput が二重にパディングを掛けてしまう。
-    // ArrayLeaf のまま渡すオペランドは展開していないので dim/pad を元のまま残す。
-    // Heian.cu の svA/svB と同じ扱いにすること。
+    // ArrayLeaf のまま渡すオペランドは展開していないので dim/pad/持ち方を元のまま残す。
+    // dense 化したものは dim×dim を全部持つ（GENERAL）。Heian.cu の svA/svB と同じ扱いにすること。
     GPUInputHeader svA{};
     svA.kind = KIND_SV; svA.root_re = 1.0f; svA.root_im = 0.0f;
-    svA.dim = dim; svA.pad = 1u; svA.hasRe = 1u; svA.hasIm = 1u;
+    svA.dim = dim; svA.pad = 1u; svA.hasRe = 1u; svA.hasIm = 1u; svA.store = STORE_GENERAL;
     GPUInputHeader svB = svA;
-    if (A.hdr.kind == KIND_SV) { svA.dim = A.hdr.dim; svA.pad = A.hdr.pad; svA.hasRe = A.hdr.hasRe; svA.hasIm = A.hdr.hasIm; }
-    if (B.hdr.kind == KIND_SV) { svB.dim = B.hdr.dim; svB.pad = B.hdr.pad; svB.hasRe = B.hdr.hasRe; svB.hasIm = B.hdr.hasIm; }
+    if (A.hdr.kind == KIND_SV) { svA.dim = A.hdr.dim; svA.pad = A.hdr.pad; svA.hasRe = A.hdr.hasRe; svA.hasIm = A.hdr.hasIm; svA.store = A.hdr.store; }
+    if (B.hdr.kind == KIND_SV) { svB.dim = B.hdr.dim; svB.pad = B.hdr.pad; svB.hasRe = B.hdr.hasRe; svB.hasIm = B.hdr.hasIm; svB.store = B.hdr.store; }
     id<MTLBuffer> svHdrBufA = ensureSharedBytes(device, sc.svHdr,  &svA, sizeof(GPUInputHeader));
     id<MTLBuffer> svHdrBufB = ensureSharedBytes(device, sc.svHdrB, &svB, sizeof(GPUInputHeader));
 
@@ -604,6 +607,7 @@ static void encodeMulAny2(MtlScratch& sc, MetalContext& ctx, id<MTLCommandBuffer
     [enc setBuffer:bIm       offset:0 atIndex:7];
     [enc setBuffer:out.re    offset:0 atIndex:8];
     [enc setBuffer:out.im    offset:0 atIndex:9];
+    [enc setBytes:&out.store length:sizeof(uint32_t) atIndex:10];
     [enc dispatchThreads:MTLSizeMake(total, 1, 1)
        threadsPerThreadgroup:MTLSizeMake(pso.maxTotalThreadsPerThreadgroup, 1, 1)];
     [enc endEncoding];
@@ -616,7 +620,7 @@ static void encodeElementwiseAny2(BatchOpKind op, MtlScratch& sc, MetalContext& 
                                   const MtlOperand& A, const MtlOperand& B, const MtlOutputs& out) {
     id<MTLDevice> device = ctx.device;
     // pad 込みの実効サイズで数える（カーネル側も effDim で一辺を出している）
-    const uint32_t total = checkedTotal(opName(op), resultDim(op, A.hdr, B.hdr));
+    const uint32_t total = checkedElems(opName(op), resultDim(op, A.hdr, B.hdr), out.store);
 
     id<MTLBuffer> hdrBufA   = ensureSharedBytes(device, sc.hdrA, &A.hdr, sizeof(GPUInputHeader));
     id<MTLBuffer> hdrBufB   = ensureSharedBytes(device, sc.hdrB, &B.hdr, sizeof(GPUInputHeader));
@@ -637,6 +641,7 @@ static void encodeElementwiseAny2(BatchOpKind op, MtlScratch& sc, MetalContext& 
     [enc setBuffer:B.im      offset:0 atIndex:7];
     [enc setBuffer:out.re    offset:0 atIndex:8];
     [enc setBuffer:out.im    offset:0 atIndex:9];
+    [enc setBytes:&out.store length:sizeof(uint32_t) atIndex:10];
     [enc dispatchThreads:MTLSizeMake(total, 1, 1)
        threadsPerThreadgroup:MTLSizeMake(pso.maxTotalThreadsPerThreadgroup, 1, 1)];
     [enc endEncoding];
@@ -651,7 +656,7 @@ static void encodeOp(BatchOpKind op, MtlScratch& sc, MetalContext& ctx, id<MTLCo
 }
 
 // 単発の 1 演算：スロットを借りて積み、譲りながら待って結果を読む。
-static void runSingleMetal(BatchOpKind op, const GPUInput& A, const GPUInput& B,
+static void runSingleMetal(BatchOpKind op, const GPUInput& A, const GPUInput& B, uint32_t outStore,
                            void** outRe, void** outIm, int64_t* outId, float* outCoef) {
     auto& ctx = getMetalContext();
     SlotGuard slot;                     // 空きが無ければ yield するので pool の外で借りる
@@ -659,7 +664,7 @@ static void runSingleMetal(BatchOpKind op, const GPUInput& A, const GPUInput& B,
     const MtlOperand a = toOperand(A);
     const MtlOperand b = toOperand(B);
     const NSUInteger outBytes =
-        (NSUInteger)checkedTotal(opName(op), resultDim(op, a.hdr, b.hdr)) * sizeof(float);
+        (NSUInteger)checkedElems(opName(op), resultDim(op, a.hdr, b.hdr), outStore) * sizeof(float);
 
     void* reH = nullptr;
     void* imH = nullptr;
@@ -671,6 +676,7 @@ static void runSingleMetal(BatchOpKind op, const GPUInput& A, const GPUInput& B,
         out.im   = peekBuffer(imH);
         out.hash = ensureSharedBuf(ctx.device, slot->outId, sizeof(uint64_t));
         out.coef = ensureSharedBuf(ctx.device, slot->outCoef, sizeof(NormValHost));
+        out.store = outStore;
 
         id<MTLCommandBuffer> cmd = nil;
         @autoreleasepool {
@@ -693,17 +699,17 @@ static void runSingleMetal(BatchOpKind op, const GPUInput& A, const GPUInput& B,
     }
 }
 
-extern "C" void runMulAny2Wrapper(const GPUInput& A, const GPUInput& B,
+extern "C" void runMulAny2Wrapper(const GPUInput& A, const GPUInput& B, uint32_t outStore,
                                   void** outRe, void** outIm, int64_t* outId, float* outCoef) {
-    runSingleMetal(BATCH_OP_MUL, A, B, outRe, outIm, outId, outCoef);
+    runSingleMetal(BATCH_OP_MUL, A, B, outStore, outRe, outIm, outId, outCoef);
 }
-extern "C" void runAddAny2Wrapper(const GPUInput& A, const GPUInput& B,
+extern "C" void runAddAny2Wrapper(const GPUInput& A, const GPUInput& B, uint32_t outStore,
                                   void** outRe, void** outIm, int64_t* outId, float* outCoef) {
-    runSingleMetal(BATCH_OP_ADD, A, B, outRe, outIm, outId, outCoef);
+    runSingleMetal(BATCH_OP_ADD, A, B, outStore, outRe, outIm, outId, outCoef);
 }
-extern "C" void runKronAny2Wrapper(const GPUInput& A, const GPUInput& B,
+extern "C" void runKronAny2Wrapper(const GPUInput& A, const GPUInput& B, uint32_t outStore,
                                    void** outRe, void** outIm, int64_t* outId, float* outCoef) {
-    runSingleMetal(BATCH_OP_KRON, A, B, outRe, outIm, outId, outCoef);
+    runSingleMetal(BATCH_OP_KRON, A, B, outStore, outRe, outIm, outId, outCoef);
 }
 
 
@@ -735,7 +741,7 @@ static void runBatchCommonMetal(BatchOpKind op, BatchJob* jobs, int nJobs) {
                 const MtlOperand a = toOperand(*jobs[t].A);
                 const MtlOperand b = toOperand(*jobs[t].B);
                 const uint64_t dim = resultDim(op, a.hdr, b.hdr);
-                const NSUInteger outBytes = (NSUInteger)checkedTotal(opName(op), dim) * sizeof(float);
+                const NSUInteger outBytes = (NSUInteger)checkedElems(opName(op), dim, jobs[t].outStore) * sizeof(float);
 
                 reH[t] = poolAlloc(ctx.device, outBytes);
                 imH[t] = poolAlloc(ctx.device, outBytes);
@@ -743,6 +749,7 @@ static void runBatchCommonMetal(BatchOpKind op, BatchJob* jobs, int nJobs) {
                 outs[t].im   = peekBuffer(imH[t]);
                 outs[t].hash = allocBufOrThrow(ctx.device, sizeof(uint64_t));
                 outs[t].coef = allocBufOrThrow(ctx.device, sizeof(NormValHost));
+                outs[t].store = jobs[t].outStore;
                 jobs[t].dim  = static_cast<uint32_t>(dim);
 
                 encodeOp(op, scr[t], ctx, cmd, a, b, outs[t]);
@@ -784,20 +791,21 @@ struct JobDescMetal {
     uint32_t edgeOffA;      // エッジ連結バッファ内の先頭（QMDD のとき）
     uint32_t edgeOffB;
     uint32_t dim;           // 結果の一辺
-    uint32_t total;         // dim*dim
+    uint32_t total;         // 結果の要素数（持ち方で決まる）
     uint32_t firstBlock;    // このジョブの先頭 threadgroup 番号
     uint32_t partialOff;    // 部分和バッファ内のオフセット
     uint32_t nBlocks;
-    uint32_t _pad0;         // 次の 64 ビットを 8 バイト境界に揃える
+    uint32_t outStore;      // 結果の持ち方（次の 64 ビットはちょうど 8 バイト境界）
     uint64_t inReA, inImA;  // gpuAddress。成分が無ければ 0（シェーダは hasRe/hasIm を見て読まない）
     uint64_t inReB, inImB;
     uint64_t outRe, outIm;
 };
-static_assert(sizeof(GPUInputHeader) == 28,             "GPUInputHeader の大きさが Heian.metal と合わない");
-static_assert(offsetof(JobDescMetal, edgeOffA) == 56,   "JobDescMetal の並びが Heian.metal の JobDesc と合わない");
-static_assert(offsetof(JobDescMetal, inReA)    == 88,   "JobDescMetal の並びが Heian.metal の JobDesc と合わない");
-static_assert(offsetof(JobDescMetal, outIm)    == 128,  "JobDescMetal の並びが Heian.metal の JobDesc と合わない");
-static_assert(sizeof(JobDescMetal) == 136,              "JobDescMetal の大きさが Heian.metal の JobDesc と合わない");
+static_assert(sizeof(GPUInputHeader) == 32,             "GPUInputHeader の大きさが Heian.metal と合わない");
+static_assert(offsetof(JobDescMetal, edgeOffA) == 64,   "JobDescMetal の並びが Heian.metal の JobDesc と合わない");
+static_assert(offsetof(JobDescMetal, outStore) == 92,   "JobDescMetal の並びが Heian.metal の JobDesc と合わない");
+static_assert(offsetof(JobDescMetal, inReA)    == 96,   "JobDescMetal の並びが Heian.metal の JobDesc と合わない");
+static_assert(offsetof(JobDescMetal, outIm)    == 136,  "JobDescMetal の並びが Heian.metal の JobDesc と合わない");
+static_assert(sizeof(JobDescMetal) == 144,              "JobDescMetal の大きさが Heian.metal の JobDesc と合わない");
 
 struct BatchOutHost {
     float    coefRe;
@@ -851,7 +859,7 @@ static void runBatchFusedMetal(BatchOpKind opKind, BatchJob* jobs, int nJobs) {
             const GPUInputHeader hB = makeHeader(B);
 
             const uint64_t dim64 = resultDim(opKind, hA, hB);
-            const uint32_t total = checkedTotal(opName(opKind), dim64);
+            const uint32_t total = checkedElems(opName(opKind), dim64, jobs[i].outStore);
             const uint32_t dim   = static_cast<uint32_t>(dim64);
             jobs[i].dim = dim;
 
@@ -875,8 +883,9 @@ static void runBatchFusedMetal(BatchOpKind opKind, BatchJob* jobs, int nJobs) {
             }
             d.outRe = addrOf(outReH[i]);
             d.outIm = addrOf(outImH[i]);
-            d.dim   = dim;
-            d.total = total;
+            d.dim      = dim;
+            d.total    = total;
+            d.outStore = jobs[i].outStore;
 
             const uint32_t g = (total + static_cast<uint32_t>(BATCH_TG) - 1u) / static_cast<uint32_t>(BATCH_TG);
             d.firstBlock = static_cast<uint32_t>(blockToOp.size());

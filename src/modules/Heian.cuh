@@ -19,6 +19,7 @@
 struct BatchJob {
     const GPUInput* A;
     const GPUInput* B;
+    uint32_t outStore = 0;        // 結果の持ち方（LeafStore。outputStore() で決める）
     // --- 以下は実行後に埋まる ---
     void*    outRe   = nullptr;
     void*    outIm   = nullptr;   // 成分が全ゼロなら nullptr
@@ -31,15 +32,15 @@ struct BatchJob {
 extern "C" {
 #endif
 void runMulAny2Wrapper(
-    const GPUInput& A, const GPUInput& B,
+    const GPUInput& A, const GPUInput& B, uint32_t outStore,
     void** outRe, void** outIm, int64_t* outId, gpu_precision* outCoef
 );
 void runAddAny2Wrapper(
-    const GPUInput& A, const GPUInput& B,
+    const GPUInput& A, const GPUInput& B, uint32_t outStore,
     void** outRe, void** outIm, int64_t* outId, gpu_precision* outCoef
 );
 void runKronAny2Wrapper(
-    const GPUInput& A, const GPUInput& B,
+    const GPUInput& A, const GPUInput& B, uint32_t outStore,
     void** outRe, void** outIm, int64_t* outId, gpu_precision* outCoef
 );
 
@@ -72,6 +73,7 @@ struct GPUInputHeaderCUDA {
     double root_im;
     uint32_t dim;      // 元の（小さい）一辺
     uint32_t pad;      // 単位行列パディング倍率。実効の一辺は dim*pad
+    uint32_t store;    // ArrayLeaf のバッファの持ち方（LeafStore）
 };
 __device__ __host__ inline uint32_t effDimH(const GPUInputHeaderCUDA& h) { return h.dim * h.pad; }
 
@@ -101,6 +103,7 @@ inline GPUInputHeaderCUDA makeHeader(const GPUInput& in) {
     h.root_im = static_cast<double>(in.root_im);
     h.dim = static_cast<uint32_t>(in.dim);
     h.pad = in.pad ? in.pad : 1u;
+    h.store = in.store;
     return h;
 }
 

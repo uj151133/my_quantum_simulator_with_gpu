@@ -32,6 +32,17 @@ private:
     int64_t hash(int64_t hashKey) const;
     size_t shard(int64_t idx) const { return static_cast<size_t>(idx) & (LOCK_SHARDS - 1); }
 
+    // 参照カウントが 0 でなければ +1 する（不可分）。0 なら何もせず false。
+    // 「読んでから +1」に分けると、その間に最後の参照が外れて 0 になったノードを拾い直してしまい、
+    // release() が 2 回走って二重に delete される。一度 0 になったノードは誰にも拾わせない。
+    static bool tryRetain(QMDDNode* p) {
+        uint32_t c = p->refCount.load(std::memory_order_acquire);
+        while (c != 0) {
+            if (p->refCount.compare_exchange_weak(c, c + 1, std::memory_order_acq_rel, std::memory_order_acquire)) return true;
+        }
+        return false;
+    }
+
 public:
     UniqueTable(const UniqueTable&) = delete;
     UniqueTable& operator=(const UniqueTable&) = delete;

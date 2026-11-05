@@ -1,4 +1,5 @@
 #include "uniqueTable.hpp"
+#include <stdexcept>
 
 UniqueTable::UniqueTable() : tableSize_(PARAMETER.table.size / 2), table_(this->tableSize_) {
     for (auto& entry : this->table_) entry.store(nullptr, memory_order_relaxed);
@@ -14,9 +15,13 @@ QMDDNode* UniqueTable::insert(int64_t hashKey, QMDDNode* node) {
     std::unique_lock<SpinLock> lk(this->locks_[this->shard(idx)]);
     QMDDNode* head = this->table_[idx].load(memory_order_acquire);
     for (QMDDNode* p = head; p != nullptr; p = p->next) {
-        if (p == node) { p->refCount.fetch_add(1, memory_order_relaxed); return node; } 
-        if (p->refCount.load(memory_order_acquire) == 0) continue;
-        if (p->key == hashKey && *p == *node) { p->refCount.fetch_add(1, memory_order_relaxed); return p; }
+        if (p == node) {                                   // 登録済みのノードそのもの
+            if (tryRetain(p)) return node;
+            throw std::logic_error("UniqueTable::insert: 解放待ちのノードを登録し直そうとした");
+        }
+        if (p->key == hashKey && *p == *node && tryRetain(p)) {           // 同内容 → 共有（解放待ちは除く）
+            return p;
+        }
     }
     node->key = hashKey;
     node->next = head;
@@ -29,8 +34,7 @@ QMDDNode* UniqueTable::find(int64_t hashKey) {
     const int64_t idx = this->hash(hashKey);
     std::unique_lock<SpinLock> lk(this->locks_[this->shard(idx)]);
     for (QMDDNode* p = this->table_[idx].load(memory_order_acquire); p != nullptr; p = p->next) {
-        if (p->refCount.load(memory_order_acquire) == 0) continue; 
-        if (p->key == hashKey) { p->refCount.fetch_add(1, memory_order_relaxed); return p; }
+        if (p->key == hashKey && tryRetain(p)) return p;   // 解放待ち（参照 0）は返さない
     }
     return nullptr;
 }

@@ -7,6 +7,7 @@
 #include <cstring>
 #include <array>
 #include <vector>
+#include <optional>
 #include <unordered_map>
 #include <functional>
 #include <cmath>
@@ -103,6 +104,9 @@ struct QMDDEdge{
     friend ostream& operator<<(ostream& os, const QMDDEdge& edge);
     void Noah();
     int level() const;
+    // ノードを生かさない参照（重みとユニークテーブルのキー）から、そのノードがまだ生きていれば
+    // エッジを作り直す（参照 +1 して所有する）。消えていれば nullopt。演算キャッシュが使う。
+    static std::optional<QMDDEdge> revive(complex<double> w, int64_t key);
 private:
     void retain_() const;    // 子の参照カウント +1（終端なら何もしない）
     void release_();         // 子の参照カウント -1。0 になったら解放
@@ -134,7 +138,7 @@ struct QMDDNode {
 void disableEdgeReleaseAtExit();
 template <class... Args>
 inline QMDDNode* bet(Args&&... args) { return new QMDDNode(std::forward<Args>(args)...); }
-ArrayLeaf* pluck(size_t dim, void* reBuf, void* imBuf, int64_t id);
+ArrayLeaf* pluck(size_t dim, void* reBuf, void* imBuf, int64_t id, uint32_t store = STORE_GENERAL);
 
 class QMDDGate{
 private:

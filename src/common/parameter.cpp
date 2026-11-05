@@ -124,6 +124,11 @@ void Parameter::loadFromFile(const string& yamlFilepath, const string& iniFilepa
                 this->cache.FLSSize = config["cache"]["FLSSize"].as<int>();
             }
 
+            if (config["leaf"]) {
+                if (config["leaf"]["column"])   this->leaf.column = config["leaf"]["column"].as<bool>();
+                if (config["leaf"]["diagonal"]) this->leaf.diagonal = config["leaf"]["diagonal"].as<bool>();
+            }
+
             if (config["circuit"]) {
                 const auto& circuitConfig = config["circuit"];
                 if (circuitConfig["mode"])      this->circuit.mode = circuitConfig["mode"].as<string>();

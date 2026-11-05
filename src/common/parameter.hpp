@@ -32,6 +32,10 @@ public:
         int size = 0;
         int FLSSize = 0;   // ファイバー局所キャッシュの容量（エントリ数）
     } cache;
+    struct LeafSettings {
+        bool column = false;     // 列ベクトルの密葉を第 0 列だけで持つ
+        bool diagonal = false;   // 対角行列の密葉を対角だけで持つ
+    } leaf;
     struct DealerSettings {
         bool alive = false;
         double nonzeroWeight = .0;

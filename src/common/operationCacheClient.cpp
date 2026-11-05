@@ -68,22 +68,25 @@ optional<QMDDEdge> OperationCacheClient::find(int64_t key, bool useLocal) {
         auto& d = fls();
         auto it = d.cache.find(key);
         if (it == d.cache.end()) return nullopt;
-        return it->second;
+        return QMDDEdge::revive(it->second.weight, it->second.key);   // 消えていればミス
     }
     return this->findGlobal(key);
 }
 
 void OperationCacheClient::insert(int64_t key, const QMDDEdge& edge, bool useLocal) {
+    // ノードを指す結果だけを置く（終端や密葉はキーで作り直せない）
+    if (edge.sonKind_ != SonKind::QMDDNode) return;
+    const WeakEdge w{edge.weight, edge.key_};
     if (useLocal) {
         const int64_t cap = this->flsCapacity_;
         auto& d = fls();
         auto it = d.cache.find(key);
-        if (it != d.cache.end()) { it->second = edge; return; }
-        d.cache.emplace(key, edge);
+        if (it != d.cache.end()) { it->second = w; return; }
+        d.cache.emplace(key, w);
         if (cap == 0 || (int64_t)d.cache.size() > cap) d.cache.clear();
         return;
     }
-    this->insertGlobal(key, edge);
+    this->insertGlobal(key, w.weight, w.key);
 }
 
 void OperationCacheClient::clearFiberLocalCache() {
@@ -92,9 +95,9 @@ void OperationCacheClient::clearFiberLocalCache() {
 }
 
 __attribute__((hot, flatten))
-void OperationCacheClient::insertGlobal(int64_t key, const QMDDEdge& edge) {
+void OperationCacheClient::insertGlobal(int64_t key, complex<double> weight, int64_t uniqueTableKey) {
     graal_isolatethread_t* thread = this->getThreadLocalThread();
-    cacheInsert(thread, key, edge.weight.real(), edge.weight.imag(), edge.key_);
+    cacheInsert(thread, key, weight.real(), weight.imag(), uniqueTableKey);
 }
 
 __attribute__((hot, flatten))
@@ -140,7 +143,7 @@ void OperationCacheClient::flushFiberLocalToGlobal() {
     auto& d = fls();
     if (d.cache.empty()) return;
     for (const auto& kv : d.cache) {
-        this->insertGlobal(kv.first, kv.second);
+        this->insertGlobal(kv.first, kv.second.weight, kv.second.key);
     }
     d.cache.clear();
 }

@@ -508,18 +508,14 @@ void QuantumCircuit::normalizeLayer() {
     this->wires.resize(this->numQubits_);
 }
 
-void QuantumCircuit::build() {
-    for (auto& layer : this->layer_) {
-        if (layer.empty()) continue;
-
-        QMDDEdge result = layer.back();
-        int depth = static_cast<int>(layer.size()) - 2;
-        for (auto it = layer.rbegin() + 1; it != layer.rend(); ++it, --depth) {
-            result = mathUtils::kron(*it, result, depth);
-        }
-        this->gateQueue_.push(QMDDSuite(result));
+// 1 層ぶんのゲート（量子ビットごとのゲートの並び）を kron でつないで 1 つのゲートにする。
+QMDDEdge QuantumCircuit::buildLayer(const vector<QMDDEdge>& layer) const {
+    QMDDEdge result = layer.back();
+    int depth = static_cast<int>(layer.size()) - 2;
+    for (auto it = layer.rbegin() + 1; it != layer.rend(); ++it, --depth) {
+        result = mathUtils::kron(*it, result, depth);
     }
-    this->layer_.clear();   // 生ポインタのエッジを持ち越さない（以後は gateQueue_ が根）
+    return result;
 }
 
 void QuantumCircuit::smartInsert(const vector<int>& qubitIndices, const Part& part) {
@@ -1948,28 +1944,38 @@ void QuantumCircuit::globalPhase(double lamda) {
 void QuantumCircuit::criticalExecute() {
     const size_t gateNum = g_tls_gate_num;
     threadPool.submitFiber([&, gateNum]() {
-        this->build();
-
         int i = 0;
-
-        while (!this->gateQueue_.empty()) {
-            QMDDSuite currentGate = this->gateQueue_.front();
-
+        auto apply = [&](const QMDDSuite& currentGate) {
             if (PARAMETER.circuit.verbose) {
                 cout << "Gate Idx: " << i++ << " / " << gateNum << endl;
                 cout << "Current gate: " << currentGate << endl;
                 cout << "Current state: " << this->finalState_ << endl;
                 cout << "============================================================\n" << endl;
             }
-
-            this->gateQueue_.pop();
-
             // 逐次依存なのでここは順番通りのまま。
             // 並列化は mul() 内部の fiber 分割に任せる。
             this->finalState_ = QMDDSuite(
                 mathUtils::mul(currentGate.getInitialEdge(), this->finalState_.getInitialEdge())
             );
+        };
+
+        // 先に組み立て済みで積まれているゲート（sparse モードの customCZ など）
+        while (!this->gateQueue_.empty()) {
+            QMDDSuite currentGate = this->gateQueue_.front();
+            this->gateQueue_.pop();
+            apply(currentGate);
         }
+
+        // 層のゲートは適用する直前に 1 つずつ組み立て、使ったら捨てる。
+        // 全部を先に組み立てると、kron が作る GPU 上の密葉が全ゲートぶん最後まで残り、
+        // GPU メモリが k とともに約 4 倍ずつ増える（Shor 18 で k=6 3.7 GB、k=8 で 24 GB を超えた）。
+        for (auto& layer : this->layer_) {
+            if (layer.empty()) continue;
+            QMDDSuite currentGate(this->buildLayer(layer));
+            layer.clear();
+            apply(currentGate);
+        }
+        this->layer_.clear();
     }).get();
 }
 

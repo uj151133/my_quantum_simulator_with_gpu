@@ -20,6 +20,7 @@
 struct BatchJob {
     const GPUInput* A;
     const GPUInput* B;
+    uint32_t outStore = 0;        // 結果の持ち方（LeafStore。outputStore() で決める）
     // --- 以下は実行後に埋まる ---
     void*    outRe   = nullptr;
     void*    outIm   = nullptr;   // 成分が全ゼロなら nullptr
@@ -32,15 +33,15 @@ struct BatchJob {
 extern "C" {
 #endif
 void runMulAny2Wrapper(
-    const GPUInput& A, const GPUInput& B,
+    const GPUInput& A, const GPUInput& B, uint32_t outStore,
     void** outRe, void** outIm, int64_t* outId, gpu_precision* outCoef
 );
 void runAddAny2Wrapper(
-    const GPUInput& A, const GPUInput& B,
+    const GPUInput& A, const GPUInput& B, uint32_t outStore,
     void** outRe, void** outIm, int64_t* outId, gpu_precision* outCoef
 );
 void runKronAny2Wrapper(
-    const GPUInput& A, const GPUInput& B,
+    const GPUInput& A, const GPUInput& B, uint32_t outStore,
     void** outRe, void** outIm, int64_t* outId, gpu_precision* outCoef
 );
 
@@ -77,6 +78,7 @@ struct GPUInputHeader {
     uint32_t hasRe;    // 0 なら実部バッファ無し（全要素ゼロ）
     uint32_t hasIm;    // 0 なら虚部バッファ無し（全要素ゼロ）
     uint32_t pad;      // 単位行列パディング倍率。実効の一辺は dim*pad
+    uint32_t store;    // ArrayLeaf のバッファの持ち方（LeafStore）
 };
 
 // 実効の一辺（パディング後）。Heian.cuh の effDimH と同じ役割
@@ -101,6 +103,7 @@ static inline GPUInputHeader makeHeader(const GPUInput& in) {
     h.hasRe = (in.kind == SonKind::ArrayLeaf && in.sv.reHandle == nullptr) ? 0u : 1u;
     h.hasIm = (in.kind == SonKind::ArrayLeaf && in.sv.imHandle == nullptr) ? 0u : 1u;
     h.pad = in.pad ? in.pad : 1u;
+    h.store = in.store;
     return h;
 }
 

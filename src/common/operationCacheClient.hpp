@@ -34,14 +34,21 @@ private:
     inline graal_isolatethread_t* getThreadLocalThread();
     graal_isolatethread_t* initializeNewThread();
 
+    // 演算キャッシュの 1 件。ノードは生かさない（参照カウントを持たない）。
+    // 使うときにユニークテーブルでまだ生きているかを確かめる（DDSIM の演算キャッシュと同じ考え方）。
+    // キャッシュが結果を抱え込むと、その子の密葉（GPU バッファ）まで解放されなくなるため。
+    struct WeakEdge {
+        complex<double> weight;
+        int64_t key;          // ユニークテーブルのキー（0 = 持っていない）
+    };
     struct FlsEntry {
-        unordered_map<int64_t, QMDDEdge> cache;
+        unordered_map<int64_t, WeakEdge> cache;
     };
     static FlsEntry& fls();
     const int64_t flsCapacity_;
 
     optional<QMDDEdge> findGlobal(int64_t key);
-    void insertGlobal(int64_t key, const QMDDEdge& edge);
+    void insertGlobal(int64_t key, complex<double> weight, int64_t uniqueTableKey);
 
 public:
     OperationCacheClient();

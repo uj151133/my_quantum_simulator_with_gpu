@@ -74,7 +74,7 @@ private:
     void normalizeLayer();
     void smartInsert(const vector<int>& qubitIndices, const Part& part);
     int searchJOKER(const vector<int>& qubitIndices);
-    void build();
+    QMDDEdge buildLayer(const vector<QMDDEdge>& layer) const;
     static string upper(string s);
     static bool isDiagTag(const string& tagU);
     void moveQueueToPending();

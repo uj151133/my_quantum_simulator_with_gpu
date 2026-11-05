@@ -62,6 +62,19 @@ QMDDEdge::QMDDEdge(complex<double> w, int64_t key, SonKind kind)
 }
 QMDDEdge::QMDDEdge(double w, int64_t key, SonKind kind) : QMDDEdge(complex<double>(w, .0), key, kind) {}
 
+std::optional<QMDDEdge> QMDDEdge::revive(complex<double> w, int64_t key) {
+    if (key == 0) return std::nullopt;
+    QMDDNode* n = UniqueTable::getInstance().find(key);   // 生きていれば参照 +1 済みで返る
+    if (!n) return std::nullopt;
+    QMDDEdge e;                                            // find の +1 をそのまま引き継ぐ（retain しない）
+    e.weight = w;
+    e.key_ = key;
+    e.son_ = tagNode(n);
+    e.sonKind_ = SonKind::QMDDNode;
+    e.isTerminal = false;
+    return e;
+}
+
 
 // vector<complex<double>> QMDDEdge::getAllElementsForKet() {
 //     vector<complex<double>> result;
@@ -101,7 +114,7 @@ namespace {
         const size_t dim = leaf->dim();
         if (dim == 0) return {};
 
-        const size_t total = dim * dim;
+        const size_t total = leaf->elemCount();
         std::vector<double> re(total, 0.0), im(total, 0.0);
 
         // 全要素ゼロの成分はバッファを持たない（容量削減）。その場合は 0 のまま。
@@ -112,10 +125,12 @@ namespace {
             throw std::runtime_error("readKetFromArrayLeaf: failed to copy GPU buffer");
         }
 
+        // 第 0 列を取り出す。持ち方ごとに (r, 0) の位置が違う。
         std::vector<std::complex<double>> ket(dim, {0.0, 0.0});
         for (size_t r = 0; r < dim; ++r) {
-            const size_t idx = r * dim; // col=0
-            ket[r] = {re[idx], im[idx]};
+            if (leaf->store == STORE_COLUMN)        ket[r] = {re[r], im[r]};
+            else if (leaf->store == STORE_DIAGONAL) { if (r == 0) ket[r] = {re[0], im[0]}; }
+            else                                    ket[r] = {re[r * dim], im[r * dim]};
         }
         return ket;
     }
@@ -290,8 +305,8 @@ void QMDDEdge::release_() {
     }
 }
 
-ArrayLeaf* pluck(size_t dim, void* reBuf, void* imBuf, int64_t id) {
-    return new ArrayLeaf(dim, reBuf, imBuf, id);   // 所有は最初にこれを包む QMDDEdge へ
+ArrayLeaf* pluck(size_t dim, void* reBuf, void* imBuf, int64_t id, uint32_t store) {
+    return new ArrayLeaf(dim, reBuf, imBuf, id, store);   // 所有は最初にこれを包む QMDDEdge へ
 }
 
 int QMDDEdge::level() const {

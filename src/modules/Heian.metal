@@ -15,10 +15,25 @@ struct GPUInputHeader {
     uint hasRe;    // 0 なら実部バッファを持たない（全要素ゼロ）。inRe は参照しない
     uint hasIm;    // 0 なら虚部バッファを持たない（全要素ゼロ）。inIm は参照しない
     uint pad;      // 単位行列パディング倍率。実効の一辺は dim*pad。Heian.mm と一致させること
+    uint store;    // 密葉のバッファの持ち方（下の STORE_*）
 };
 
 // 実効の一辺（パディング後）
 inline uint effDim(const device GPUInputHeader& h) { return h.dim * h.pad; }
+
+// 密葉のバッファの持ち方（arrayLeaf.hpp の LeafStore と同じ値）
+constant constexpr uint STORE_GENERAL  = 0;   // dim×dim を行優先で全部
+constant constexpr uint STORE_COLUMN   = 1;   // 第 0 列だけ（dim 要素）
+constant constexpr uint STORE_DIAGONAL = 2;   // 対角だけ（dim 要素）
+
+inline uint elemCount(uint store, uint dim) { return store == STORE_GENERAL ? dim * dim : dim; }
+
+// 結果の t 番目の要素が (row, col) のどこにあたるか（Heian.cu の elemPos と同じ）
+inline void elemPos(uint store, uint dim, uint t, thread uint& row, thread uint& col) {
+    if (store == STORE_COLUMN)        { row = t; col = 0u; }
+    else if (store == STORE_DIAGONAL) { row = t; col = t; }
+    else                              { row = t / dim; col = t - row * dim; }
+}
 
 struct NormVal {
     float re;
@@ -209,7 +224,6 @@ inline float2 evalInput(
     const device float* inIm,
     uint row,
     uint col,
-    uint tid,
     bool applyRoot
 ) {
     // 単位行列パディング（A ⊗ I_pad）を実体化せず添字変換で表す。
@@ -219,12 +233,16 @@ inline float2 evalInput(
         if ((row % hdr.pad) != (col % hdr.pad)) return float2(0.0, 0.0);
         row /= hdr.pad;
         col /= hdr.pad;
-        tid = row * hdr.dim + col;
     }
     if (hdr.kind == 2) { // SV
+        // 持ち方に応じて (row, col) をバッファの位置に直す。持っていない位置は 0。
+        uint idx;
+        if (hdr.store == STORE_COLUMN)        { if (col != 0u) return float2(0.0, 0.0); idx = row; }
+        else if (hdr.store == STORE_DIAGONAL) { if (row != col) return float2(0.0, 0.0); idx = row; }
+        else                                  { idx = row * hdr.dim + col; }
         // 全要素ゼロの成分はバッファを持たない（容量削減）。そのポインタは触らない。
-        float2 v = float2(hdr.hasRe != 0u ? inRe[tid] : 0.0f,
-                          hdr.hasIm != 0u ? inIm[tid] : 0.0f);
+        float2 v = float2(hdr.hasRe != 0u ? inRe[idx] : 0.0f,
+                          hdr.hasIm != 0u ? inIm[idx] : 0.0f);
         return applyRoot ? cmul(float2(hdr.root_re, hdr.root_im), v) : v;
     } else if (hdr.kind == 1) { // QMDD
         float2 root = applyRoot ? float2(hdr.root_re, hdr.root_im) : float2(1.0, 0.0);
@@ -265,6 +283,32 @@ kernel void materialize_any(
     outIm[tid] = v.y;
 }
 
+// mul の結果の (row, col) 要素。対角の葉は k = row（A 側）か k = col（B 側）だけが非ゼロなので、
+// その 1 項だけを計算する（0 の項を足さないだけで結果は同じ）。Heian.cu の mulElem と同じ規約にすること。
+inline bool isDiagLeaf(const device GPUInputHeader& h) {
+    return h.kind == 2u && h.store == STORE_DIAGONAL;
+}
+
+inline float2 mulElem(
+    const device GPUInputHeader& hA, const device GPUEdge* eA, const device float* reA, const device float* imA,
+    const device GPUInputHeader& hB, const device GPUEdge* eB, const device float* reB, const device float* imB,
+    uint row, uint col, uint dim
+) {
+    float2 acc = float2(0.0f, 0.0f);
+    if (isDiagLeaf(hA)) {
+        acc += cmul(evalInput(hA, eA, reA, imA, row, row, false), evalInput(hB, eB, reB, imB, row, col, false));
+    } else if (isDiagLeaf(hB)) {
+        acc += cmul(evalInput(hA, eA, reA, imA, row, col, false), evalInput(hB, eB, reB, imB, col, col, false));
+    } else {
+        for (uint k = 0; k < dim; ++k) {
+            float2 a = evalInput(hA, eA, reA, imA, row, k, false);
+            float2 b = evalInput(hB, eB, reB, imB, k, col, false);
+            acc += cmul(a, b);
+        }
+    }
+    return acc;
+}
+
 kernel void mul_any2(
     const device GPUInputHeader& hdrA [[buffer(0)]],
     const device GPUInputHeader& hdrB [[buffer(1)]],
@@ -276,24 +320,16 @@ kernel void mul_any2(
     const device float* inImB        [[buffer(7)]],
     device float* outRe              [[buffer(8)]],
     device float* outIm              [[buffer(9)]],
+    constant uint& outStore          [[buffer(10)]],   // 結果の持ち方
     uint tid                          [[thread_position_in_grid]]
 ) {
     uint dim = effDim(hdrB);    // 前提：AとBで同じ（パディング後の実効サイズ）
-    uint total = dim * dim;
-    if (tid >= total) return;
+    if (tid >= elemCount(outStore, dim)) return;
 
-    uint row = tid / dim;
-    uint col = tid - row * dim;
+    uint row, col;
+    elemPos(outStore, dim, tid, row, col);
 
-    float2 acc = float2(0.0, 0.0);
-
-    for (uint k = 0; k < dim; ++k) {
-        // pad == 1 の密葉は渡した tid をそのまま引くので、実位置を渡す必要がある。
-        // （以前は 0 を渡していて、pad == 1 の SV では常に要素 0 を読んでいた。Heian.cu と同じ形に修正）
-        float2 a = evalInput(hdrA, edgesA, inReA, inImA, row, k, row * dim + k, false);
-        float2 b = evalInput(hdrB, edgesB, inReB, inImB, k, col, k * dim + col, false);
-        acc += cmul(a, b);
-    }
+    float2 acc = mulElem(hdrA, edgesA, inReA, inImA, hdrB, edgesB, inReB, inImB, row, col, dim);
 
     outRe[tid] = acc.x;
     outIm[tid] = acc.y;
@@ -310,17 +346,17 @@ kernel void add_any2(
     const device float* inImB        [[buffer(7)]],
     device float* outRe              [[buffer(8)]],
     device float* outIm              [[buffer(9)]],
+    constant uint& outStore          [[buffer(10)]],   // 結果の持ち方
     uint tid                          [[thread_position_in_grid]]
 ) {
     uint dim = effDim(hdrB); // 前提：AとBで同じ（パディング後の実効サイズ）
-    uint total = dim * dim;
-    if (tid >= total) return;
+    if (tid >= elemCount(outStore, dim)) return;
 
-    uint row = tid / dim;
-    uint col = tid - row * dim;
+    uint row, col;
+    elemPos(outStore, dim, tid, row, col);
 
-    float2 a = evalInput(hdrA, edgesA, inReA, inImA, row, col, tid, true);
-    float2 b = evalInput(hdrB, edgesB, inReB, inImB, row, col, tid, true);
+    float2 a = evalInput(hdrA, edgesA, inReA, inImA, row, col, true);
+    float2 b = evalInput(hdrB, edgesB, inReB, inImB, row, col, true);
     float2 v = a + b;
 
     outRe[tid] = v.x;
@@ -338,25 +374,23 @@ kernel void kron_any2(
     const device float* inImB        [[buffer(7)]],
     device float* outRe              [[buffer(8)]],
     device float* outIm              [[buffer(9)]],
+    constant uint& outStore          [[buffer(10)]],   // 結果の持ち方
     uint tid                          [[thread_position_in_grid]]
 ) {
-    uint dimA = effDim(hdrA);
     uint dimB = effDim(hdrB);
-    uint dimOut = dimA * dimB;
-    uint total = dimOut * dimOut;
-    if (tid >= total) return;
+    uint dimOut = effDim(hdrA) * dimB;
+    if (tid >= elemCount(outStore, dimOut)) return;
 
-    uint row = tid / dimOut;
-    uint col = tid - row * dimOut;
+    uint row, col;
+    elemPos(outStore, dimOut, tid, row, col);
 
     uint rowA = row / dimB;
     uint colA = col / dimB;
     uint rowB = row % dimB;
     uint colB = col % dimB;
 
-    float2 a = evalInput(hdrA, edgesA, inReA, inImA, rowA, colA, rowA * dimA + colA, false);
-    float2 b = evalInput(hdrB, edgesB, inReB, inImB, rowB, colB, rowB * dimB + colB, false);
-    // ↑ pad>1 のときは evalInput 側で row/col から tid を引き直す
+    float2 a = evalInput(hdrA, edgesA, inReA, inImA, rowA, colA, false);
+    float2 b = evalInput(hdrB, edgesB, inReB, inImB, rowB, colB, false);
 
     float2 v = cmul(a, b);
     outRe[tid] = v.x;
@@ -448,23 +482,24 @@ constant constexpr uint BATCH_TG = 256;
 
 struct JobDesc {
     GPUInputHeader hdrA;           //   0
-    GPUInputHeader hdrB;           //  28
-    uint edgeOffA;                 //  56  エッジ連結バッファ内の先頭（QMDD のとき）
-    uint edgeOffB;                 //  60
-    uint dim;                      //  64  結果の一辺
-    uint total;                    //  68  dim*dim
-    uint firstBlock;               //  72  このジョブの先頭 threadgroup 番号
-    uint partialOff;               //  76  部分和バッファ内のオフセット
-    uint nBlocks;                  //  80
-    uint _pad0;                    //  84  次のポインタを 8 バイト境界に揃える
-    const device float* inReA;     //  88
-    const device float* inImA;     //  96
-    const device float* inReB;     // 104
-    const device float* inImB;     // 112
-    device float* outRe;           // 120
-    device float* outIm;           // 128
-};                                 // 136
-static_assert(sizeof(JobDesc) == 136, "JobDesc の大きさが Heian.mm の JobDescMetal と合わない");
+    GPUInputHeader hdrB;           //  32
+    uint edgeOffA;                 //  64  エッジ連結バッファ内の先頭（QMDD のとき）
+    uint edgeOffB;                 //  68
+    uint dim;                      //  72  結果の一辺
+    uint total;                    //  76  結果の要素数（持ち方で決まる）
+    uint firstBlock;               //  80  このジョブの先頭 threadgroup 番号
+    uint partialOff;               //  84  部分和バッファ内のオフセット
+    uint nBlocks;                  //  88
+    uint outStore;                 //  92  結果の持ち方（次のポインタはちょうど 8 バイト境界）
+    const device float* inReA;     //  96
+    const device float* inImA;     // 104
+    const device float* inReB;     // 112
+    const device float* inImB;     // 120
+    device float* outRe;           // 128
+    device float* outIm;           // 136
+};                                 // 144
+static_assert(sizeof(GPUInputHeader) == 32, "GPUInputHeader の大きさが Heian.mm と合わない");
+static_assert(sizeof(JobDesc) == 144, "JobDesc の大きさが Heian.mm の JobDescMetal と合わない");
 
 struct BatchOut {
     float coefRe;                  //  0
@@ -492,33 +527,24 @@ kernel void batch_op(
     const device GPUEdge* eA = edges + j.edgeOffA;
     const device GPUEdge* eB = edges + j.edgeOffB;
 
+    // 結果の tid 番目が (row, col) のどこか（持ち方で並びが違う）
+    uint row, col;
+    elemPos(j.outStore, j.dim, tid, row, col);
+
     float2 v = float2(0.0f, 0.0f);
     if (opKind == 0u) {                       // MUL
-        const uint dim = j.dim;
-        const uint row = tid / dim, col = tid - row * dim;
-        float2 acc = float2(0.0f, 0.0f);
-        for (uint k = 0; k < dim; ++k) {
-            float2 a = evalInput(j.hdrA, eA, j.inReA, j.inImA, row, k, row * dim + k, false);
-            float2 b = evalInput(j.hdrB, eB, j.inReB, j.inImB, k, col, k * dim + col, false);
-            acc += cmul(a, b);
-        }
-        v = acc;
+        v = mulElem(j.hdrA, eA, j.inReA, j.inImA, j.hdrB, eB, j.inReB, j.inImB, row, col, j.dim);
     } else if (opKind == 1u) {                // ADD
-        const uint dim = j.dim;
-        const uint row = tid / dim, col = tid - row * dim;
-        float2 a = evalInput(j.hdrA, eA, j.inReA, j.inImA, row, col, tid, true);
-        float2 b = evalInput(j.hdrB, eB, j.inReB, j.inImB, row, col, tid, true);
+        float2 a = evalInput(j.hdrA, eA, j.inReA, j.inImA, row, col, true);
+        float2 b = evalInput(j.hdrB, eB, j.inReB, j.inImB, row, col, true);
         v = a + b;
     } else {                                  // KRON
-        // 実効次元（dim × pad）を使うこと。素の dim で割ると桁合わせが入ったオペランドで
-        // 行・列の対応が崩れる（Heian.cu の batch_op_kernel と同じ注意）。
-        const uint dimA = effDim(j.hdrA), dimB = effDim(j.hdrB);
-        const uint dimOut = j.dim;
-        const uint row = tid / dimOut, col = tid - row * dimOut;
+        // 実効次元（dim × pad）で行・列を分解すること（素の dim だと桁合わせで崩れる）
+        const uint dimB = effDim(j.hdrB);
         const uint rowA = row / dimB, colA = col / dimB;
         const uint rowB = row % dimB, colB = col % dimB;
-        float2 a = evalInput(j.hdrA, eA, j.inReA, j.inImA, rowA, colA, rowA * dimA + colA, false);
-        float2 b = evalInput(j.hdrB, eB, j.inReB, j.inImB, rowB, colB, rowB * dimB + colB, false);
+        float2 a = evalInput(j.hdrA, eA, j.inReA, j.inImA, rowA, colA, false);
+        float2 b = evalInput(j.hdrB, eB, j.inReB, j.inImB, rowB, colB, false);
         v = cmul(a, b);
     }
     j.outRe[tid] = v.x;

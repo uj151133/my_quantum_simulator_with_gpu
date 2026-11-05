@@ -55,7 +55,8 @@ static QMDDEdge mulDispatch(const QMDDEdge& a, const QMDDEdge& b) {
     int64_t outId = 0;
     gpu_precision outCoef[2] = {.0f, .0f};
 
-    runMulAny2Wrapper(A, B,
+    const uint32_t store = outputStore(GpuOp::Mul, A, B);   // 結果の持ち方（列・対角なら詰める）
+    runMulAny2Wrapper(A, B, store,
                     &outRe, &outIm,
                     &outId, outCoef);
     if (outCoef[0] == .0f && outCoef[1] == .0f) {
@@ -63,7 +64,7 @@ static QMDDEdge mulDispatch(const QMDDEdge& a, const QMDDEdge& b) {
         releaseGpuBuffer(outIm);
         return edgeZero;
     }
-    { int64_t lid = arrayLeafId(); return QMDDEdge(complex<double>(outCoef[0], outCoef[1]), lid, pluck(A.dim * A.pad, outRe, outIm, lid)); }
+    { int64_t lid = arrayLeafId(); return QMDDEdge(complex<double>(outCoef[0], outCoef[1]), lid, pluck(A.dim * A.pad, outRe, outIm, lid, store)); }
 }
 
 // 閾値の 1 つ上のノードの mul。(i,j,k) の 8 つの掛け算をまとめて 1 往復で GPU に投げ、
@@ -113,6 +114,7 @@ static EdgeMatrix mulBatchDispatch(const QMDDEdge& a, const QMDDEdge& b, int dep
     }
     for (size_t t = 0; t < insA.size(); ++t) {
         BatchJob jb; jb.A = &insA[t]; jb.B = &insB[t];
+        jb.outStore = outputStore(GpuOp::Mul, insA[t], insB[t]);
         jobs.push_back(jb);
     }
     if (!jobs.empty()) {
@@ -125,7 +127,7 @@ static EdgeMatrix mulBatchDispatch(const QMDDEdge& a, const QMDDEdge& b, int dep
                 part[slots[t].i][slots[t].j][slots[t].k] = edgeZero;
             } else {
                 part[slots[t].i][slots[t].j][slots[t].k] =
-                    [&]{ int64_t lid = arrayLeafId(); return QMDDEdge(complex<double>(jb.outCoef[0], jb.outCoef[1]), lid, pluck(jb.dim, jb.outRe, jb.outIm, lid)); }();
+                    [&]{ int64_t lid = arrayLeafId(); return QMDDEdge(complex<double>(jb.outCoef[0], jb.outCoef[1]), lid, pluck(jb.dim, jb.outRe, jb.outIm, lid, jb.outStore)); }();
             }
         }
     }
@@ -339,7 +341,8 @@ static QMDDEdge addDispatch(const QMDDEdge& a, const QMDDEdge& b) {
     int64_t outId = 0;
     gpu_precision outCoef[2] = {.0f, .0f};
 
-    runAddAny2Wrapper(A, B,
+    const uint32_t store = outputStore(GpuOp::Add, A, B);   // 結果の持ち方（列・対角なら詰める）
+    runAddAny2Wrapper(A, B, store,
                     &outRe, &outIm,
                     &outId, outCoef);
     if (outCoef[0] == .0f && outCoef[1] == .0f) {
@@ -347,7 +350,7 @@ static QMDDEdge addDispatch(const QMDDEdge& a, const QMDDEdge& b) {
         releaseGpuBuffer(outIm);
         return edgeZero;
     }
-    { int64_t lid = arrayLeafId(); return QMDDEdge(complex<double>(outCoef[0], outCoef[1]), lid, pluck(A.dim * A.pad, outRe, outIm, lid)); }
+    { int64_t lid = arrayLeafId(); return QMDDEdge(complex<double>(outCoef[0], outCoef[1]), lid, pluck(A.dim * A.pad, outRe, outIm, lid, store)); }
 }
 
 // 閾値の 1 つ上のノードの add。4 マスは互いに独立なので、短絡できるものを先に片付け、
@@ -389,6 +392,7 @@ static EdgeMatrix addBatchDispatch(const QMDDEdge& a, const QMDDEdge& b) {
     }
     for (size_t k = 0; k < insA.size(); ++k) {
         BatchJob jb; jb.A = &insA[k]; jb.B = &insB[k];
+        jb.outStore = outputStore(GpuOp::Add, insA[k], insB[k]);
         jobs.push_back(jb);
     }
     if (!jobs.empty()) {
@@ -401,7 +405,7 @@ static EdgeMatrix addBatchDispatch(const QMDDEdge& a, const QMDDEdge& b) {
                 z[slots[k].i][slots[k].j] = edgeZero;
             } else {
                 z[slots[k].i][slots[k].j] =
-                    [&]{ int64_t lid = arrayLeafId(); return QMDDEdge(complex<double>(jb.outCoef[0], jb.outCoef[1]), lid, pluck(jb.dim, jb.outRe, jb.outIm, lid)); }();
+                    [&]{ int64_t lid = arrayLeafId(); return QMDDEdge(complex<double>(jb.outCoef[0], jb.outCoef[1]), lid, pluck(jb.dim, jb.outRe, jb.outIm, lid, jb.outStore)); }();
             }
         }
     }
@@ -566,7 +570,8 @@ static QMDDEdge kronDispatch(const QMDDEdge& e0, const QMDDEdge& e1) {
     int64_t outId = 0;
     gpu_precision outCoef[2] = {.0f, .0f};
 
-    runKronAny2Wrapper(A, B,
+    const uint32_t store = outputStore(GpuOp::Kron, A, B);   // 結果の持ち方（列・対角なら詰める）
+    runKronAny2Wrapper(A, B, store,
                     &outRe, &outIm,
                     &outId, outCoef);
     if (outCoef[0] == .0f && outCoef[1] == .0f) {
@@ -574,7 +579,7 @@ static QMDDEdge kronDispatch(const QMDDEdge& e0, const QMDDEdge& e1) {
         releaseGpuBuffer(outIm);
         return edgeZero;
     }
-    { int64_t lid = arrayLeafId(); return QMDDEdge(complex<double>(outCoef[0], outCoef[1]), lid, pluck(A.dim * B.dim, outRe, outIm, lid)); }
+    { int64_t lid = arrayLeafId(); return QMDDEdge(complex<double>(outCoef[0], outCoef[1]), lid, pluck(A.dim * B.dim, outRe, outIm, lid, store)); }
 }
 
 // 閾値の 1 つ上のノードの kron。子 4 つは互いに独立なので、短絡できるものを先に片付け、
@@ -606,6 +611,7 @@ static EdgeMatrix kronBatchDispatch(const QMDDEdge& e0, const QMDDEdge& e1) {
     }
     for (size_t k = 0; k < insA.size(); ++k) {
         BatchJob jb; jb.A = &insA[k]; jb.B = &inB;
+        jb.outStore = outputStore(GpuOp::Kron, insA[k], inB);
         jobs.push_back(jb);
     }
     if (!jobs.empty()) {
@@ -618,7 +624,7 @@ static EdgeMatrix kronBatchDispatch(const QMDDEdge& e0, const QMDDEdge& e1) {
                 releaseGpuBuffer(jb.outIm);
                 r = edgeZero;
             } else {
-                r = [&]{ int64_t lid = arrayLeafId(); return QMDDEdge(complex<double>(jb.outCoef[0], jb.outCoef[1]), lid, pluck(jb.dim, jb.outRe, jb.outIm, lid)); }();
+                r = [&]{ int64_t lid = arrayLeafId(); return QMDDEdge(complex<double>(jb.outCoef[0], jb.outCoef[1]), lid, pluck(jb.dim, jb.outRe, jb.outIm, lid, jb.outStore)); }();
             }
             z[slots[k].i][slots[k].j] = r;
         }
